@@ -40,14 +40,14 @@ min-height:100vh
    MAPA
    ===================================================== */
 
+.map-container{
+position:relative
+}
+
 #map{
 width:100%;
 height:55vh;
 min-height:350px
-}
-
-.map-container{
-position:relative
 }
 
 .map-message{
@@ -56,7 +56,7 @@ top:15px;
 left:50%;
 transform:translateX(-50%);
 z-index:999;
-background:white;
+background:#fff;
 padding:9px 14px;
 border-radius:20px;
 box-shadow:0 2px 10px rgba(0,0,0,.2);
@@ -95,7 +95,7 @@ line-height:18px
 
 
 /* =====================================================
-   CAMPOS
+   CAMPOS DE COLONIAS
    ===================================================== */
 
 .step{
@@ -141,7 +141,7 @@ font-weight:normal
 
 
 /* =====================================================
-   SUGERENCIAS DE COLONIAS
+   SUGERENCIAS
    ===================================================== */
 
 .suggestions{
@@ -155,7 +155,9 @@ border-radius:12px;
 box-shadow:0 5px 18px rgba(0,0,0,.18);
 z-index:5000;
 overflow:hidden;
-display:none
+display:none;
+max-height:240px;
+overflow-y:auto
 }
 
 .suggestions.show{
@@ -484,35 +486,11 @@ opacity:1
 
 }
 
-
-/* =====================================================
-   MÓVIL
-   ===================================================== */
-
-@media(max-width:480px){
-
-#map{
-height:55vh;
-min-height:350px
-}
-
-.panel{
-padding:14px
-}
-
-.title{
-font-size:20px
-}
-
-}
-
 </style>
 
 </head>
 
-
 <body>
-
 
 <div class="app">
 
@@ -541,13 +519,11 @@ Escribe las colonias para cotizar
 
 <div class="panel">
 
-
 <div class="title">
 
 Solicita tu moto mandado
 
 </div>
-
 
 <div id="subtitle"
 class="subtitle">
@@ -559,7 +535,7 @@ y la colonia donde entregamos.
 
 
 <!-- =================================================
-     COLONIA DE RECOGIDA
+     RECOGIDA
      ================================================= -->
 
 <div class="step">
@@ -569,7 +545,6 @@ y la colonia donde entregamos.
 COLONIA DE RECOGIDA
 
 </div>
-
 
 <div class="input-wrapper">
 
@@ -593,7 +568,7 @@ class="suggestions">
 
 
 <!-- =================================================
-     COLONIA DE ENTREGA
+     ENTREGA
      ================================================= -->
 
 <div class="step">
@@ -603,7 +578,6 @@ class="suggestions">
 COLONIA DE ENTREGA
 
 </div>
-
 
 <div class="input-wrapper">
 
@@ -627,7 +601,7 @@ class="suggestions">
 
 
 <!-- =================================================
-     CALCULAR
+     BOTÓN CALCULAR
      ================================================= -->
 
 <button
@@ -644,7 +618,6 @@ CALCULAR COTIZACIÓN
      ================================================= -->
 
 <div class="info">
-
 
 <div class="info-box">
 
@@ -683,7 +656,6 @@ class="info-value">
 
 </div>
 
-
 </div>
 
 
@@ -703,7 +675,7 @@ VALOR ESTIMADO
 id="price"
 class="price-value">
 
-$0
+POR COTIZAR
 
 </div>
 
@@ -730,7 +702,6 @@ class="status">
 
 </div>
 
-
 </div>
 
 </div>
@@ -744,7 +715,6 @@ class="status">
 id="loadingScreen"
 class="loading-screen">
 
-
 <div class="road">
 
 <div class="moto">
@@ -755,20 +725,17 @@ class="loading-screen">
 
 </div>
 
-
 <div class="loading-title">
 
 Preparando tu servicio
 
 </div>
 
-
 <div class="loading-text">
 
-Enviando solicitud...
+Enviando cotización...
 
 </div>
-
 
 <div class="loading-dot">
 
@@ -779,7 +746,6 @@ Enviando solicitud...
 <span></span>
 
 </div>
-
 
 </div>
 
@@ -793,7 +759,7 @@ src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 
 
 /* =====================================================
-   CONFIGURACIÓN GENERAL
+   CONFIGURACIÓN
    ===================================================== */
 
 const CIUDAD="Dolores Hidalgo";
@@ -806,22 +772,46 @@ const NUMERO_WHATSAPP="524182371993";
 
 
 /* =====================================================
-   PRECIOS POR COLONIA
+   TARIFAS
    ===================================================== */
 
-/*
-   AQUÍ POSTERIORMENTE VAMOS A COLOCAR
-   LOS PRECIOS REALES QUE TÚ ME DES.
 
-   NO ESTOY INVENTANDO TODAVÍA
-   LOS PRECIOS DE LAS COLONIAS.
+/*
+   CENTRO → CENTRO
+   SIEMPRE $35
 */
 
-const PRECIOS_COLONIAS={
+const TARIFA_CENTRO_CENTRO=35;
 
-"Centro":35
 
-};
+/*
+   TARIFA NORMAL
+   HASTA 750 METROS = $35
+*/
+
+const TARIFA_BASE=35;
+
+
+/*
+   DISTANCIA INCLUIDA
+*/
+
+const DISTANCIA_BASE_METROS=750;
+
+
+/*
+   INCREMENTO POR CADA
+   750 METROS ADICIONALES
+*/
+
+const INCREMENTO_POR_TRAMO=5;
+
+
+/*
+   TAMAÑO DEL TRAMO
+*/
+
+const TRAMO_ADICIONAL_METROS=750;
 
 
 /* =====================================================
@@ -873,18 +863,14 @@ attributionControl:true
 L.tileLayer(
 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 {
-
 maxZoom:19,
-
 attribution:"© OpenStreetMap"
-
 }
 ).addTo(map);
 
 
 /* =====================================================
-   CENTRO INICIAL
-   DOLORES HIDALGO
+   POSICIÓN INICIAL
    ===================================================== */
 
 map.setView(
@@ -894,7 +880,7 @@ map.setView(
 
 
 /* =====================================================
-   ELEMENTOS
+   ELEMENTOS HTML
    ===================================================== */
 
 const pickupInput=
@@ -957,7 +943,9 @@ document.getElementById(
    NORMALIZAR TEXTO
    ===================================================== */
 
-function normalizarTexto(texto){
+function normalizarTexto(
+texto
+){
 
 return texto
 .toLowerCase()
@@ -972,53 +960,132 @@ return texto
 
 
 /* =====================================================
-   MOSTRAR ESTADO
+   DETECTAR CENTRO
    ===================================================== */
 
-function mostrarEstado(texto){
-
-status.innerText=texto;
-
-}
-
-
-/* =====================================================
-   BUSCAR PRECIO DE COLONIA
-   ===================================================== */
-
-function obtenerPrecioColonia(nombre){
+function esCentro(
+nombre
+){
 
 if(!nombre){
 
-return null;
+return false;
 
 }
 
-const nombreNormalizado=
-normalizarTexto(nombre);
+const texto=
+normalizarTexto(
+nombre
+);
 
-for(
-const colonia in PRECIOS_COLONIAS
-){
-
-if(
-normalizarTexto(colonia)===
-nombreNormalizado
-){
-
-return PRECIOS_COLONIAS[colonia];
-
-}
-
-}
-
-return null;
+return(
+texto==="centro"||
+texto.includes("centro")
+);
 
 }
 
 
 /* =====================================================
-   ICONO RECOGIDA
+   CALCULAR PRECIO POR DISTANCIA
+   ===================================================== */
+
+function calcularPrecioPorDistancia(
+kilometros
+){
+
+const metros=
+kilometros*1000;
+
+
+/*
+   0 a 750 metros
+   = $35
+*/
+
+if(
+metros<=
+DISTANCIA_BASE_METROS
+){
+
+return TARIFA_BASE;
+
+}
+
+
+/*
+   METROS ADICIONALES
+*/
+
+const metrosAdicionales=
+metros-
+DISTANCIA_BASE_METROS;
+
+
+/*
+   CANTIDAD DE TRAMOS
+*/
+
+const tramos=
+Math.ceil(
+metrosAdicionales/
+TRAMO_ADICIONAL_METROS
+);
+
+
+/*
+   PRECIO FINAL
+*/
+
+return(
+TARIFA_BASE+
+(
+tramos*
+INCREMENTO_POR_TRAMO
+)
+);
+
+}
+
+
+/* =====================================================
+   PRECIO FINAL DEL SERVICIO
+   ===================================================== */
+
+function calcularPrecioFinal(
+kilometros
+){
+
+/*
+   CENTRO → CENTRO
+*/
+
+if(
+esCentro(
+pickupNombreColonia
+)&&
+esCentro(
+destinationNombreColonia
+)
+){
+
+return TARIFA_CENTRO_CENTRO;
+
+}
+
+
+/*
+   CUALQUIER OTRA COMBINACIÓN
+   SE COBRA POR DISTANCIA
+*/
+
+return calcularPrecioPorDistancia(
+kilometros
+);
+
+
+/* =====================================================
+   ICONO DE RECOGIDA
    ===================================================== */
 
 function crearIconoRecogida(){
@@ -1048,7 +1115,7 @@ iconAnchor:[
 
 
 /* =====================================================
-   ICONO DESTINO
+   ICONO DE DESTINO
    ===================================================== */
 
 function crearIconoDestino(){
@@ -1078,7 +1145,7 @@ iconAnchor:[
 
 
 /* =====================================================
-   COLOCAR MARCADOR DE RECOGIDA
+   MARCADOR DE RECOGIDA
    ===================================================== */
 
 function colocarMarcadorRecogida(){
@@ -1112,6 +1179,7 @@ crearIconoRecogida()
 }
 ).addTo(map);
 
+
 pickupMarker.bindPopup(
 "<b>RECOGIDA</b><br>"+
 pickupNombreColonia
@@ -1121,7 +1189,7 @@ pickupNombreColonia
 
 
 /* =====================================================
-   COLOCAR MARCADOR DE ENTREGA
+   MARCADOR DE ENTREGA
    ===================================================== */
 
 function colocarMarcadorEntrega(){
@@ -1155,6 +1223,7 @@ crearIconoDestino()
 }
 ).addTo(map);
 
+
 destinationMarker.bindPopup(
 "<b>ENTREGA</b><br>"+
 destinationNombreColonia
@@ -1183,10 +1252,12 @@ routeLayer=null;
 
 
 /* =====================================================
-   BUSCAR COLONIAS EN DOLORES HIDALGO
+   BUSCAR COLONIAS
    ===================================================== */
 
-async function buscarColonias(texto){
+async function buscarColonias(
+texto
+){
 
 if(
 !texto||
@@ -1220,23 +1291,12 @@ try{
 
 const respuesta=
 await fetch(
-url,
-{
-headers:{
-"Accept":
-"application/json"
-}
-}
+url
 );
 
 const resultados=
 await respuesta.json();
 
-
-/*
-   FILTRAMOS PARA QUE LOS RESULTADOS
-   SEAN DE DOLORES HIDALGO.
-*/
 
 const filtrados=
 resultados.filter(
@@ -1321,17 +1381,12 @@ resultado.display_name
 .split(",")[0];
 
 
-const ubicacion=
-"Dolores Hidalgo, Guanajuato";
-
-
 elemento.innerHTML=
-
 '<div class="suggestion-name">'+
 nombre+
 '</div>'+
 '<div class="suggestion-location">'+
-ubicacion+
+'Dolores Hidalgo, Guanajuato'+
 '</div>';
 
 
@@ -1385,7 +1440,9 @@ resultado.lon
 );
 
 
-if(tipo==="pickup"){
+if(
+tipo==="pickup"
+){
 
 pickupNombreColonia=
 nombre;
@@ -1424,7 +1481,7 @@ lng
 
 
 mapMessage.innerText=
-"Recogida seleccionada: "+
+"Recogida: "+
 nombre;
 
 
@@ -1458,7 +1515,7 @@ colocarMarcadorEntrega();
 
 
 mapMessage.innerText=
-"Entrega seleccionada: "+
+"Entrega: "+
 nombre;
 
 }
@@ -1470,7 +1527,7 @@ actualizarEstadoSeleccion();
 
 
 /* =====================================================
-   ACTUALIZAR ESTADO DE SELECCIÓN
+   ACTUALIZAR ESTADO
    ===================================================== */
 
 function actualizarEstadoSeleccion(){
@@ -1511,13 +1568,34 @@ return;
 mapMessage.innerText=
 "Selecciona la colonia de recogida";
 
+mostrarEstado(
+"Selecciona la colonia de recogida."
+);
+
 }
 
 
 /* =====================================================
-   AQUÍ CONTINÚA LA PARTE 2
+   FIN DE LA PARTE 1
    ===================================================== */
    /* =====================================================
+   PARTE 2
+   AUTOCOMPLETADO Y CÁLCULO DE COTIZACIÓN
+   ===================================================== */
+
+
+/* =====================================================
+   MOSTRAR ESTADO
+   ===================================================== */
+
+function mostrarEstado(texto){
+
+status.innerText=texto;
+
+}
+
+
+/* =====================================================
    AUTOCOMPLETADO - RECOGIDA
    ===================================================== */
 
@@ -1530,12 +1608,21 @@ function(){
 const texto=
 this.value.trim();
 
+
+/*
+   Si el cliente modifica el texto,
+   se borra la selección anterior.
+*/
+
 pickupNombreColonia=
 texto;
 
 pickupLat=null;
+
 pickupLng=null;
+
 pickupAddress="";
+
 
 if(pickupMarker){
 
@@ -1547,6 +1634,24 @@ pickupMarker=null;
 
 }
 
+
+/*
+   Limpiar cotización anterior
+*/
+
+distance.innerText="—";
+
+duration.innerText="—";
+
+price.innerText="POR COTIZAR";
+
+precioServicio=0;
+
+confirmButton.disabled=true;
+
+limpiarRuta();
+
+
 if(timerPickup){
 
 clearTimeout(
@@ -1554,6 +1659,7 @@ timerPickup
 );
 
 }
+
 
 if(texto.length<2){
 
@@ -1617,12 +1723,21 @@ function(){
 const texto=
 this.value.trim();
 
+
+/*
+   Si el cliente modifica el texto,
+   se borra la selección anterior.
+*/
+
 destinationNombreColonia=
 texto;
 
 destinationLat=null;
+
 destinationLng=null;
+
 destinationAddress="";
+
 
 if(destinationMarker){
 
@@ -1634,6 +1749,24 @@ destinationMarker=null;
 
 }
 
+
+/*
+   Limpiar cotización anterior
+*/
+
+distance.innerText="—";
+
+duration.innerText="—";
+
+price.innerText="POR COTIZAR";
+
+precioServicio=0;
+
+confirmButton.disabled=true;
+
+limpiarRuta();
+
+
 if(timerDestination){
 
 clearTimeout(
@@ -1641,6 +1774,7 @@ timerDestination
 );
 
 }
+
 
 if(texto.length<2){
 
@@ -1692,7 +1826,7 @@ resultados,
 
 
 /* =====================================================
-   CERRAR SUGERENCIAS AL TOCAR FUERA
+   CERRAR SUGERENCIAS
    ===================================================== */
 
 document.addEventListener(
@@ -1727,7 +1861,7 @@ destinationSuggestions.classList.remove(
 
 
 /* =====================================================
-   CALCULAR RUTA ENTRE COLONIAS
+   CALCULAR RUTA
    ===================================================== */
 
 async function calcularRuta(){
@@ -1740,7 +1874,7 @@ destinationLng===null
 ){
 
 mostrarEstado(
-"Primero selecciona las dos colonias."
+"Selecciona una colonia de recogida y una de entrega."
 );
 
 return false;
@@ -1754,7 +1888,7 @@ calculateButton.innerText=
 "CALCULANDO...";
 
 mostrarEstado(
-"Calculando recorrido entre las colonias..."
+"Calculando ruta..."
 );
 
 
@@ -1773,7 +1907,10 @@ destinationLat+
 try{
 
 const respuesta=
-await fetch(url);
+await fetch(
+url
+);
+
 
 const datos=
 await respuesta.json();
@@ -1785,7 +1922,7 @@ if(
 ){
 
 mostrarEstado(
-"No encontramos una ruta entre estas colonias."
+"No encontramos una ruta entre las colonias."
 );
 
 calculateButton.disabled=false;
@@ -1797,6 +1934,10 @@ return false;
 
 }
 
+
+/* =====================================================
+   RUTA
+   ===================================================== */
 
 const ruta=
 datos.routes[0];
@@ -1811,7 +1952,7 @@ ruta.distance/1000;
 
 
 distance.innerText=
-kilometros.toFixed(1)+
+kilometros.toFixed(2)+
 " km";
 
 
@@ -1828,7 +1969,7 @@ ruta.duration/60
 );
 
 
-let tiempoTexto;
+let tiempoTexto="";
 
 
 if(
@@ -1888,7 +2029,7 @@ tiempoTexto;
 
 
 /* =====================================================
-   BORRAR RUTA ANTERIOR
+   ELIMINAR RUTA ANTERIOR
    ===================================================== */
 
 limpiarRuta();
@@ -1904,8 +2045,9 @@ ruta.geometry,
 {
 
 style:{
+color:"#f5c400",
 weight:6,
-opacity:.85
+opacity:.9
 }
 
 }
@@ -1913,7 +2055,7 @@ opacity:.85
 
 
 /* =====================================================
-   MOSTRAR AMBOS PUNTOS EN EL MAPA
+   COLOCAR MARCADORES
    ===================================================== */
 
 colocarMarcadorRecogida();
@@ -1922,7 +2064,7 @@ colocarMarcadorEntrega();
 
 
 /* =====================================================
-   AJUSTAR MAPA A TODA LA RUTA
+   AJUSTAR MAPA
    ===================================================== */
 
 map.fitBounds(
@@ -1940,111 +2082,9 @@ padding:[
    CALCULAR PRECIO
    ===================================================== */
 
-const precioRecogida=
-obtenerPrecioColonia(
-pickupNombreColonia
-);
-
-const precioEntrega=
-obtenerPrecioColonia(
-destinationNombreColonia
-);
-
-
-/*
-   IMPORTANTE:
-
-   En este momento solamente tenemos
-   configurado "Centro" como ejemplo.
-
-   Cuando me pases tu tabla de precios
-   de las colonias de Dolores Hidalgo,
-   aquí funcionará automáticamente.
-*/
-
-
-if(
-precioRecogida===null||
-precioEntrega===null
-){
-
-price.innerText=
-"POR COTIZAR";
-
-confirmButton.disabled=true;
-
-
-let coloniaFaltante="";
-
-
-if(
-precioRecogida===null
-){
-
-coloniaFaltante=
-pickupNombreColonia;
-
-}else{
-
-coloniaFaltante=
-destinationNombreColonia;
-
-}
-
-
-mostrarEstado(
-"La colonia "+
-coloniaFaltante+
-" todavía no tiene precio configurado."
-);
-
-
-calculateButton.disabled=false;
-
-calculateButton.innerText=
-"ACTUALIZAR COTIZACIÓN";
-
-
-actualizarGlide();
-
-return false;
-
-}
-
-
-/* =====================================================
-   PRECIO DEL SERVICIO
-   ===================================================== */
-
-
-/*
-   POR AHORA:
-
-   Tomamos el precio mayor de las
-   dos colonias.
-
-   Ejemplo:
-
-   Recogida = $40
-   Entrega = $50
-
-   Servicio = $50
-
-
-   MÁS ADELANTE podemos cambiarlo
-   para que funcione por combinación:
-
-   Centro → La Otra Colonia = $X
-   Centro → Colonia X = $Y
-   Colonia X → Colonia Y = $Z
-
-   según la tabla que tú me entregues.
-*/
-
 precioServicio=
-Math.max(
-precioRecogida,
-precioEntrega
+calcularPrecioFinal(
+kilometros
 );
 
 
@@ -2060,19 +2100,40 @@ precioServicio
 
 
 /* =====================================================
-   HABILITAR CONFIRMAR
+   MENSAJE ESPECIAL CENTRO → CENTRO
    ===================================================== */
 
-confirmButton.disabled=false;
+if(
+esCentro(
+pickupNombreColonia
+)&&
+esCentro(
+destinationNombreColonia
+)
+){
 
+mostrarEstado(
+"Centro → Centro: tarifa especial de $35."
+);
+
+}else{
 
 mostrarEstado(
 "Cotización calculada correctamente."
 );
 
+}
+
 
 /* =====================================================
-   ACTUALIZAR GLIDE
+   HABILITAR CONFIRMACIÓN
+   ===================================================== */
+
+confirmButton.disabled=false;
+
+
+/* =====================================================
+   ACTUALIZAR DATOS EN GLIDE
    ===================================================== */
 
 actualizarGlide();
@@ -2096,7 +2157,7 @@ error
 
 
 mostrarEstado(
-"No se pudo calcular el recorrido."
+"No se pudo calcular la ruta. Intenta nuevamente."
 );
 
 
@@ -2119,19 +2180,19 @@ return false;
 
 calculateButton.addEventListener(
 "click",
-async function(){
+function(){
 
 /*
    Verificar recogida
 */
 
 if(
-!pickupNombreColonia||
+!pickupInput.value.trim()||
 pickupLat===null
 ){
 
 alert(
-"Selecciona una colonia de recogida de la lista."
+"Escribe y selecciona una colonia de recogida de la lista."
 );
 
 pickupInput.focus();
@@ -2146,12 +2207,12 @@ return;
 */
 
 if(
-!destinationNombreColonia||
+!destinationInput.value.trim()||
 destinationLat===null
 ){
 
 alert(
-"Selecciona una colonia de entrega de la lista."
+"Escribe y selecciona una colonia de entrega de la lista."
 );
 
 destinationInput.focus();
@@ -2165,7 +2226,7 @@ return;
    Calcular
 */
 
-await calcularRuta();
+calcularRuta();
 
 }
 );
@@ -2206,7 +2267,7 @@ destinationLng+
 
 
 /* =====================================================
-   NÚMERO DEL SERVICIO
+   NÚMERO DE SERVICIO
    ===================================================== */
 
 function obtenerNumeroServicio(){
@@ -2216,7 +2277,7 @@ new Date();
 
 
 const fecha=
-ahora.getFullYear()+
+ahora.getFullYear().toString()+
 String(
 ahora.getMonth()+1
 ).padStart(
@@ -2318,11 +2379,11 @@ numeroServicio,
 tipo_servicio:
 "Moto Mandado",
 
-fecha_hora:
-obtenerFechaHora(),
-
 ciudad:
 "Dolores Hidalgo",
+
+fecha_hora:
+obtenerFechaHora(),
 
 colonia_recogida:
 pickupNombreColonia,
@@ -2396,117 +2457,113 @@ datos
 
 );
 
-}
-
 
 /* =====================================================
-   ACTUALIZAR GLIDE CUANDO CAMBIA RECOGIDA
-   ===================================================== */
-
-pickupInput.addEventListener(
-"change",
-function(){
-
-pickupNombreColonia=
-this.value.trim();
-
-actualizarGlide();
-
-}
-);
-
-
-/* =====================================================
-   ACTUALIZAR GLIDE CUANDO CAMBIA ENTREGA
-   ===================================================== */
-
-destinationInput.addEventListener(
-"change",
-function(){
-
-destinationNombreColonia=
-this.value.trim();
-
-actualizarGlide();
-
-}
-);
-
-
-/* =====================================================
-   ESTADO INICIAL
-   ===================================================== */
-
-mostrarEstado(
-"Escribe y selecciona las dos colonias."
-);
-
-
-/* =====================================================
-   FIN PARTE 2
+   FIN DE LA PARTE 2
    ===================================================== */
    /* =====================================================
-   PARTE 3
-   CONFIRMAR SERVICIO Y ENVIAR WHATSAPP
+   PARTE 3 — FINAL
+   CONFIRMACIÓN + WHATSAPP + CIERRE
    ===================================================== */
 
 
 /* =====================================================
-   CREAR MENSAJE DE WHATSAPP
+   CREAR MENSAJE PARA WHATSAPP
+   ===================================================== */
+
+function crearMensajeWhatsApp(datos){
+
+const mensaje=
+
+"🛵 MOTO MANDADO\n\n"+
+
+"━━━━━━━━━━━━━━━━━━\n\n"+
+
+"📋 SERVICIO "+
+datos.numero_servicio+
+"\n"+
+
+"📅 "+
+datos.fecha_hora+
+"\n\n"+
+
+"📍 RECOGIDA\n"+
+
+"Colonia: "+
+datos.colonia_recogida+
+"\n"+
+
+"Dirección: "+
+datos.direccion_recogida+
+"\n\n"+
+
+"🏁 ENTREGA\n"+
+
+"Colonia: "+
+datos.colonia_entrega+
+"\n"+
+
+"Dirección: "+
+datos.direccion_entrega+
+"\n\n"+
+
+"📏 DISTANCIA\n"+
+
+datos.distancia+
+"\n\n"+
+
+"⏱️ TIEMPO APROXIMADO\n"+
+
+datos.tiempo_estimado+
+"\n\n"+
+
+"💰 VALOR DEL SERVICIO\n"+
+
+datos.valor_servicio+
+"\n\n"+
+
+"🗺️ RUTA\n"+
+
+datos.url_google_maps+
+"\n\n"+
+
+"━━━━━━━━━━━━━━━━━━\n\n"+
+
+"✅ Cotización enviada desde Kigo Aliados";
+
+
+return mensaje;
+
+}
+
+
+/* =====================================================
+   ENVIAR WHATSAPP
    ===================================================== */
 
 function enviarWhatsApp(datos){
 
 const mensaje=
-"🛵 MOTO MANDADO\n\n"+
-"━━━━━━━━━━━━━━\n\n"+
-"📋 SERVICIO: "+
-datos.numero_servicio+
-"\n"+
-"📅 FECHA: "+
-datos.fecha_hora+
-"\n\n"+
-
-"📍 RECOGIDA\n"+
-"• Colonia: "+
-datos.colonia_recogida+
-"\n\n"+
-
-"🏁 ENTREGA\n"+
-"• Colonia: "+
-datos.colonia_entrega+
-"\n\n"+
-
-"📏 DISTANCIA\n"+
-"• "+
-datos.distancia+
-"\n\n"+
-
-"⏱️ TIEMPO APROXIMADO\n"+
-"• "+
-datos.tiempo_estimado+
-"\n\n"+
-
-"💰 VALOR DEL SERVICIO\n"+
-"• "+
-datos.valor_servicio+
-"\n\n"+
-
-"🗺️ RUTA\n"+
-datos.url_google_maps+
-"\n\n"+
-
-"━━━━━━━━━━━━━━\n\n"+
-"✅ Cotización enviada desde Kigo Aliados";
+crearMensajeWhatsApp(
+datos
+);
 
 
-window.location.href=
+const url=
 "https://wa.me/"+
 NUMERO_WHATSAPP+
 "?text="+
 encodeURIComponent(
 mensaje
 );
+
+
+/*
+   Abrir WhatsApp
+*/
+
+window.location.href=
+url;
 
 }
 
@@ -2520,7 +2577,7 @@ confirmButton.addEventListener(
 function(){
 
 /*
-   Verificar que exista recogida
+   Verificar recogida
 */
 
 if(
@@ -2538,7 +2595,7 @@ return;
 
 
 /*
-   Verificar que exista entrega
+   Verificar entrega
 */
 
 if(
@@ -2556,16 +2613,41 @@ return;
 
 
 /*
-   Verificar que exista precio
+   Verificar direcciones
 */
 
 if(
-!precioServicio||
+!pickupAddress
+){
+
+pickupAddress=
+pickupNombreColonia+
+", Dolores Hidalgo, Guanajuato";
+
+}
+
+
+if(
+!destinationAddress
+){
+
+destinationAddress=
+destinationNombreColonia+
+", Dolores Hidalgo, Guanajuato";
+
+}
+
+
+/*
+   Verificar que exista una cotización
+*/
+
+if(
 precioServicio<=0
 ){
 
 alert(
-"Primero debes calcular la cotización."
+"Primero calcula la cotización del servicio."
 );
 
 return;
@@ -2573,17 +2655,17 @@ return;
 }
 
 
-/*
-   Generar número de servicio
-*/
+/* =====================================================
+   CREAR NÚMERO DE SERVICIO
+   ===================================================== */
 
 const numeroServicio=
 obtenerNumeroServicio();
 
 
-/*
-   Obtener todos los datos
-*/
+/* =====================================================
+   OBTENER DATOS FINALES
+   ===================================================== */
 
 const datos=
 obtenerDatos(
@@ -2591,9 +2673,9 @@ numeroServicio
 );
 
 
-/*
-   Enviar información a Glide
-*/
+/* =====================================================
+   ACTUALIZAR GLIDE
+   ===================================================== */
 
 window.parent.postMessage(
 
@@ -2612,36 +2694,33 @@ datos
 );
 
 
-/*
-   Desactivar botón
-*/
+/* =====================================================
+   DESACTIVAR BOTÓN
+   ===================================================== */
 
-confirmButton.disabled=true;
+this.disabled=true;
+
+this.innerText=
+"ENVIANDO SERVICIO...";
 
 
-/*
-   Mostrar pantalla de carga
-*/
+/* =====================================================
+   MOSTRAR PANTALLA DE CARGA
+   ===================================================== */
 
-const loadingScreen=
-document.getElementById(
+document
+.getElementById(
 "loadingScreen"
-);
-
-
-loadingScreen.classList.add(
+)
+.classList
+.add(
 "show"
 );
 
 
-/*
-   Cambiar mensaje
-*/
-
-const loadingTitle=
-document.querySelector(
-".loading-title"
-);
+/* =====================================================
+   MENSAJE DE CARGA
+   ===================================================== */
 
 const loadingText=
 document.querySelector(
@@ -2649,26 +2728,24 @@ document.querySelector(
 );
 
 
-if(loadingTitle){
-
-loadingTitle.innerText=
-"Preparando tu servicio";
-
-}
+loadingText.innerText=
+"Preparando tu cotización...";
 
 
-if(loadingText){
+/* =====================================================
+   ESPERAR PARA ENVIAR
+   ===================================================== */
+
+setTimeout(
+function(){
 
 loadingText.innerText=
-"Enviando cotización a WhatsApp...";
+"Enviando solicitud por WhatsApp...";
 
-}
+},
+2500
+);
 
-
-/*
-   Esperar unos segundos
-   antes de abrir WhatsApp
-*/
 
 setTimeout(
 function(){
@@ -2678,7 +2755,7 @@ datos
 );
 
 },
-3000
+4000
 );
 
 }
@@ -2686,157 +2763,41 @@ datos
 
 
 /* =====================================================
-   EVITAR ENVIAR EL FORMULARIO
-   SI SE USA DENTRO DE GLIDE
-   ===================================================== */
-
-document.addEventListener(
-"keydown",
-function(event){
-
-if(
-event.key==="Enter"&&
-(
-document.activeElement===
-pickupInput||
-document.activeElement===
-destinationInput
-)
-){
-
-event.preventDefault();
-
-}
-
-}
-);
-
-
-/* =====================================================
-   ACTUALIZAR MAPA SI CAMBIAN
-   LAS COLONIAS
-   ===================================================== */
-
-function reiniciarCotizacion(){
-
-distance.innerText="—";
-
-duration.innerText="—";
-
-price.innerText="$0";
-
-precioServicio=0;
-
-confirmButton.disabled=true;
-
-limpiarRuta();
-
-}
-
-
-/* =====================================================
-   CUANDO EL CLIENTE CAMBIA LA RECOGIDA
+   ACTUALIZAR GLIDE AL CAMBIAR COLONIAS
    ===================================================== */
 
 pickupInput.addEventListener(
-"input",
+"change",
 function(){
 
-reiniciarCotizacion();
+actualizarGlide();
 
 }
 );
 
-
-/* =====================================================
-   CUANDO EL CLIENTE CAMBIA LA ENTREGA
-   ===================================================== */
 
 destinationInput.addEventListener(
-"input",
+"change",
 function(){
 
-reiniciarCotizacion();
+actualizarGlide();
 
 }
 );
 
 
 /* =====================================================
-   SI EL CLIENTE SELECCIONA RECOGIDA
-   VOLVER A CENTRAR MAPA
+   ACTUALIZACIÓN INICIAL
    ===================================================== */
 
-pickupInput.addEventListener(
-"focus",
-function(){
-
-if(
-pickupLat!==null&&
-pickupLng!==null
-){
-
-map.setView(
-[
-pickupLat,
-pickupLng
-],
-15
-);
-
-}
-
-}
-);
+actualizarGlide();
 
 
 /* =====================================================
-   SI EL CLIENTE SELECCIONA ENTREGA
-   VOLVER A CENTRAR MAPA
-   ===================================================== */
-
-destinationInput.addEventListener(
-"focus",
-function(){
-
-if(
-destinationLat!==null&&
-destinationLng!==null
-){
-
-map.setView(
-[
-destinationLat,
-destinationLng
-],
-15
-);
-
-}
-
-}
-);
-
-
-/* =====================================================
-   MENSAJE FINAL INICIAL
-   ===================================================== */
-
-mapMessage.innerText=
-"Escribe las colonias para cotizar";
-
-
-mostrarEstado(
-"Selecciona una colonia de cada campo."
-);
-
-
-/* =====================================================
-   FIN DEL JAVASCRIPT
+   FIN DEL CÓDIGO
    ===================================================== */
 
 </script>
-
 
 </body>
 
