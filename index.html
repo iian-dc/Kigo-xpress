@@ -1,68 +1,2164 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Panel Repartidor</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<title>Moto Mandado</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 <style>
-*{box-sizing:border-box}body{margin:0;padding:0;font-family:Arial,sans-serif;background:#f3f3f3;color:#222}.app{width:100%;max-width:600px;margin:auto;background:#fff;min-height:100vh}.header{padding:18px 16px;background:#111;color:#fff}.brand{font-size:21px;font-weight:bold}.brand span{color:#f5c400}.header-status{font-size:12px;margin-top:5px;color:#ccc}#map{width:100%;height:48vh;min-height:320px}.panel{background:#fff;padding:16px;border-radius:22px 22px 0 0;margin-top:-22px;position:relative;z-index:1000;box-shadow:0 -4px 18px rgba(0,0,0,.15)}.title{font-size:21px;font-weight:bold;margin-bottom:5px}.subtitle{font-size:13px;color:#777;margin-bottom:14px}.status-box{padding:12px;border-radius:12px;background:#fff8d6;border:1px solid #f5c400;margin-bottom:12px;text-align:center}.status-label{font-size:10px;color:#777}.status{font-size:15px;font-weight:bold;margin-top:4px}.step{padding:13px;border-radius:13px;background:#f5f5f5;margin-bottom:10px}.step-title{font-size:11px;color:#777;margin-bottom:5px}.address{font-size:14px;font-weight:bold;line-height:19px}.info{display:flex;gap:8px;margin-top:10px}.info-box{flex:1;background:#f5f5f5;padding:12px 8px;border-radius:12px;text-align:center}.info-label{font-size:10px;color:#777}.info-value{font-size:16px;font-weight:bold;margin-top:5px}.price{margin-top:12px;padding:15px;background:#111;color:#fff;border-radius:14px;display:flex;justify-content:space-between;align-items:center}.price-label{font-size:13px}.price-value{font-size:23px;font-weight:bold;color:#f5c400}.btn{width:100%;border:none;padding:15px;border-radius:13px;margin-top:10px;background:#f5c400;color:#111;font-size:15px;font-weight:bold;box-shadow:0 4px 10px rgba(245,196,0,.25)}.btn.dark{background:#111;color:#fff;box-shadow:none}.btn.white{background:#fff;color:#111;border:1px solid #ddd;box-shadow:none}.btn:disabled{background:#aaa;color:#fff;box-shadow:none}.gps{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;font-size:12px;color:#777}.gps-dot{width:9px;height:9px;border-radius:50%;background:#aaa}.gps-dot.active{background:#f5c400;box-shadow:0 0 0 5px rgba(245,196,0,.18)}.link-box{margin-top:12px;background:#f5f5f5;border-radius:12px;padding:12px}.link-title{font-size:11px;color:#777;margin-bottom:5px}.link{font-size:11px;word-break:break-all;color:#555}.map-message{position:absolute;top:15px;left:50%;transform:translateX(-50%);z-index:999;background:#fff;padding:9px 14px;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,.2);font-size:12px;font-weight:bold;white-space:nowrap}.leaflet-control-attribution{font-size:8px}
+
+*{
+box-sizing:border-box
+}
+
+body{
+margin:0;
+padding:0;
+font-family:Arial,sans-serif;
+background:#f3f3f3;
+color:#222
+}
+
+.app{
+width:100%;
+max-width:600px;
+margin:auto;
+background:#fff;
+min-height:100vh
+}
+
+/* MAPA */
+
+#map{
+width:100%;
+height:52vh;
+min-height:330px
+}
+
+.map-container{
+position:relative
+}
+
+.map-message{
+position:absolute;
+top:15px;
+left:50%;
+transform:translateX(-50%);
+z-index:999;
+background:#fff;
+padding:9px 14px;
+border-radius:20px;
+box-shadow:0 2px 10px rgba(0,0,0,.2);
+font-size:12px;
+font-weight:bold;
+white-space:nowrap
+}
+
+/* PANEL */
+
+.panel{
+background:#fff;
+padding:16px;
+border-radius:22px 22px 0 0;
+margin-top:-22px;
+position:relative;
+z-index:1000;
+box-shadow:0 -4px 18px rgba(0,0,0,.15)
+}
+
+.title{
+font-size:21px;
+font-weight:bold;
+margin-bottom:5px
+}
+
+.subtitle{
+font-size:13px;
+color:#777;
+margin-bottom:15px;
+line-height:18px
+}
+
+/* CAMPOS */
+
+.step{
+padding:13px;
+border-radius:13px;
+background:#f5f5f5;
+margin-bottom:10px;
+position:relative
+}
+
+.step-title{
+font-size:12px;
+color:#777;
+margin-bottom:7px;
+font-weight:bold
+}
+
+.colonia-input{
+width:100%;
+border:1px solid #ddd;
+background:#fff;
+padding:13px;
+border-radius:10px;
+font-size:14px;
+font-weight:bold;
+outline:none;
+color:#222
+}
+
+.colonia-input:focus{
+border-color:#f5c400;
+box-shadow:0 0 0 2px rgba(245,196,0,.15)
+}
+
+.colonia-input::placeholder{
+color:#aaa;
+font-weight:normal
+}
+
+/* BOTON CALCULAR */
+
+.calculate{
+width:100%;
+border:none;
+padding:15px;
+border-radius:13px;
+margin-top:3px;
+background:linear-gradient(135deg,#ffd83d,#f5c400);
+color:#111;
+font-size:15px;
+font-weight:bold;
+box-shadow:0 4px 10px rgba(245,196,0,.25);
+cursor:pointer
+}
+
+.calculate:active{
+transform:scale(.98)
+}
+
+.calculate:disabled{
+background:#aaa;
+color:#fff;
+box-shadow:none
+}
+
+/* INFORMACION */
+
+.info{
+display:flex;
+gap:8px;
+margin-top:12px
+}
+
+.info-box{
+flex:1;
+background:#f5f5f5;
+padding:12px 8px;
+border-radius:12px;
+text-align:center
+}
+
+.info-label{
+font-size:10px;
+color:#777;
+font-weight:bold
+}
+
+.info-value{
+font-size:16px;
+font-weight:bold;
+margin-top:5px
+}
+
+/* PRECIO */
+
+.price{
+margin-top:12px;
+padding:15px;
+background:#111;
+color:#fff;
+border-radius:14px;
+display:flex;
+justify-content:space-between;
+align-items:center
+}
+
+.price-label{
+font-size:13px
+}
+
+.price-value{
+font-size:24px;
+font-weight:bold
+}
+
+/* CONFIRMAR */
+
+.confirm{
+width:100%;
+border:none;
+padding:16px;
+border-radius:14px;
+margin-top:14px;
+background:#f5c400;
+color:#111;
+font-size:17px;
+font-weight:bold;
+box-shadow:0 4px 10px rgba(245,196,0,.25)
+}
+
+.confirm:disabled{
+background:#aaa;
+color:#fff;
+box-shadow:none
+}
+
+/* ESTADO */
+
+.status{
+text-align:center;
+font-size:12px;
+color:#777;
+margin-top:9px;
+min-height:18px
+}
+
+/* MARCADORES */
+
+.colonia-marker{
+width:34px;
+height:34px;
+border-radius:50% 50% 50% 0;
+transform:rotate(-45deg);
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 3px 10px rgba(0,0,0,.35);
+border:3px solid white
+}
+
+.colonia-marker span{
+width:9px;
+height:9px;
+background:white;
+border-radius:50%
+}
+
+.pickup-marker{
+background:#f5c400
+}
+
+.delivery-marker{
+background:#111
+}
+
+/* PANTALLA DE CARGA */
+
+.loading-screen{
+position:fixed;
+inset:0;
+background:rgba(255,255,255,.97);
+z-index:99999;
+display:none;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+text-align:center
+}
+
+.loading-screen.show{
+display:flex
+}
+
+.loading-title{
+font-size:21px;
+font-weight:bold;
+margin-top:18px
+}
+
+.loading-text{
+font-size:13px;
+color:#777;
+margin-top:7px
+}
+
+.road{
+width:260px;
+height:7px;
+background:#222;
+border-radius:10px;
+position:relative;
+margin-top:45px
+}
+
+.road:before{
+content:"";
+position:absolute;
+left:0;
+right:0;
+top:2px;
+border-top:3px dashed #f5c400
+}
+
+.moto{
+position:absolute;
+left:-50px;
+top:-34px;
+font-size:40px;
+animation:motoMove 4.5s linear infinite
+}
+
+.loading-dot{
+display:flex;
+gap:6px;
+margin-top:20px
+}
+
+.loading-dot span{
+width:7px;
+height:7px;
+background:#f5c400;
+border-radius:50%;
+animation:blink 1s infinite
+}
+
+.loading-dot span:nth-child(2){
+animation-delay:.2s
+}
+
+.loading-dot span:nth-child(3){
+animation-delay:.4s
+}
+
+@keyframes motoMove{
+
+0%{
+left:-50px;
+transform:scaleX(1)
+}
+
+45%{
+left:120px;
+transform:scaleX(1)
+}
+
+50%{
+left:120px;
+transform:scaleX(-1)
+}
+
+95%{
+left:-50px;
+transform:scaleX(-1)
+}
+
+100%{
+left:-50px;
+transform:scaleX(1)
+}
+
+}
+
+@keyframes blink{
+
+0%,100%{
+opacity:.25
+}
+
+50%{
+opacity:1
+}
+
+}
+
+@media(max-width:480px){
+
+#map{
+height:50vh;
+min-height:310px
+}
+
+.panel{
+padding:14px
+}
+
+.title{
+font-size:20px
+}
+
+}
+
 </style>
+
 </head>
+
 <body>
+
 <div class="app">
-<div class="header"><div class="brand">MOTO <span>TRANSPORTE</span></div><div id="headerStatus" class="header-status">Esperando servicio</div></div>
-<div style="position:relative"><div id="map"></div><div id="mapMessage" class="map-message">Servicio pendiente</div></div>
+
+<div class="map-container">
+
+<div id="map"></div>
+
+<div id="mapMessage"
+class="map-message">
+Escribe las colonias para cotizar
+</div>
+
+</div>
+
 <div class="panel">
-<div class="title">Servicio del repartidor</div>
-<div class="subtitle">Administra el viaje y comparte tu ubicación.</div>
-<div class="status-box"><div class="status-label">ESTADO DEL SERVICIO</div><div id="serviceStatus" class="status">NUEVO SERVICIO</div></div>
-<div class="step"><div class="step-title">PUNTO DE RECOGIDA</div><div id="pickupAddress" class="address">Cargando...</div></div>
-<div class="step"><div class="step-title">DESTINO</div><div id="destinationAddress" class="address">Cargando...</div></div>
-<div class="info"><div class="info-box"><div class="info-label">DISTANCIA</div><div id="distance" class="info-value">—</div></div><div class="info-box"><div class="info-label">TIEMPO</div><div id="duration" class="info-value">—</div></div></div>
-<div class="price"><div class="price-label">VALOR DEL VIAJE</div><div id="price" class="price-value">$0</div></div>
-<button id="acceptButton" class="btn">ACEPTAR SERVICIO</button>
-<button id="startButton" class="btn" disabled>INICIAR RECORRIDO</button>
-<button id="mapsButton" class="btn white" disabled>ABRIR GOOGLE MAPS</button>
-<button id="arrivedButton" class="btn white" disabled>LLEGUÉ AL PUNTO DE RECOGIDA</button>
-<button id="pickedButton" class="btn white" disabled>PEDIDO RECOGIDO</button>
-<button id="finishButton" class="btn dark" disabled>FINALIZAR SERVICIO</button>
-<div class="gps"><div id="gpsDot" class="gps-dot"></div><span id="gpsText">GPS detenido</span></div>
-<div id="linkBox" class="link-box" style="display:none"><div class="link-title">ENLACE DE SEGUIMIENTO DEL CLIENTE</div><div id="trackingLink" class="link"></div><button id="copyButton" class="btn white">COPIAR ENLACE</button></div>
+
+<div class="title">
+Solicita tu moto mandado
 </div>
+
+<div id="subtitle"
+class="subtitle">
+Escribe la colonia donde recogemos y la colonia donde entregamos.
 </div>
+
+<div class="step">
+
+<div class="step-title">
+COLONIA DE RECOGIDA
+</div>
+
+<input
+id="pickupInput"
+class="colonia-input"
+type="text"
+placeholder="Ej. Centro"
+autocomplete="off"
+list="listaColonias"
+>
+
+</div>
+
+<div class="step">
+
+<div class="step-title">
+COLONIA DE ENTREGA
+</div>
+
+<input
+id="destinationInput"
+class="colonia-input"
+type="text"
+placeholder="Ej. San Pablo"
+autocomplete="off"
+list="listaColonias"
+>
+
+</div>
+
+<datalist id="listaColonias">
+
+<option value="Centro">
+
+</datalist>
+
+<button
+id="calculateButton"
+class="calculate">
+
+CALCULAR COTIZACIÓN
+
+</button>
+
+<div class="info">
+
+<div class="info-box">
+
+<div class="info-label">
+DISTANCIA
+</div>
+
+<div
+id="distance"
+class="info-value">
+
+—
+
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-label">
+TIEMPO APROX.
+</div>
+
+<div
+id="duration"
+class="info-value">
+
+—
+
+</div>
+
+</div>
+
+</div>
+
+<div class="price">
+
+<div class="price-label">
+VALOR ESTIMADO
+</div>
+
+<div
+id="price"
+class="price-value">
+
+$0
+
+</div>
+
+</div>
+
+<button
+id="confirmButton"
+class="confirm"
+disabled>
+
+CONFIRMAR SERVICIO
+
+</button>
+
+<div
+id="status"
+class="status">
+
+</div>
+
+</div>
+
+</div>
+
+<div
+id="loadingScreen"
+class="loading-screen">
+
+<div class="road">
+
+<div class="moto">
+🏍️
+</div>
+
+</div>
+
+<div class="loading-title">
+Preparando tu servicio
+</div>
+
+<div class="loading-text">
+Enviando solicitud...
+</div>
+
+<div class="loading-dot">
+
+<span></span>
+<span></span>
+<span></span>
+
+</div>
+
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-const VIAJE_ID="MT-"+Date.now();
-const map=L.map("map",{zoomControl:false,attributionControl:true});
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
-let pickupLat=21.1561,pickupLng=-100.9333,destinationLat=21.1600,destinationLng=-100.9250;
-let pickupMarker=null,destinationMarker=null,repartidorMarker=null,routeLayer=null,watchId=null;
-let estado="Nuevo servicio";
-let trackingData={};
-const datosPrueba={pickupAddress:"Punto de recogida del cliente",destinationAddress:"Destino del cliente",distance:"2.8 km",duration:"9 min",price:"$45"};
-document.getElementById("pickupAddress").innerText=datosPrueba.pickupAddress;
-document.getElementById("destinationAddress").innerText=datosPrueba.destinationAddress;
-document.getElementById("distance").innerText=datosPrueba.distance;
-document.getElementById("duration").innerText=datosPrueba.duration;
-document.getElementById("price").innerText=datosPrueba.price;
-function crearIcono(tipo){return L.divIcon({className:"",html:'<div style="width:38px;height:38px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;background:'+(tipo==="repartidor"?"#111":tipo==="recogida"?"#f5c400":"#111")+';border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,.35)"><div style="width:11px;height:11px;border-radius:50%;background:white"></div></div>',iconSize:[38,38],iconAnchor:[19,38]})}
-pickupMarker=L.marker([pickupLat,pickupLng],{icon:crearIcono("recogida")}).addTo(map);
-destinationMarker=L.marker([destinationLat,destinationLng],{icon:crearIcono("destino")}).addTo(map);
-routeLayer=L.polyline([[pickupLat,pickupLng],[destinationLat,destinationLng]],{weight:5,opacity:.7}).addTo(map);
-map.fitBounds([[pickupLat,pickupLng],[destinationLat,destinationLng]],{padding:[40,40]});
-function actualizarEstado(nuevo){estado=nuevo;document.getElementById("serviceStatus").innerText=nuevo;document.getElementById("headerStatus").innerText=nuevo;document.getElementById("mapMessage").innerText=nuevo;guardarSeguimiento()}
-function guardarSeguimiento(){trackingData={id:VIAJE_ID,estado:estado,latitud_repartidor:repartidorMarker?repartidorMarker.getLatLng().lat:null,longitud_repartidor:repartidorMarker?repartidorMarker.getLatLng().lng:null,direccion_recogida:datosPrueba.pickupAddress,direccion_destino:datosPrueba.destinationAddress,distancia:datosPrueba.distance,tiempo:datosPrueba.duration,precio:datosPrueba.price,actualizado:new Date().toISOString()};localStorage.setItem("MOTO_TAXI_"+VIAJE_ID,JSON.stringify(trackingData));localStorage.setItem("MOTO_TAXI_ULTIMO",JSON.stringify(trackingData))}
-function iniciarGPS(){if(!navigator.geolocation){alert("Este teléfono no permite utilizar GPS.");return}document.getElementById("gpsText").innerText="Obteniendo ubicación...";watchId=navigator.geolocation.watchPosition(function(position){const lat=position.coords.latitude,lng=position.coords.longitude;if(!repartidorMarker){repartidorMarker=L.marker([lat,lng],{icon:crearIcono("repartidor")}).addTo(map);map.setView([lat,lng],16)}else{repartidorMarker.setLatLng([lat,lng])}document.getElementById("gpsDot").classList.add("active");document.getElementById("gpsText").innerText="GPS activo · ubicación actualizada";guardarSeguimiento()},function(){document.getElementById("gpsText").innerText="No se pudo obtener el GPS";alert("Debes permitir la ubicación GPS para realizar el seguimiento.")},{enableHighAccuracy:true,maximumAge:3000,timeout:10000})}
-document.getElementById("acceptButton").addEventListener("click",function(){actualizarEstado("SERVICIO ACEPTADO");this.disabled=true;document.getElementById("startButton").disabled=false;document.getElementById("mapsButton").disabled=false;crearEnlaceSeguimiento()});
-document.getElementById("startButton").addEventListener("click",function(){actualizarEstado("EN CAMINO A RECOGER");this.disabled=true;document.getElementById("arrivedButton").disabled=false;iniciarGPS()});
-document.getElementById("mapsButton").addEventListener("click",function(){const url="https://www.google.com/maps/dir/?api=1&origin="+pickupLat+","+pickupLng+"&destination="+destinationLat+","+destinationLng+"&travelmode=driving";window.open(url,"_blank")});
-document.getElementById("arrivedButton").addEventListener("click",function(){actualizarEstado("LLEGÓ AL PUNTO DE RECOGIDA");this.disabled=true;document.getElementById("pickedButton").disabled=false});
-document.getElementById("pickedButton").addEventListener("click",function(){actualizarEstado("PEDIDO RECOGIDO · EN CAMINO AL DESTINO");this.disabled=true;document.getElementById("finishButton").disabled=false});
-document.getElementById("finishButton").addEventListener("click",function(){actualizarEstado("SERVICIO ENTREGADO");this.disabled=true;if(watchId!==null)navigator.geolocation.clearWatch(watchId);document.getElementById("gpsDot").classList.remove("active");document.getElementById("gpsText").innerText="GPS detenido";});
-function crearEnlaceSeguimiento(){const url=location.href.split("?")[0]+"?seguimiento="+encodeURIComponent(VIAJE_ID);document.getElementById("trackingLink").innerText=url;document.getElementById("linkBox").style.display="block";trackingData.url_seguimiento=url;guardarSeguimiento()}
-document.getElementById("copyButton").addEventListener("click",async function(){const texto=document.getElementById("trackingLink").innerText;try{await navigator.clipboard.writeText(texto);this.innerText="ENLACE COPIADO";setTimeout(()=>this.innerText="COPIAR ENLACE",1500)}catch(e){alert(texto)}});
-window.addEventListener("beforeunload",function(){if(watchId!==null)navigator.geolocation.clearWatch(watchId)});
+
+/* =====================================================
+   CONFIGURACIÓN
+   ===================================================== */
+
+const CIUDAD="Dolores Hidalgo";
+
+const ESTADO="Guanajuato";
+
+const PAIS="Mexico";
+
+const NUMERO_WHATSAPP="524182371993";
+
+
+/* =====================================================
+   PRECIOS POR COLONIA
+   ===================================================== */
+
+const PRECIOS_ZONA={
+
+"Centro":35
+
+};
+
+
+/* =====================================================
+   VARIABLES
+   ===================================================== */
+
+let pickupLat=null;
+
+let pickupLng=null;
+
+let destinationLat=null;
+
+let destinationLng=null;
+
+let pickupAddress="";
+
+let destinationAddress="";
+
+let pickupNombreColonia="";
+
+let destinationNombreColonia="";
+
+let pickupMarker=null;
+
+let destinationMarker=null;
+
+let routeLayer=null;
+
+let precioServicio=0;
+
+
+/* =====================================================
+   MAPA
+   ===================================================== */
+
+const map=L.map("map",{
+
+zoomControl:false,
+
+attributionControl:true
+
+});
+
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+
+maxZoom:19,
+
+attribution:"© OpenStreetMap"
+
+}
+).addTo(map);
+
+
+/* CENTRO DE DOLORES HIDALGO */
+
+map.setView(
+[21.1561,-100.9333],
+14
+);
+
+
+/* =====================================================
+   ELEMENTOS
+   ===================================================== */
+
+const pickupInput=
+document.getElementById("pickupInput");
+
+const destinationInput=
+document.getElementById("destinationInput");
+
+const calculateButton=
+document.getElementById("calculateButton");
+
+const confirmButton=
+document.getElementById("confirmButton");
+
+const status=
+document.getElementById("status");
+
+const distance=
+document.getElementById("distance");
+
+const duration=
+document.getElementById("duration");
+
+const price=
+document.getElementById("price");
+
+const mapMessage=
+document.getElementById("mapMessage");
+
+
+/* =====================================================
+   NORMALIZAR TEXTO
+   ===================================================== */
+
+function normalizarTexto(texto){
+
+return texto
+.toLowerCase()
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"")
+.trim();
+
+}
+
+
+/* =====================================================
+   BUSCAR PRECIO
+   ===================================================== */
+
+function obtenerPrecioZona(nombre){
+
+if(!nombre){
+
+return null;
+
+}
+
+const buscado=
+normalizarTexto(nombre);
+
+for(
+const colonia in PRECIOS_ZONA
+){
+
+if(
+normalizarTexto(colonia)===buscado
+){
+
+return PRECIOS_ZONA[colonia];
+
+}
+
+}
+
+return null;
+
+}
+
+
+/* =====================================================
+   ICONO DE RECOGIDA
+   ===================================================== */
+
+function crearIconoRecogida(){
+
+return L.divIcon({
+
+className:"",
+
+html:
+'<div class="colonia-marker pickup-marker">'+
+'<span></span>'+
+'</div>',
+
+iconSize:[34,34],
+
+iconAnchor:[17,34]
+
+});
+
+}
+
+
+/* =====================================================
+   ICONO DE ENTREGA
+   ===================================================== */
+
+function crearIconoEntrega(){
+
+return L.divIcon({
+
+className:"",
+
+html:
+'<div class="colonia-marker delivery-marker">'+
+'<span></span>'+
+'</div>',
+
+iconSize:[34,34],
+
+iconAnchor:[17,34]
+
+});
+
+}
+
+
+/* =====================================================
+   COLOCAR RECOGIDA
+   ===================================================== */
+
+function colocarRecogida(lat,lng){
+
+if(pickupMarker){
+
+map.removeLayer(
+pickupMarker
+);
+
+}
+
+pickupMarker=
+L.marker(
+[lat,lng],
+{
+icon:
+crearIconoRecogida()
+}
+).addTo(map);
+
+pickupMarker.bindPopup(
+"<b>Recogida</b><br>"+
+pickupNombreColonia
+);
+
+}
+
+
+/* =====================================================
+   COLOCAR ENTREGA
+   ===================================================== */
+
+function colocarEntrega(lat,lng){
+
+if(destinationMarker){
+
+map.removeLayer(
+destinationMarker
+);
+
+}
+
+destinationMarker=
+L.marker(
+[lat,lng],
+{
+icon:
+crearIconoEntrega()
+}
+).addTo(map);
+
+destinationMarker.bindPopup(
+"<b>Entrega</b><br>"+
+destinationNombreColonia
+);
+
+}
+
+
+/* =====================================================
+   LIMPIAR RUTA
+   ===================================================== */
+
+function limpiarRuta(){
+
+if(routeLayer){
+
+map.removeLayer(
+routeLayer
+);
+
+routeLayer=null;
+
+}
+
+}
+
+
+/* =====================================================
+   MOSTRAR ESTADO
+   ===================================================== */
+
+function mostrarEstado(texto){
+
+status.innerText=
+texto;
+
+}
+
+
+/* =====================================================
+   CAMBIO EN RECOGIDA
+   ===================================================== */
+
+pickupInput.addEventListener(
+"input",
+function(){
+
+pickupLat=null;
+
+pickupLng=null;
+
+pickupAddress="";
+
+pickupNombreColonia=
+this.value.trim();
+
+if(pickupMarker){
+
+map.removeLayer(
+pickupMarker
+);
+
+pickupMarker=null;
+
+}
+
+limpiarRuta();
+
+distance.innerText="—";
+
+duration.innerText="—";
+
+price.innerText="$0";
+
+confirmButton.disabled=true;
+
+mostrarEstado("");
+
+}
+);
+
+
+/* =====================================================
+   CAMBIO EN ENTREGA
+   ===================================================== */
+
+destinationInput.addEventListener(
+"input",
+function(){
+
+destinationLat=null;
+
+destinationLng=null;
+
+destinationAddress="";
+
+destinationNombreColonia=
+this.value.trim();
+
+if(destinationMarker){
+
+map.removeLayer(
+destinationMarker
+);
+
+destinationMarker=null;
+
+}
+
+limpiarRuta();
+
+distance.innerText="—";
+
+duration.innerText="—";
+
+price.innerText="$0";
+
+confirmButton.disabled=true;
+
+mostrarEstado("");
+
+}
+);
+
+
+/* =====================================================
+   DATOS PARA GLIDE
+   ===================================================== */
+
+function obtenerDatos(){
+
+return{
+
+tipo_servicio:
+"Moto Mandado",
+
+ciudad:
+"Dolores Hidalgo",
+
+colonia_recogida:
+pickupNombreColonia,
+
+latitud_recogida:
+pickupLat,
+
+longitud_recogida:
+pickupLng,
+
+colonia_entrega:
+destinationNombreColonia,
+
+latitud_entrega:
+destinationLat,
+
+longitud_entrega:
+destinationLng,
+
+direccion_recogida:
+pickupAddress,
+
+direccion_entrega:
+destinationAddress,
+
+distancia:
+distance.innerText,
+
+tiempo_estimado:
+duration.innerText,
+
+valor_servicio:
+price.innerText,
+
+estado:
+"Pendiente"
+
+};
+
+}
+
+
+/* =====================================================
+   ENVIAR A GLIDE
+   ===================================================== */
+
+function actualizarGlide(){
+
+window.parent.postMessage({
+
+type:
+"MOTO_MANDADO_DATA",
+
+data:
+obtenerDatos()
+
+},"*");
+
+}
+
+
+/* =====================================================
+   HASTA AQUÍ LLEGA LA PARTE 1
+   ===================================================== */
+  /* =====================================================
+   BUSCAR COLONIA EN DOLORES HIDALGO
+   ===================================================== */
+
+async function buscarColoniaDolores(nombre){
+
+if(!nombre){
+
+return null;
+
+}
+
+const consulta=
+encodeURIComponent(
+nombre+
+", Dolores Hidalgo, Guanajuato, Mexico"
+);
+
+const url=
+"https://nominatim.openstreetmap.org/search"+
+"?format=json"+
+"&q="+consulta+
+"&limit=8"+
+"&countrycodes=mx"+
+"&addressdetails=1"+
+"&accept-language=es";
+
+try{
+
+const respuesta=
+await fetch(url);
+
+const resultados=
+await respuesta.json();
+
+if(!resultados.length){
+
+return null;
+
+}
+
+
+/*
+   Buscamos específicamente
+   un resultado de Dolores Hidalgo.
+*/
+
+for(
+const resultado of resultados
+){
+
+const texto=
+normalizarTexto(
+resultado.display_name||""
+);
+
+if(
+texto.includes(
+"dolores hidalgo"
+)
+){
+
+return resultado;
+
+}
+
+}
+
+
+/*
+   Si no encontramos coincidencia exacta,
+   usamos el primer resultado.
+*/
+
+return resultados[0];
+
+}catch(error){
+
+console.log(
+"Error buscando colonia:",
+error
+);
+
+return null;
+
+}
+
+}
+
+
+/* =====================================================
+   BUSCAR LOS DOS PUNTOS
+   ===================================================== */
+
+async function buscarPuntos(){
+
+const recogida=
+pickupInput.value.trim();
+
+const entrega=
+destinationInput.value.trim();
+
+
+/* VALIDAR RECOGIDA */
+
+if(!recogida){
+
+alert(
+"Escribe la colonia donde vamos a recoger el mandado."
+);
+
+pickupInput.focus();
+
+return false;
+
+}
+
+
+/* VALIDAR ENTREGA */
+
+if(!entrega){
+
+alert(
+"Escribe la colonia donde vamos a entregar el mandado."
+);
+
+destinationInput.focus();
+
+return false;
+
+}
+
+
+/* DESACTIVAR BOTÓN */
+
+calculateButton.disabled=true;
+
+calculateButton.innerText=
+"BUSCANDO COLONIAS...";
+
+mostrarEstado(
+"Buscando las colonias en Dolores Hidalgo..."
+);
+
+
+try{
+
+/* BUSCAR RECOGIDA */
+
+const puntoRecogida=
+await buscarColoniaDolores(
+recogida
+);
+
+
+if(!puntoRecogida){
+
+mostrarEstado("");
+
+alert(
+"No encontramos la colonia de recogida.\n\n"+
+"Escribe solamente el nombre de una colonia de Dolores Hidalgo."
+);
+
+calculateButton.disabled=false;
+
+calculateButton.innerText=
+"CALCULAR COTIZACIÓN";
+
+return false;
+
+}
+
+
+/* BUSCAR ENTREGA */
+
+const puntoEntrega=
+await buscarColoniaDolores(
+entrega
+);
+
+
+if(!puntoEntrega){
+
+mostrarEstado("");
+
+alert(
+"No encontramos la colonia de entrega.\n\n"+
+"Escribe solamente el nombre de una colonia de Dolores Hidalgo."
+);
+
+calculateButton.disabled=false;
+
+calculateButton.innerText=
+"CALCULAR COTIZACIÓN";
+
+return false;
+
+}
+
+
+/* =====================================================
+   COORDENADAS DE RECOGIDA
+   ===================================================== */
+
+pickupLat=
+parseFloat(
+puntoRecogida.lat
+);
+
+pickupLng=
+parseFloat(
+puntoRecogida.lon
+);
+
+
+/* =====================================================
+   COORDENADAS DE ENTREGA
+   ===================================================== */
+
+destinationLat=
+parseFloat(
+puntoEntrega.lat
+);
+
+destinationLng=
+parseFloat(
+puntoEntrega.lon
+);
+
+
+/* =====================================================
+   GUARDAR NOMBRES
+   ===================================================== */
+
+pickupNombreColonia=
+recogida;
+
+destinationNombreColonia=
+entrega;
+
+
+/* =====================================================
+   DIRECCIONES ENCONTRADAS
+   ===================================================== */
+
+pickupAddress=
+puntoRecogida.display_name||
+recogida+
+", Dolores Hidalgo";
+
+
+destinationAddress=
+puntoEntrega.display_name||
+entrega+
+", Dolores Hidalgo";
+
+
+/* =====================================================
+   COLOCAR MARCADORES
+   ===================================================== */
+
+colocarRecogida(
+pickupLat,
+pickupLng
+);
+
+colocarEntrega(
+destinationLat,
+destinationLng
+);
+
+
+/* =====================================================
+   CALCULAR RUTA
+   ===================================================== */
+
+await calcularRutaMandado();
+
+
+calculateButton.disabled=false;
+
+calculateButton.innerText=
+"ACTUALIZAR COTIZACIÓN";
+
+return true;
+
+
+}catch(error){
+
+console.log(error);
+
+mostrarEstado(
+"No se pudo localizar alguna de las colonias."
+);
+
+calculateButton.disabled=false;
+
+calculateButton.innerText=
+"CALCULAR COTIZACIÓN";
+
+return false;
+
+}
+
+}
+
+
+/* =====================================================
+   CALCULAR RUTA GPS
+   ===================================================== */
+
+async function calcularRutaMandado(){
+
+if(
+pickupLat===null||
+pickupLng===null||
+destinationLat===null||
+destinationLng===null
+){
+
+return;
+
+}
+
+mostrarEstado(
+"Calculando recorrido..."
+);
+
+
+/* =====================================================
+   SERVICIO DE RUTAS OSRM
+   ===================================================== */
+
+const url=
+"https://router.project-osrm.org/route/v1/driving/"+
+pickupLng+
+","+
+pickupLat+
+";"+
+destinationLng+
+","+
+destinationLat+
+"?overview=full&geometries=geojson";
+
+
+try{
+
+const respuesta=
+await fetch(url);
+
+const datos=
+await respuesta.json();
+
+
+if(
+!datos.routes||
+!datos.routes.length
+){
+
+mostrarEstado(
+"No encontramos una ruta entre estas colonias."
+);
+
+return;
+
+}
+
+
+const ruta=
+datos.routes[0];
+
+
+/* =====================================================
+   DISTANCIA
+   ===================================================== */
+
+const kilometros=
+ruta.distance/1000;
+
+distance.innerText=
+kilometros.toFixed(1)+
+" km";
+
+
+/* =====================================================
+   TIEMPO
+   ===================================================== */
+
+const segundos=
+ruta.duration;
+
+const minutos=
+Math.max(
+1,
+Math.round(
+segundos/60
+)
+);
+
+let tiempoTexto;
+
+
+if(minutos<60){
+
+tiempoTexto=
+minutos+
+" min";
+
+}else{
+
+const horas=
+Math.floor(
+minutos/60
+);
+
+const minutosRestantes=
+minutos%60;
+
+
+if(minutosRestantes===0){
+
+tiempoTexto=
+horas+
+(
+horas===1
+?
+" hora"
+:
+" horas"
+);
+
+}else{
+
+tiempoTexto=
+horas+
+(
+horas===1
+?
+" hora "
+:
+" horas "
+)+
+minutosRestantes+
+" min";
+
+}
+
+}
+
+
+duration.innerText=
+tiempoTexto;
+
+
+/* =====================================================
+   BORRAR RUTA ANTERIOR
+   ===================================================== */
+
+if(routeLayer){
+
+map.removeLayer(
+routeLayer
+);
+
+routeLayer=null;
+
+}
+
+
+/* =====================================================
+   DIBUJAR RUTA
+   ===================================================== */
+
+routeLayer=
+L.geoJSON(
+ruta.geometry,
+{
+
+style:{
+
+weight:6,
+
+opacity:.85
+
+}
+
+}
+).addTo(map);
+
+
+/* =====================================================
+   AJUSTAR MAPA
+   ===================================================== */
+
+map.fitBounds(
+routeLayer.getBounds(),
+{
+
+padding:[
+45,
+45
+]
+
+}
+);
+
+
+/* =====================================================
+   BUSCAR PRECIOS DE LAS COLONIAS
+   ===================================================== */
+
+const precioRecogida=
+obtenerPrecioZona(
+pickupNombreColonia
+);
+
+const precioEntrega=
+obtenerPrecioZona(
+destinationNombreColonia
+);
+
+
+/* =====================================================
+   SI NO EXISTE PRECIO
+   ===================================================== */
+
+if(
+precioRecogida===null||
+precioEntrega===null
+){
+
+price.innerText=
+"POR COTIZAR";
+
+confirmButton.disabled=true;
+
+
+let faltante="";
+
+
+if(
+precioRecogida===null
+){
+
+faltante=
+pickupNombreColonia;
+
+}else{
+
+faltante=
+destinationNombreColonia;
+
+}
+
+
+mostrarEstado(
+"La colonia \""+
+faltante+
+"\" todavía no tiene precio configurado."
+);
+
+actualizarGlide();
+
+return;
+
+}
+
+
+/* =====================================================
+   PRECIO DEL SERVICIO
+   ===================================================== */
+
+
+/*
+   POR AHORA TOMAMOS EL PRECIO MAYOR
+   DE LAS DOS COLONIAS.
+
+   ESTA REGLA LA PODEMOS CAMBIAR
+   POR UNA TABLA ORIGEN → DESTINO.
+*/
+
+precioServicio=
+Math.max(
+precioRecogida,
+precioEntrega
+);
+
+
+/* =====================================================
+   MOSTRAR PRECIO
+   ===================================================== */
+
+price.innerText=
+"$"+
+Math.round(
+precioServicio
+);
+
+
+/* =====================================================
+   HABILITAR CONFIRMACIÓN
+   ===================================================== */
+
+confirmButton.disabled=false;
+
+mostrarEstado(
+"Cotización calculada correctamente."
+);
+
+
+/* =====================================================
+   ACTUALIZAR GLIDE
+   ===================================================== */
+
+actualizarGlide();
+
+}
+
+
+/* =====================================================
+   NÚMERO DEL SERVICIO
+   ===================================================== */
+
+function obtenerNumeroServicio(){
+
+const ahora=
+new Date();
+
+
+const fecha=
+ahora.getFullYear()+
+String(
+ahora.getMonth()+1
+).padStart(2,"0")+
+String(
+ahora.getDate()
+).padStart(2,"0");
+
+
+const hora=
+String(
+ahora.getHours()
+).padStart(2,"0")+
+String(
+ahora.getMinutes()
+).padStart(2,"0")+
+String(
+ahora.getSeconds()
+).padStart(2,"0");
+
+
+const aleatorio=
+Math.floor(
+100+
+Math.random()*900
+);
+
+
+return(
+"MM-"+
+fecha+
+"-"+
+hora+
+"-"+
+aleatorio
+);
+
+}
+
+
+/* =====================================================
+   FECHA Y HORA
+   ===================================================== */
+
+function obtenerFechaHora(){
+
+return new Date()
+.toLocaleString(
+"es-MX",
+{
+
+day:"2-digit",
+
+month:"2-digit",
+
+year:"numeric",
+
+hour:"2-digit",
+
+minute:"2-digit",
+
+second:"2-digit",
+
+hour12:false
+
+}
+);
+
+}
+
+
+/* =====================================================
+   CREAR RUTA GOOGLE MAPS
+   ===================================================== */
+
+function crearUrlGoogleMaps(){
+
+if(
+pickupLat===null||
+pickupLng===null||
+destinationLat===null||
+destinationLng===null
+){
+
+return "";
+
+}
+
+
+return(
+"https://www.google.com/maps/dir/?api=1"+
+"&origin="+
+pickupLat+
+","+
+pickupLng+
+"&destination="+
+destinationLat+
+","+
+destinationLng+
+"&travelmode=driving"
+);
+
+}
+
+
+/* =====================================================
+   DATOS COMPLETOS DEL SERVICIO
+   ===================================================== */
+
+function obtenerDatosCompletos(
+numeroServicio
+){
+
+return{
+
+numero_servicio:
+numeroServicio,
+
+tipo_servicio:
+"Moto Mandado",
+
+fecha_hora:
+obtenerFechaHora(),
+
+ciudad:
+"Dolores Hidalgo",
+
+colonia_recogida:
+pickupNombreColonia,
+
+direccion_recogida:
+pickupAddress,
+
+latitud_recogida:
+pickupLat,
+
+longitud_recogida:
+pickupLng,
+
+colonia_entrega:
+destinationNombreColonia,
+
+direccion_entrega:
+destinationAddress,
+
+latitud_entrega:
+destinationLat,
+
+longitud_entrega:
+destinationLng,
+
+distancia:
+distance.innerText,
+
+tiempo_estimado:
+duration.innerText,
+
+valor_servicio:
+price.innerText,
+
+url_google_maps:
+crearUrlGoogleMaps(),
+
+estado:
+"Pendiente"
+
+};
+
+}
+
+
+/* =====================================================
+   ACTUALIZAR GLIDE
+   ===================================================== */
+
+function actualizarGlide(){
+
+const datos=
+obtenerDatosCompletos(
+"PENDIENTE"
+);
+
+
+window.parent.postMessage(
+
+{
+
+type:
+"MOTO_MANDADO_DATA",
+
+data:
+datos
+
+},
+
+"*"
+
+);
+
+}
+
+
+/* =====================================================
+   ENVIAR WHATSAPP
+   ===================================================== */
+
+function enviarWhatsApp(
+datos
+){
+
+const mensaje=
+
+"🛵 MOTO MANDADO\n\n"+
+
+"━━━━━━━━━━━━━━\n\n"+
+
+"📋 SERVICIO "+
+datos.numero_servicio+
+"\n"+
+
+"📅 "+
+datos.fecha_hora+
+"\n\n"+
+
+
+"📍 RECOGIDA\n"+
+
+"• Colonia: "+
+datos.colonia_recogida+
+"\n"+
+
+"• Dirección: "+
+datos.direccion_recogida+
+"\n\n"+
+
+
+"🏁 ENTREGA\n"+
+
+"• Colonia: "+
+datos.colonia_entrega+
+"\n"+
+
+"• Dirección: "+
+datos.direccion_entrega+
+"\n\n"+
+
+
+"📏 DISTANCIA\n"+
+
+"• "+
+datos.distancia+
+"\n\n"+
+
+
+"⏱️ TIEMPO APROXIMADO\n"+
+
+"• "+
+datos.tiempo_estimado+
+"\n\n"+
+
+
+"💰 VALOR DEL SERVICIO\n"+
+
+"• "+
+datos.valor_servicio+
+"\n\n"+
+
+
+"🗺️ RUTA\n"+
+
+datos.url_google_maps+
+"\n\n"+
+
+
+"━━━━━━━━━━━━━━\n\n"+
+
+"✅ Servicio enviado desde Kigo Aliados";
+
+
+window.location.href=
+"https://wa.me/"+
+NUMERO_WHATSAPP+
+"?text="+
+encodeURIComponent(
+mensaje
+);
+
+}
+
+
+/* =====================================================
+   BOTÓN CALCULAR COTIZACIÓN
+   ===================================================== */
+
+calculateButton.addEventListener(
+"click",
+async function(){
+
+await buscarPuntos();
+
+}
+);
+
+
+/* =====================================================
+   BOTÓN CONFIRMAR SERVICIO
+   ===================================================== */
+
+confirmButton.addEventListener(
+"click",
+function(){
+
+if(
+pickupLat===null||
+pickupLng===null||
+destinationLat===null||
+destinationLng===null
+){
+
+alert(
+"Primero calcula la cotización."
+);
+
+return;
+
+}
+
+
+if(
+!pickupNombreColonia||
+!destinationNombreColonia
+){
+
+alert(
+"Debes indicar la colonia de recogida y la colonia de entrega."
+);
+
+return;
+
+}
+
+
+if(
+precioServicio<=0
+){
+
+alert(
+"No se ha podido determinar el precio del servicio."
+);
+
+return;
+
+}
+
+
+/* =====================================================
+   GENERAR NÚMERO
+   ===================================================== */
+
+const numeroServicio=
+obtenerNumeroServicio();
+
+
+/* =====================================================
+   OBTENER DATOS
+   ===================================================== */
+
+const datos=
+obtenerDatosCompletos(
+numeroServicio
+);
+
+
+/* =====================================================
+   ENVIAR DATOS A GLIDE
+   ===================================================== */
+
+window.parent.postMessage(
+
+{
+
+type:
+"MOTO_MANDADO_DATA",
+
+data:
+datos
+
+},
+
+"*"
+
+);
+
+
+/* =====================================================
+   DESACTIVAR BOTÓN
+   ===================================================== */
+
+confirmButton.disabled=true;
+
+
+/* =====================================================
+   MOSTRAR PANTALLA DE CARGA
+   ===================================================== */
+
+document
+.getElementById(
+"loadingScreen"
+)
+.classList
+.add("show");
+
+
+/* =====================================================
+   ESPERAR Y ENVIAR WHATSAPP
+   ===================================================== */
+
+setTimeout(
+function(){
+
+enviarWhatsApp(
+datos
+);
+
+},
+3000
+);
+
+}
+);
+
+
+/* =====================================================
+   ACTUALIZAR GLIDE AL CAMBIAR DATOS
+   ===================================================== */
+
+pickupInput.addEventListener(
+"change",
+function(){
+
+pickupNombreColonia=
+this.value.trim();
+
+actualizarGlide();
+
+}
+);
+
+
+destinationInput.addEventListener(
+"change",
+function(){
+
+destinationNombreColonia=
+this.value.trim();
+
+actualizarGlide();
+
+}
+);
+
+
+/* =====================================================
+   MENSAJE INICIAL
+   ===================================================== */
+
+mostrarEstado(
+"Escribe las dos colonias para calcular el servicio."
+);
+
+
+/* =====================================================
+   FIN DEL CÓDIGO
+   ===================================================== */
+
 </script>
+
 </body>
+
 </html>
