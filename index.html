@@ -28,7 +28,6 @@
 @keyframes fall{0%{transform:translateY(0)}100%{transform:translateY(60vh)}}
 .weather-badge{position:absolute;bottom:12px;left:12px;z-index:999;background:#1e3a8a;color:#fff;padding:7px 12px;border-radius:20px;font-size:11px;font-weight:900;display:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}.weather-badge.show{display:block}
 .weather-badge.tormenta{background:#7f1d1d}.weather-badge.moderada{background:#1e40af}.weather-badge.leve{background:#1e3a8a}
-/* BOTON RESET IZQUIERDA */
 .reset-btn{position:absolute;top:12px;left:12px;z-index:999;background:#fff;border:1px solid #ddd;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:16px;font-weight:900}
 </style>
 </head>
@@ -37,7 +36,7 @@
 <div class="map-container">
 <div id="map"></div>
 <div class="map-message">Kigo xpress</div>
-<div class="reset-btn" id="resetBtn" title="Nueva cotización">↻</div>
+<div class="reset-btn" id="resetBtn">↻</div>
 <div id="weatherWidget" class="weather-widget">☀️ --°C</div>
 <div id="rainOverlay" class="rain-overlay"></div>
 <div id="weatherBadge" class="weather-badge">🌧️ Lloviendo</div>
@@ -71,7 +70,7 @@ checarLluvia(); setInterval(checarLluvia,600000);
 
 document.getElementById("calculateButton").onclick=async()=>{
  if(!pickupLat||!destinationLat){alert("Selecciona donde recoger y donde entregar");return;}
- const url=`https://router.project-osrm.org/route/v1/bike/${pickupLng},${pickupLat};${destinationLng},${destinationLat}?overview=full&geometries=geojson`;
+ const url=`https://router.project-osrm.org/route/v1/foot/${pickupLng},${pickupLat};${destinationLng},${destinationLat}?overview=full&geometries=geojson`;
  const r=await fetch(url);const d=await r.json();if(!d.routes||!d.routes[0]){alert("No se pudo trazar ruta");return;}
  const route=d.routes[0];const km=route.distance/1000;
  let precio=35;
