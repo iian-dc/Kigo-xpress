@@ -22,9 +22,15 @@ box-sizing:border-box
 body{
 margin:0;
 padding:0;
-font-family:Arial,sans-serif;
-background:#f3f3f3;
-color:#222
+font-family:
+-apple-system,
+BlinkMacSystemFont,
+"Segoe UI",
+Roboto,
+Arial,
+sans-serif;
+background:#f3f4f6;
+color:#202124
 }
 
 .app{
@@ -52,50 +58,56 @@ left:50%;
 transform:translateX(-50%);
 z-index:999;
 background:#fff;
-padding:9px 14px;
-border-radius:20px;
-box-shadow:0 2px 10px rgba(0,0,0,.2);
+padding:10px 16px;
+border-radius:22px;
+box-shadow:0 3px 12px rgba(0,0,0,.16);
 font-size:12px;
-font-weight:bold;
+font-weight:600;
+color:#333;
 white-space:nowrap
 }
 
 .panel{
 background:#fff;
-padding:16px;
-border-radius:22px 22px 0 0;
+padding:18px;
+border-radius:24px 24px 0 0;
 margin-top:-22px;
 position:relative;
 z-index:1000;
-box-shadow:0 -4px 18px rgba(0,0,0,.15)
+box-shadow:0 -4px 20px rgba(0,0,0,.12)
 }
 
 .title{
-font-size:21px;
-font-weight:bold;
-margin-bottom:5px
+font-size:22px;
+font-weight:700;
+letter-spacing:-.3px;
+margin-bottom:6px;
+color:#171717
 }
 
 .subtitle{
 font-size:13px;
 color:#777;
-margin-bottom:15px;
-line-height:18px
+margin-bottom:17px;
+line-height:19px
 }
 
 .step{
-padding:13px;
-border-radius:13px;
-background:#f5f5f5;
-margin-bottom:10px;
-position:relative
+padding:14px;
+border-radius:14px;
+background:#f7f7f8;
+margin-bottom:11px;
+position:relative;
+border:1px solid #eeeeef
 }
 
 .step-title{
-font-size:12px;
-color:#777;
-margin-bottom:7px;
-font-weight:bold
+font-size:11px;
+color:#666;
+margin-bottom:8px;
+font-weight:700;
+letter-spacing:.5px;
+text-transform:none
 }
 
 .input-wrapper{
@@ -104,24 +116,26 @@ position:relative
 
 .colonia-input{
 width:100%;
-border:1px solid #ddd;
+border:1px solid #dedede;
 background:#fff;
-padding:13px;
-border-radius:10px;
+padding:14px;
+border-radius:11px;
 font-size:14px;
-font-weight:bold;
+font-weight:600;
 outline:none;
-color:#222
+color:#222;
+transition:.2s
 }
 
 .colonia-input:focus{
-border-color:#f5c400;
-box-shadow:0 0 0 2px rgba(245,196,0,.15)
+border-color:#38bdf8;
+box-shadow:
+0 0 0 3px rgba(56,189,248,.14)
 }
 
 .colonia-input::placeholder{
 color:#aaa;
-font-weight:normal
+font-weight:400
 }
 
 .suggestions{
@@ -145,10 +159,10 @@ display:block
 }
 
 .suggestion{
-padding:12px 13px;
+padding:13px;
 border-bottom:1px solid #eee;
 font-size:13px;
-font-weight:bold;
+font-weight:600;
 background:#fff;
 cursor:pointer
 }
@@ -158,7 +172,7 @@ border-bottom:none
 }
 
 .suggestion:active{
-background:#f5c400
+background:#e0f2fe
 }
 
 .suggestion-name{
@@ -170,7 +184,7 @@ color:#222
 font-size:11px;
 color:#888;
 margin-top:3px;
-font-weight:normal
+font-weight:400
 }
 
 .suggestion-loading{
@@ -189,20 +203,24 @@ text-align:center
 
 .calculate{
 width:100%;
-border:1px solid #e0b400;
+border:1px solid #0ea5e9;
 padding:14px;
 border-radius:12px;
 margin-top:2px;
-background:linear-gradient(
+background:
+linear-gradient(
 135deg,
-#ffd83d,
-#f5c400
+#38bdf8,
+#0ea5e9
 );
-color:#111;
+color:#fff;
 font-size:14px;
-font-weight:bold;
-box-shadow:0 4px 10px rgba(0,0,0,.12);
-cursor:pointer
+font-weight:700;
+letter-spacing:.2px;
+box-shadow:
+0 4px 10px rgba(14,165,233,.22);
+cursor:pointer;
+transition:.2s
 }
 
 .calculate:active{
@@ -217,32 +235,36 @@ cursor:not-allowed
 .info{
 display:flex;
 gap:8px;
-margin-top:10px
+margin-top:11px
 }
 
 .info-box{
 flex:1;
-background:#f5f5f5;
-padding:12px 8px;
-border-radius:12px;
-text-align:center
+background:#f7f7f8;
+padding:13px 8px;
+border-radius:13px;
+text-align:center;
+border:1px solid #eeeeef
 }
 
 .info-label{
-font-size:11px;
-color:#777
+font-size:10px;
+color:#777;
+font-weight:600;
+letter-spacing:.4px
 }
 
 .info-value{
 font-size:16px;
-font-weight:bold;
-margin-top:5px
+font-weight:700;
+margin-top:5px;
+color:#222
 }
 
 .price{
 margin-top:12px;
-padding:15px;
-background:#111;
+padding:16px;
+background:#151515;
 color:#fff;
 border-radius:14px;
 display:flex;
@@ -251,12 +273,13 @@ align-items:center
 }
 
 .price-label{
-font-size:13px
+font-size:13px;
+font-weight:500
 }
 
 .price-value{
 font-size:24px;
-font-weight:bold
+font-weight:700
 }
 
 .confirm{
@@ -265,11 +288,23 @@ border:none;
 padding:16px;
 border-radius:14px;
 margin-top:14px;
-background:#f5c400;
-color:#111;
-font-size:17px;
-font-weight:bold;
-box-shadow:0 4px 10px rgba(245,196,0,.25)
+background:
+linear-gradient(
+135deg,
+#22c55e,
+#16a34a
+);
+color:#fff;
+font-size:16px;
+font-weight:700;
+letter-spacing:.2px;
+box-shadow:
+0 4px 10px rgba(22,163,74,.22);
+transition:.2s
+}
+
+.confirm:active{
+transform:scale(.98)
 }
 
 .confirm:disabled{
@@ -300,7 +335,7 @@ border:3px solid white
 }
 
 .pickup-icon{
-background:#f5c400
+background:#38bdf8
 }
 
 .destination-icon{
@@ -332,7 +367,7 @@ display:flex
 
 .loading-title{
 font-size:21px;
-font-weight:bold;
+font-weight:700;
 margin-top:18px
 }
 
@@ -357,7 +392,7 @@ position:absolute;
 left:0;
 right:0;
 top:2px;
-border-top:3px dashed #f5c400
+border-top:3px dashed #38bdf8
 }
 
 .moto{
@@ -377,7 +412,7 @@ margin-top:20px
 .loading-dot span{
 width:7px;
 height:7px;
-background:#f5c400;
+background:#38bdf8;
 border-radius:50%;
 animation:blink 1s infinite
 }
@@ -471,7 +506,7 @@ y la colonia donde entregamos.
 
 <div class="step-title">
 
-COLONIA DE RECOGIDA
+Colonia de recogida
 
 </div>
 
@@ -498,7 +533,7 @@ class="suggestions">
 
 <div class="step-title">
 
-COLONIA DE ENTREGA
+Colonia de entrega
 
 </div>
 
@@ -573,7 +608,7 @@ class="info-value">
 
 <div class="price-label">
 
-VALOR ESTIMADO
+Valor estimado
 
 </div>
 
@@ -703,7 +738,8 @@ attribution:"© OpenStreetMap"
 map.setView(
 [21.1561,-100.9333],
 14
-);/* =====================================================
+);
+   /* =====================================================
    PARTE 2 DE 4
    COLONIAS + SUGERENCIAS + MARCADORES
    ===================================================== */
@@ -758,7 +794,7 @@ return texto
 
 
 /* =====================================================
-   SABER SI ES CENTRO
+   SABER SI LA COLONIA ES CENTRO
    ===================================================== */
 
 function esCentro(nombre){
@@ -789,8 +825,7 @@ kilometros*1000;
 
 
 /*
-   HASTA 750 METROS
-   = $35
+   HASTA 750 METROS = $35
 */
 
 if(
@@ -803,7 +838,7 @@ return TARIFA_BASE;
 
 
 /*
-   METROS QUE SOBRAN
+   DISTANCIA QUE EXCEDE LOS 750 METROS
 */
 
 const metrosAdicionales=
@@ -812,7 +847,7 @@ DISTANCIA_BASE_METROS;
 
 
 /*
-   CADA 750 METROS
+   CADA 750 METROS ADICIONALES
    SUMA $5
 */
 
@@ -841,8 +876,7 @@ INCREMENTO_POR_TRAMO
 function calcularPrecioFinal(kilometros){
 
 /*
-   CENTRO A CENTRO
-   SIEMPRE $35
+   CENTRO → CENTRO = $35
 */
 
 if(
@@ -856,8 +890,8 @@ return TARIFA_CENTRO_CENTRO;
 
 
 /*
-   TODAS LAS DEMÁS RUTAS
-   SE COBRAN POR DISTANCIA
+   LAS DEMÁS RUTAS SE COBRAN
+   POR DISTANCIA
 */
 
 return calcularPrecioPorDistancia(
@@ -882,9 +916,15 @@ html:
 '<div class="marker-dot"></div>'+
 '</div>',
 
-iconSize:[38,38],
+iconSize:[
+38,
+38
+],
 
-iconAnchor:[19,38]
+iconAnchor:[
+19,
+38
+]
 
 });
 
@@ -906,9 +946,15 @@ html:
 '<div class="marker-dot"></div>'+
 '</div>',
 
-iconSize:[38,38],
+iconSize:[
+38,
+38
+],
 
-iconAnchor:[19,38]
+iconAnchor:[
+19,
+38
+]
 
 });
 
@@ -951,7 +997,7 @@ crearIconoRecogida()
 ).addTo(map);
 
 pickupMarker.bindPopup(
-"<b>RECOGIDA</b><br>"+
+"<b>Recogida</b><br>"+
 pickupNombreColonia
 );
 
@@ -994,7 +1040,7 @@ crearIconoDestino()
 ).addTo(map);
 
 destinationMarker.bindPopup(
-"<b>ENTREGA</b><br>"+
+"<b>Entrega</b><br>"+
 destinationNombreColonia
 );
 
@@ -1021,7 +1067,8 @@ routeLayer=null;
 
 
 /* =====================================================
-   BUSCAR COLONIAS EN DOLORES HIDALGO
+   BUSCAR COLONIAS
+   SOLO DOLORES HIDALGO
    ===================================================== */
 
 async function buscarColonias(texto){
@@ -1044,7 +1091,8 @@ texto+
 const url=
 "https://nominatim.openstreetmap.org/search"+
 "?format=json"+
-"&q="+consulta+
+"&q="+
+consulta+
 "&limit=8"+
 "&countrycodes=mx"+
 "&addressdetails=1"+
@@ -1058,11 +1106,6 @@ await fetch(url);
 const resultados=
 await respuesta.json();
 
-
-/*
-   SOLO MOSTRAR RESULTADOS
-   DE DOLORES HIDALGO
-*/
 
 return resultados.filter(
 function(resultado){
@@ -1079,7 +1122,7 @@ resultado.display_name||""
 }catch(error){
 
 console.log(
-"Error buscando colonia:",
+"Error buscando colonias:",
 error
 );
 
@@ -1110,7 +1153,9 @@ contenedor.innerHTML=
 'No encontramos esa colonia en Dolores Hidalgo.'+
 '</div>';
 
-contenedor.classList.add("show");
+contenedor.classList.add(
+"show"
+);
 
 return;
 
@@ -1121,7 +1166,9 @@ resultados.forEach(
 function(resultado){
 
 const elemento=
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 elemento.className=
 "suggestion";
@@ -1134,9 +1181,11 @@ resultado.display_name
 
 
 elemento.innerHTML=
+
 '<div class="suggestion-name">'+
 nombre+
 '</div>'+
+
 '<div class="suggestion-location">'+
 'Dolores Hidalgo, Guanajuato'+
 '</div>';
@@ -1164,7 +1213,9 @@ elemento
 );
 
 
-contenedor.classList.add("show");
+contenedor.classList.add(
+"show"
+);
 
 }
 
@@ -1228,7 +1279,6 @@ mapMessage.innerText=
 "Recogida: "+
 nombre;
 
-
 }else{
 
 destinationNombreColonia=
@@ -1276,7 +1326,7 @@ actualizarEstadoSeleccion();
 
 
 /* =====================================================
-   ACTUALIZAR ESTADO
+   ACTUALIZAR ESTADO DE SELECCIÓN
    ===================================================== */
 
 function actualizarEstadoSeleccion(){
@@ -1343,17 +1393,10 @@ function(){
 const texto=
 this.value.trim();
 
-
-/*
-   Al modificar el texto,
-   se elimina la selección anterior.
-*/
-
 pickupLat=null;
 pickupLng=null;
 pickupAddress="";
 pickupNombreColonia="";
-
 
 if(pickupMarker){
 
@@ -1365,15 +1408,8 @@ pickupMarker=null;
 
 }
 
-
-/*
-   Limpiar cotización anterior
-*/
-
 distance.innerText="—";
-
 duration.innerText="—";
-
 price.innerText="POR COTIZAR";
 
 precioServicio=0;
@@ -1382,7 +1418,6 @@ confirmButton.disabled=true;
 
 limpiarRuta();
 
-
 if(timerPickup){
 
 clearTimeout(
@@ -1390,7 +1425,6 @@ timerPickup
 );
 
 }
-
 
 if(texto.length<2){
 
@@ -1406,7 +1440,6 @@ return;
 
 }
 
-
 pickupSuggestions.innerHTML=
 '<div class="suggestion-loading">'+
 'Buscando colonias...'+
@@ -1415,7 +1448,6 @@ pickupSuggestions.innerHTML=
 pickupSuggestions.classList.add(
 "show"
 );
-
 
 timerPickup=
 setTimeout(
@@ -1453,17 +1485,10 @@ function(){
 const texto=
 this.value.trim();
 
-
-/*
-   Al modificar el texto,
-   se elimina la selección anterior.
-*/
-
 destinationLat=null;
 destinationLng=null;
 destinationAddress="";
 destinationNombreColonia="";
-
 
 if(destinationMarker){
 
@@ -1475,15 +1500,8 @@ destinationMarker=null;
 
 }
 
-
-/*
-   Limpiar cotización anterior
-*/
-
 distance.innerText="—";
-
 duration.innerText="—";
-
 price.innerText="POR COTIZAR";
 
 precioServicio=0;
@@ -1492,7 +1510,6 @@ confirmButton.disabled=true;
 
 limpiarRuta();
 
-
 if(timerDestination){
 
 clearTimeout(
@@ -1500,7 +1517,6 @@ timerDestination
 );
 
 }
-
 
 if(texto.length<2){
 
@@ -1516,7 +1532,6 @@ return;
 
 }
 
-
 destinationSuggestions.innerHTML=
 '<div class="suggestion-loading">'+
 'Buscando colonias...'+
@@ -1525,7 +1540,6 @@ destinationSuggestions.innerHTML=
 destinationSuggestions.classList.add(
 "show"
 );
-
 
 timerDestination=
 setTimeout(
@@ -1569,7 +1583,6 @@ pickupSuggestions.classList.remove(
 
 }
 
-
 if(
 !destinationInput.contains(e.target)&&
 !destinationSuggestions.contains(e.target)
@@ -1586,7 +1599,7 @@ destinationSuggestions.classList.remove(
 
 
 /* =====================================================
-   CALCULAR LA RUTA
+   CALCULAR RUTA
    ===================================================== */
 
 async function calcularRuta(){
@@ -1604,7 +1617,6 @@ status.innerText=
 return false;
 
 }
-
 
 calculateButton.disabled=true;
 
@@ -1630,11 +1642,12 @@ destinationLat+
 try{
 
 const respuesta=
-await fetch(url);
+await fetch(
+url
+);
 
 const datos=
 await respuesta.json();
-
 
 if(
 !datos.routes||
@@ -1747,7 +1760,7 @@ limpiarRuta();
 
 
 /* =====================================================
-   DIBUJAR RUTA EN EL MAPA
+   DIBUJAR RUTA EN AZUL CIELO
    ===================================================== */
 
 routeLayer=
@@ -1756,9 +1769,9 @@ ruta.geometry,
 {
 
 style:{
-color:"#f5c400",
+color:"#38bdf8",
 weight:6,
-opacity:.9
+opacity:.95
 }
 
 }
@@ -1766,7 +1779,7 @@ opacity:.9
 
 
 /* =====================================================
-   MARCADORES
+   COLOCAR MARCADORES
    ===================================================== */
 
 colocarMarcadorRecogida();
@@ -1775,7 +1788,7 @@ colocarMarcadorEntrega();
 
 
 /* =====================================================
-   MOSTRAR TODA LA RUTA
+   AJUSTAR MAPA A LA RUTA
    ===================================================== */
 
 map.fitBounds(
@@ -1811,7 +1824,7 @@ precioServicio
 
 
 /* =====================================================
-   MENSAJE
+   MENSAJE DE COTIZACIÓN
    ===================================================== */
 
 if(
@@ -1835,15 +1848,10 @@ status.innerText=
 
 
 /* =====================================================
-   HABILITAR CONFIRMACIÓN
+   ACTIVAR CONFIRMAR SERVICIO
    ===================================================== */
 
 confirmButton.disabled=false;
-
-
-/* =====================================================
-   ACTUALIZAR GLIDE
-   ===================================================== */
 
 actualizarGlide();
 
@@ -1860,7 +1868,7 @@ return true;
 }catch(error){
 
 console.log(
-"Error de ruta:",
+"Error calculando ruta:",
 error
 );
 
@@ -1923,7 +1931,7 @@ calcularRuta();
 
 
 /* =====================================================
-   URL DE GOOGLE MAPS
+   GOOGLE MAPS
    ===================================================== */
 
 function crearUrlGoogleMaps(){
@@ -1953,24 +1961,12 @@ destinationLng+
 "&travelmode=driving"
 );
 
+}
+
 
 /* =====================================================
    FIN DE LA PARTE 3
    ===================================================== */
-   return(
-"https://www.google.com/maps/dir/?api=1"+
-"&origin="+
-pickupLat+
-","+
-pickupLng+
-"&destination="+
-destinationLat+
-","+
-destinationLng+
-"&travelmode=driving"
-);
-
-}
    /* =====================================================
    PARTE 4 DE 4 — FINAL
    DATOS + GLIDE + WHATSAPP + CONFIRMACIÓN
@@ -1978,39 +1974,25 @@ destinationLng+
 
 
 /* =====================================================
-   OBTENER NÚMERO DE SERVICIO
+   NÚMERO DE SERVICIO
    ===================================================== */
 
 function obtenerNumeroServicio(){
 
-const ahora=
-new Date();
+const ahora=new Date();
 
 const fecha=
 ahora.getFullYear().toString()+
-String(
-ahora.getMonth()+1
-).padStart(2,"0")+
-String(
-ahora.getDate()
-).padStart(2,"0");
+String(ahora.getMonth()+1).padStart(2,"0")+
+String(ahora.getDate()).padStart(2,"0");
 
 const hora=
-String(
-ahora.getHours()
-).padStart(2,"0")+
-String(
-ahora.getMinutes()
-).padStart(2,"0")+
-String(
-ahora.getSeconds()
-).padStart(2,"0");
+String(ahora.getHours()).padStart(2,"0")+
+String(ahora.getMinutes()).padStart(2,"0")+
+String(ahora.getSeconds()).padStart(2,"0");
 
 const aleatorio=
-Math.floor(
-100+
-Math.random()*900
-);
+Math.floor(100+Math.random()*900);
 
 return(
 "MM-"+
@@ -2030,8 +2012,7 @@ aleatorio
 
 function obtenerFechaHora(){
 
-return new Date()
-.toLocaleString(
+return new Date().toLocaleString(
 "es-MX",
 {
 day:"2-digit",
@@ -2048,12 +2029,10 @@ hour12:false
 
 
 /* =====================================================
-   OBTENER DATOS
+   DATOS DEL SERVICIO
    ===================================================== */
 
-function obtenerDatos(
-numeroServicio
-){
+function obtenerDatos(numeroServicio){
 
 return{
 
@@ -2139,12 +2118,10 @@ datos
 
 
 /* =====================================================
-   CREAR MENSAJE DE WHATSAPP
+   MENSAJE DE WHATSAPP
    ===================================================== */
 
-function crearMensajeWhatsApp(
-datos
-){
+function crearMensajeWhatsApp(datos){
 
 const mensaje=
 
@@ -2160,19 +2137,19 @@ datos.numero_servicio+
 datos.fecha_hora+
 "\n\n"+
 
-"📍 RECOGIDA\n"+
-"Colonia: "+
+"📍 COLONIA DE RECOGIDA\n"+
 datos.colonia_recogida+
-"\n"+
-"Dirección: "+
+"\n\n"+
+
+"📍 DIRECCIÓN DE RECOGIDA\n"+
 datos.direccion_recogida+
 "\n\n"+
 
-"🏁 ENTREGA\n"+
-"Colonia: "+
+"🏁 COLONIA DE ENTREGA\n"+
 datos.colonia_entrega+
-"\n"+
-"Dirección: "+
+"\n\n"+
+
+"🏁 DIRECCIÓN DE ENTREGA\n"+
 datos.direccion_entrega+
 "\n\n"+
 
@@ -2202,12 +2179,10 @@ return mensaje;
 
 
 /* =====================================================
-   ENVIAR A WHATSAPP
+   ENVIAR WHATSAPP
    ===================================================== */
 
-function enviarWhatsApp(
-datos
-){
+function enviarWhatsApp(datos){
 
 const mensaje=
 crearMensajeWhatsApp(
@@ -2229,7 +2204,7 @@ url;
 
 
 /* =====================================================
-   BOTÓN CONFIRMAR SERVICIO
+   CONFIRMAR SERVICIO
    ===================================================== */
 
 confirmButton.addEventListener(
@@ -2278,7 +2253,7 @@ return;
 
 
 /* =====================================================
-   NÚMERO DE SERVICIO
+   GENERAR NÚMERO
    ===================================================== */
 
 const numeroServicio=
@@ -2286,7 +2261,7 @@ obtenerNumeroServicio();
 
 
 /* =====================================================
-   DATOS FINALES
+   OBTENER DATOS FINALES
    ===================================================== */
 
 const datos=
@@ -2296,7 +2271,7 @@ numeroServicio
 
 
 /* =====================================================
-   ENVIAR DATOS A GLIDE
+   ENVIAR A GLIDE
    ===================================================== */
 
 window.parent.postMessage(
@@ -2312,17 +2287,17 @@ datos
 
 
 /* =====================================================
-   DESACTIVAR BOTÓN
+   BLOQUEAR BOTÓN
    ===================================================== */
 
 this.disabled=true;
 
 this.innerText=
-"ENVIANDO...";
+"ENVIANDO SERVICIO...";
 
 
 /* =====================================================
-   MOSTRAR PANTALLA DE CARGA
+   PANTALLA DE CARGA
    ===================================================== */
 
 const loadingScreen=
@@ -2345,7 +2320,7 @@ loadingText.innerText=
 
 
 /* =====================================================
-   CAMBIAR MENSAJE
+   CAMBIAR MENSAJE DE CARGA
    ===================================================== */
 
 setTimeout(
@@ -2385,7 +2360,7 @@ actualizarGlide();
 
 
 /* =====================================================
-   UBICAR MAPA EN DOLORES HIDALGO
+   AJUSTAR MAPA AL TAMAÑO DEL CONTENEDOR
    ===================================================== */
 
 setTimeout(
@@ -2407,7 +2382,7 @@ map.setView(
 
 
 /* =====================================================
-   FIN DEL PROGRAMA
+   FIN DEL CÓDIGO
    ===================================================== */
 
 </script>
