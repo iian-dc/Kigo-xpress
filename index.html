@@ -106,8 +106,7 @@ font-size:11px;
 color:#666;
 margin-bottom:8px;
 font-weight:700;
-letter-spacing:.5px;
-text-transform:none
+letter-spacing:.5px
 }
 
 .input-wrapper{
@@ -128,9 +127,9 @@ transition:.2s
 }
 
 .colonia-input:focus{
-border-color:#38bdf8;
+border-color:#ef4444;
 box-shadow:
-0 0 0 3px rgba(56,189,248,.14)
+0 0 0 3px rgba(239,68,68,.14)
 }
 
 .colonia-input::placeholder{
@@ -172,7 +171,7 @@ border-bottom:none
 }
 
 .suggestion:active{
-background:#e0f2fe
+background:#fee2e2
 }
 
 .suggestion-name{
@@ -203,22 +202,22 @@ text-align:center
 
 .calculate{
 width:100%;
-border:1px solid #0ea5e9;
+border:1px solid #dc2626;
 padding:14px;
 border-radius:12px;
 margin-top:2px;
 background:
 linear-gradient(
 135deg,
-#38bdf8,
-#0ea5e9
+#ef4444,
+#dc2626
 );
 color:#fff;
 font-size:14px;
 font-weight:700;
 letter-spacing:.2px;
 box-shadow:
-0 4px 10px rgba(14,165,233,.22);
+0 4px 10px rgba(220,38,38,.22);
 cursor:pointer;
 transition:.2s
 }
@@ -335,7 +334,7 @@ border:3px solid white
 }
 
 .pickup-icon{
-background:#38bdf8
+background:#ef4444
 }
 
 .destination-icon{
@@ -392,7 +391,7 @@ position:absolute;
 left:0;
 right:0;
 top:2px;
-border-top:3px dashed #38bdf8
+border-top:3px dashed #ef4444
 }
 
 .moto{
@@ -412,7 +411,7 @@ margin-top:20px
 .loading-dot span{
 width:7px;
 height:7px;
-background:#38bdf8;
+background:#ef4444;
 border-radius:50%;
 animation:blink 1s infinite
 }
@@ -491,7 +490,7 @@ Escribe las colonias para cotizar
 
 <div class="title">
 
-Solicita tu moto mandado
+Solicita tu moto Kigo Xpress
 
 </div>
 
@@ -693,6 +692,8 @@ const INCREMENTO_POR_TRAMO=5;
 
 const TRAMO_ADICIONAL_METROS=750;
 
+const MINUTOS_ADICIONALES=5;
+
 const NUMERO_WHATSAPP="524182371993";
 
 let pickupLat=null;
@@ -737,9 +738,7 @@ attribution:"© OpenStreetMap"
 
 map.setView(
 [21.1561,-100.9333],
-14
-);
-   /* =====================================================
+14/* =====================================================
    PARTE 2 DE 4
    COLONIAS + SUGERENCIAS + MARCADORES
    ===================================================== */
@@ -794,7 +793,32 @@ return texto
 
 
 /* =====================================================
-   SABER SI LA COLONIA ES CENTRO
+   FORMATO DEL NOMBRE DE COLONIA
+   Primera letra mayúscula
+   Resto minúsculas
+   ===================================================== */
+
+function formatearColonia(texto){
+
+if(!texto){
+return "";
+}
+
+texto=
+texto.toLowerCase().trim();
+
+return texto.replace(
+/(^|\s)([a-záéíóúñ])/g,
+function(m,p1,p2){
+return p1+p2.toUpperCase();
+}
+);
+
+}
+
+
+/* =====================================================
+   SABER SI ES CENTRO
    ===================================================== */
 
 function esCentro(nombre){
@@ -815,10 +839,12 @@ texto.includes("centro")
 
 
 /* =====================================================
-   PRECIO SEGÚN DISTANCIA
+   PRECIO POR DISTANCIA
    ===================================================== */
 
-function calcularPrecioPorDistancia(kilometros){
+function calcularPrecioPorDistancia(
+kilometros
+){
 
 const metros=
 kilometros*1000;
@@ -838,7 +864,8 @@ return TARIFA_BASE;
 
 
 /*
-   DISTANCIA QUE EXCEDE LOS 750 METROS
+   METROS QUE SOBRAN
+   DESPUÉS DE LOS PRIMEROS 750
 */
 
 const metrosAdicionales=
@@ -873,10 +900,13 @@ INCREMENTO_POR_TRAMO
    PRECIO FINAL
    ===================================================== */
 
-function calcularPrecioFinal(kilometros){
+function calcularPrecioFinal(
+kilometros
+){
 
 /*
-   CENTRO → CENTRO = $35
+   CENTRO → CENTRO
+   SIEMPRE $35
 */
 
 if(
@@ -890,8 +920,8 @@ return TARIFA_CENTRO_CENTRO;
 
 
 /*
-   LAS DEMÁS RUTAS SE COBRAN
-   POR DISTANCIA
+   LAS DEMÁS RUTAS
+   SE COBRAN POR DISTANCIA
 */
 
 return calcularPrecioPorDistancia(
@@ -998,7 +1028,9 @@ crearIconoRecogida()
 
 pickupMarker.bindPopup(
 "<b>Recogida</b><br>"+
+formatearColonia(
 pickupNombreColonia
+)
 );
 
 }
@@ -1041,7 +1073,9 @@ crearIconoDestino()
 
 destinationMarker.bindPopup(
 "<b>Entrega</b><br>"+
+formatearColonia(
 destinationNombreColonia
+)
 );
 
 }
@@ -1071,7 +1105,9 @@ routeLayer=null;
    SOLO DOLORES HIDALGO
    ===================================================== */
 
-async function buscarColonias(texto){
+async function buscarColonias(
+texto
+){
 
 if(
 !texto||
@@ -1105,7 +1141,6 @@ await fetch(url);
 
 const resultados=
 await respuesta.json();
-
 
 return resultados.filter(
 function(resultado){
@@ -1175,9 +1210,10 @@ elemento.className=
 
 
 const nombre=
+formatearColonia(
 resultado.name||
-resultado.display_name
-.split(",")[0];
+resultado.display_name.split(",")[0]
+);
 
 
 elemento.innerHTML=
@@ -1203,7 +1239,6 @@ tipo
 
 }
 );
-
 
 contenedor.appendChild(
 elemento
@@ -1241,6 +1276,12 @@ resultado.lon
 );
 
 
+nombre=
+formatearColonia(
+nombre
+);
+
+
 if(tipo==="pickup"){
 
 pickupNombreColonia=
@@ -1256,7 +1297,6 @@ pickupAddress=
 resultado.display_name||
 nombre+
 ", Dolores Hidalgo, Guanajuato";
-
 
 pickupInput.value=
 nombre;
@@ -1295,7 +1335,6 @@ resultado.display_name||
 nombre+
 ", Dolores Hidalgo, Guanajuato";
 
-
 destinationInput.value=
 nombre;
 
@@ -1326,7 +1365,7 @@ actualizarEstadoSeleccion();
 
 
 /* =====================================================
-   ACTUALIZAR ESTADO DE SELECCIÓN
+   ACTUALIZAR ESTADO
    ===================================================== */
 
 function actualizarEstadoSeleccion(){
@@ -1376,7 +1415,7 @@ status.innerText=
    ===================================================== */
    /* =====================================================
    PARTE 3 DE 4
-   AUTOCOMPLETADO + RUTA + COTIZACIÓN
+   AUTOCOMPLETADO + RUTA + TIEMPO + COTIZACIÓN
    ===================================================== */
 
 
@@ -1684,10 +1723,10 @@ kilometros.toFixed(2)+
 
 
 /* =====================================================
-   TIEMPO
+   TIEMPO DE LA RUTA
    ===================================================== */
 
-const minutos=
+const minutosRuta=
 Math.max(
 1,
 Math.round(
@@ -1695,24 +1734,40 @@ ruta.duration/60
 )
 );
 
+
+/*
+   SE SUMAN 5 MINUTOS
+*/
+
+const minutosFinales=
+minutosRuta+
+MINUTOS_ADICIONALES;
+
+
+/* =====================================================
+   MOSTRAR TIEMPO FINAL
+   ===================================================== */
+
 let tiempoTexto="";
 
 
-if(minutos<60){
+if(
+minutosFinales<60
+){
 
 tiempoTexto=
-minutos+
+minutosFinales+
 " min";
 
 }else{
 
 const horas=
 Math.floor(
-minutos/60
+minutosFinales/60
 );
 
 const minutosRestantes=
-minutos%60;
+minutosFinales%60;
 
 
 if(
@@ -1760,7 +1815,7 @@ limpiarRuta();
 
 
 /* =====================================================
-   DIBUJAR RUTA EN AZUL CIELO
+   RUTA EN ROJO
    ===================================================== */
 
 routeLayer=
@@ -1769,7 +1824,7 @@ ruta.geometry,
 {
 
 style:{
-color:"#38bdf8",
+color:"#ef4444",
 weight:6,
 opacity:.95
 }
@@ -1788,7 +1843,7 @@ colocarMarcadorEntrega();
 
 
 /* =====================================================
-   AJUSTAR MAPA A LA RUTA
+   AJUSTAR MAPA
    ===================================================== */
 
 map.fitBounds(
@@ -1824,7 +1879,7 @@ precioServicio
 
 
 /* =====================================================
-   MENSAJE DE COTIZACIÓN
+   MENSAJE
    ===================================================== */
 
 if(
@@ -1931,7 +1986,7 @@ calcularRuta();
 
 
 /* =====================================================
-   GOOGLE MAPS
+   URL GOOGLE MAPS
    ===================================================== */
 
 function crearUrlGoogleMaps(){
@@ -2049,7 +2104,9 @@ fecha_hora:
 obtenerFechaHora(),
 
 colonia_recogida:
-pickupNombreColonia,
+formatearColonia(
+pickupNombreColonia
+),
 
 direccion_recogida:
 pickupAddress,
@@ -2061,7 +2118,9 @@ longitud_recogida:
 pickupLng,
 
 colonia_entrega:
-destinationNombreColonia,
+formatearColonia(
+destinationNombreColonia
+),
 
 direccion_entrega:
 destinationAddress,
@@ -2125,7 +2184,7 @@ function crearMensajeWhatsApp(datos){
 
 const mensaje=
 
-"🛵 MOTO MANDADO\n\n"+
+"🛵 MOTO KIGO XPRESS\n\n"+
 
 "━━━━━━━━━━━━━━━━━━\n\n"+
 
@@ -2171,7 +2230,7 @@ datos.url_google_maps+
 
 "━━━━━━━━━━━━━━━━━━\n\n"+
 
-"✅ Cotización generada desde Kigo Aliados";
+"✅ Cotización generada desde Kigo Xpress";
 
 return mensaje;
 
@@ -2253,7 +2312,7 @@ return;
 
 
 /* =====================================================
-   GENERAR NÚMERO
+   GENERAR NÚMERO DE SERVICIO
    ===================================================== */
 
 const numeroServicio=
@@ -2261,7 +2320,7 @@ obtenerNumeroServicio();
 
 
 /* =====================================================
-   OBTENER DATOS FINALES
+   DATOS FINALES
    ===================================================== */
 
 const datos=
@@ -2287,7 +2346,7 @@ datos
 
 
 /* =====================================================
-   BLOQUEAR BOTÓN
+   DESACTIVAR BOTÓN
    ===================================================== */
 
 this.disabled=true;
@@ -2320,7 +2379,7 @@ loadingText.innerText=
 
 
 /* =====================================================
-   CAMBIAR MENSAJE DE CARGA
+   CAMBIAR MENSAJE
    ===================================================== */
 
 setTimeout(
@@ -2360,7 +2419,7 @@ actualizarGlide();
 
 
 /* =====================================================
-   AJUSTAR MAPA AL TAMAÑO DEL CONTENEDOR
+   AJUSTAR MAPA
    ===================================================== */
 
 setTimeout(
@@ -2390,3 +2449,4 @@ map.setView(
 </body>
 
 </html>
+);
