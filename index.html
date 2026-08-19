@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-<title>Moto Kigo Xpress</title>
+<title>Moto Mandado</title>
 
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -16,7 +16,7 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 
 *{
-box-sizing:border-box;
+box-sizing:border-box
 }
 
 body{
@@ -30,7 +30,7 @@ Roboto,
 Arial,
 sans-serif;
 background:#f3f4f6;
-color:#202124;
+color:#202124
 }
 
 .app{
@@ -38,17 +38,17 @@ width:100%;
 max-width:600px;
 margin:auto;
 background:#fff;
-min-height:100vh;
+min-height:100vh
 }
 
 .map-container{
-position:relative;
+position:relative
 }
 
 #map{
 width:100%;
 height:55vh;
-min-height:350px;
+min-height:350px
 }
 
 .map-message{
@@ -64,7 +64,7 @@ box-shadow:0 3px 12px rgba(0,0,0,.16);
 font-size:12px;
 font-weight:600;
 color:#333;
-white-space:nowrap;
+white-space:nowrap
 }
 
 .panel{
@@ -74,7 +74,7 @@ border-radius:24px 24px 0 0;
 margin-top:-22px;
 position:relative;
 z-index:1000;
-box-shadow:0 -4px 20px rgba(0,0,0,.12);
+box-shadow:0 -4px 20px rgba(0,0,0,.12)
 }
 
 .title{
@@ -82,14 +82,14 @@ font-size:22px;
 font-weight:700;
 letter-spacing:-.3px;
 margin-bottom:6px;
-color:#171717;
+color:#171717
 }
 
 .subtitle{
 font-size:13px;
 color:#777;
 margin-bottom:17px;
-line-height:19px;
+line-height:19px
 }
 
 .step{
@@ -98,7 +98,7 @@ border-radius:14px;
 background:#f7f7f8;
 margin-bottom:11px;
 position:relative;
-border:1px solid #eeeeef;
+border:1px solid #eeeeef
 }
 
 .step-title{
@@ -106,11 +106,11 @@ font-size:11px;
 color:#666;
 margin-bottom:8px;
 font-weight:700;
-letter-spacing:.5px;
+letter-spacing:.5px
 }
 
 .input-wrapper{
-position:relative;
+position:relative
 }
 
 .colonia-input{
@@ -123,18 +123,18 @@ font-size:14px;
 font-weight:600;
 outline:none;
 color:#222;
-transition:.2s;
+transition:.2s
 }
 
 .colonia-input:focus{
 border-color:#ef4444;
 box-shadow:
-0 0 0 3px rgba(239,68,68,.14);
+0 0 0 3px rgba(239,68,68,.14)
 }
 
 .colonia-input::placeholder{
 color:#aaa;
-font-weight:400;
+font-weight:400
 }
 
 .suggestions{
@@ -150,11 +150,11 @@ z-index:5000;
 overflow:hidden;
 display:none;
 max-height:240px;
-overflow-y:auto;
+overflow-y:auto
 }
 
 .suggestions.show{
-display:block;
+display:block
 }
 
 .suggestion{
@@ -163,41 +163,41 @@ border-bottom:1px solid #eee;
 font-size:13px;
 font-weight:600;
 background:#fff;
-cursor:pointer;
+cursor:pointer
 }
 
 .suggestion:last-child{
-border-bottom:none;
+border-bottom:none
 }
 
 .suggestion:active{
-background:#fee2e2;
+background:#fee2e2
 }
 
 .suggestion-name{
 font-size:14px;
-color:#222;
+color:#222
 }
 
 .suggestion-location{
 font-size:11px;
 color:#888;
 margin-top:3px;
-font-weight:400;
+font-weight:400
 }
 
 .suggestion-loading{
 padding:13px;
 font-size:12px;
 color:#777;
-text-align:center;
+text-align:center
 }
 
 .suggestion-empty{
 padding:13px;
 font-size:12px;
 color:#777;
-text-align:center;
+text-align:center
 }
 
 .calculate{
@@ -219,22 +219,22 @@ letter-spacing:.2px;
 box-shadow:
 0 4px 10px rgba(220,38,38,.22);
 cursor:pointer;
-transition:.2s;
+transition:.2s
 }
 
 .calculate:active{
-transform:scale(.98);
+transform:scale(.98)
 }
 
 .calculate:disabled{
 opacity:.7;
-cursor:not-allowed;
+cursor:not-allowed
 }
 
 .info{
 display:flex;
 gap:8px;
-margin-top:11px;
+margin-top:11px
 }
 
 .info-box{
@@ -243,21 +243,21 @@ background:#f7f7f8;
 padding:13px 8px;
 border-radius:13px;
 text-align:center;
-border:1px solid #eeeeef;
+border:1px solid #eeeeef
 }
 
 .info-label{
 font-size:10px;
 color:#777;
 font-weight:600;
-letter-spacing:.4px;
+letter-spacing:.4px
 }
 
 .info-value{
 font-size:16px;
 font-weight:700;
 margin-top:5px;
-color:#222;
+color:#222
 }
 
 .price{
@@ -268,17 +268,17 @@ color:#fff;
 border-radius:14px;
 display:flex;
 justify-content:space-between;
-align-items:center;
+align-items:center
 }
 
 .price-label{
 font-size:13px;
-font-weight:500;
+font-weight:500
 }
 
 .price-value{
 font-size:24px;
-font-weight:700;
+font-weight:700
 }
 
 .confirm{
@@ -299,17 +299,17 @@ font-weight:700;
 letter-spacing:.2px;
 box-shadow:
 0 4px 10px rgba(22,163,74,.22);
-transition:.2s;
+transition:.2s
 }
 
 .confirm:active{
-transform:scale(.98);
+transform:scale(.98)
 }
 
 .confirm:disabled{
 background:#aaa;
 color:#fff;
-box-shadow:none;
+box-shadow:none
 }
 
 .status{
@@ -317,7 +317,7 @@ text-align:center;
 font-size:12px;
 color:#777;
 margin-top:9px;
-min-height:18px;
+min-height:18px
 }
 
 .pickup-icon,
@@ -330,22 +330,22 @@ display:flex;
 align-items:center;
 justify-content:center;
 box-shadow:0 3px 10px rgba(0,0,0,.35);
-border:3px solid white;
+border:3px solid white
 }
 
 .pickup-icon{
-background:#ef4444;
+background:#ef4444
 }
 
 .destination-icon{
-background:#111;
+background:#111
 }
 
 .marker-dot{
 width:11px;
 height:11px;
 background:white;
-border-radius:50%;
+border-radius:50%
 }
 
 .loading-screen{
@@ -357,23 +357,23 @@ display:none;
 align-items:center;
 justify-content:center;
 flex-direction:column;
-text-align:center;
+text-align:center
 }
 
 .loading-screen.show{
-display:flex;
+display:flex
 }
 
 .loading-title{
 font-size:21px;
 font-weight:700;
-margin-top:18px;
+margin-top:18px
 }
 
 .loading-text{
 font-size:13px;
 color:#777;
-margin-top:7px;
+margin-top:7px
 }
 
 .road{
@@ -382,7 +382,7 @@ height:7px;
 background:#222;
 border-radius:10px;
 position:relative;
-margin-top:45px;
+margin-top:45px
 }
 
 .road:before{
@@ -391,7 +391,7 @@ position:absolute;
 left:0;
 right:0;
 top:2px;
-border-top:3px dashed #ef4444;
+border-top:3px dashed #ef4444
 }
 
 .moto{
@@ -399,13 +399,13 @@ position:absolute;
 left:-50px;
 top:-34px;
 font-size:40px;
-animation:motoMove 4.5s linear infinite;
+animation:motoMove 4.5s linear infinite
 }
 
 .loading-dot{
 display:flex;
 gap:6px;
-margin-top:20px;
+margin-top:20px
 }
 
 .loading-dot span{
@@ -413,42 +413,42 @@ width:7px;
 height:7px;
 background:#ef4444;
 border-radius:50%;
-animation:blink 1s infinite;
+animation:blink 1s infinite
 }
 
 .loading-dot span:nth-child(2){
-animation-delay:.2s;
+animation-delay:.2s
 }
 
 .loading-dot span:nth-child(3){
-animation-delay:.4s;
+animation-delay:.4s
 }
 
 @keyframes motoMove{
 
 0%{
 left:-50px;
-transform:scaleX(1);
+transform:scaleX(1)
 }
 
 45%{
 left:120px;
-transform:scaleX(1);
+transform:scaleX(1)
 }
 
 50%{
 left:120px;
-transform:scaleX(-1);
+transform:scaleX(-1)
 }
 
 95%{
 left:-50px;
-transform:scaleX(-1);
+transform:scaleX(-1)
 }
 
 100%{
 left:-50px;
-transform:scaleX(1);
+transform:scaleX(1)
 }
 
 }
@@ -456,11 +456,11 @@ transform:scaleX(1);
 @keyframes blink{
 
 0%,100%{
-opacity:.25;
+opacity:.25
 }
 
 50%{
-opacity:1;
+opacity:1
 }
 
 }
@@ -490,7 +490,7 @@ Escribe las colonias para cotizar
 
 <div class="title">
 
-Solicita tu moto Kigo Xpress
+Solicita tu moto Kigo xpress
 
 </div>
 
@@ -697,18 +697,23 @@ const MINUTOS_ADICIONALES=5;
 const NUMERO_WHATSAPP="524182371993";
 
 let pickupLat=null;
+
 let pickupLng=null;
 
 let destinationLat=null;
+
 let destinationLng=null;
 
 let pickupAddress="";
+
 let destinationAddress="";
 
 let pickupNombreColonia="";
+
 let destinationNombreColonia="";
 
 let pickupMarker=null;
+
 let destinationMarker=null;
 
 let routeLayer=null;
@@ -732,13 +737,15 @@ attribution:"© OpenStreetMap"
 ).addTo(map);
 
 map.setView(
-[
-21.1561,
--100.9333
-],
+[21.1561,-100.9333],
 14
 );
-   const pickupInput=
+   /* =====================================================
+   PARTE 2 DE 4
+   COLONIAS + SUGERENCIAS + MARCADORES
+   ===================================================== */
+
+const pickupInput=
 document.getElementById("pickupInput");
 
 const destinationInput=
@@ -773,8 +780,24 @@ document.getElementById("mapMessage");
 
 
 /* =====================================================
-   FORMATO DEL NOMBRE DE LA COLONIA
-   Primera letra en mayúscula y resto en minúscula
+   NORMALIZAR TEXTO
+   ===================================================== */
+
+function normalizarTexto(texto){
+
+return texto
+.toLowerCase()
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"")
+.trim();
+
+}
+
+
+/* =====================================================
+   FORMATO DEL NOMBRE DE COLONIA
+   Primera letra mayúscula
+   Resto minúsculas
    ===================================================== */
 
 function formatearColonia(texto){
@@ -784,17 +807,12 @@ return "";
 }
 
 texto=
-texto
-.toLowerCase()
-.trim();
+texto.toLowerCase().trim();
 
 return texto.replace(
 /(^|\s)([a-záéíóúñ])/g,
-function(m,espacio,letra){
-
-return espacio+
-letra.toUpperCase();
-
+function(m,p1,p2){
+return p1+p2.toUpperCase();
 }
 );
 
@@ -802,25 +820,7 @@ letra.toUpperCase();
 
 
 /* =====================================================
-   NORMALIZAR TEXTO PARA COMPARACIONES
-   ===================================================== */
-
-function normalizarTexto(texto){
-
-return texto
-.toLowerCase()
-.normalize("NFD")
-.replace(
-/[\u0300-\u036f]/g,
-""
-)
-.trim();
-
-}
-
-
-/* =====================================================
-   DETECTAR SI ES CENTRO
+   SABER SI ES CENTRO
    ===================================================== */
 
 function esCentro(nombre){
@@ -841,7 +841,7 @@ texto.includes("centro")
 
 
 /* =====================================================
-   CALCULAR PRECIO
+   PRECIO POR DISTANCIA
    ===================================================== */
 
 function calcularPrecioPorDistancia(
@@ -853,8 +853,7 @@ kilometros*1000;
 
 
 /*
-   Hasta 750 metros:
-   $35
+   HASTA 750 METROS = $35
 */
 
 if(
@@ -867,21 +866,26 @@ return TARIFA_BASE;
 
 
 /*
-   Después de los primeros
-   750 metros se cobra
-   $5 por cada 750 metros
-   adicionales o fracción.
+   METROS QUE SOBRAN
+   DESPUÉS DE LOS PRIMEROS 750
 */
 
 const metrosAdicionales=
 metros-
 DISTANCIA_BASE_METROS;
 
+
+/*
+   CADA 750 METROS ADICIONALES
+   SUMA $5
+*/
+
 const tramos=
 Math.ceil(
 metrosAdicionales/
 TRAMO_ADICIONAL_METROS
 );
+
 
 return(
 TARIFA_BASE+
@@ -903,17 +907,13 @@ kilometros
 ){
 
 /*
-   Centro → Centro
-   siempre cuesta $35
+   CENTRO → CENTRO
+   SIEMPRE $35
 */
 
 if(
-esCentro(
-pickupNombreColonia
-)&&
-esCentro(
-destinationNombreColonia
-)
+esCentro(pickupNombreColonia)&&
+esCentro(destinationNombreColonia)
 ){
 
 return TARIFA_CENTRO_CENTRO;
@@ -922,8 +922,8 @@ return TARIFA_CENTRO_CENTRO;
 
 
 /*
-   Cualquier otra combinación
-   se calcula por distancia.
+   LAS DEMÁS RUTAS
+   SE COBRAN POR DISTANCIA
 */
 
 return calcularPrecioPorDistancia(
@@ -994,7 +994,7 @@ iconAnchor:[
 
 
 /* =====================================================
-   COLOCAR MARCADOR DE RECOGIDA
+   MARCADOR DE RECOGIDA
    ===================================================== */
 
 function colocarMarcadorRecogida(){
@@ -1039,7 +1039,7 @@ pickupNombreColonia
 
 
 /* =====================================================
-   COLOCAR MARCADOR DE ENTREGA
+   MARCADOR DE ENTREGA
    ===================================================== */
 
 function colocarMarcadorEntrega(){
@@ -1084,7 +1084,7 @@ destinationNombreColonia
 
 
 /* =====================================================
-   BORRAR RUTA ANTERIOR
+   LIMPIAR RUTA
    ===================================================== */
 
 function limpiarRuta(){
@@ -1103,7 +1103,8 @@ routeLayer=null;
 
 
 /* =====================================================
-   BUSCAR COLONIAS DE DOLORES HIDALGO
+   BUSCAR COLONIAS
+   SOLO DOLORES HIDALGO
    ===================================================== */
 
 async function buscarColonias(
@@ -1130,7 +1131,7 @@ const url=
 "?format=json"+
 "&q="+
 consulta+
-"&limit=10"+
+"&limit=8"+
 "&countrycodes=mx"+
 "&addressdetails=1"+
 "&accept-language=es";
@@ -1170,7 +1171,7 @@ return [];
 
 
 /* =====================================================
-   MOSTRAR LISTA DE COLONIAS
+   MOSTRAR SUGERENCIAS
    ===================================================== */
 
 function mostrarSugerencias(
@@ -1181,12 +1182,13 @@ tipo
 
 contenedor.innerHTML="";
 
+
 if(!resultados.length){
 
 contenedor.innerHTML=
 '<div class="suggestion-empty">'+
-"No encontramos esa colonia en Dolores Hidalgo."+
-"</div>";
+'No encontramos esa colonia en Dolores Hidalgo.'+
+'</div>';
 
 contenedor.classList.add(
 "show"
@@ -1195,6 +1197,7 @@ contenedor.classList.add(
 return;
 
 }
+
 
 resultados.forEach(
 function(resultado){
@@ -1207,19 +1210,24 @@ document.createElement(
 elemento.className=
 "suggestion";
 
+
 const nombre=
 formatearColonia(
 resultado.name||
 resultado.display_name.split(",")[0]
 );
 
+
 elemento.innerHTML=
+
 '<div class="suggestion-name">'+
 nombre+
-"</div>"+
+'</div>'+
+
 '<div class="suggestion-location">'+
-"Dolores Hidalgo, Guanajuato"+
-"</div>";
+'Dolores Hidalgo, Guanajuato'+
+'</div>';
+
 
 elemento.addEventListener(
 "click",
@@ -1240,6 +1248,7 @@ elemento
 
 }
 );
+
 
 contenedor.classList.add(
 "show"
@@ -1268,14 +1277,14 @@ parseFloat(
 resultado.lon
 );
 
+
 nombre=
 formatearColonia(
 nombre
 );
 
-if(
-tipo==="pickup"
-){
+
+if(tipo==="pickup"){
 
 pickupNombreColonia=
 nombre;
@@ -1351,6 +1360,7 @@ nombre;
 
 }
 
+
 actualizarEstadoSeleccion();
 
 }
@@ -1377,6 +1387,7 @@ return;
 
 }
 
+
 if(
 pickupLat!==null
 ){
@@ -1391,21 +1402,27 @@ return;
 
 }
 
+
 mapMessage.innerText=
 "Selecciona la colonia de recogida";
 
 status.innerText=
 "Selecciona la colonia de recogida.";
 
-   }
+}
+
+
+/* =====================================================
+   FIN DE LA PARTE 2
+   ===================================================== */
    /* =====================================================
-   PARTE 3 DE 5
-   AUTOCOMPLETADO + CÁLCULO DE RUTA
+   PARTE 3 DE 4
+   AUTOCOMPLETADO + RUTA + TIEMPO + COTIZACIÓN
    ===================================================== */
 
 
 /* =====================================================
-   AUTOCOMPLETADO — RECOGIDA
+   AUTOCOMPLETADO DE RECOGIDA
    ===================================================== */
 
 let timerPickup=null;
@@ -1417,14 +1434,10 @@ function(){
 const texto=
 this.value.trim();
 
-
-/* Limpiar selección anterior */
-
 pickupLat=null;
 pickupLng=null;
 pickupAddress="";
 pickupNombreColonia="";
-
 
 if(pickupMarker){
 
@@ -1436,20 +1449,15 @@ pickupMarker=null;
 
 }
 
-
-limpiarRuta();
-
-
 distance.innerText="—";
-
 duration.innerText="—";
-
 price.innerText="POR COTIZAR";
 
 precioServicio=0;
 
 confirmButton.disabled=true;
 
+limpiarRuta();
 
 if(timerPickup){
 
@@ -1458,7 +1466,6 @@ timerPickup
 );
 
 }
-
 
 if(texto.length<2){
 
@@ -1474,16 +1481,14 @@ return;
 
 }
 
-
 pickupSuggestions.innerHTML=
 '<div class="suggestion-loading">'+
-"Buscando colonia..."+
-"</div>";
+'Buscando colonias...'+
+'</div>';
 
 pickupSuggestions.classList.add(
 "show"
 );
-
 
 timerPickup=
 setTimeout(
@@ -1509,7 +1514,7 @@ resultados,
 
 
 /* =====================================================
-   AUTOCOMPLETADO — ENTREGA
+   AUTOCOMPLETADO DE ENTREGA
    ===================================================== */
 
 let timerDestination=null;
@@ -1521,14 +1526,10 @@ function(){
 const texto=
 this.value.trim();
 
-
-/* Limpiar selección anterior */
-
 destinationLat=null;
 destinationLng=null;
 destinationAddress="";
 destinationNombreColonia="";
-
 
 if(destinationMarker){
 
@@ -1540,20 +1541,15 @@ destinationMarker=null;
 
 }
 
-
-limpiarRuta();
-
-
 distance.innerText="—";
-
 duration.innerText="—";
-
 price.innerText="POR COTIZAR";
 
 precioServicio=0;
 
 confirmButton.disabled=true;
 
+limpiarRuta();
 
 if(timerDestination){
 
@@ -1562,7 +1558,6 @@ timerDestination
 );
 
 }
-
 
 if(texto.length<2){
 
@@ -1578,16 +1573,14 @@ return;
 
 }
 
-
 destinationSuggestions.innerHTML=
 '<div class="suggestion-loading">'+
-"Buscando colonia..."+
-"</div>";
+'Buscando colonias...'+
+'</div>';
 
 destinationSuggestions.classList.add(
 "show"
 );
-
 
 timerDestination=
 setTimeout(
@@ -1647,95 +1640,6 @@ destinationSuggestions.classList.remove(
 
 
 /* =====================================================
-   OBTENER RUTA REAL POR CALLES
-   ===================================================== */
-
-async function obtenerRutaReal(){
-
-const coordenadas=
-pickupLng+
-","+
-pickupLat+
-";"+
-destinationLng+
-","+
-destinationLat;
-
-
-/*
-   OSRM utiliza la red real de calles.
-   alternatives=true permite obtener
-   diferentes recorridos cuando existen.
-*/
-
-const url=
-"https://router.project-osrm.org/route/v1/driving/"+
-coordenadas+
-"?overview=full"+
-"&geometries=geojson"+
-"&steps=true"+
-"&alternatives=true";
-
-
-const respuesta=
-await fetch(
-url
-);
-
-
-if(!respuesta.ok){
-
-throw new Error(
-"Error de conexión con el servicio de rutas."
-);
-
-}
-
-
-const datos=
-await respuesta.json();
-
-
-if(
-datos.code!=="Ok"||
-!datos.routes||
-!datos.routes.length
-){
-
-throw new Error(
-"No se encontró una ruta."
-);
-
-}
-
-
-/*
-   Ordenamos todas las rutas
-   de menor a mayor distancia.
-*/
-
-const rutas=
-datos.routes.slice().sort(
-function(a,b){
-
-return a.distance-
-b.distance;
-
-}
-);
-
-
-/*
-   La primera será la ruta
-   más corta encontrada.
-*/
-
-return rutas[0];
-
-}
-
-
-/* =====================================================
    CALCULAR RUTA
    ===================================================== */
 
@@ -1743,29 +1647,17 @@ async function calcularRuta(){
 
 if(
 pickupLat===null||
-pickupLng===null
-){
-
-status.innerText=
-"Selecciona la colonia de recogida.";
-
-return false;
-
-}
-
-
-if(
+pickupLng===null||
 destinationLat===null||
 destinationLng===null
 ){
 
 status.innerText=
-"Selecciona la colonia de entrega.";
+"Selecciona las dos colonias antes de calcular.";
 
 return false;
 
 }
-
 
 calculateButton.disabled=true;
 
@@ -1773,28 +1665,59 @@ calculateButton.innerText=
 "CALCULANDO...";
 
 status.innerText=
-"Buscando el recorrido por las calles...";
+"Calculando ruta entre las colonias...";
+
+
+const url=
+"https://router.project-osrm.org/route/v1/driving/"+
+pickupLng+
+","+
+pickupLat+
+";"+
+destinationLng+
+","+
+destinationLat+
+"?overview=full&geometries=geojson";
 
 
 try{
 
+const respuesta=
+await fetch(
+url
+);
 
-/* =====================================================
-   OBTENER RUTA
-   ===================================================== */
+const datos=
+await respuesta.json();
+
+if(
+!datos.routes||
+!datos.routes.length
+){
+
+status.innerText=
+"No encontramos una ruta.";
+
+calculateButton.disabled=false;
+
+calculateButton.innerText=
+"CALCULAR COTIZACIÓN";
+
+return false;
+
+}
+
 
 const ruta=
-await obtenerRutaReal();
+datos.routes[0];
 
 
 /* =====================================================
-   DISTANCIA REAL
+   DISTANCIA
    ===================================================== */
 
 const kilometros=
-ruta.distance/
-1000;
-
+ruta.distance/1000;
 
 distance.innerText=
 kilometros.toFixed(2)+
@@ -1802,22 +1725,20 @@ kilometros.toFixed(2)+
 
 
 /* =====================================================
-   TIEMPO REAL DE LA RUTA
+   TIEMPO DE LA RUTA
    ===================================================== */
 
 const minutosRuta=
 Math.max(
 1,
 Math.round(
-ruta.duration/
-60
+ruta.duration/60
 )
 );
 
 
 /*
-   Sumamos los 5 minutos
-   adicionales solicitados.
+   SE SUMAN 5 MINUTOS
 */
 
 const minutosFinales=
@@ -1826,7 +1747,7 @@ MINUTOS_ADICIONALES;
 
 
 /* =====================================================
-   FORMATO DEL TIEMPO
+   MOSTRAR TIEMPO FINAL
    ===================================================== */
 
 let tiempoTexto="";
@@ -1844,13 +1765,11 @@ minutosFinales+
 
 const horas=
 Math.floor(
-minutosFinales/
-60
+minutosFinales/60
 );
 
 const minutosRestantes=
-minutosFinales%
-60;
+minutosFinales%60;
 
 
 if(
@@ -1898,7 +1817,7 @@ limpiarRuta();
 
 
 /* =====================================================
-   DIBUJAR RUTA EN ROJO
+   RUTA EN ROJO
    ===================================================== */
 
 routeLayer=
@@ -1909,9 +1828,7 @@ ruta.geometry,
 style:{
 color:"#ef4444",
 weight:6,
-opacity:.95,
-lineCap:"round",
-lineJoin:"round"
+opacity:.95
 }
 
 }
@@ -1919,7 +1836,7 @@ lineJoin:"round"
 
 
 /* =====================================================
-   COLOCAR LOS DOS MARCADORES
+   COLOCAR MARCADORES
    ===================================================== */
 
 colocarMarcadorRecogida();
@@ -1928,7 +1845,7 @@ colocarMarcadorEntrega();
 
 
 /* =====================================================
-   MOSTRAR TODO EL RECORRIDO
+   AJUSTAR MAPA
    ===================================================== */
 
 map.fitBounds(
@@ -1951,6 +1868,10 @@ calcularPrecioFinal(
 kilometros
 );
 
+
+/* =====================================================
+   MOSTRAR PRECIO
+   ===================================================== */
 
 price.innerText=
 "$"+
@@ -1978,21 +1899,16 @@ status.innerText=
 }else{
 
 status.innerText=
-"Ruta calculada por las calles disponibles.";
+"Cotización calculada correctamente.";
 
 }
 
 
 /* =====================================================
-   ACTIVAR CONFIRMAR
+   ACTIVAR CONFIRMAR SERVICIO
    ===================================================== */
 
 confirmButton.disabled=false;
-
-
-/* =====================================================
-   ACTUALIZAR GLIDE
-   ===================================================== */
 
 actualizarGlide();
 
@@ -2014,7 +1930,7 @@ error
 );
 
 status.innerText=
-"No se pudo calcular una ruta por las calles disponibles.";
+"No se pudo calcular la ruta.";
 
 calculateButton.disabled=false;
 
@@ -2069,14 +1985,10 @@ return;
 calcularRuta();
 
 });
-   /* =====================================================
-   PARTE 4 DE 5
-   RUTA GOOGLE MAPS + DATOS + GLIDE
-   ===================================================== */
 
 
 /* =====================================================
-   CREAR URL DE GOOGLE MAPS
+   URL GOOGLE MAPS
    ===================================================== */
 
 function crearUrlGoogleMaps(){
@@ -2091,6 +2003,7 @@ destinationLng===null
 return "";
 
 }
+
 
 return(
 "https://www.google.com/maps/dir/?api=1"+
@@ -2109,42 +2022,34 @@ destinationLng+
 
 
 /* =====================================================
+   FIN DE LA PARTE 3
+   ===================================================== */
+   /* =====================================================
+   PARTE 4 DE 4 — FINAL
+   DATOS + GLIDE + WHATSAPP + CONFIRMACIÓN
+   ===================================================== */
+
+
+/* =====================================================
    NÚMERO DE SERVICIO
    ===================================================== */
 
 function obtenerNumeroServicio(){
 
-const ahora=
-new Date();
+const ahora=new Date();
 
 const fecha=
 ahora.getFullYear().toString()+
-String(
-ahora.getMonth()+1
-).padStart(2,"0")+
-String(
-ahora.getDate()
-).padStart(2,"0");
-
+String(ahora.getMonth()+1).padStart(2,"0")+
+String(ahora.getDate()).padStart(2,"0");
 
 const hora=
-String(
-ahora.getHours()
-).padStart(2,"0")+
-String(
-ahora.getMinutes()
-).padStart(2,"0")+
-String(
-ahora.getSeconds()
-).padStart(2,"0");
-
+String(ahora.getHours()).padStart(2,"0")+
+String(ahora.getMinutes()).padStart(2,"0")+
+String(ahora.getSeconds()).padStart(2,"0");
 
 const aleatorio=
-Math.floor(
-100+
-Math.random()*900
-);
-
+Math.floor(100+Math.random()*900);
 
 return(
 "MM-"+
@@ -2181,12 +2086,10 @@ hour12:false
 
 
 /* =====================================================
-   OBTENER DATOS DEL SERVICIO
+   DATOS DEL SERVICIO
    ===================================================== */
 
-function obtenerDatos(
-numeroServicio
-){
+function obtenerDatos(numeroServicio){
 
 return{
 
@@ -2195,9 +2098,6 @@ numeroServicio,
 
 tipo_servicio:
 "Moto Mandado",
-
-empresa:
-"Kigo Xpress",
 
 ciudad:
 "Dolores Hidalgo",
@@ -2254,7 +2154,7 @@ estado:
 
 
 /* =====================================================
-   ENVIAR INFORMACIÓN A GLIDE
+   ENVIAR DATOS A GLIDE
    ===================================================== */
 
 function actualizarGlide(){
@@ -2279,39 +2179,14 @@ datos
 
 
 /* =====================================================
-   ACTUALIZACIÓN AUTOMÁTICA
-   AL CAMBIAR LAS COLONIAS
+   MENSAJE DE WHATSAPP
    ===================================================== */
 
-function actualizarDatosGlide(){
-
-if(
-pickupLat===null||
-destinationLat===null
-){
-
-return;
-
-}
-
-actualizarGlide
-   /* =====================================================
-   PARTE 5 DE 5 — FINAL
-   WHATSAPP + CONFIRMAR SERVICIO
-   ===================================================== */
-
-
-/* =====================================================
-   CREAR MENSAJE DE WHATSAPP
-   ===================================================== */
-
-function crearMensajeWhatsApp(
-datos
-){
+function crearMensajeWhatsApp(datos){
 
 const mensaje=
 
-"🛵 KIGO XPRESS\n\n"+
+"🛵 MOTO KIGO XPRESS\n\n"+
 
 "━━━━━━━━━━━━━━━━━━\n\n"+
 
@@ -2357,7 +2232,7 @@ datos.url_google_maps+
 
 "━━━━━━━━━━━━━━━━━━\n\n"+
 
-"✅ Servicio generado desde Kigo Xpress";
+"✅ Cotización generada desde Kigo Xpress";
 
 return mensaje;
 
@@ -2368,9 +2243,7 @@ return mensaje;
    ENVIAR WHATSAPP
    ===================================================== */
 
-function enviarWhatsApp(
-datos
-){
+function enviarWhatsApp(datos){
 
 const mensaje=
 crearMensajeWhatsApp(
@@ -2399,8 +2272,6 @@ confirmButton.addEventListener(
 "click",
 function(){
 
-/* Validar recogida */
-
 if(
 pickupLat===null||
 pickupLng===null
@@ -2415,8 +2286,6 @@ return;
 }
 
 
-/* Validar entrega */
-
 if(
 destinationLat===null||
 destinationLng===null
@@ -2430,8 +2299,6 @@ return;
 
 }
 
-
-/* Validar cotización */
 
 if(
 precioServicio<=0
@@ -2455,7 +2322,7 @@ obtenerNumeroServicio();
 
 
 /* =====================================================
-   OBTENER DATOS DEFINITIVOS
+   DATOS FINALES
    ===================================================== */
 
 const datos=
@@ -2465,7 +2332,7 @@ numeroServicio
 
 
 /* =====================================================
-   ENVIAR DATOS A GLIDE
+   ENVIAR A GLIDE
    ===================================================== */
 
 window.parent.postMessage(
@@ -2491,7 +2358,7 @@ this.innerText=
 
 
 /* =====================================================
-   MOSTRAR PANTALLA DE CARGA
+   PANTALLA DE CARGA
    ===================================================== */
 
 const loadingScreen=
@@ -2521,30 +2388,15 @@ setTimeout(
 function(){
 
 loadingText.innerText=
-"Calculando los últimos detalles...";
-
-},
-1600
-);
-
-
-/* =====================================================
-   SEGUNDO MENSAJE
-   ===================================================== */
-
-setTimeout(
-function(){
-
-loadingText.innerText=
 "Enviando cotización por WhatsApp...";
 
 },
-3000
+2200
 );
 
 
 /* =====================================================
-   ENVIAR WHATSAPP
+   ABRIR WHATSAPP
    ===================================================== */
 
 setTimeout(
@@ -2555,39 +2407,21 @@ datos
 );
 
 },
-4500
+4000
 );
 
 });
 
 
 /* =====================================================
-   CERRAR SUGERENCIAS AL PRESIONAR ESC
+   ACTUALIZACIÓN INICIAL
    ===================================================== */
 
-document.addEventListener(
-"keydown",
-function(e){
-
-if(
-e.key==="Escape"
-){
-
-pickupSuggestions.classList.remove(
-"show"
-);
-
-destinationSuggestions.classList.remove(
-"show"
-);
-
-}
-
-});
+actualizarGlide();
 
 
 /* =====================================================
-   ASEGURAR QUE EL MAPA SE VEA CORRECTAMENTE
+   AJUSTAR MAPA
    ===================================================== */
 
 setTimeout(
@@ -2595,13 +2429,21 @@ function(){
 
 map.invalidateSize();
 
+map.setView(
+[
+21.1561,
+-100.9333
+],
+14
+);
+
 },
-1000
+500
 );
 
 
 /* =====================================================
-   FIN DEL SCRIPT
+   FIN DEL CÓDIGO
    ===================================================== */
 
 </script>
