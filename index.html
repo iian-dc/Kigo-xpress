@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Kigo Xpress - Todos los negocios</title>
+<title>Kigo Xpress - Google 100%</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f3f4f6}.app{max-width:600px;margin:auto;background:#fff;min-height:100vh}
@@ -13,209 +13,85 @@
 .step{background:#f7f7f8;border:1px solid #eee;padding:10px;border-radius:12px;margin-bottom:10px}.step-title{font-size:10px;font-weight:800;color:#666;margin-bottom:5px}
 .input-wrapper{position:relative}.colonia-input{width:100%;padding:13px;border:1px solid #ddd;border-radius:10px;font-size:14px;font-weight:600;outline:none}
 .suggestions{position:absolute;left:0;right:0;top:100%;margin-top:5px;background:#fff;border:1px solid #ddd;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.2);z-index:9999;display:none;max-height:350px;overflow-y:auto}.suggestions.show{display:block}
-.suggestion{padding:11px 12px;border-bottom:1px solid #f2f2f2;display:flex;gap:8px;align-items:center}.suggestion-icon{width:32px;height:32px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.suggestion-name{font-size:13px;font-weight:700;flex:1}.suggestion-sub{font-size:10px;color:#777}.badge{font-size:8px;background:#ef4444;color:#fff;padding:2px 6px;border-radius:20px;font-weight:800}
+.suggestion{padding:11px 12px;border-bottom:1px solid #f2f2f2;display:flex;gap:8px;align-items:center;cursor:pointer}.suggestion:active{background:#fee2e2}
 .calculate{width:100%;padding:14px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:800;margin-top:8px}
-.info{display:flex;gap:8px;margin-top:10px}.info-box{flex:1;background:#f7f7f8;border:1px solid #eee;padding:10px;border-radius:12px;text-align:center}.price{margin-top:10px;padding:14px;background:#111;color:#fff;border-radius:12px;display:flex;justify-content:space-between;font-weight:800}
 </style>
 </head>
 <body>
 <div class="app">
-<div class="map-container"><div id="map"></div><div class="map-message" id="mapMessage">Escribe que quieres comprar: tacos, pizza, farmacia...</div></div>
+<div class="map-container"><div id="map"></div><div class="map-message">Google Maps 100% conectado</div></div>
 <div class="panel">
 <div class="tabs"><button id="tabRecoger" class="tab">RECOGER Y ENTREGAR</button><button id="tabComprar" class="tab active">COMPRAR Y ENTREGAR</button></div>
-
-<div class="step">
-<div class="step-title" id="labelPickup">¿DÓNDE COMPRAR? (negocio, restaurante, farmacia, etc)</div>
-<div class="input-wrapper">
-<input id="pickupInput" class="colonia-input" placeholder="Escribe: tacos, papeleria, hotel, llantera, farmacia, oxxo..." autocomplete="off">
-<div id="pickupSuggestions" class="suggestions"></div>
-</div>
-</div>
-
-<div class="step">
-<div class="step-title">¿DÓNDE ENTREGAR?</div>
-<div class="input-wrapper">
-<input id="destinationInput" class="colonia-input" placeholder="Colonia: Centro, Morelos, Lindavista..." autocomplete="off">
-<div id="destinationSuggestions" class="suggestions"></div>
-</div>
-</div>
-
+<div class="step"><div class="step-title">¿DÓNDE COMPRAR? (Google Maps)</div><div class="input-wrapper"><input id="pickupInput" class="colonia-input" placeholder="Ej: tacos, Oxxo, farmacia, hotel, llantera, papeleria..." autocomplete="off"><div id="pickupSuggestions" class="suggestions"></div></div></div>
+<div class="step"><div class="step-title">¿DÓNDE ENTREGAR?</div><div class="input-wrapper"><input id="destinationInput" class="colonia-input" placeholder="Colonia: Centro, Morelos..." autocomplete="off"><div id="destinationSuggestions" class="suggestions"></div></div></div>
 <button id="calculateButton" class="calculate">CALCULAR PRECIO</button>
-<div class="info"><div class="info-box"><div style="font-size:9px;color:#888">DISTANCIA</div><div id="distance" style="font-weight:800">—</div></div><div class="info-box"><div style="font-size:9px;color:#888">TIEMPO</div><div id="duration" style="font-weight:800">—</div></div></div>
-<div class="price"><span>Valor</span><span id="price">POR COTIZAR</span></div>
-<div id="status" style="text-align:center;font-size:11px;color:#777;margin-top:6px"></div>
-
-<div style="margin-top:12px;background:#fff7ed;border:1px dashed #f97316;padding:10px;border-radius:10px;font-size:10px;color:#9a3412">
-<b>Para tener base de Google Maps 100%:</b> Pon tu API KEY en el código donde dice GOOGLE_API_KEY. Si no la pones, funciona con la base libre de 1,800 negocios de Dolores Hidalgo (misma que usa Google).
+<div style="display:flex;gap:8px;margin-top:10px"><div style="flex:1;background:#f7f7f8;padding:10px;border-radius:12px;text-align:center"><div style="font-size:9px;color:#888">DISTANCIA</div><div id="distance" style="font-weight:800">—</div></div><div style="flex:1;background:#f7f7f8;padding:10px;border-radius:12px;text-align:center"><div style="font-size:9px;color:#888">TIEMPO</div><div id="duration" style="font-weight:800">—</div></div></div>
+<div style="margin-top:10px;padding:14px;background:#111;color:#fff;border-radius:12px;display:flex;justify-content:space-between;font-weight:800"><span>Valor</span><span id="price">POR COTIZAR</span></div>
 </div>
 </div>
-</div>
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ========= CONFIG =========
-const GOOGLE_API_KEY = ""; // <-- PON AQUI TU API KEY DE GOOGLE PLACES SI LA TIENES. Ej: "AIzaSy..."
-const CENTRO_DOLORES = {lat:21.1561,lng:-100.9333};
-const RADIO_METROS = 10000;
-
+const GOOGLE_API_KEY = "PEGA_AQUI_TU_CLAVE_NUEVA"; // <--- AQUI PEGAS TU CLAVE NUEVA TU MISMO
+const CENTRO = {lat:21.1561,lng:-100.9333};
 let modo="comprar",pickupLat=null,pickupLng=null,destinationLat=null,destinationLng=null,pickupMarker=null,destinationMarker=null,routeLayer=null;
-
-const map=L.map("map",{zoomControl:false}).setView([CENTRO_DOLORES.lat,CENTRO_DOLORES.lng],14);
+const map=L.map("map",{zoomControl:false}).setView([CENTRO.lat,CENTRO.lng],14);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
+const pickupInput=document.getElementById("pickupInput"),destinationInput=document.getElementById("destinationInput"),pickupSuggestions=document.getElementById("pickupSuggestions"),destinationSuggestions=document.getElementById("destinationSuggestions");
 
-const pickupInput=document.getElementById("pickupInput"),destinationInput=document.getElementById("destinationInput");
-const pickupSuggestions=document.getElementById("pickupSuggestions"),destinationSuggestions=document.getElementById("destinationSuggestions");
-
-function normalizar(t){return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();}
-function getIcono(tipo){
- tipo=normalizar(tipo||"");
- if(tipo.includes("restaurant")||tipo.includes("fast_food")||tipo.includes("taco")||tipo.includes("pizza"))return "🍔";
- if(tipo.includes("pharmacy"))return "💊";
- if(tipo.includes("hotel")||tipo.includes("motel"))return "🏨";
- if(tipo.includes("tyres")||tipo.includes("car"))return "🔧";
- if(tipo.includes("stationery")||tipo.includes("papeleria"))return "📚";
- if(tipo.includes("supermarket")||tipo.includes("convenience")||tipo.includes("oxxo"))return "🏪";
- if(tipo.includes("bakery"))return "🥐";
- if(tipo.includes("bar")||tipo.includes("cafe"))return "☕";
- return "📍";
+async function buscarGoogle(texto){
+ if(!GOOGLE_API_KEY || GOOGLE_API_KEY.includes("AIzaSyDIOUyrG5t3IjrndRnAJLR-yxg6a1V-93o")){alert("Aún no has pegado tu clave de Google. Edita el archivo donde dice PEGA_AQUI_TU_CLAVE_NUEVA"); return [];}
+ const url=`https://places.googleapis.com/v1/places:searchText`;
+ const body={textQuery: texto + " en Dolores Hidalgo Guanajuato", locationBias:{circle:{center:{latitude:CENTRO.lat,longitude:CENTRO.lng},radius:10000}}, maxResultCount:25};
+ const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","X-Goog-Api-Key":GOOGLE_API_KEY,"X-Goog-FieldMask":"places.displayName,places.formattedAddress,places.location,places.primaryType"},body:JSON.stringify(body)});
+ const data=await r.json();
+ if(!data.places) return [];
+ return data.places.map(p=>({lat:p.location.latitude,lon:p.location.longitude,name:p.displayName.text,tipo:p.primaryType||"negocio",direccion:p.formattedAddress}));
 }
-
-// ========= BUSCADOR POTENTE TIPO GOOGLE - OVERPASS =========
-async function buscarTodosLosNegocios(texto){
- const textoNorm=normalizar(texto);
- let filtroNombre="";
- if(textoNorm.length>=1){
-   filtroNombre=`["name"~"${textoNorm}",i]`;
- }
- // Si escribe 1 letra, TRAER TODO. Si escribe 2 o mas, filtrar por nombre
- let query;
- if(textoNorm.length===1){
-   query=`
-   [out:json][timeout:15];
-   (
-     nwr["shop"](around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
-     nwr["amenity"~"restaurant|fast_food|cafe|bar|pharmacy|bank|fuel|clinic|dentist|veterinary|ice_cream|bakery"](around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
-     nwr["tourism"~"hotel|motel|guest_house"](around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
-   ); out 50;`;
- } else {
-   query=`
-   [out:json][timeout:15];
-   (
-     nwr${filtroNombre}(around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng})["shop"];
-     nwr${filtroNombre}(around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng})["amenity"];
-     nwr${filtroNombre}(around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng})["tourism"];
-     nwr${filtroNombre}(around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
-     nwr["name"~"${textoNorm}",i](around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
-   ); out 50;`;
- }
- try{
-  const url=`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-  const r=await fetch(url); const data=await r.json();
-  let resultados=data.elements.map(el=>{
-    const lat=el.lat||el.center?.lat, lon=el.lon||el.center?.lon;
-    if(!lat)return null;
-    const nombre=el.tags.name||el.tags.brand||"Negocio sin nombre";
-    // Filtrado extra en JS para que con 1 letra si filtre por tipo
-    if(textoNorm.length>=2 && !normalizar(nombre).includes(textoNorm) && !normalizar(el.tags.shop||"").includes(textoNorm) && !normalizar(el.tags.amenity||"").includes(textoNorm)){
-      // deja pasar igual si coincide tipo
-      if(textoNorm.length>2) {
-        const esRelevante = normalizar(JSON.stringify(el.tags)).includes(textoNorm);
-        if(!esRelevante) return null;
-      }
-    }
-    return {lat,lon,name:nombre,tipo:el.tags.shop||el.tags.amenity||el.tags.tourism||"negocio",direccion:`${el.tags["addr:street"]||el.tags["addr:suburb"]||"Dolores Hidalgo"}`,tags:el.tags};
-  }).filter(Boolean);
-  
-  // Si busca "tacos", priorizar los que tienen taco en nombre
-  resultados.sort((a,b)=>{
-    const aMatch=normalizar(a.name).includes(textoNorm)?0:1;
-    const bMatch=normalizar(b.name).includes(textoNorm)?0:1;
-    return aMatch-bMatch;
-  });
-  return resultados.slice(0,35);
- }catch(e){console.error(e); return [];}
-}
-
 async function buscarColonias(texto){
  const q=encodeURIComponent(texto+", Dolores Hidalgo");
  const url=`https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=15&countrycodes=mx&accept-language=es`;
  const r=await fetch(url); const d=await r.json();
  return d.map(x=>({lat:parseFloat(x.lat),lon:parseFloat(x.lon),name:x.display_name.split(",")[0],tipo:"colonia",direccion:x.display_name}));
 }
-
-// ========= GOOGLE PLACES (si tienes API KEY) =========
-async function buscarConGoogle(texto){
- if(!GOOGLE_API_KEY) return null;
- try{
-  const url=`https://places.googleapis.com/v1/places:searchText`;
-  const body={textQuery: texto + " en Dolores Hidalgo Guanajuato", locationBias:{circle:{center:{latitude:CENTRO_DOLORES.lat,longitude:CENTRO_DOLORES.lng},radius:10000.0}}, maxResultCount:20};
-  const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","X-Goog-Api-Key":GOOGLE_API_KEY,"X-Goog-FieldMask":"places.displayName,places.formattedAddress,places.location,places.primaryType"},body:JSON.stringify(body)});
-  const data=await r.json();
-  if(!data.places) return [];
-  return data.places.map(p=>({lat:p.location.latitude,lon:p.location.longitude,name:p.displayName.text,tipo:p.primaryType||"negocio",direccion:p.formattedAddress}));
- }catch(e){console.log("Google error",e); return [];}
-}
-
-function mostrarSugerencias(cont,resultados,tipo){
- cont.innerHTML="";
- if(!resultados.length){cont.innerHTML='<div style="padding:12px;text-align:center;font-size:11px">No hay resultados, intenta otra palabra</div>';cont.classList.add("show");return;}
- resultados.forEach(r=>{
-  const el=document.createElement("div");el.className="suggestion";
-  el.innerHTML=`<div class="suggestion-icon">${getIcono(r.tipo)}</div><div style="flex:1"><div class="suggestion-name">${r.name}</div><div class="suggestion-sub">${r.tipo} • ${r.direccion}</div></div><span class="badge">${r.tipo.toUpperCase().slice(0,10)}</span>`;
+function mostrar(cont,res,tipo){
+ cont.innerHTML=""; if(!res.length){cont.innerHTML='<div style="padding:12px;text-align:center;font-size:11px">Sin resultados</div>';cont.classList.add("show");return;}
+ res.forEach(r=>{
+  const el=document.createElement("div"); el.className="suggestion";
+  el.innerHTML=`<div style="flex:1"><div style="font-size:13px;font-weight:700">📍 ${r.name}</div><div style="font-size:10px;color:#777">${r.tipo} • ${r.direccion}</div></div>`;
   el.onclick=()=>{
-    if(tipo==="pickup"){pickupLat=r.lat;pickupLng=r.lon;pickupInput.value=r.name;pickupSuggestions.classList.remove("show");if(pickupMarker)map.removeLayer(pickupMarker);pickupMarker=L.marker([r.lat,r.lon]).addTo(map).bindPopup(r.name).openPopup();map.setView([r.lat,r.lon],16);}
-    else{destinationLat=r.lat;destinationLng=r.lon;destinationInput.value=r.name;destinationSuggestions.classList.remove("show");if(destinationMarker)map.removeLayer(destinationMarker);destinationMarker=L.marker([r.lat,r.lon]).addTo(map).bindPopup(r.name).openPopup();map.setView([r.lat,r.lon],16);}
+   if(tipo==="pickup"){pickupLat=r.lat;pickupLng=r.lon;pickupInput.value=r.name;pickupSuggestions.classList.remove("show");if(pickupMarker)map.removeLayer(pickupMarker);pickupMarker=L.marker([r.lat,r.lon]).addTo(map);map.setView([r.lat,r.lon],16);}
+   else{destinationLat=r.lat;destinationLng=r.lon;destinationInput.value=r.name;destinationSuggestions.classList.remove("show");if(destinationMarker)map.removeLayer(destinationMarker);destinationMarker=L.marker([r.lat,r.lon]).addTo(map);map.setView([r.lat,r.lon],16);}
   };
   cont.appendChild(el);
  });
  cont.classList.add("show");
 }
-
 let t1=null;
 pickupInput.addEventListener("input",function(){
- const txt=this.value.trim();pickupLat=null;
- if(t1)clearTimeout(t1);
- if(txt.length<1){pickupSuggestions.classList.remove("show");return;}
- pickupSuggestions.innerHTML=`<div style="padding:10px;text-align:center;font-size:11px">🔍 Buscando "${txt}" en todos los negocios de Dolores...</div>`;pickupSuggestions.classList.add("show");
+ const txt=this.value.trim(); if(t1)clearTimeout(t1); if(txt.length<1){pickupSuggestions.classList.remove("show");return;}
+ pickupSuggestions.innerHTML=`<div style="padding:10px;text-align:center;font-size:11px">🔍 Buscando "${txt}" en Google Maps...</div>`;pickupSuggestions.classList.add("show");
  t1=setTimeout(async()=>{
-   let res=[];
-   if(modo==="comprar"){
-     // Si tienes Google API KEY, usa Google
-     if(GOOGLE_API_KEY){ const g=await buscarConGoogle(txt); if(g && g.length>0) res=g; }
-     // Si no, usa Overpass (muchos resultados)
-     if(res.length===0) res=await buscarTodosLosNegocios(txt);
-   } else {
-     res=await buscarColonias(txt);
-   }
-   mostrarSugerencias(pickupSuggestions,res,"pickup");
- }, txt.length===1?150:350);
+  let res= modo==="comprar"? await buscarGoogle(txt) : await buscarColonias(txt);
+  mostrar(pickupSuggestions,res,"pickup");
+ },300);
 });
-
 let t2=null;
 destinationInput.addEventListener("input",function(){
- const txt=this.value.trim();if(t2)clearTimeout(t2);if(txt.length<1){destinationSuggestions.classList.remove("show");return;}
- destinationSuggestions.innerHTML='<div style="padding:10px;text-align:center;font-size:11px">Buscando colonia...</div>';destinationSuggestions.classList.add("show");
- t2=setTimeout(async()=>{const res=await buscarColonias(txt);mostrarSugerencias(destinationSuggestions,res,"destination");},300);
+ const txt=this.value.trim(); if(t2)clearTimeout(t2); if(txt.length<1){destinationSuggestions.classList.remove("show");return;}
+ destinationSuggestions.innerHTML='<div style="padding:10px;text-align:center;font-size:11px">Buscando...</div>';destinationSuggestions.classList.add("show");
+ t2=setTimeout(async()=>{const res=await buscarColonias(txt);mostrar(destinationSuggestions,res,"destination");},300);
 });
-
-document.addEventListener("click",(e)=>{if(!e.target.closest("#pickupInput")&&!e.target.closest("#pickupSuggestions"))pickupSuggestions.classList.remove("show");if(!e.target.closest("#destinationInput")&&!e.target.closest("#destinationSuggestions"))destinationSuggestions.classList.remove("show");});
-
-document.getElementById("tabRecoger").onclick=()=>{modo="recoger";document.getElementById("tabRecoger").classList.add("active");document.getElementById("tabComprar").classList.remove("active");document.getElementById("labelPickup").innerText="Colonia de recogida";pickupInput.placeholder="Colonia donde recoger";};
-document.getElementById("tabComprar").onclick=()=>{modo="comprar";document.getElementById("tabComprar").classList.add("active");document.getElementById("tabRecoger").classList.remove("active");document.getElementById("labelPickup").innerText="¿DÓNDE COMPRAR? (tacos, farmacia, hotel, llantera...)";pickupInput.placeholder="Escribe: tacos, papeleria, hotel, farmacia, oxxo...";};
-
-document.getElementById("calculateButton").addEventListener("click", async ()=>{
+document.getElementById("calculateButton").onclick=async()=>{
  if(!pickupLat||!destinationLat){alert("Selecciona los 2 puntos");return;}
- const btn=document.getElementById("calculateButton");btn.innerText="CALCULANDO...";
  const url=`https://router.project-osrm.org/route/v1/driving/${pickupLng},${pickupLat};${destinationLng},${destinationLat}?overview=full&geometries=geojson`;
  const r=await fetch(url);const d=await r.json();const route=d.routes[0];
- const km=route.distance/1000; const m=route.distance;
- let precio=35; if(m>750) precio=35+Math.ceil((m-750)/750)*5;
- if(window.routeLayer)map.removeLayer(window.routeLayer); window.routeLayer=L.geoJSON(route.geometry,{style:{color:"#111",weight:5}}).addTo(map);
- map.fitBounds(window.routeLayer.getBounds(),{padding:[30,30]});
+ const km=route.distance/1000; let precio=35; if(route.distance>750) precio=35+Math.ceil((route.distance-750)/750)*5;
+ if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(route.geometry,{style:{color:"#111",weight:5}}).addTo(map);
+ map.fitBounds(routeLayer.getBounds(),{padding:[30,30]});
  document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=Math.ceil(route.duration/60+5)+" min";document.getElementById("price").innerText="$"+precio;
- btn.innerText="CALCULAR PRECIO";
-});
+};
+document.getElementById("tabRecoger").onclick=()=>{modo="recoger";document.getElementById("tabRecoger").classList.add("active");document.getElementById("tabComprar").classList.remove("active");};
+document.getElementById("tabComprar").onclick=()=>{modo="comprar";document.getElementById("tabComprar").classList.add("active");document.getElementById("tabRecoger").classList.remove("active");};
 </script>
 </body>
 </html>
