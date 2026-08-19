@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Kigo Xpress Moto</title>
+<title>Kigo xpress</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f3f4f6}
@@ -41,7 +41,7 @@
 <div class="reset-btn" id="resetBtn">↻</div>
 <div id="weatherWidget" class="weather-widget">☀️ --°C</div>
 <div id="rainOverlay" class="rain-overlay"></div>
-<div id="weatherBadge" class="weather-badge">🌧️ LLOVIENDO EN DOLORES</div>
+<div id="weatherBadge" class="weather-badge">🌧️ Lloviendo</div>
 </div>
 <div class="panel">
 <div class="step"><div style="font-size:11px;font-weight:800;color:#666;margin-bottom:6px">1. ¿DÓNDE RECOGER?</div><div class="input-wrapper"><input id="pickupInput" class="colonia-input" placeholder="Escribe Centro o colonia..." autocomplete="off"><div id="pickupSuggestions" class="suggestions"></div></div></div>
@@ -49,7 +49,7 @@
 <button id="calculateButton" class="btn-cotizar">COTIZAR SERVICIO</button>
 <button id="whatsappButton" class="btn-whatsapp">📲 Compartir cotización por WhatsApp</button>
 <div class="info"><div class="info-box"><div style="font-size:9px;color:#888;font-weight:700">DISTANCIA MOTO</div><div id="distance" style="font-weight:800">—</div></div><div class="info-box"><div style="font-size:9px;color:#888;font-weight:700">TIEMPO</div><div id="duration" style="font-weight:800">—</div></div></div>
-<div class="price-box"><span>PRECIO</span><span id="price">$ POR COTIZAR</span></div>
+<div class="price-box"><span>PRECIO</span><span id="price">POR COTIZAR</span></div>
 </div>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -86,7 +86,7 @@ document.getElementById("calculateButton").onclick=async()=>{
 };
 document.getElementById("whatsappButton").onclick=()=>{
  const linkRuta=`https://www.google.com/maps/dir/${pickupLat},${pickupLng}/${destinationLat},${destinationLng}`;
- const mensaje=`*COTIZACIÓN KIGO XPRESS* 🛵\n\n📍 *Recoger:* ${pickupName}\n📦 *Entregar:* ${destName}\n📏 *Distancia:* ${ultimaDistancia}\n💰 *Valor:* ${ultimoPrecio}\n\n🗺️ *Ver ruta:* ${linkRuta}\n\n¿Confirmamos servicio?`;
+ const mensaje=`*Cotización Kigo xpress* 🛵\n\n📍 *Recoger:* ${pickupName}\n📦 *Entregar:* ${destName}\n📏 *Distancia:* ${ultimaDistancia}\n💰 *Valor:* ${ultimoPrecio}\n\n🗺️ *Ver ruta:* ${linkRuta}\n\n¿Confirmamos servicio?`;
  const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`;
  window.open(url,"_blank");
 };
