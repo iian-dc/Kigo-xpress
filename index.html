@@ -85,7 +85,7 @@ document.getElementById("calculateButton").onclick=async()=>{
 };
 document.getElementById("whatsappButton").onclick=()=>{
  const linkRuta=`https://www.google.com/maps/dir/${pickupLat},${pickupLng}/${destinationLat},${destinationLng}`;
- const mensaje=`*COTIZACIÓN KIGO XPRESS* 🛵\n\n📍 *Recoger:* ${pickupName}\n📦 *Entregar:* ${destName}\n📏 *Distancia:* ${ultimaDistancia}\n💰 *Valor:* ${ultimoPrecio}\n\n🗺️ *Ver ruta:* ${linkRuta}\n\n¿Confirmamos servicio?`;
+ const mensaje=`*Cotización Kigo xpress* 🛵\n\n📍 *Recoger:* ${pickupName}\n📦 *Entregar:* ${destName}\n📏 *Distancia:* ${ultimaDistancia}\n💰 *Valor:* ${ultimoPrecio}\n\n🗺️ *Ver ruta:* ${linkRuta}\n\n¿Confirmamos servicio?`;
  const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`;
  window.open(url,"_blank");
 };
