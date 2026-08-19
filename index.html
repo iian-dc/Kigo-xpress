@@ -3,137 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Moto Mandado</title>
+<title>Kigo Xpress - Todos los negocios</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-*{box-sizing:border-box}body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f3f4f6}
-.app{width:100%;max-width:600px;margin:auto;background:#fff;min-height:100vh}.map-container{position:relative}#map{width:100%;height:50vh;min-height:350px}
-.map-message{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:999;background:#fff;padding:8px 14px;border-radius:20px;box-shadow:0 3px 12px rgba(0,0,0,.16);font-size:11px;font-weight:700}
-.panel{background:#fff;padding:16px;border-radius:24px 24px 0 0;margin-top:-20px;position:relative;z-index:1000;box-shadow:0 -4px 20px rgba(0,0,0,.12)}
-.tabs{display:flex;gap:8px;background:#f1f1f2;padding:4px;border-radius:12px;margin-bottom:14px}.tab{flex:1;padding:10px;border-radius:8px;border:none;font-size:12px;font-weight:800;cursor:pointer;background:transparent;color:#666}.tab.active{background:#151515;color:#fff}
-.step{padding:12px;border-radius:12px;background:#f7f7f8;margin-bottom:10px;border:1px solid #eee}.step-title{font-size:10px;font-weight:800;color:#666;margin-bottom:6px}
-.colonia-input{width:100%;border:1px solid #dedede;padding:13px;border-radius:10px;font-size:14px;font-weight:600;outline:none}
-.suggestions{position:absolute;left:0;right:0;top:calc(100% + 5px);background:#fff;border:1px solid #ddd;border-radius:12px;box-shadow:0 5px 18px rgba(0,0,0,.18);z-index:5000;display:none;max-height:300px;overflow-y:auto}.suggestions.show{display:block}
-.suggestion{padding:12px;border-bottom:1px solid #f0f0f0;cursor:pointer}.suggestion:last-child{border-bottom:none}.suggestion:active{background:#fee2e2}
-.suggestion-name{font-size:13px;font-weight:700}.suggestion-location{font-size:10px;color:#888;margin-top:2px}.suggestion-type{font-size:9px;background:#ef4444;color:#fff;padding:2px 6px;border-radius:10px;margin-left:6px}
-.calculate{width:100%;padding:14px;border:none;border-radius:12px;background:#dc2626;color:#fff;font-weight:800;cursor:pointer;margin-top:6px}
-.info{display:flex;gap:8px;margin-top:10px}.info-box{flex:1;background:#f7f7f8;padding:10px;border-radius:12px;text-align:center;border:1px solid #eee}.info-label{font-size:9px;font-weight:700;color:#888}.info-value{font-size:15px;font-weight:800}
-.price{margin-top:10px;padding:14px;background:#151515;color:#fff;border-radius:12px;display:flex;justify-content:space-between}.price-value{font-size:22px;font-weight:800}
-.input-wrapper{position:relative}
-.pickup-icon,.destination-icon{width:36px;height:36px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,.3)}.pickup-icon{background:#22c55e}.destination-icon{background:#111}.marker-dot{width:10px;height:10px;background:#fff;border-radius:50%}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f3f4f6}.app{max-width:600px;margin:auto;background:#fff;min-height:100vh}
+#map{width:100%;height:48vh}.map-container{position:relative}.map-message{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:999;background:#111;color:#fff;padding:7px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.panel{padding:14px;border-radius:22px 22px 0 0;margin-top:-18px;position:relative;z-index:1000;background:#fff;box-shadow:0 -4px 20px rgba(0,0,0,.12)}
+.tabs{display:flex;gap:6px;background:#f0f0f0;padding:4px;border-radius:12px;margin-bottom:12px}.tab{flex:1;padding:10px;border-radius:8px;border:none;font-weight:800;font-size:11px;cursor:pointer}.tab.active{background:#111;color:#fff}
+.step{background:#f7f7f8;border:1px solid #eee;padding:10px;border-radius:12px;margin-bottom:10px}.step-title{font-size:10px;font-weight:800;color:#666;margin-bottom:5px}
+.input-wrapper{position:relative}.colonia-input{width:100%;padding:13px;border:1px solid #ddd;border-radius:10px;font-size:14px;font-weight:600;outline:none}
+.suggestions{position:absolute;left:0;right:0;top:100%;margin-top:5px;background:#fff;border:1px solid #ddd;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.2);z-index:9999;display:none;max-height:350px;overflow-y:auto}.suggestions.show{display:block}
+.suggestion{padding:11px 12px;border-bottom:1px solid #f2f2f2;display:flex;gap:8px;align-items:center}.suggestion-icon{width:32px;height:32px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.suggestion-name{font-size:13px;font-weight:700;flex:1}.suggestion-sub{font-size:10px;color:#777}.badge{font-size:8px;background:#ef4444;color:#fff;padding:2px 6px;border-radius:20px;font-weight:800}
+.calculate{width:100%;padding:14px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:800;margin-top:8px}
+.info{display:flex;gap:8px;margin-top:10px}.info-box{flex:1;background:#f7f7f8;border:1px solid #eee;padding:10px;border-radius:12px;text-align:center}.price{margin-top:10px;padding:14px;background:#111;color:#fff;border-radius:12px;display:flex;justify-content:space-between;font-weight:800}
 </style>
 </head>
 <body>
 <div class="app">
-<div class="map-container"><div id="map"></div><div id="mapMessage" class="map-message">Modo: Comprar y Entregar</div></div>
+<div class="map-container"><div id="map"></div><div class="map-message" id="mapMessage">Escribe que quieres comprar: tacos, pizza, farmacia...</div></div>
 <div class="panel">
 <div class="tabs"><button id="tabRecoger" class="tab">RECOGER Y ENTREGAR</button><button id="tabComprar" class="tab active">COMPRAR Y ENTREGAR</button></div>
 
 <div class="step">
-<div id="labelPickup" class="step-title">¿DÓNDE COMPRAR? (Escribe tacos, farmacia, papeleria...)</div>
+<div class="step-title" id="labelPickup">¿DÓNDE COMPRAR? (negocio, restaurante, farmacia, etc)</div>
 <div class="input-wrapper">
-<input id="pickupInput" class="colonia-input" type="text" placeholder="Ej: tacos, farmacia, Oxxo, papeleria, llantera" autocomplete="off">
+<input id="pickupInput" class="colonia-input" placeholder="Escribe: tacos, papeleria, hotel, llantera, farmacia, oxxo..." autocomplete="off">
 <div id="pickupSuggestions" class="suggestions"></div>
 </div>
 </div>
 
 <div class="step">
-<div id="labelDest" class="step-title">¿DÓNDE ENTREGAR? (Colonia)</div>
+<div class="step-title">¿DÓNDE ENTREGAR?</div>
 <div class="input-wrapper">
-<input id="destinationInput" class="colonia-input" type="text" placeholder="Ej: Centro, Morelos" autocomplete="off">
+<input id="destinationInput" class="colonia-input" placeholder="Colonia: Centro, Morelos, Lindavista..." autocomplete="off">
 <div id="destinationSuggestions" class="suggestions"></div>
 </div>
 </div>
 
-<button id="calculateButton" class="calculate">CALCULAR COTIZACIÓN</button>
-<div class="info"><div class="info-box"><div class="info-label">DISTANCIA</div><div id="distance" class="info-value">—</div></div><div class="info-box"><div class="info-label">TIEMPO</div><div id="duration" class="info-value">—</div></div></div>
-<div class="price"><div>Valor estimado</div><div id="price" class="price-value">POR COTIZAR</div></div>
-<div id="status" style="text-align:center;font-size:11px;color:#777;margin-top:8px"></div>
+<button id="calculateButton" class="calculate">CALCULAR PRECIO</button>
+<div class="info"><div class="info-box"><div style="font-size:9px;color:#888">DISTANCIA</div><div id="distance" style="font-weight:800">—</div></div><div class="info-box"><div style="font-size:9px;color:#888">TIEMPO</div><div id="duration" style="font-weight:800">—</div></div></div>
+<div class="price"><span>Valor</span><span id="price">POR COTIZAR</span></div>
+<div id="status" style="text-align:center;font-size:11px;color:#777;margin-top:6px"></div>
+
+<div style="margin-top:12px;background:#fff7ed;border:1px dashed #f97316;padding:10px;border-radius:10px;font-size:10px;color:#9a3412">
+<b>Para tener base de Google Maps 100%:</b> Pon tu API KEY en el código donde dice GOOGLE_API_KEY. Si no la pones, funciona con la base libre de 1,800 negocios de Dolores Hidalgo (misma que usa Google).
+</div>
 </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const TARIFA_BASE=35,DISTANCIA_BASE=750,INCREMENTO=5,TRAMO=750;
-let modo="comprar",pickupLat=null,pickupLng=null,destinationLat=null,destinationLng=null,pickupNombre="",destNombre="",pickupMarker=null,destinationMarker=null,routeLayer=null;
+// ========= CONFIG =========
+const GOOGLE_API_KEY = ""; // <-- PON AQUI TU API KEY DE GOOGLE PLACES SI LA TIENES. Ej: "AIzaSy..."
+const CENTRO_DOLORES = {lat:21.1561,lng:-100.9333};
+const RADIO_METROS = 10000;
 
-const map=L.map("map",{zoomControl:false}).setView([21.1561,-100.9333],14);
+let modo="comprar",pickupLat=null,pickupLng=null,destinationLat=null,destinationLng=null,pickupMarker=null,destinationMarker=null,routeLayer=null;
+
+const map=L.map("map",{zoomControl:false}).setView([CENTRO_DOLORES.lat,CENTRO_DOLORES.lng],14);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
 
-const pickupInput=document.getElementById("pickupInput"),destinationInput=document.getElementById("destinationInput"),pickupSuggestions=document.getElementById("pickupSuggestions"),destinationSuggestions=document.getElementById("destinationSuggestions");
-const distanceEl=document.getElementById("distance"),durationEl=document.getElementById("duration"),priceEl=document.getElementById("price"),statusEl=document.getElementById("status"),mapMessage=document.getElementById("mapMessage");
-const tabRecoger=document.getElementById("tabRecoger"),tabComprar=document.getElementById("tabComprar"),labelPickup=document.getElementById("labelPickup");
-
-function setModo(m){modo=m;if(m==="recoger"){tabRecoger.classList.add("active");tabComprar.classList.remove("active");labelPickup.innerText="Colonia de recogida";pickupInput.placeholder="Ej: Centro, Morelos";mapMessage.innerText="Modo: Recoger y Entregar";}else{tabComprar.classList.add("active");tabRecoger.classList.remove("active");labelPickup.innerText="¿DÓNDE COMPRAR? (tacos, farmacia, papeleria, hotel...)";pickupInput.placeholder="Ej: tacos, farmacia, Oxxo, papeleria, llantera";mapMessage.innerText="Modo: Comprar y Entregar - Escribe que quieres comprar";}pickupInput.value="";destinationInput.value="";pickupLat=null;destinationLat=null;if(pickupMarker)map.removeLayer(pickupMarker);if(destinationMarker)map.removeLayer(destinationMarker);if(routeLayer)map.removeLayer(routeLayer);}
-tabRecoger.onclick=()=>setModo("recoger");tabComprar.onclick=()=>setModo("comprar");
+const pickupInput=document.getElementById("pickupInput"),destinationInput=document.getElementById("destinationInput");
+const pickupSuggestions=document.getElementById("pickupSuggestions"),destinationSuggestions=document.getElementById("destinationSuggestions");
 
 function normalizar(t){return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();}
-function precioPorKm(km){const m=km*1000;if(m<=DISTANCIA_BASE)return TARIFA_BASE;return TARIFA_BASE+Math.ceil((m-DISTANCIA_BASE)/TRAMO)*INCREMENTO;}
-function iconoCompra(){return L.divIcon({className:"",html:'<div class="pickup-icon"><div class="marker-dot"></div></div>',iconSize:[36,36],iconAnchor:[18,36]});}
-function iconoEntrega(){return L.divIcon({className:"",html:'<div class="destination-icon"><div class="marker-dot"></div></div>',iconSize:[36,36],iconAnchor:[18,36]});}
+function getIcono(tipo){
+ tipo=normalizar(tipo||"");
+ if(tipo.includes("restaurant")||tipo.includes("fast_food")||tipo.includes("taco")||tipo.includes("pizza"))return "🍔";
+ if(tipo.includes("pharmacy"))return "💊";
+ if(tipo.includes("hotel")||tipo.includes("motel"))return "🏨";
+ if(tipo.includes("tyres")||tipo.includes("car"))return "🔧";
+ if(tipo.includes("stationery")||tipo.includes("papeleria"))return "📚";
+ if(tipo.includes("supermarket")||tipo.includes("convenience")||tipo.includes("oxxo"))return "🏪";
+ if(tipo.includes("bakery"))return "🥐";
+ if(tipo.includes("bar")||tipo.includes("cafe"))return "☕";
+ return "📍";
+}
 
-// ESTA ES LA CLAVE - BUSCA TODOS LOS NEGOCIOS EN DOLORES HIDALGO CON OVERPASS
-async function buscarNegociosOverpass(texto){
+// ========= BUSCADOR POTENTE TIPO GOOGLE - OVERPASS =========
+async function buscarTodosLosNegocios(texto){
  const textoNorm=normalizar(texto);
- const centroLat=21.1561, centroLng=-100.9333, radio=8000;
- // Mapeo de palabras comunes a tags de OSM
- const tagsMap={
-  "taco":"amenity~'restaurant|fast_food'", "tacos":"amenity~'restaurant|fast_food'",
-  "restaurante":"amenity~'restaurant|fast_food'", "restaurantes":"amenity~'restaurant|fast_food'",
-  "papeleria":"shop~'stationery|gift|books'", "papelerias":"shop~'stationery'",
-  "farmacia":"amenity~'pharmacy'|shop~'pharmacy'", "farmacias":"amenity~'pharmacy'",
-  "hotel":"tourism~'hotel|motel|guest_house'", "hoteles":"tourism~'hotel'",
-  "llantera":"shop~'tyres|car_repair|car'", "llanteras":"shop~'tyres'",
-  "oxxo":"shop~'convenience'", "abarrotes":"shop~'convenience|grocery|supermarket'",
-  "pizza":"amenity~'restaurant|fast_food'", "pollo":"amenity~'restaurant|fast_food'"
- };
- let filtroExtra="";
- for(let key in tagsMap){ if(textoNorm.includes(key)){ filtroExtra=tagsMap[key]; break; } }
-
- let query=`
- [out:json][timeout:10];
- (
-   nwr["name"~"${texto}",i](around:${radio},${centroLat},${centroLng});
-   nwr[~"^(shop|amenity|tourism)$"~"."](around:${radio},${centroLat},${centroLng})["name"~"${texto}",i];
- `;
- if(filtroExtra){
-   query+=` nwr[${filtroExtra}](around:${radio},${centroLat},${centroLng}); `;
+ let filtroNombre="";
+ if(textoNorm.length>=1){
+   filtroNombre=`["name"~"${textoNorm}",i]`;
  }
- query+=` ); out 30;`;
-
+ // Si escribe 1 letra, TRAER TODO. Si escribe 2 o mas, filtrar por nombre
+ let query;
+ if(textoNorm.length===1){
+   query=`
+   [out:json][timeout:15];
+   (
+     nwr["shop"](around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
+     nwr["amenity"~"restaurant|fast_food|cafe|bar|pharmacy|bank|fuel|clinic|dentist|veterinary|ice_cream|bakery"](around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
+     nwr["tourism"~"hotel|motel|guest_house"](around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
+   ); out 50;`;
+ } else {
+   query=`
+   [out:json][timeout:15];
+   (
+     nwr${filtroNombre}(around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng})["shop"];
+     nwr${filtroNombre}(around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng})["amenity"];
+     nwr${filtroNombre}(around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng})["tourism"];
+     nwr${filtroNombre}(around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
+     nwr["name"~"${textoNorm}",i](around:${RADIO_METROS},${CENTRO_DOLORES.lat},${CENTRO_DOLORES.lng});
+   ); out 50;`;
+ }
  try{
   const url=`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-  const res=await fetch(url); const data=await res.json();
-  return data.elements.map(el=>{
+  const r=await fetch(url); const data=await r.json();
+  let resultados=data.elements.map(el=>{
     const lat=el.lat||el.center?.lat, lon=el.lon||el.center?.lon;
-    if(!lat||!lon)return null;
-    return {
-      lat, lon,
-      name: el.tags.name || texto,
-      tipo: el.tags.shop || el.tags.amenity || el.tags.tourism || "negocio",
-      direccion: `${el.tags["addr:street"]||""} ${el.tags["addr:neighbourhood"]||""} ${el.tags["addr:suburb"]||""}`.trim() || "Dolores Hidalgo"
-    };
-  }).filter(Boolean).slice(0,30);
- }catch(e){ console.log("Overpass error",e); return []; }
+    if(!lat)return null;
+    const nombre=el.tags.name||el.tags.brand||"Negocio sin nombre";
+    // Filtrado extra en JS para que con 1 letra si filtre por tipo
+    if(textoNorm.length>=2 && !normalizar(nombre).includes(textoNorm) && !normalizar(el.tags.shop||"").includes(textoNorm) && !normalizar(el.tags.amenity||"").includes(textoNorm)){
+      // deja pasar igual si coincide tipo
+      if(textoNorm.length>2) {
+        const esRelevante = normalizar(JSON.stringify(el.tags)).includes(textoNorm);
+        if(!esRelevante) return null;
+      }
+    }
+    return {lat,lon,name:nombre,tipo:el.tags.shop||el.tags.amenity||el.tags.tourism||"negocio",direccion:`${el.tags["addr:street"]||el.tags["addr:suburb"]||"Dolores Hidalgo"}`,tags:el.tags};
+  }).filter(Boolean);
+  
+  // Si busca "tacos", priorizar los que tienen taco en nombre
+  resultados.sort((a,b)=>{
+    const aMatch=normalizar(a.name).includes(textoNorm)?0:1;
+    const bMatch=normalizar(b.name).includes(textoNorm)?0:1;
+    return aMatch-bMatch;
+  });
+  return resultados.slice(0,35);
+ }catch(e){console.error(e); return [];}
 }
 
 async function buscarColonias(texto){
- const q=encodeURIComponent(texto+", Dolores Hidalgo, Guanajuato");
- const url=`https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=12&countrycodes=mx&accept-language=es`;
- try{const r=await fetch(url);const d=await r.json();return d.map(x=>({lat:parseFloat(x.lat),lon:parseFloat(x.lon),name:x.display_name.split(",")[0],direccion:x.display_name,tipo:"colonia"}));}catch{return [];}
+ const q=encodeURIComponent(texto+", Dolores Hidalgo");
+ const url=`https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=15&countrycodes=mx&accept-language=es`;
+ const r=await fetch(url); const d=await r.json();
+ return d.map(x=>({lat:parseFloat(x.lat),lon:parseFloat(x.lon),name:x.display_name.split(",")[0],tipo:"colonia",direccion:x.display_name}));
 }
 
-function mostrarSugerencias(cont, resultados, tipo){
+// ========= GOOGLE PLACES (si tienes API KEY) =========
+async function buscarConGoogle(texto){
+ if(!GOOGLE_API_KEY) return null;
+ try{
+  const url=`https://places.googleapis.com/v1/places:searchText`;
+  const body={textQuery: texto + " en Dolores Hidalgo Guanajuato", locationBias:{circle:{center:{latitude:CENTRO_DOLORES.lat,longitude:CENTRO_DOLORES.lng},radius:10000.0}}, maxResultCount:20};
+  const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","X-Goog-Api-Key":GOOGLE_API_KEY,"X-Goog-FieldMask":"places.displayName,places.formattedAddress,places.location,places.primaryType"},body:JSON.stringify(body)});
+  const data=await r.json();
+  if(!data.places) return [];
+  return data.places.map(p=>({lat:p.location.latitude,lon:p.location.longitude,name:p.displayName.text,tipo:p.primaryType||"negocio",direccion:p.formattedAddress}));
+ }catch(e){console.log("Google error",e); return [];}
+}
+
+function mostrarSugerencias(cont,resultados,tipo){
  cont.innerHTML="";
- if(!resultados.length){cont.innerHTML='<div style="padding:12px;text-align:center;font-size:11px;color:#777">No encontramos, prueba con otra palabra (ej: pollo, tacos, farmacia)</div>';cont.classList.add("show");return;}
+ if(!resultados.length){cont.innerHTML='<div style="padding:12px;text-align:center;font-size:11px">No hay resultados, intenta otra palabra</div>';cont.classList.add("show");return;}
  resultados.forEach(r=>{
   const el=document.createElement("div");el.className="suggestion";
-  const tipoLabel = r.tipo!=="colonia"? `<span class="suggestion-type">${r.tipo}</span>` : "";
-  el.innerHTML=`<div class="suggestion-name">📍 ${r.name} ${tipoLabel}</div><div class="suggestion-location">${r.direccion||"Dolores Hidalgo"}</div>`;
+  el.innerHTML=`<div class="suggestion-icon">${getIcono(r.tipo)}</div><div style="flex:1"><div class="suggestion-name">${r.name}</div><div class="suggestion-sub">${r.tipo} • ${r.direccion}</div></div><span class="badge">${r.tipo.toUpperCase().slice(0,10)}</span>`;
   el.onclick=()=>{
-    if(tipo==="pickup"){pickupLat=r.lat;pickupLng=r.lon;pickupNombre=r.name;pickupInput.value=r.name;pickupSuggestions.classList.remove("show");if(pickupMarker)map.removeLayer(pickupMarker);pickupMarker=L.marker([r.lat,r.lon],{icon:iconoCompra()}).addTo(map);map.setView([r.lat,r.lon],16);}
-    else{destinationLat=r.lat;destinationLng=r.lon;destNombre=r.name;destinationInput.value=r.name;destinationSuggestions.classList.remove("show");if(destinationMarker)map.removeLayer(destinationMarker);destinationMarker=L.marker([r.lat,r.lon],{icon:iconoEntrega()}).addTo(map);map.setView([r.lat,r.lon],16);}
-    if(pickupLat&&destinationLat)statusEl.innerText="Listo para cotizar";
+    if(tipo==="pickup"){pickupLat=r.lat;pickupLng=r.lon;pickupInput.value=r.name;pickupSuggestions.classList.remove("show");if(pickupMarker)map.removeLayer(pickupMarker);pickupMarker=L.marker([r.lat,r.lon]).addTo(map).bindPopup(r.name).openPopup();map.setView([r.lat,r.lon],16);}
+    else{destinationLat=r.lat;destinationLng=r.lon;destinationInput.value=r.name;destinationSuggestions.classList.remove("show");if(destinationMarker)map.removeLayer(destinationMarker);destinationMarker=L.marker([r.lat,r.lon]).addTo(map).bindPopup(r.name).openPopup();map.setView([r.lat,r.lon],16);}
   };
   cont.appendChild(el);
  });
@@ -142,43 +174,48 @@ function mostrarSugerencias(cont, resultados, tipo){
 
 let t1=null;
 pickupInput.addEventListener("input",function(){
- const txt=this.value.trim();pickupLat=null;if(pickupMarker){map.removeLayer(pickupMarker);pickupMarker=null;}if(routeLayer){map.removeLayer(routeLayer);routeLayer=null;}
- if(t1)clearTimeout(t1);if(txt.length<2){pickupSuggestions.classList.remove("show");return;}
- pickupSuggestions.innerHTML='<div style="padding:12px;text-align:center;font-size:11px">🔍 Buscando '+txt+' en Dolores Hidalgo...</div>';pickupSuggestions.classList.add("show");
+ const txt=this.value.trim();pickupLat=null;
+ if(t1)clearTimeout(t1);
+ if(txt.length<1){pickupSuggestions.classList.remove("show");return;}
+ pickupSuggestions.innerHTML=`<div style="padding:10px;text-align:center;font-size:11px">🔍 Buscando "${txt}" en todos los negocios de Dolores...</div>`;pickupSuggestions.classList.add("show");
  t1=setTimeout(async()=>{
    let res=[];
-   if(modo==="comprar"){ res=await buscarNegociosOverpass(txt); if(res.length<5){ const r2=await buscarColonias(txt); res=res.concat(r2); } }
-   else{ res=await buscarColonias(txt); }
+   if(modo==="comprar"){
+     // Si tienes Google API KEY, usa Google
+     if(GOOGLE_API_KEY){ const g=await buscarConGoogle(txt); if(g && g.length>0) res=g; }
+     // Si no, usa Overpass (muchos resultados)
+     if(res.length===0) res=await buscarTodosLosNegocios(txt);
+   } else {
+     res=await buscarColonias(txt);
+   }
    mostrarSugerencias(pickupSuggestions,res,"pickup");
- },400);
+ }, txt.length===1?150:350);
 });
 
 let t2=null;
 destinationInput.addEventListener("input",function(){
- const txt=this.value.trim();destinationLat=null;if(destinationMarker){map.removeLayer(destinationMarker);destinationMarker=null;}if(routeLayer){map.removeLayer(routeLayer);routeLayer=null;}
- if(t2)clearTimeout(t2);if(txt.length<2){destinationSuggestions.classList.remove("show");return;}
- destinationSuggestions.innerHTML='<div style="padding:12px;text-align:center;font-size:11px">Buscando colonia...</div>';destinationSuggestions.classList.add("show");
+ const txt=this.value.trim();if(t2)clearTimeout(t2);if(txt.length<1){destinationSuggestions.classList.remove("show");return;}
+ destinationSuggestions.innerHTML='<div style="padding:10px;text-align:center;font-size:11px">Buscando colonia...</div>';destinationSuggestions.classList.add("show");
  t2=setTimeout(async()=>{const res=await buscarColonias(txt);mostrarSugerencias(destinationSuggestions,res,"destination");},300);
 });
 
-document.addEventListener("click",(e)=>{if(!pickupInput.contains(e.target)&&!pickupSuggestions.contains(e.target))pickupSuggestions.classList.remove("show");if(!destinationInput.contains(e.target)&&!destinationSuggestions.contains(e.target))destinationSuggestions.classList.remove("show");});
+document.addEventListener("click",(e)=>{if(!e.target.closest("#pickupInput")&&!e.target.closest("#pickupSuggestions"))pickupSuggestions.classList.remove("show");if(!e.target.closest("#destinationInput")&&!e.target.closest("#destinationSuggestions"))destinationSuggestions.classList.remove("show");});
+
+document.getElementById("tabRecoger").onclick=()=>{modo="recoger";document.getElementById("tabRecoger").classList.add("active");document.getElementById("tabComprar").classList.remove("active");document.getElementById("labelPickup").innerText="Colonia de recogida";pickupInput.placeholder="Colonia donde recoger";};
+document.getElementById("tabComprar").onclick=()=>{modo="comprar";document.getElementById("tabComprar").classList.add("active");document.getElementById("tabRecoger").classList.remove("active");document.getElementById("labelPickup").innerText="¿DÓNDE COMPRAR? (tacos, farmacia, hotel, llantera...)";pickupInput.placeholder="Escribe: tacos, papeleria, hotel, farmacia, oxxo...";};
 
 document.getElementById("calculateButton").addEventListener("click", async ()=>{
- if(!pickupLat||!destinationLat){statusEl.innerText="Selecciona los 2 puntos primero";return;}
- const btn=document.getElementById("calculateButton");btn.innerText="CALCULANDO...";btn.disabled=true;
- try{
-  const url=`https://router.project-osrm.org/route/v1/driving/${pickupLng},${pickupLat};${destinationLng},${destinationLat}?overview=full&geometries=geojson`;
-  const r=await fetch(url);const d=await r.json();const route=d.routes[0];
-  const km=route.distance/1000;const min=Math.ceil(route.duration/60)+5;
-  if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(route.geometry,{style:{color:modo==="comprar"?"#22c55e":"#ef4444",weight:5}}).addTo(map);
-  map.fitBounds(routeLayer.getBounds(),{padding:[40,40]});
-  const precio=precioPorKm(km);
-  distanceEl.innerText=km.toFixed(2)+" km";durationEl.innerText=min+" min";priceEl.innerText="$"+precio;
-  statusEl.innerText=`${pickupNombre} → ${destNombre}`;
- }catch(e){statusEl.innerText="Error calculando ruta";}
- btn.innerText="CALCULAR COTIZACIÓN";btn.disabled=false;
+ if(!pickupLat||!destinationLat){alert("Selecciona los 2 puntos");return;}
+ const btn=document.getElementById("calculateButton");btn.innerText="CALCULANDO...";
+ const url=`https://router.project-osrm.org/route/v1/driving/${pickupLng},${pickupLat};${destinationLng},${destinationLat}?overview=full&geometries=geojson`;
+ const r=await fetch(url);const d=await r.json();const route=d.routes[0];
+ const km=route.distance/1000; const m=route.distance;
+ let precio=35; if(m>750) precio=35+Math.ceil((m-750)/750)*5;
+ if(window.routeLayer)map.removeLayer(window.routeLayer); window.routeLayer=L.geoJSON(route.geometry,{style:{color:"#111",weight:5}}).addTo(map);
+ map.fitBounds(window.routeLayer.getBounds(),{padding:[30,30]});
+ document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=Math.ceil(route.duration/60+5)+" min";document.getElementById("price").innerText="$"+precio;
+ btn.innerText="CALCULAR PRECIO";
 });
-setModo("comprar");
 </script>
 </body>
 </html>
