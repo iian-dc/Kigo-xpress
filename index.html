@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-<title>Moto Mandado</title>
+<title>Moto Kigo Xpress</title>
 
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -682,6 +682,10 @@ src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 
 <script>
 
+/* =====================================================
+   CONFIGURACIÓN
+   ===================================================== */
+
 const TARIFA_CENTRO_CENTRO=35;
 
 const TARIFA_BASE=35;
@@ -695,6 +699,11 @@ const TRAMO_ADICIONAL_METROS=750;
 const MINUTOS_ADICIONALES=5;
 
 const NUMERO_WHATSAPP="524182371993";
+
+
+/* =====================================================
+   VARIABLES
+   ===================================================== */
 
 let pickupLat=null;
 
@@ -720,6 +729,11 @@ let routeLayer=null;
 
 let precioServicio=0;
 
+
+/* =====================================================
+   MAPA
+   ===================================================== */
+
 const map=L.map(
 "map",
 {
@@ -727,6 +741,11 @@ zoomControl:false,
 attributionControl:true
 }
 );
+
+
+/* =====================================================
+   CAPA DEL MAPA
+   ===================================================== */
 
 L.tileLayer(
 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -736,10 +755,24 @@ attribution:"© OpenStreetMap"
 }
 ).addTo(map);
 
+
+/* =====================================================
+   CENTRO INICIAL
+   DOLORES HIDALGO
+   ===================================================== */
+
 map.setView(
-[21.1561,-100.9333],
+[
+21.1561,
+-100.9333
+],
 14
 );
+
+
+/* =====================================================
+   FIN DE LA PARTE 1
+   ===================================================== */
    /* =====================================================
    PARTE 2 DE 4
    COLONIAS + SUGERENCIAS + MARCADORES
@@ -795,9 +828,7 @@ return texto
 
 
 /* =====================================================
-   FORMATO DEL NOMBRE DE COLONIA
-   Primera letra mayúscula
-   Resto minúsculas
+   FORMATO DE COLONIA
    ===================================================== */
 
 function formatearColonia(texto){
@@ -812,7 +843,9 @@ texto.toLowerCase().trim();
 return texto.replace(
 /(^|\s)([a-záéíóúñ])/g,
 function(m,p1,p2){
+
 return p1+p2.toUpperCase();
+
 }
 );
 
@@ -820,7 +853,7 @@ return p1+p2.toUpperCase();
 
 
 /* =====================================================
-   SABER SI ES CENTRO
+   DETECTAR CENTRO
    ===================================================== */
 
 function esCentro(nombre){
@@ -853,7 +886,8 @@ kilometros*1000;
 
 
 /*
-   HASTA 750 METROS = $35
+   HASTA 750 METROS
+   TARIFA BASE $35
 */
 
 if(
@@ -866,8 +900,8 @@ return TARIFA_BASE;
 
 
 /*
-   METROS QUE SOBRAN
-   DESPUÉS DE LOS PRIMEROS 750
+   DISTANCIA DESPUÉS
+   DE LOS PRIMEROS 750 METROS
 */
 
 const metrosAdicionales=
@@ -876,7 +910,7 @@ DISTANCIA_BASE_METROS;
 
 
 /*
-   CADA 750 METROS ADICIONALES
+   CADA 750 METROS
    SUMA $5
 */
 
@@ -907,13 +941,17 @@ kilometros
 ){
 
 /*
-   CENTRO → CENTRO
+   CENTRO A CENTRO
    SIEMPRE $35
 */
 
 if(
-esCentro(pickupNombreColonia)&&
-esCentro(destinationNombreColonia)
+esCentro(
+pickupNombreColonia
+)&&
+esCentro(
+destinationNombreColonia
+)
 ){
 
 return TARIFA_CENTRO_CENTRO;
@@ -922,8 +960,7 @@ return TARIFA_CENTRO_CENTRO;
 
 
 /*
-   LAS DEMÁS RUTAS
-   SE COBRAN POR DISTANCIA
+   RESTO DE LAS RUTAS
 */
 
 return calcularPrecioPorDistancia(
@@ -934,7 +971,7 @@ kilometros
 
 
 /* =====================================================
-   ICONO DE RECOGIDA
+   ICONO RECOGIDA
    ===================================================== */
 
 function crearIconoRecogida(){
@@ -964,7 +1001,7 @@ iconAnchor:[
 
 
 /* =====================================================
-   ICONO DE DESTINO
+   ICONO DESTINO
    ===================================================== */
 
 function crearIconoDestino(){
@@ -994,7 +1031,7 @@ iconAnchor:[
 
 
 /* =====================================================
-   MARCADOR DE RECOGIDA
+   MARCADOR RECOGIDA
    ===================================================== */
 
 function colocarMarcadorRecogida(){
@@ -1039,7 +1076,7 @@ pickupNombreColonia
 
 
 /* =====================================================
-   MARCADOR DE ENTREGA
+   MARCADOR DESTINO
    ===================================================== */
 
 function colocarMarcadorEntrega(){
@@ -1104,7 +1141,6 @@ routeLayer=null;
 
 /* =====================================================
    BUSCAR COLONIAS
-   SOLO DOLORES HIDALGO
    ===================================================== */
 
 async function buscarColonias(
@@ -1131,7 +1167,7 @@ const url=
 "?format=json"+
 "&q="+
 consulta+
-"&limit=8"+
+"&limit=10"+
 "&countrycodes=mx"+
 "&addressdetails=1"+
 "&accept-language=es";
@@ -1143,6 +1179,7 @@ await fetch(url);
 
 const resultados=
 await respuesta.json();
+
 
 return resultados.filter(
 function(resultado){
@@ -1159,7 +1196,7 @@ resultado.display_name||""
 }catch(error){
 
 console.log(
-"Error buscando colonias:",
+"Error buscando colonia:",
 error
 );
 
@@ -1187,8 +1224,8 @@ if(!resultados.length){
 
 contenedor.innerHTML=
 '<div class="suggestion-empty">'+
-'No encontramos esa colonia en Dolores Hidalgo.'+
-'</div>';
+"No encontramos esa colonia en Dolores Hidalgo."+
+"</div>";
 
 contenedor.classList.add(
 "show"
@@ -1225,8 +1262,8 @@ nombre+
 '</div>'+
 
 '<div class="suggestion-location">'+
-'Dolores Hidalgo, Guanajuato'+
-'</div>';
+"Dolores Hidalgo, Guanajuato"+
+"</div>";
 
 
 elemento.addEventListener(
@@ -1367,7 +1404,7 @@ actualizarEstadoSeleccion();
 
 
 /* =====================================================
-   ACTUALIZAR ESTADO
+   ESTADO DE SELECCIÓN
    ===================================================== */
 
 function actualizarEstadoSeleccion(){
@@ -1417,12 +1454,12 @@ status.innerText=
    ===================================================== */
    /* =====================================================
    PARTE 3 DE 4
-   AUTOCOMPLETADO + RUTA + TIEMPO + COTIZACIÓN
+   AUTOCOMPLETADO + RUTA REAL POR CALLES
    ===================================================== */
 
 
 /* =====================================================
-   AUTOCOMPLETADO DE RECOGIDA
+   AUTOCOMPLETADO — RECOGIDA
    ===================================================== */
 
 let timerPickup=null;
@@ -1459,6 +1496,7 @@ confirmButton.disabled=true;
 
 limpiarRuta();
 
+
 if(timerPickup){
 
 clearTimeout(
@@ -1466,6 +1504,7 @@ timerPickup
 );
 
 }
+
 
 if(texto.length<2){
 
@@ -1481,14 +1520,16 @@ return;
 
 }
 
+
 pickupSuggestions.innerHTML=
 '<div class="suggestion-loading">'+
-'Buscando colonias...'+
-'</div>';
+"Buscando colonia..."+
+"</div>";
 
 pickupSuggestions.classList.add(
 "show"
 );
+
 
 timerPickup=
 setTimeout(
@@ -1514,7 +1555,7 @@ resultados,
 
 
 /* =====================================================
-   AUTOCOMPLETADO DE ENTREGA
+   AUTOCOMPLETADO — ENTREGA
    ===================================================== */
 
 let timerDestination=null;
@@ -1551,6 +1592,7 @@ confirmButton.disabled=true;
 
 limpiarRuta();
 
+
 if(timerDestination){
 
 clearTimeout(
@@ -1558,6 +1600,7 @@ timerDestination
 );
 
 }
+
 
 if(texto.length<2){
 
@@ -1573,14 +1616,16 @@ return;
 
 }
 
+
 destinationSuggestions.innerHTML=
 '<div class="suggestion-loading">'+
-'Buscando colonias...'+
-'</div>';
+"Buscando colonia..."+
+"</div>";
 
 destinationSuggestions.classList.add(
 "show"
 );
+
 
 timerDestination=
 setTimeout(
@@ -1640,24 +1685,159 @@ destinationSuggestions.classList.remove(
 
 
 /* =====================================================
-   CALCULAR RUTA
+   FUNCIÓN DE RUTA
+   ===================================================== */
+
+/*
+   IMPORTANTE:
+
+   La ruta se calcula sobre las calles disponibles
+   mediante el motor de rutas.
+
+   Se utiliza:
+
+   profile = driving
+
+   para que la ruta sea para vehículo.
+
+   Además se prueban diferentes alternativas y
+   se conserva la ruta más corta disponible.
+*/
+
+async function obtenerRutaReal(){
+
+const coordenadas=
+pickupLng+
+","+
+pickupLat+
+";"+
+destinationLng+
+","+
+destinationLat;
+
+
+/* =====================================================
+   PRIMERA RUTA
+   ===================================================== */
+
+const urlPrincipal=
+"https://router.project-osrm.org/route/v1/driving/"+
+coordenadas+
+"?overview=full"+
+"&geometries=geojson"+
+"&steps=true"+
+"&alternatives=true";
+
+
+const respuesta=
+await fetch(
+urlPrincipal
+);
+
+const datos=
+await respuesta.json();
+
+
+if(
+!datos.routes||
+!datos.routes.length
+){
+
+throw new Error(
+"No se encontró una ruta"
+);
+
+}
+
+
+/* =====================================================
+   ORDENAR ALTERNATIVAS
+   POR DISTANCIA
+   ===================================================== */
+
+const rutas=
+datos.routes.slice().sort(
+function(a,b){
+
+return a.distance-b.distance;
+
+}
+);
+
+
+/* =====================================================
+   SELECCIONAR LA RUTA MÁS CORTA
+   ===================================================== */
+
+let mejorRuta=
+rutas[0];
+
+
+/*
+   Evitamos rutas absurdamente largas.
+
+   Si existe otra alternativa cercana a la
+   más corta, elegimos la más corta.
+*/
+
+for(
+let i=1;
+i<rutas.length;
+i++
+){
+
+const alternativa=
+rutas[i];
+
+if(
+alternativa.distance<
+mejorRuta.distance
+){
+
+mejorRuta=
+alternativa;
+
+}
+
+}
+
+
+return mejorRuta;
+
+}
+
+
+/* =====================================================
+   CALCULAR RUTA Y COTIZACIÓN
    ===================================================== */
 
 async function calcularRuta(){
 
 if(
 pickupLat===null||
-pickupLng===null||
+pickupLng===null
+){
+
+status.innerText=
+"Selecciona la colonia de recogida.";
+
+return false;
+
+}
+
+
+if(
 destinationLat===null||
 destinationLng===null
 ){
 
 status.innerText=
-"Selecciona las dos colonias antes de calcular.";
+"Selecciona la colonia de entrega.";
 
 return false;
 
 }
+
 
 calculateButton.disabled=true;
 
@@ -1665,59 +1845,31 @@ calculateButton.innerText=
 "CALCULANDO...";
 
 status.innerText=
-"Calculando ruta entre las colonias...";
-
-
-const url=
-"https://router.project-osrm.org/route/v1/driving/"+
-pickupLng+
-","+
-pickupLat+
-";"+
-destinationLng+
-","+
-destinationLat+
-"?overview=full&geometries=geojson";
+"Buscando el mejor recorrido por las calles...";
 
 
 try{
 
-const respuesta=
-await fetch(
-url
-);
 
-const datos=
-await respuesta.json();
-
-if(
-!datos.routes||
-!datos.routes.length
-){
-
-status.innerText=
-"No encontramos una ruta.";
-
-calculateButton.disabled=false;
-
-calculateButton.innerText=
-"CALCULAR COTIZACIÓN";
-
-return false;
-
-}
-
+/* =====================================================
+   OBTENER MEJOR RUTA
+   ===================================================== */
 
 const ruta=
-datos.routes[0];
+await obtenerRutaReal();
 
 
 /* =====================================================
-   DISTANCIA
+   DISTANCIA REAL DE LA RUTA
    ===================================================== */
 
 const kilometros=
 ruta.distance/1000;
+
+
+/* =====================================================
+   MOSTRAR DISTANCIA
+   ===================================================== */
 
 distance.innerText=
 kilometros.toFixed(2)+
@@ -1738,7 +1890,7 @@ ruta.duration/60
 
 
 /*
-   SE SUMAN 5 MINUTOS
+   SE AGREGAN LOS 5 MINUTOS
 */
 
 const minutosFinales=
@@ -1747,7 +1899,7 @@ MINUTOS_ADICIONALES;
 
 
 /* =====================================================
-   MOSTRAR TIEMPO FINAL
+   FORMATEAR TIEMPO
    ===================================================== */
 
 let tiempoTexto="";
@@ -1810,14 +1962,14 @@ tiempoTexto;
 
 
 /* =====================================================
-   ELIMINAR RUTA ANTERIOR
+   BORRAR RUTA ANTERIOR
    ===================================================== */
 
 limpiarRuta();
 
 
 /* =====================================================
-   RUTA EN ROJO
+   DIBUJAR RUTA REAL EN ROJO
    ===================================================== */
 
 routeLayer=
@@ -1828,7 +1980,9 @@ ruta.geometry,
 style:{
 color:"#ef4444",
 weight:6,
-opacity:.95
+opacity:.95,
+lineCap:"round",
+lineJoin:"round"
 }
 
 }
@@ -1836,7 +1990,7 @@ opacity:.95
 
 
 /* =====================================================
-   COLOCAR MARCADORES
+   MARCADORES
    ===================================================== */
 
 colocarMarcadorRecogida();
@@ -1845,7 +1999,7 @@ colocarMarcadorEntrega();
 
 
 /* =====================================================
-   AJUSTAR MAPA
+   ENCUADRAR RUTA
    ===================================================== */
 
 map.fitBounds(
@@ -1881,7 +2035,7 @@ precioServicio
 
 
 /* =====================================================
-   MENSAJE
+   MENSAJE DE ESTADO
    ===================================================== */
 
 if(
@@ -1899,16 +2053,21 @@ status.innerText=
 }else{
 
 status.innerText=
-"Cotización calculada correctamente.";
+"Ruta calculada por las calles disponibles.";
 
 }
 
 
 /* =====================================================
-   ACTIVAR CONFIRMAR SERVICIO
+   ACTIVAR CONFIRMAR
    ===================================================== */
 
 confirmButton.disabled=false;
+
+
+/* =====================================================
+   ACTUALIZAR GLIDE
+   ===================================================== */
 
 actualizarGlide();
 
@@ -1925,12 +2084,12 @@ return true;
 }catch(error){
 
 console.log(
-"Error calculando ruta:",
+"Error de ruta:",
 error
 );
 
 status.innerText=
-"No se pudo calcular la ruta.";
+"No se pudo calcular una ruta por las calles disponibles.";
 
 calculateButton.disabled=false;
 
@@ -1988,7 +2147,7 @@ calcularRuta();
 
 
 /* =====================================================
-   URL GOOGLE MAPS
+   URL DE GOOGLE MAPS
    ===================================================== */
 
 function crearUrlGoogleMaps(){
@@ -2018,15 +2177,13 @@ destinationLng+
 "&travelmode=driving"
 );
 
-}
-
 
 /* =====================================================
    FIN DE LA PARTE 3
    ===================================================== */
    /* =====================================================
    PARTE 4 DE 4 — FINAL
-   DATOS + GLIDE + WHATSAPP + CONFIRMACIÓN
+   GLIDE + WHATSAPP + CONFIRMAR SERVICIO
    ===================================================== */
 
 
@@ -2049,7 +2206,10 @@ String(ahora.getMinutes()).padStart(2,"0")+
 String(ahora.getSeconds()).padStart(2,"0");
 
 const aleatorio=
-Math.floor(100+Math.random()*900);
+Math.floor(
+100+
+Math.random()*900
+);
 
 return(
 "MM-"+
@@ -2089,7 +2249,9 @@ hour12:false
    DATOS DEL SERVICIO
    ===================================================== */
 
-function obtenerDatos(numeroServicio){
+function obtenerDatos(
+numeroServicio
+){
 
 return{
 
@@ -2098,6 +2260,9 @@ numeroServicio,
 
 tipo_servicio:
 "Moto Mandado",
+
+empresa:
+"Kigo Xpress",
 
 ciudad:
 "Dolores Hidalgo",
@@ -2179,14 +2344,16 @@ datos
 
 
 /* =====================================================
-   MENSAJE DE WHATSAPP
+   MENSAJE WHATSAPP
    ===================================================== */
 
-function crearMensajeWhatsApp(datos){
+function crearMensajeWhatsApp(
+datos
+){
 
 const mensaje=
 
-"🛵 MOTO KIGO XPRESS\n\n"+
+"🛵 KIGO XPRESS\n\n"+
 
 "━━━━━━━━━━━━━━━━━━\n\n"+
 
@@ -2232,7 +2399,7 @@ datos.url_google_maps+
 
 "━━━━━━━━━━━━━━━━━━\n\n"+
 
-"✅ Cotización generada desde Kigo Xpress";
+"✅ Servicio generado desde Kigo Xpress";
 
 return mensaje;
 
@@ -2240,10 +2407,12 @@ return mensaje;
 
 
 /* =====================================================
-   ENVIAR WHATSAPP
+   ENVIAR A WHATSAPP
    ===================================================== */
 
-function enviarWhatsApp(datos){
+function enviarWhatsApp(
+datos
+){
 
 const mensaje=
 crearMensajeWhatsApp(
@@ -2314,7 +2483,7 @@ return;
 
 
 /* =====================================================
-   GENERAR NÚMERO DE SERVICIO
+   GENERAR NÚMERO
    ===================================================== */
 
 const numeroServicio=
@@ -2322,7 +2491,7 @@ obtenerNumeroServicio();
 
 
 /* =====================================================
-   DATOS FINALES
+   OBTENER DATOS FINALES
    ===================================================== */
 
 const datos=
@@ -2332,7 +2501,7 @@ numeroServicio
 
 
 /* =====================================================
-   ENVIAR A GLIDE
+   ENVIAR DATOS A GLIDE
    ===================================================== */
 
 window.parent.postMessage(
@@ -2348,7 +2517,7 @@ datos
 
 
 /* =====================================================
-   DESACTIVAR BOTÓN
+   BLOQUEAR BOTÓN
    ===================================================== */
 
 this.disabled=true;
@@ -2358,7 +2527,7 @@ this.innerText=
 
 
 /* =====================================================
-   PANTALLA DE CARGA
+   MOSTRAR PANTALLA DE CARGA
    ===================================================== */
 
 const loadingScreen=
@@ -2381,7 +2550,7 @@ loadingText.innerText=
 
 
 /* =====================================================
-   CAMBIAR MENSAJE
+   SEGUNDO MENSAJE
    ===================================================== */
 
 setTimeout(
@@ -2396,7 +2565,7 @@ loadingText.innerText=
 
 
 /* =====================================================
-   ABRIR WHATSAPP
+   ENVIAR WHATSAPP
    ===================================================== */
 
 setTimeout(
@@ -2414,14 +2583,14 @@ datos
 
 
 /* =====================================================
-   ACTUALIZACIÓN INICIAL
+   ACTUALIZACIÓN INICIAL DE GLIDE
    ===================================================== */
 
 actualizarGlide();
 
 
 /* =====================================================
-   AJUSTAR MAPA
+   ASEGURAR CORRECTA VISUALIZACIÓN DEL MAPA
    ===================================================== */
 
 setTimeout(
@@ -2443,7 +2612,7 @@ map.setView(
 
 
 /* =====================================================
-   FIN DEL CÓDIGO
+   FIN DEL DOCUMENTO
    ===================================================== */
 
 </script>
