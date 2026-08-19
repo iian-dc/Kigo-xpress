@@ -10,7 +10,7 @@
 .app{max-width:500px;margin:auto;background:#fff;min-height:100vh;display:flex;flex-direction:column}
 #map{width:100%;height:50vh}.map-container{position:relative}
 .map-message{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:999;background:#111;color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:900}
-.panel{padding:16px;border-radius:22px 22px 0 0;margin-top:-18px;position:relative;z-index:1000;background:#fff;box-shadow:0 -4px 20px rgba(0,0,0,.12);flex:1}
+.panel{padding:16px;border-radius:22px 22px 0 0;margin-top:-18px;position:relative;z-index:1000;background:#fff;flex:1}
 .step{background:#f7f7f8;border:1px solid #eee;padding:12px;border-radius:14px;margin-bottom:12px}
 .colonia-input{width:100%;padding:14px;border:1.5px solid #ddd;border-radius:12px;font-size:14px;font-weight:600;outline:none}
 .suggestions{position:absolute;left:0;right:0;top:100%;margin-top:6px;background:#fff;border:1px solid #ddd;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,.18);z-index:9999;display:none;max-height:300px;overflow-y:auto}
@@ -23,10 +23,10 @@
 </head>
 <body>
 <div class="app">
-<div class="map-container"><div id="map"></div><div class="map-message">KIGO XPRESS - MOTO</div></div>
+<div class="map-container"><div id="map"></div><div class="map-message">Kigo xpress</div></div>
 <div class="panel">
-<div class="step"><div style="font-size:11px;font-weight:800;color:#666;margin-bottom:6px">1. ¿DÓNDE RECOGER?</div><div class="input-wrapper"><input id="pickupInput" class="colonia-input" placeholder="Ej: Centro, Morelos..." autocomplete="off"><div id="pickupSuggestions" class="suggestions"></div></div></div>
-<div class="step"><div style="font-size:11px;font-weight:800;color:#666;margin-bottom:6px">2. ¿DÓNDE ENTREGAR?</div><div class="input-wrapper"><input id="destinationInput" class="colonia-input" placeholder="Ej: Lindavista..." autocomplete="off"><div id="destinationSuggestions" class="suggestions"></div></div></div>
+<div class="step"><div style="font-size:11px;font-weight:800;color:#666;margin-bottom:6px">1. ¿DÓNDE RECOGER?</div><div class="input-wrapper"><input id="pickupInput" class="colonia-input" placeholder="Escribe Centro o colonia..." autocomplete="off"><div id="pickupSuggestions" class="suggestions"></div></div></div>
+<div class="step"><div style="font-size:11px;font-weight:800;color:#666;margin-bottom:6px">2. ¿DÓNDE ENTREGAR?</div><div class="input-wrapper"><input id="destinationInput" class="colonia-input" placeholder="Escribe colonia..." autocomplete="off"><div id="destinationSuggestions" class="suggestions"></div></div></div>
 <button id="calculateButton" class="btn-cotizar">COTIZAR SERVICIO</button>
 <div class="info"><div class="info-box"><div style="font-size:9px;color:#888;font-weight:700">DISTANCIA MOTO</div><div id="distance" style="font-weight:800">—</div></div><div class="info-box"><div style="font-size:9px;color:#888;font-weight:700">TIEMPO</div><div id="duration" style="font-weight:800">—</div></div></div>
 <div class="price-box"><span>PRECIO</span><span id="price">$ POR COTIZAR</span></div>
@@ -39,31 +39,52 @@ let pickupLat=null,pickupLng=null,destinationLat=null,destinationLng=null,pickup
 const map=L.map("map",{zoomControl:false}).setView([CENTRO.lat,CENTRO.lng],14);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(map);
 const pickupInput=document.getElementById("pickupInput"),destinationInput=document.getElementById("destinationInput"),pickupSuggestions=document.getElementById("pickupSuggestions"),destinationSuggestions=document.getElementById("destinationSuggestions");
+function distMts(lat1,lon1,lat2,lon2){
+ const R=6371000; const dLat=(lat2-lat1)*Math.PI/180; const dLon=(lon2-lon1)*Math.PI/180;
+ const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+ return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
 async function buscarColonias(t){
+ const texto=t.toLowerCase();
+ let resultados=[];
+ // ARREGLO CENTRO: si escribe centro, forzamos que aparezca
+ if(texto.includes("centro") || texto.includes("cent")){
+   resultados.push({lat:CENTRO.lat,lon:CENTRO.lng,name:"Centro - Zona Centro",direccion:"Centro, Dolores Hidalgo, Gto."});
+ }
  const q=encodeURIComponent(t+", Dolores Hidalgo Guanajuato Mexico");
- const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=12&countrycodes=mx&accept-language=es`);
- const d=await r.json();return d.map(x=>({lat:parseFloat(x.lat),lon:parseFloat(x.lon),name:x.display_name.split(",")[0],direccion:x.display_name}));
+ try{
+  const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=10&countrycodes=mx&accept-language=es`);
+  const d=await r.json();
+  const otros=d.map(x=>({lat:parseFloat(x.lat),lon:parseFloat(x.lon),name:x.display_name.split(",")[0],direccion:x.display_name}));
+  resultados = [...resultados, ...otros];
+ }catch(e){}
+ return resultados;
 }
 function mostrar(c,res,tipo){
  c.innerHTML="";if(!res.length){c.innerHTML='<div style="padding:12px;text-align:center">Sin resultados</div>';c.classList.add("show");return;}
  res.forEach(r=>{
-  const el=document.createElement("div");el.className="suggestion";el.innerHTML=`<div>🛵</div><div><div style="font-weight:700;font-size:13px">${r.name}</div><div style="font-size:10px;color:#777">${r.direccion.substring(0,60)}</div></div>`;
-  el.onclick=()=>{if(tipo==="pickup"){pickupLat=r.lat;pickupLng=r.lon;pickupInput.value=r.name;pickupSuggestions.classList.remove("show");if(pickupMarker)map.removeLayer(pickupMarker);pickupMarker=L.marker([r.lat,r.lon]).addTo(map);map.setView([r.lat,r.lon],16);}else{destinationLat=r.lat;destinationLng=r.lon;destinationInput.value=r.name;destinationSuggestions.classList.remove("show");if(destinationMarker)map.removeLayer(destinationMarker);destinationMarker=L.marker([r.lat,r.lon]).addTo(map);map.setView([r.lat,r.lon],16);}};
+  const el=document.createElement("div");el.className="suggestion";el.innerHTML=`<div>🛵</div><div><div style="font-weight:800;font-size:13px">${r.name}</div><div style="font-size:10px;color:#777">${r.direccion.substring(0,70)}</div></div>`;
+  el.onclick=()=>{if(tipo==="pickup"){pickupLat=r.lat;pickupLng=r.lon;pickupInput.value=r.name;pickupSuggestions.classList.remove("show");if(pickupMarker)map.removeLayer(pickupMarker);pickupMarker=L.marker([r.lat,r.lon]).addTo(map).bindPopup("RECOGER: "+r.name).openPopup();map.setView([r.lat,r.lon],16);}else{destinationLat=r.lat;destinationLng=r.lon;destinationInput.value=r.name;destinationSuggestions.classList.remove("show");if(destinationMarker)map.removeLayer(destinationMarker);destinationMarker=L.marker([r.lat,r.lon]).addTo(map).bindPopup("ENTREGAR: "+r.name).openPopup();map.setView([r.lat,r.lon],16);}};
   c.appendChild(el);
  });c.classList.add("show");
 }
-let t1=null;pickupInput.addEventListener("input",function(){const txt=this.value.trim();if(t1)clearTimeout(t1);if(txt.length<2){pickupSuggestions.classList.remove("show");return;}pickupSuggestions.classList.add("show");pickupSuggestions.innerHTML='Buscando...';t1=setTimeout(async()=>{const res=await buscarColonias(txt);mostrar(pickupSuggestions,res,"pickup");},350);});
-let t2=null;destinationInput.addEventListener("input",function(){const txt=this.value.trim();if(t2)clearTimeout(t2);if(txt.length<2){destinationSuggestions.classList.remove("show");return;}destinationSuggestions.classList.add("show");destinationSuggestions.innerHTML='Buscando...';t2=setTimeout(async()=>{const res=await buscarColonias(txt);mostrar(destinationSuggestions,res,"destination");},350);});
+let t1=null;pickupInput.addEventListener("input",function(){const txt=this.value.trim();if(t1)clearTimeout(t1);if(txt.length<2){pickupSuggestions.classList.remove("show");return;}pickupSuggestions.classList.add("show");pickupSuggestions.innerHTML='<div style="padding:10px;text-align:center;font-size:11px">Buscando...</div>';t1=setTimeout(async()=>{const res=await buscarColonias(txt);mostrar(pickupSuggestions,res,"pickup");},350);});
+let t2=null;destinationInput.addEventListener("input",function(){const txt=this.value.trim();if(t2)clearTimeout(t2);if(txt.length<2){destinationSuggestions.classList.remove("show");return;}destinationSuggestions.classList.add("show");destinationSuggestions.innerHTML='<div style="padding:10px;text-align:center;font-size:11px">Buscando...</div>';t2=setTimeout(async()=>{const res=await buscarColonias(txt);mostrar(destinationSuggestions,res,"destination");},350);});
 document.getElementById("calculateButton").onclick=async()=>{
  if(!pickupLat||!destinationLat){alert("Selecciona donde recoger y donde entregar");return;}
- // MODO MOTO = bike
  const url=`https://router.project-osrm.org/route/v1/bike/${pickupLng},${pickupLat};${destinationLng},${destinationLat}?overview=full&geometries=geojson`;
  const r=await fetch(url);const d=await r.json();if(!d.routes||!d.routes[0]){alert("No se pudo trazar ruta");return;}
  const route=d.routes[0];const km=route.distance/1000;
- let precio=35; if(route.distance>1000){let extra=route.distance-1000; precio=35+Math.ceil(extra/650)*5;}
+ let precio=35;
+ if(route.distance>1000){let extra=route.distance-1000; precio=35+Math.ceil(extra/650)*5;}
+ // cobro interno oculto: si ambos fuera de centro +5
+ let distPickupCentro=distMts(pickupLat,pickupLng,CENTRO.lat,CENTRO.lng);
+ let distDestCentro=distMts(destinationLat,destinationLng,CENTRO.lat,CENTRO.lng);
+ if(distPickupCentro>800 && distDestCentro>800){precio+=5;}
  if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(route.geometry,{style:{color:"#E53935",weight:6}}).addTo(map);map.fitBounds(routeLayer.getBounds(),{padding:[40,40]});
  document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=Math.ceil(route.duration/60)+" min";document.getElementById("price").innerText="$"+precio+" MXN";
 };
+document.addEventListener("click",e=>{if(!e.target.closest(".input-wrapper")){pickupSuggestions.classList.remove("show");destinationSuggestions.classList.remove("show");}});
 </script>
 </body>
 </html>
