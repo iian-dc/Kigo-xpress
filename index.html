@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Kigo xpress</title>
+<title>Kigo Xpress Moto</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f3f4f6}
@@ -41,7 +41,7 @@
 <div class="reset-btn" id="resetBtn">↻</div>
 <div id="weatherWidget" class="weather-widget">☀️ --°C</div>
 <div id="rainOverlay" class="rain-overlay"></div>
-<div id="weatherBadge" class="weather-badge">🌧️ Lloviendo</div>
+<div id="weatherBadge" class="weather-badge">🌧️ LLOVIENDO EN DOLORES</div>
 </div>
 <div class="panel">
 <div class="step"><div style="font-size:11px;font-weight:800;color:#666;margin-bottom:6px">1. ¿DÓNDE RECOGER?</div><div class="input-wrapper"><input id="pickupInput" class="colonia-input" placeholder="Escribe Centro o colonia..." autocomplete="off"><div id="pickupSuggestions" class="suggestions"></div></div></div>
@@ -49,7 +49,7 @@
 <button id="calculateButton" class="btn-cotizar">COTIZAR SERVICIO</button>
 <button id="whatsappButton" class="btn-whatsapp">📲 Compartir cotización por WhatsApp</button>
 <div class="info"><div class="info-box"><div style="font-size:9px;color:#888;font-weight:700">DISTANCIA MOTO</div><div id="distance" style="font-weight:800">—</div></div><div class="info-box"><div style="font-size:9px;color:#888;font-weight:700">TIEMPO</div><div id="duration" style="font-weight:800">—</div></div></div>
-<div class="price-box"><span>PRECIO</span><span id="price">POR COTIZAR</span></div>
+<div class="price-box"><span>PRECIO</span><span id="price">$ POR COTIZAR</span></div>
 </div>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -76,17 +76,17 @@ document.getElementById("calculateButton").onclick=async()=>{
  const r=await fetch(url);const d=await r.json();if(!d.routes||!d.routes[0]){alert("No se pudo trazar ruta");return;}
  const route=d.routes[0];const km=route.distance/1000;
  let precio=35;
- if(route.distance>1000){let extra=route.distance-1000;precio=35+Math.ceil(extra/650)*5;}
+ if(route.distance>2000){let extra=route.distance-2000;precio=35+Math.ceil(extra/650)*5;}
  if(distMts(pickupLat,pickupLng,CENTRO.lat,CENTRO.lng)>800&&distMts(destinationLat,destinationLng,CENTRO.lat,CENTRO.lng)>800){precio+=5;}
  if(extraLluvia>0){precio+=extraLluvia;}
- if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(route.geometry,{style:{color:"#E53935",weight:6}}).addTo(map);map.fitBounds(routeLayer.getBounds(),{padding:[40,40]});
+ if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(route.geometry,{style:{color:"#E53935",weight:6}}).addTo(map);map.fitBounds(routeLayer.getBounds(),{padding:[40][40]});
  document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=Math.ceil(route.duration/60)+" min";document.getElementById("price").innerText="$"+precio+" MXN";
  ultimaDistancia=km.toFixed(2)+" km";ultimoPrecio="$"+precio+" MXN";
  document.getElementById("whatsappButton").classList.add("show");
 };
 document.getElementById("whatsappButton").onclick=()=>{
  const linkRuta=`https://www.google.com/maps/dir/${pickupLat},${pickupLng}/${destinationLat},${destinationLng}`;
- const mensaje=`*Cotización Kigo xpress* 🛵\n\n📍 *Recoger:* ${pickupName}\n📦 *Entregar:* ${destName}\n📏 *Distancia:* ${ultimaDistancia}\n💰 *Valor:* ${ultimoPrecio}\n\n🗺️ *Ver ruta:* ${linkRuta}\n\n¿Confirmamos servicio?`;
+ const mensaje=`*COTIZACIÓN KIGO XPRESS* 🛵\n\n📍 *Recoger:* ${pickupName}\n📦 *Entregar:* ${destName}\n📏 *Distancia:* ${ultimaDistancia}\n💰 *Valor:* ${ultimoPrecio}\n\n🗺️ *Ver ruta:* ${linkRuta}\n\n¿Confirmamos servicio?`;
  const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`;
  window.open(url,"_blank");
 };
