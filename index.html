@@ -67,7 +67,44 @@ function mostrar(c,res,tipo){c.innerHTML="";if(!res.length){c.innerHTML='<div st
 let t1=null;pickupInput.addEventListener("input",function(){const txt=this.value.trim();if(t1)clearTimeout(t1);if(txt.length<2){pickupSuggestions.classList.remove("show");return;}pickupSuggestions.classList.add("show");pickupSuggestions.innerHTML='<div style="padding:10px;text-align:center;font-size:11px">Buscando...</div>';t1=setTimeout(async()=>{const res=await buscarColonias(txt);mostrar(pickupSuggestions,res,"pickup");},350);});
 let t2=null;destinationInput.addEventListener("input",function(){const txt=this.value.trim();if(t2)clearTimeout(t2);if(txt.length<2){destinationSuggestions.classList.remove("show");return;}destinationSuggestions.classList.add("show");destinationSuggestions.innerHTML='<div style="padding:10px;text-align:center;font-size:11px">Buscando...</div>';t2=setTimeout(async()=>{const res=await buscarColonias(txt);mostrar(destinationSuggestions,res,"destination");},350);});
 for(let i=0;i<70;i++){let d=document.createElement("div");d.className="rain";d.style.left=Math.random()*100+"%";d.style.animationDelay=Math.random()*1.2+"s";d.style.animationDuration=(0.5+Math.random()*0.6)+"s";d.style.opacity=0.6+Math.random()*0.4;rainOverlay.appendChild(d);}
-async function checarLluvia(){try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m,precipitation,rain,weather_code&timezone=America/Mexico_City");const data=await r.json();const precip=data.current.precipitation;const temp=Math.round(data.current.temperature_2m);const code=data.current.weather_code;let estaLloviendo=precip>0||(code>=51&&code<=99);if(!estaLloviendo){extraLluvia=0;rainOverlay.classList.remove("active");weatherBadge.classList.remove("show");weatherWidget.className="weather-widget";weatherWidget.innerText=`☀️ ${temp}°C`;return;}if(code>=95||precip>7.5||code==65||code==82){extraLluvia=10;weatherWidget.className="weather-widget tormenta";weatherWidget.innerText=`⛈️ ${temp}°C Tormenta`;weatherBadge.className="weather-badge show tormenta";weatherBadge.innerText=`⛈️ LLOVIENDO EN DOLORES - Tormenta (${precip}mm)`;}else if(code==53||code==63||code==81||code==55||(precip>=2.5&&precip<=7.5)){extraLluvia=10;weatherWidget.className="weather-widget lluvia";weatherWidget.innerText=`🌧️ ${temp}°C Moderada`;weatherBadge.className="weather-badge show moderada";weatherBadge.innerText=`🌧️ LLOVIENDO EN DOLORES - Lluvia moderada (${precip}mm)`;}else{extraLluvia=5;weatherWidget.className="weather-widget lluvia";weatherWidget.innerText=`🌦️ ${temp}°C Leve`;weatherBadge.className="weather-badge show leve";weatherBadge.innerText=`🌦️ LLOVIENDO EN DOLORES - Lluvia leve (${precip}mm)`;}rainOverlay.classList.add("active");}catch(e){weatherWidget.innerText=`☀️ --°C`;}}
+async function checarLluvia(){
+try{
+const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m,precipitation,rain,weather_code&timezone=America/Mexico_City");
+const data=await r.json();
+const precip=data.current.precipitation;
+const temp=Math.round(data.current.temperature_2m);
+const code=data.current.weather_code;
+let estaLloviendo=precip>0||(code>=51&&code<=99);
+if(!estaLloviendo){
+extraLluvia=0;
+rainOverlay.classList.remove("active");
+weatherBadge.classList.remove("show");
+weatherWidget.className="weather-widget";
+weatherWidget.innerText=`☀️ ${temp}°C`;
+return;
+}
+if(code>=95||precip>7.5||code==65||code==82){
+extraLluvia=10;
+weatherWidget.className="weather-widget tormenta";
+weatherWidget.innerText=`⛈️ ${temp}°C Fuerte`;
+weatherBadge.className="weather-badge show tormenta";
+weatherBadge.innerText=`⛈️ LLOVIENDO EN DOLORES - Fuerte (${precip}mm) +$10`;
+}else if(code==53||code==63||code==81||code==55||(precip>=2.5&&precip<=7.5)){
+extraLluvia=5;
+weatherWidget.className="weather-widget lluvia";
+weatherWidget.innerText=`🌧️ ${temp}°C Moderada`;
+weatherBadge.className="weather-badge show moderada";
+weatherBadge.innerText=`🌧️ LLOVIENDO EN DOLORES - Moderada (${precip}mm) +$5`;
+}else{
+extraLluvia=0;
+weatherWidget.className="weather-widget lluvia";
+weatherWidget.innerText=`🌦️ ${temp}°C Leve`;
+weatherBadge.className="weather-badge show leve";
+weatherBadge.innerText=`🌦️ LLOVIENDO EN DOLORES - Leve (${precip}mm) +$0`;
+}
+rainOverlay.classList.add("active");
+}catch(e){weatherWidget.innerText=`☀️ --°C`;}
+}
 checarLluvia(); setInterval(checarLluvia,600000);
 
 document.getElementById("calculateButton").onclick=async()=>{
@@ -78,11 +115,8 @@ document.getElementById("calculateButton").onclick=async()=>{
  let precio=35;
  if(route.distance>2000){let extra=route.distance-2000;precio=35+Math.ceil(extra/650)*5;}
  if(distMts(pickupLat,pickupLng,CENTRO.lat,CENTRO.lng)>800&&distMts(destinationLat,destinationLng,CENTRO.lat,CENTRO.lng)>800){precio+=5;}
- // REGLA ESPECIAL: SOP <-> LINDAVISTA FIJO $45
  let esSOP_Lindavista = (pickupName.toLowerCase().includes("sop") && destName.toLowerCase().includes("linda")) || (destName.toLowerCase().includes("sop") && pickupName.toLowerCase().includes("linda")) || (pickupName.toLowerCase().includes("sop") && destName.toLowerCase().includes("lindavista")) || (destName.toLowerCase().includes("sop") && pickupName.toLowerCase().includes("lindavista"));
- if(esSOP_Lindavista){
-   precio = 45;
- }
+ if(esSOP_Lindavista){ precio = 45; }
  if(extraLluvia>0){precio+=extraLluvia;}
  if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(route.geometry,{style:{color:"#E53935",weight:6}}).addTo(map);map.fitBounds(routeLayer.getBounds(),{padding:[40,40]});
  document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=Math.ceil(route.duration/60)+" min";document.getElementById("price").innerText="$"+precio+" MXN";
