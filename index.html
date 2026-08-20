@@ -78,8 +78,13 @@ document.getElementById("calculateButton").onclick=async()=>{
  let precio=35;
  if(route.distance>2000){let extra=route.distance-2000;precio=35+Math.ceil(extra/650)*5;}
  if(distMts(pickupLat,pickupLng,CENTRO.lat,CENTRO.lng)>800&&distMts(destinationLat,destinationLng,CENTRO.lat,CENTRO.lng)>800){precio+=5;}
+ // REGLA ESPECIAL: SOP <-> LINDAVISTA FIJO $45
+ let esSOP_Lindavista = (pickupName.toLowerCase().includes("sop") && destName.toLowerCase().includes("linda")) || (destName.toLowerCase().includes("sop") && pickupName.toLowerCase().includes("linda")) || (pickupName.toLowerCase().includes("sop") && destName.toLowerCase().includes("lindavista")) || (destName.toLowerCase().includes("sop") && pickupName.toLowerCase().includes("lindavista"));
+ if(esSOP_Lindavista){
+   precio = 45;
+ }
  if(extraLluvia>0){precio+=extraLluvia;}
- if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(route.geometry,{style:{color:"#E53935",weight:6}}).addTo(map);map.fitBounds(routeLayer.getBounds(),{padding:[40][40]});
+ if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(route.geometry,{style:{color:"#E53935",weight:6}}).addTo(map);map.fitBounds(routeLayer.getBounds(),{padding:[40,40]});
  document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=Math.ceil(route.duration/60)+" min";document.getElementById("price").innerText="$"+precio+" MXN";
  ultimaDistancia=km.toFixed(2)+" km";ultimoPrecio="$"+precio+" MXN";
  document.getElementById("whatsappButton").classList.add("show");
