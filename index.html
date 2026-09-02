@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Kigo xpress</title>
+<link id="manifestLink" rel="manifest" href="">
+<meta id="themeColorMeta" name="theme-color" content="#E53935">
+<link id="appleIcon" rel="apple-touch-icon" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta id="appleTitle" name="apple-mobile-web-app-title" content="KIGO XPRESS">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f3f4f6}
@@ -133,6 +138,12 @@
 <img id="previewLogin" class="mod-preview" style="border-radius:10px" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3">
 <input type="file" id="inputLogoLogin" accept="image/*" style="font-size:11px">
 </div>
+<div class="mod-label">📱 Icono de la App (portada al instalar) - 512x512</div>
+<div class="mod-row">
+<img id="previewPWA" class="mod-preview" style="border-radius:16px; border:2px solid #111" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3">
+<input type="file" id="inputPWAIcon" accept="image/*" style="font-size:11px">
+</div>
+<div style="font-size:10px;color:#888;margin-bottom:12px">Este es el icono que sale cuando le dan a Instalar. Usa una imagen cuadrada.</div>
 <div class="mod-label">Nombre de la plataforma</div>
 <input id="inputPlatformName" class="mod-input" placeholder="Ej: KIGO XPRESS">
 <div class="mod-label">Color principal del tema</div>
@@ -226,15 +237,42 @@ function distMts(lat1,lon1,lat2,lon2){const R=6371000;const dLat=(lat2-lat1)*Mat
 let clientesGuardados=[];
 let tempClienteLat=null,tempClienteLng=null,tempClienteDir="",editandoId=null;
 let clienteMiniMap=null, clienteMiniMarker=null;
-let configMarca={logoMapa:"",logoLogin:"",platformName:"KIGO XPRESS",primaryColor:"#E53935"};
+let configMarca={logoMapa:"",logoLogin:"",pwaIcon:"",platformName:"KIGO XPRESS",primaryColor:"#E53935"};
 let configTarifas={azul:0,verde:5,amarillo:9,rojo:12,morado:18,base:35,metros:650,extraMonto:5,lejosCentro:5,sop:45};
+
+function actualizarManifestPWA(){
+  const iconSrc = configMarca.pwaIcon || configMarca.logoLogin || configMarca.logoMapa || "https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3";
+  const name = configMarca.platformName || "KIGO XPRESS";
+  const color = configMarca.primaryColor || "#E53935";
+  const manifest = {
+    name: name,
+    short_name: name.substring(0,12),
+    display: "standalone",
+    background_color: "#ffffff",
+    theme_color: color,
+    icons: [
+      { src: iconSrc, sizes: "192x192", type: "image/png", purpose: "any maskable" },
+      { src: iconSrc, sizes: "512x512", type: "image/png", purpose: "any maskable" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  document.getElementById("manifestLink").href = url;
+  document.getElementById("appleIcon").href = iconSrc;
+  document.getElementById("themeColorMeta").content = color;
+  document.getElementById("appleTitle").content = name;
+}
+
 db.ref("kigo_config").on("value",(snap)=>{const v=snap.val(); if(v){configMarca=v; aplicarConfigMarca();}});
 db.ref("kigo_tarifas").on("value",(snap)=>{const v=snap.val(); if(v){configTarifas=v; aplicarConfigTarifas();}});
+
 function aplicarConfigMarca(){
   if(configMarca.logoMapa){document.getElementById("logoMapaImg").src=configMarca.logoMapa; document.getElementById("previewMapa").src=configMarca.logoMapa;}
   if(configMarca.logoLogin){document.getElementById("logoLoginImg").src=configMarca.logoLogin; document.getElementById("logoAdminHead").src=configMarca.logoLogin; document.getElementById("previewLogin").src=configMarca.logoLogin;}
+  if(configMarca.pwaIcon){document.getElementById("previewPWA").src=configMarca.pwaIcon;}
   if(configMarca.platformName){document.getElementById("platformNameLogin").innerText=configMarca.platformName; document.getElementById("platformNameAdmin").innerText="Panel "+configMarca.platformName; document.getElementById("inputPlatformName").value=configMarca.platformName; document.title=configMarca.platformName; document.getElementById("statPlatform").innerText=configMarca.platformName;}
   if(configMarca.primaryColor){document.getElementById("calculateButton").style.background=configMarca.primaryColor; document.getElementById("inputPrimaryColor").value=configMarca.primaryColor;}
+  actualizarManifestPWA();
 }
 function aplicarConfigTarifas(){
   document.getElementById("tarifaAzul").value=configTarifas.azul;
@@ -252,19 +290,24 @@ function aplicarConfigTarifas(){
 function setColor(c){document.getElementById("inputPrimaryColor").value=c;}
 document.getElementById("inputLogoMapa").addEventListener("change", function(e){
   const file=e.target.files[0]; if(!file) return; const reader=new FileReader();
-  reader.onload=function(ev){document.getElementById("previewMapa").src=ev.target.result; configMarca.logoMapa=ev.target.result; document.getElementById("logoMapaImg").src=ev.target.result;};
+  reader.onload=function(ev){document.getElementById("previewMapa").src=ev.target.result; configMarca.logoMapa=ev.target.result; document.getElementById("logoMapaImg").src=ev.target.result; actualizarManifestPWA();};
   reader.readAsDataURL(file);
 });
 document.getElementById("inputLogoLogin").addEventListener("change", function(e){
   const file=e.target.files[0]; if(!file) return; const reader=new FileReader();
-  reader.onload=function(ev){document.getElementById("previewLogin").src=ev.target.result; configMarca.logoLogin=ev.target.result; document.getElementById("logoLoginImg").src=ev.target.result; document.getElementById("logoAdminHead").src=ev.target.result;};
+  reader.onload=function(ev){document.getElementById("previewLogin").src=ev.target.result; configMarca.logoLogin=ev.target.result; document.getElementById("logoLoginImg").src=ev.target.result; document.getElementById("logoAdminHead").src=ev.target.result; actualizarManifestPWA();};
+  reader.readAsDataURL(file);
+});
+document.getElementById("inputPWAIcon").addEventListener("change", function(e){
+  const file=e.target.files[0]; if(!file) return; const reader=new FileReader();
+  reader.onload=function(ev){document.getElementById("previewPWA").src=ev.target.result; configMarca.pwaIcon=ev.target.result; actualizarManifestPWA();};
   reader.readAsDataURL(file);
 });
 function guardarModificaciones(){
   const nombre=document.getElementById("inputPlatformName").value.trim()||"KIGO XPRESS";
   const color=document.getElementById("inputPrimaryColor").value||"#E53935";
   configMarca.platformName=nombre; configMarca.primaryColor=color;
-  db.ref("kigo_config").set(configMarca).then(()=>{aplicarConfigMarca(); alert("✅ Marca guardada");});
+  db.ref("kigo_config").set(configMarca).then(()=>{aplicarConfigMarca(); alert("✅ Marca y icono de App guardados");});
 }
 function guardarTarifas(){
   configTarifas={
@@ -332,134 +375,3 @@ function showListClientes(){
  document.getElementById("listClienteView").style.display="block";
  renderListaClientes();
 }
-function mostrarClientesEnPickup(){
-  const c=pickupSuggestions; c.innerHTML="";
-  if(!clientesGuardados.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">No hay clientes guardados aún</div>'; c.classList.add("show"); return;}
-  const header=document.createElement("div"); header.className="client-header"; header.innerHTML='TUS CLIENTES GUARDADOS - TOCA PARA SELECCIONAR'; c.appendChild(header);
-  const orden=[...clientesGuardados].sort((a,b)=>a.nombre.localeCompare(b.nombre));
-  orden.forEach(cl=>{
-    const el=document.createElement("div"); el.className="suggestion";
-    el.innerHTML=`<div>👤</div><div><div style="font-weight:800;font-size:13px">${cl.nombre}</div><div style="font-size:10px;color:#777">${cl.direccion.substring(0,70)}</div></div>`;
-    el.onclick=()=>{pickupLat=cl.lat; pickupLng=cl.lng; pickupName=cl.nombre; pickupInput.value=cl.nombre; c.classList.remove("show"); if(pickupMarker)map.removeLayer(pickupMarker); pickupMarker=L.marker([cl.lat,cl.lng]).addTo(map).bindPopup("RECOGER: "+cl.nombre).openPopup(); map.setView([cl.lat,cl.lng],16); setTimeout(()=>{document.getElementById("destinationInput").focus();},300);};
-    c.appendChild(el);
-  });
-  c.classList.add("show");
-}
-async function buscarColonias(t){
- const texto=t.toLowerCase(); let resultados=[];
- if(texto.includes("centro")||texto.includes("cent")){resultados.push({lat:CENTRO.lat,lon:CENTRO.lng,name:"Centro - Zona Centro",direccion:"Centro, Dolores Hidalgo, Gto.", esCliente:false});}
- clientesGuardados.forEach(c=>{if(c.nombre.toLowerCase().includes(texto) || c.direccion.toLowerCase().includes(texto)){resultados.push({lat:c.lat,lon:c.lng,name:c.nombre+" (Cliente)",direccion:c.direccion, esCliente:true});}});
- const q=encodeURIComponent(t+", Dolores Hidalgo Guanajuato Mexico");
- try{const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=8&countrycodes=mx&accept-language=es`); const d=await r.json(); const otros=d.map(x=>({lat:parseFloat(x.lat),lon:parseFloat(x.lon),name:x.display_name.split(",")[0],direccion:x.display_name, esCliente:false})); resultados=[...resultados,...otros];}catch(e){}
- return resultados;
-}
-async function buscarUbicacionCliente(){
- const txt=document.getElementById("clienteUbicacion").value.trim(); if(!txt){alert("Escribe una ubicación");return;}
- const q=encodeURIComponent(txt+", Dolores Hidalgo Guanajuato Mexico");
- try{const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1&countrycodes=mx&accept-language=es`); const d=await r.json(); if(!d.length){alert("No se encontró ubicación");return;}
-  tempClienteLat=parseFloat(d[0].lat); tempClienteLng=parseFloat(d[0].lon); tempClienteDir=d[0].display_name;
-  document.getElementById("clienteConfirmText").style.display="block"; document.getElementById("clienteConfirmText").innerText="Ubicación encontrada: "+tempClienteDir;
-  const miniDiv=document.getElementById("clienteMiniMap"); miniDiv.classList.add("show");
-  setTimeout(()=>{if(!clienteMiniMap){clienteMiniMap=L.map("clienteMiniMap",{zoomControl:false}).setView([tempClienteLat,tempClienteLng],16); L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(clienteMiniMap);} else {clienteMiniMap.setView([tempClienteLat,tempClienteLng],16); clienteMiniMap.invalidateSize();} if(clienteMiniMarker) clienteMiniMap.removeLayer(clienteMiniMarker); clienteMiniMarker=L.marker([tempClienteLat,tempClienteLng]).addTo(clienteMiniMap);},200);
- }catch(e){alert("Error buscando");}
-}
-function guardarCliente(){
- const nombre=document.getElementById("clienteNombre").value.trim(); if(!nombre){alert("Escribe nombre");return;} if(!tempClienteLat){alert("Busca la ubicación primero con el botón de buscar");return;}
- if(editandoId){db.ref("kigo_clientes/"+editandoId).update({nombre:nombre, direccion:tempClienteDir, lat:tempClienteLat, lng:tempClienteLng}); editandoId=null;} else {db.ref("kigo_clientes").push({id:Date.now(), nombre:nombre, direccion:tempClienteDir, lat:tempClienteLat, lng:tempClienteLng});}
- document.getElementById("clienteNombre").value=""; document.getElementById("clienteUbicacion").value=""; document.getElementById("clienteMiniMap").classList.remove("show"); document.getElementById("clienteConfirmText").style.display="none"; tempClienteLat=null;tempClienteLng=null; alert("Cliente guardado en Firebase"); showListClientes();
-}
-function renderListaClientes(){
- const cont=document.getElementById("listaClientesContainer");
- if(!clientesGuardados.length){cont.innerHTML='<div class="adminCard" style="text-align:center;font-size:12px;color:#888">No hay clientes aún, agrega uno</div>';return;}
- const orden=[...clientesGuardados].sort((a,b)=>a.nombre.localeCompare(b.nombre)); cont.innerHTML="";
- orden.forEach(c=>{const div=document.createElement("div"); div.className="cliente-row"; div.innerHTML=`<div style="flex:1"><div style="font-weight:800;font-size:13px">${c.nombre}</div><div style="font-size:10px;color:#777">${c.direccion.substring(0,70)}</div></div><div class="cliente-actions"><button class="iconBtn" onclick="editarCliente('${c.fbKey}')">✏️</button><button class="iconBtn" onclick="eliminarCliente('${c.fbKey}')">🗑️</button></div>`; cont.appendChild(div);});
-}
-function editarCliente(fbKey){
- const c=clientesGuardados.find(x=>x.fbKey===fbKey); if(!c) return; editandoId=fbKey;
- document.getElementById("clienteNombre").value=c.nombre; document.getElementById("clienteUbicacion").value=c.direccion; tempClienteLat=c.lat; tempClienteLng=c.lng; tempClienteDir=c.direccion; showAddCliente(); setTimeout(()=>buscarUbicacionCliente(),100);
-}
-function eliminarCliente(fbKey){if(!confirm("¿Eliminar cliente?")) return; db.ref("kigo_clientes/"+fbKey).remove();}
-function mostrar(c,res,tipo){
- c.innerHTML=""; if(!res.length){c.innerHTML='<div style="padding:12px;text-align:center">Sin resultados</div>';c.classList.add("show");return;}
- if(tipo==="pickup"){const clientesFiltrados=res.filter(r=>r.esCliente); if(clientesFiltrados.length){const h=document.createElement("div"); h.className="client-header"; h.innerText="CLIENTES ENCONTRADOS"; c.appendChild(h);}}
- res.forEach(r=>{const el=document.createElement("div"); el.className="suggestion"; el.innerHTML=`<div>${r.esCliente?'👤':'🛵'}</div><div><div style="font-weight:800;font-size:13px">${r.name}</div><div style="font-size:10px;color:#777">${r.direccion.substring(0,70)}</div></div>`; el.onclick=()=>{if(tipo==="pickup"){pickupLat=r.lat;pickupLng=r.lon;pickupName=r.name; pickupInput.value=r.name; pickupSuggestions.classList.remove("show"); if(pickupMarker)map.removeLayer(pickupMarker); pickupMarker=L.marker([r.lat,r.lon]).addTo(map).bindPopup("RECOGER: "+r.name).openPopup(); map.setView([r.lat,r.lon],16);}else{destinationLat=r.lat;destinationLng=r.lon;destName=r.name; destinationInput.value=r.name; destinationSuggestions.classList.remove("show"); if(destinationMarker)map.removeLayer(destinationMarker); destinationMarker=L.marker([r.lat,r.lon]).addTo(map).bindPopup("ENTREGAR: "+r.name).openPopup(); map.setView([r.lat,r.lon],16);}}; c.appendChild(el);}); c.classList.add("show");
-}
-pickupInput.addEventListener("focus", function(){const txt=this.value.trim(); if(txt.length===0){mostrarClientesEnPickup();}});
-let t1=null; pickupInput.addEventListener("input",function(){const txt=this.value.trim(); if(t1)clearTimeout(t1); if(txt.length===0){mostrarClientesEnPickup();return;} if(txt.length<2){pickupSuggestions.classList.remove("show");return;} pickupSuggestions.classList.add("show"); pickupSuggestions.innerHTML='<div style="padding:10px;text-align:center;font-size:11px">Buscando...</div>'; t1=setTimeout(async()=>{const res=await buscarColonias(txt);mostrar(pickupSuggestions,res,"pickup");},350);});
-let t2=null; destinationInput.addEventListener("input",function(){const txt=this.value.trim(); if(t2)clearTimeout(t2); if(txt.length<2){destinationSuggestions.classList.remove("show");return;} destinationSuggestions.classList.add("show"); destinationSuggestions.innerHTML='<div style="padding:10px;text-align:center;font-size:11px">Buscando...</div>'; t2=setTimeout(async()=>{const res=await buscarColonias(txt);mostrar(destinationSuggestions,res,"destination");},350);});
-const DOLORES_BOUNDS = L.latLngBounds([20.6,-101.6],[21.7,-100.2]);
-async function initRadar(){try{const r=await fetch("https://api.rainviewer.com/public/weather-maps.json"); const j=await r.json(); if(!j.radar ||!j.radar.past ||!j.radar.past.length) return; const last=j.radar.past[j.radar.past.length-1]; if(radarLayer) map.removeLayer(radarLayer); radarLayer=L.tileLayer(`https://tilecache.rainviewer.com${last.path}/512/{z}/{x}/{y}/6/1_1.png`,{opacity:0.35,maxZoom:19,maxNativeZoom:7,minZoom:5,bounds:DOLORES_BOUNDS,tileSize:512,zoomOffset:-1,keepBuffer:2}); radarLayer.addTo(map);}catch(e){}}
-async function getLluviaColonia(lat,lng){try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=precipitation,weather_code&timezone=America/Mexico_City`); const data=await r.json(); return {precip: data.current.precipitation, code: data.current.weather_code};}catch(e){ return {precip:0, code:0}; }}
-function getExtraYColor(precip){
- if(precip<=0.4) return {extra:configTarifas.azul, color:"#60a5fa", emoji:"🔵", txt:"Azul leve"};
- if(precip>0.4 && precip<2.5) return {extra:configTarifas.verde, color:"#22c55e", emoji:"🟢", txt:"Verde"};
- if(precip>=2.5 && precip<7.5) return {extra:configTarifas.amarillo, color:"#eab308", emoji:"🟡", txt:"Amarillo"};
- if(precip>=7.5 && precip<15) return {extra:configTarifas.rojo, color:"#ef4444", emoji:"🔴", txt:"Rojo"};
- return {extra:configTarifas.morado, color:"#a855f7", emoji:"🟣", txt:"Morado"};
-}
-async function checarClimaGeneral(){try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City"); const data=await r.json(); const temp=Math.round(data.current.temperature_2m); weatherWidget.innerText=`☀️ ${temp}°C`;}catch(e){}}
-checarClimaGeneral(); initRadar(); setInterval(initRadar, 300000);let creds={user:"admin",pass:"0831"}; let isLogged=false;
-function openLogin(){ if(isLogged){openAdmin();} else {document.getElementById("loginModal").classList.add("show");} }
-function closeLogin(){document.getElementById("loginModal").classList.remove("show");}
-function doLogin(){ let u=document.getElementById("loginUser").value; let p=document.getElementById("loginPass").value; if(u===creds.user && p===creds.pass){isLogged=true;closeLogin();openAdmin();} else {alert("❌ Incorrecto");}}
-function openAdmin(){document.getElementById("adminModal").classList.add("show"); switchAdminTab('clientes'); verificarSistema();}
-function closeAdmin(){document.getElementById("adminModal").classList.remove("show");}
-function logout(){isLogged=false;closeAdmin();}
-function switchAdminTab(tab){
- document.querySelectorAll('.adminTab').forEach(b=>b.classList.remove('active'));
- document.getElementById('panelClientes').style.display='none';document.getElementById('panelMod').style.display='none';document.getElementById('panelAjustes').style.display='none';document.getElementById('panelSoporte').style.display='none';
- if(tab==='clientes'){document.getElementById('tabClientes').classList.add('active'); document.getElementById('panelClientes').style.display='block'; renderListaClientes();}
- if(tab==='mod'){document.getElementById('tabMod').classList.add('active'); document.getElementById('panelMod').style.display='block';}
- if(tab==='ajustes'){document.getElementById('tabAjustes').classList.add('active'); document.getElementById('panelAjustes').style.display='block';}
- if(tab==='soporte'){document.getElementById('tabSoporte').classList.add('active'); document.getElementById('panelSoporte').style.display='block'; verificarSistema();}
-}
-document.getElementById("calculateButton").onclick=async()=>{
- if(!pickupLat||!destinationLat){alert("Selecciona donde recoger y donde entregar");return;}
- const btn=document.getElementById("calculateButton"); btn.innerText="Verificando lluvia en colonia..."; btn.disabled=true;
- const lluviaDestino = await getLluviaColonia(destinationLat, destinationLng);
- const lluviaOrigen = await getLluviaColonia(pickupLat, pickupLng);
- let precipFinal = Math.max(lluviaDestino.precip, lluviaOrigen.precip);
- let coloniaLluviosa = lluviaDestino.precip >= lluviaOrigen.precip? destName : pickupName;
- const info = getExtraYColor(precipFinal);
- extraLluvia = info.extra; lastPrecip = precipFinal; lastInfo = `${info.emoji} ${info.txt} en ${coloniaLluviosa}`;
- if(precipFinal>0.4){weatherBadge.style.background=info.color; weatherBadge.className="weather-badge show"; weatherBadge.innerText=`${info.emoji} ${info.txt} en ${coloniaLluviosa} (${precipFinal}mm) +$${info.extra}`;} else {weatherBadge.classList.remove("show"); extraLluvia=0;}
- const url=`https://router.project-osrm.org/route/v1/foot/${pickupLng},${pickupLat};${destinationLng},${destinationLat}?overview=full&geometries=geojson`;
- const r=await fetch(url);const d=await r.json(); btn.innerText="COTIZAR SERVICIO"; btn.disabled=false;
- if(!d.routes||!d.routes[0]){alert("No se pudo trazar ruta");return;}
- const route=d.routes[0];const km=route.distance/1000;
- let precio=configTarifas.base;
- if(route.distance>2000){let extra=route.distance-2000;precio=configTarifas.base+Math.ceil(extra/configTarifas.metros)*configTarifas.extraMonto;}
- if(distMts(pickupLat,pickupLng,CENTRO.lat,CENTRO.lng)>800&&distMts(destinationLat,destinationLng,CENTRO.lat,CENTRO.lng)>800){precio+=configTarifas.lejosCentro;}
- let esSOP_Lindavista = (pickupName.toLowerCase().includes("sop") && destName.toLowerCase().includes("linda")) || (destName.toLowerCase().includes("sop") && pickupName.toLowerCase().includes("linda")) || (pickupName.toLowerCase().includes("sop") && destName.toLowerCase().includes("lindavista")) || (destName.toLowerCase().includes("sop") && pickupName.toLowerCase().includes("lindavista"));
- if(esSOP_Lindavista){ precio = configTarifas.sop; }
- if(extraLluvia>0){precio+=extraLluvia;}
- if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(route.geometry,{style:{color:"#E53935",weight:6}}).addTo(map);map.fitBounds(routeLayer.getBounds(),{padding:[40,40]});
- document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=Math.ceil(route.duration/60)+" min";document.getElementById("price").innerText="$"+precio+" MXN";
- ultimaDistancia=km.toFixed(2)+" km";ultimoPrecio="$"+precio+" MXN";
- document.getElementById("whatsappButton").classList.add("show");
- document.getElementById("whatsappRepartidorButton").classList.add("show");
-};
-document.getElementById("whatsappButton").onclick=()=>{
- const linkRuta=`https://www.google.com/maps/dir/${pickupLat},${pickupLng}/${destinationLat},${destinationLng}`;
- const mensaje=`*COTIZACIÓN ${configMarca.platformName}* 🛵\n\n📍 *Recoger:* ${pickupName}\n📦 *Entregar:* ${destName}\n📏 *Distancia:* ${ultimaDistancia}\n💰 *Valor:* ${ultimoPrecio}\n${extraLluvia>0?`🌧️ *Lluvia en colonia:* ${lastInfo} (${lastPrecip}mm) +$${extraLluvia}\n`:"☀️ Sin lluvia en colonias\n"}\n🗺️ *Ver ruta:* ${linkRuta}\n\n¿Confirmamos servicio?`;
- const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`; window.open(url,"_blank");
-};
-document.getElementById("whatsappRepartidorButton").onclick=()=>{
- const linkRecoger=`https://www.google.com/maps/search/?api=1&query=${pickupLat},${pickupLng}`;
- const mensaje=`🚨 Pedido # \n📍 Recoger: ${linkRecoger}\n👤 Cliente: ${pickupName}\n⏱️ Tiempo aprox: \n💰 Precio: ${ultimoPrecio}\n📏 Distancia: ${ultimaDistancia}`;
- const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`; window.open(url,"_blank");
-};
-document.getElementById("resetBtn").onclick=()=>{
- pickupLat=null;pickupLng=null;destinationLat=null;destinationLng=null;pickupName="";destName="";
- pickupInput.value="";destinationInput.value="";
- document.getElementById("distance").innerText="—";document.getElementById("duration").innerText="—";document.getElementById("price").innerText="$ POR COTIZAR";
- document.getElementById("whatsappButton").classList.remove("show"); document.getElementById("whatsappRepartidorButton").classList.remove("show"); weatherBadge.classList.remove("show");
- if(pickupMarker)map.removeLayer(pickupMarker);if(destinationMarker)map.removeLayer(destinationMarker);if(routeLayer)map.removeLayer(routeLayer);
- map.setView([CENTRO.lat,CENTRO.lng],14);
-};
-document.addEventListener("click",e=>{if(!e.target.closest(".input-wrapper")){pickupSuggestions.classList.remove("show");destinationSuggestions.classList.remove("show");}});
-document.getElementById("loginModal").addEventListener("click",e=>{if(e.target.id==="loginModal") closeLogin();});
-document.getElementById("adminModal").addEventListener("click",e=>{if(e.target.id==="adminModal") closeAdmin();});
-</script>
-</body>
-</html>
