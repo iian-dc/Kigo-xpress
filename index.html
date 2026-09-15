@@ -25,7 +25,6 @@
 .btn-repartidor{width:100%;padding:14px;border:1.5px solid #111;border-radius:14px;background:#111;color:#fff;font-weight:800;font-size:13px;margin-top:10px;cursor:pointer;display:none;align-items:center;justify-content:center;gap:8px}
 .btn-repartidor.show{display:flex}
 .info-top-bar{display:flex;justify-content:space-between;align-items:center;background:#111;color:#fff;border-radius:12px;padding:10px 14px;margin-bottom:12px;font-weight:800;font-size:11px}
-.info-top-bar span{font-weight:900}
 .input-wrapper{position:relative}
 .input-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;background:#f2f2f2;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .weather-widget{position:absolute;top:12px;right:12px;z-index:999;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:900;display:flex;align-items:center;gap:4px;box-shadow:0 2px 10px rgba(0,0,0,.25);border:1px solid #eee}
@@ -38,13 +37,12 @@
 .login-head{padding:16px 18px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
 .login-body{padding:20px;display:grid;gap:12px}
 .login-input-wrap{position:relative;display:flex;align-items:center}
-.login-input-wrap svg{position:absolute;left:12px;color:#888}
 .login-input{width:100%;padding:12px 14px 12px 38px;border:1.5px solid #e5e7eb;border-radius:12px;background:#f9fafb;font-size:14px;font-weight:600;outline:none}
 .iconBtn{width:36px;height:36px;border-radius:10px;border:1px solid #eee;background:#fff;display:grid;place-items:center;cursor:pointer}
 .admin-panel-box{width:100%;max-width:500px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);border:1px solid #eee;max-height:90vh;display:flex;flex-direction:column}
 .admin-panel-head{padding:16px 18px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;background:#fcfcfd}
 .adminTabs{display:flex;gap:8px;padding:12px 12px;overflow-x:auto;background:#fff;border-bottom:1px solid #eee}
-.adminTab{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;border:1px solid #e5e7eb;background:#f7f7f8;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.adminTab{flex-shrink:0;padding:9px 14px;border-radius:999px;border:1px solid #e5e7eb;background:#f7f7f8;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
 .adminTab.active{background:#111;color:#fff;border-color:#111}
 .adminContent{padding:18px;overflow-y:auto;flex:1;background:#fcfcfd}
 .adminCard{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;margin-bottom:12px}
@@ -70,16 +68,21 @@
 .status-ok{background:#22c55e;box-shadow:0 0 0 3px #dcfce7}
 .status-bad{background:#ef4444;box-shadow:0 0 0 3px #fee2e2}
 .status-warn{background:#f59e0b;box-shadow:0 0 0 3px #fef3c7}
-/* BOTONES REDUCIDOS CON ICONOS */
 .tipo-tabs{display:flex;gap:8px;margin-bottom:10px}
-.tipo-btn{flex:1;padding:10px 10px;border-radius:10px;border:1.5px solid #ddd;font-weight:800;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s;letter-spacing:.3px}
+.tipo-btn{flex:1;padding:10px 10px;border-radius:10px;border:1.5px solid #ddd;font-weight:800;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.3px}
 .tipo-btn.aliados{background:#fff;color:#111}
 .tipo-btn.aliados.active{background:#E53935;color:#fff;border-color:#E53935;box-shadow:0 3px 10px rgba(229,57,53,.25)}
 .tipo-btn.nuevo{background:#fff;color:#111}
 .tipo-btn.nuevo.active{background:#111;color:#fff;border-color:#111}
 .aliados-box{position:relative;background:#f7f7f8;border:1.5px solid #eee;border-radius:14px;padding:12px;display:none}
 .aliados-box.show{display:block}
-.form-section{margin-top:12px}
+.sub-tabs{display:flex;gap:8px;margin:12px 0}
+.sub-btn{flex:1;padding:9px;border-radius:9px;border:1.5px solid #ddd;background:#fff;font-weight:800;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.sub-btn.active{background:#111;color:#fff;border-color:#111}
+.sub-form{margin-top:10px;padding:10px;background:#fff;border-radius:12px;border:1px solid #eee;display:none}
+.sub-form.show{display:block}
+.form-label{font-size:10px;font-weight:800;color:#666;margin:10px 0 6px}
+.form-label:first-child{margin-top:0}
 </style>
 </head>
 <body>
@@ -93,30 +96,91 @@
 <div id="weatherBadge" class="weather-badge"></div>
 </div>
 <div class="panel">
-<!-- BARRA SUPERIOR LARGA: DISTANCIA Y VALOR -->
+
+<!-- ==================== SECCION 1: BARRA SUPERIOR INFO ==================== -->
 <div class="info-top-bar">
 <div style="display:flex;gap:10px;align-items:center"><i class="material-icons" style="font-size:16px">route</i><span id="distance">— km</span> • <span id="duration">—</span></div>
 <div style="display:flex;align-items:center;gap:6px"><i class="material-icons" style="font-size:16px">payments</i><span id="price">POR COTIZAR</span></div>
 </div>
 
-<!-- BOTONES PEQUEÑOS CON ICONOS -->
+<!-- ==================== SECCION 2: BOTONES PRINCIPALES ==================== -->
 <div class="tipo-tabs">
 <button id="btnAliados" class="tipo-btn aliados active" onclick="activarTipo('aliados')"><i class="material-icons" style="font-size:16px">store</i> ALIADOS</button>
 <button id="btnNuevo" class="tipo-btn nuevo" onclick="activarTipo('nuevo')"><i class="material-icons" style="font-size:16px">person_add</i> CLIENTE NUEVO</button>
 </div>
 
-<!-- FORMULARIO ALIADOS CON X DENTRO -->
+<!-- ==================== SECCION 3: FORMULARIO ALIADOS ==================== -->
 <div id="boxAliados" class="aliados-box show">
-<div style="font-size:10px;font-weight:800;color:#666;margin-bottom:6px">NOMBRE DEL ALIADO</div>
-<div class="input-wrapper">
-<input id="pickupInput" class="colonia-input" placeholder="Toca para ver aliados o escribe..." autocomplete="off">
-<div class="input-clear" onclick="limpiarAliado()"><i class="material-icons" style="font-size:14px">close</i></div>
-<div id="pickupSuggestions" class="suggestions"></div>
-</div>
-<div id="aliadoDireccionInfo" style="margin-top:8px;font-size:11px;color:#666;background:#fff;padding:8px 10px;border-radius:10px;border:1px solid #eee;display:none"></div>
+  <!-- Sub-botones RECOGER / COMPRAR -->
+  <div class="sub-tabs">
+    <button id="subRecoger" class="sub-btn active" onclick="activarSubTipo('recoger')"><i class="material-icons" style="font-size:14px">inventory_2</i> PARA RECOGER</button>
+    <button id="subComprar" class="sub-btn" onclick="activarSubTipo('comprar')"><i class="material-icons" style="font-size:14px">shopping_bag</i> PARA COMPRAR</button>
+  </div>
+
+  <!-- SUB-FORM RECOGER -->
+  <div id="formRecoger" class="sub-form show">
+    <div class="form-label">NOMBRE DEL ALIADO</div>
+    <div class="input-wrapper">
+      <input id="pickupInput" class="colonia-input" placeholder="Toca para ver aliados o escribe..." autocomplete="off">
+      <div class="input-clear" onclick="limpiarAliado()"><i class="material-icons" style="font-size:14px">close</i></div>
+      <div id="pickupSuggestions" class="suggestions"></div>
+    </div>
+    <div id="aliadoDireccionInfo" style="margin-top:8px;font-size:11px;color:#666;background:#f9fafb;padding:8px 10px;border-radius:10px;border:1px solid #eee;display:none"></div>
+
+    <div class="form-label">¿DÓNDE ENTREGAR?</div>
+    <div class="input-wrapper">
+      <input id="destinationInput" class="colonia-input" placeholder="Escribe colonia de entrega..." autocomplete="off">
+      <div class="input-clear" onclick="limpiarDestino()"><i class="material-icons" style="font-size:14px">close</i></div>
+      <div id="destinationSuggestions" class="suggestions"></div>
+    </div>
+
+    <div class="form-label">TELÉFONO DE ENTREGA</div>
+    <div class="input-wrapper">
+      <input id="telefonoRecoger" class="colonia-input" placeholder="Ej: 418 123 4567" type="tel">
+      <div class="input-clear" onclick="document.getElementById('telefonoRecoger').value=''"><i class="material-icons" style="font-size:14px">close</i></div>
+    </div>
+  </div>
+
+  <!-- SUB-FORM COMPRAR -->
+  <div id="formComprar" class="sub-form">
+    <div class="form-label">PRODUCTOS A COMPRAR</div>
+    <div class="input-wrapper">
+      <input id="productosComprar" class="colonia-input" placeholder="Ej: 1kg manzana, leche, pan...">
+      <div class="input-clear" onclick="document.getElementById('productosComprar').value=''"><i class="material-icons" style="font-size:14px">close</i></div>
+    </div>
+
+    <div class="form-label">¿DÓNDE COMPRAR? (frutería, tienda, local)</div>
+    <div class="input-wrapper">
+      <input id="dondeComprar" class="colonia-input" placeholder="Ej: Frutería del centro, Abarrotes Lupita...">
+      <div class="input-clear" onclick="document.getElementById('dondeComprar').value=''"><i class="material-icons" style="font-size:14px">close</i></div>
+    </div>
+
+    <div style="margin:12px 0 6px; background:#fffde7; border:1px dashed #f59e0b; border-radius:10px; padding:8px; font-size:10px; font-weight:700; color:#92400e">A DÓNDE ENTREGAR - Elige UNA opción: aliado guardado O escribir dirección</div>
+
+    <div class="form-label">OPCIÓN 1: ALIADO GUARDADO (si aplica)</div>
+    <div class="input-wrapper">
+      <input id="aliadoEntregaComprar" class="colonia-input" placeholder="Toca para elegir aliado para entrega..." autocomplete="off">
+      <div class="input-clear" onclick="limpiarAliadoEntregaComprar()"><i class="material-icons" style="font-size:14px">close</i></div>
+      <div id="aliadoEntregaSuggestions" class="suggestions"></div>
+    </div>
+
+    <div class="form-label" style="text-align:center; color:#888">— O —</div>
+
+    <div class="form-label">OPCIÓN 2: ESCRIBIR DIRECCIÓN DE ENTREGA</div>
+    <div class="input-wrapper">
+      <input id="direccionEntregaComprar" class="colonia-input" placeholder="Escribe dirección completa..." autocomplete="off">
+      <div class="input-clear" onclick="limpiarDireccionEntregaComprar()"><i class="material-icons" style="font-size:14px">close</i></div>
+    </div>
+
+    <div class="form-label">TELÉFONO DE ENTREGA</div>
+    <div class="input-wrapper">
+      <input id="telefonoComprar" class="colonia-input" placeholder="Ej: 418 123 4567" type="tel">
+      <div class="input-clear" onclick="document.getElementById('telefonoComprar').value=''"><i class="material-icons" style="font-size:14px">close</i></div>
+    </div>
+  </div>
 </div>
 
-<!-- FORMULARIO CLIENTE NUEVO -->
+<!-- ==================== SECCION 4: FORMULARIO CLIENTE NUEVO ==================== -->
 <div id="boxNuevo" class="aliados-box">
 <div style="font-size:10px;font-weight:800;color:#666;margin-bottom:6px">NOMBRE CLIENTE NUEVO</div>
 <div class="input-wrapper">
@@ -129,52 +193,27 @@
 <div class="input-clear" onclick="limpiarNuevoDireccion()"><i class="material-icons" style="font-size:14px">close</i></div>
 </div>
 <div id="nuevoMiniMap" class="miniMap"></div>
-</div>
-
-<!-- DESTINO CON X DENTRO -->
-<div class="form-section">
-<div style="font-size:10px;font-weight:800;color:#666;margin-bottom:6px">2. ¿DÓNDE ENTREGAR?</div>
+<div style="font-size:10px;font-weight:800;color:#666;margin:10px 0 6px">DIRECCIÓN DE ENTREGA</div>
 <div class="input-wrapper">
-<input id="destinationInput" class="colonia-input" placeholder="Escribe colonia de entrega..." autocomplete="off">
-<div class="input-clear" onclick="limpiarDestino()"><i class="material-icons" style="font-size:14px">close</i></div>
-<div id="destinationSuggestions" class="suggestions"></div>
+<input id="nuevoEntregaInput" class="colonia-input" placeholder="Escribe dirección de entrega...">
+<div class="input-clear" onclick="document.getElementById('nuevoEntregaInput').value=''"><i class="material-icons" style="font-size:14px">close</i></div>
 </div>
 </div>
 
+<!-- ==================== SECCION 5: BOTONES WHATSAPP ==================== -->
 <button id="whatsappButton" class="btn-whatsapp"><i class="material-icons" style="font-size:18px">chat</i> Compartir cotización por WhatsApp</button>
-<button id="whatsappRepartidorButton" class="btn-repartidor"><i class="material-icons" style="font-size:18px">two_wheeler</i> Compartir con repartidor por WhatsApp</button>
+<button id="whatsappRepartidorButton" class="btn-repartidor"><i class="material-icons" style="font-size:18px">two_wheeler</i> Compartir con repartidor</button>
 </div>
 </div>
 
+<!-- ==================== SECCION 6: MODAL LOGIN ==================== -->
 <div class="modal" id="loginModal"><div class="login-box"><div class="login-head"><div style="display:flex;gap:10px;align-items:center"><img id="logoLoginImg" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3" style="width:36px;height:36px;border-radius:10px;object-fit:cover;background:#111"><div><div id="platformNameLogin" style="font-weight:800;font-size:13px">KIGO XPRESS</div><div style="font-size:10px;color:#888">Acceso administrador</div></div></div><button class="iconBtn" onclick="closeLogin()"><i class="material-icons" style="font-size:18px">close</i></button></div><div class="login-body"><div class="login-input-wrap"><i class="material-icons" style="position:absolute;left:12px;color:#888;font-size:18px">person</i><input id="loginUser" class="login-input" placeholder="Usuario" value="admin"></div><div class="login-input-wrap"><i class="material-icons" style="position:absolute;left:12px;color:#888;font-size:18px">lock</i><input id="loginPass" type="password" class="login-input" placeholder="Contraseña" value="0831"></div><button onclick="doLogin()" style="width:100%;padding:14px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:900;font-size:14px;cursor:pointer">Ingresar</button></div></div></div>
+
+<!-- ==================== SECCION 7: PANEL ADMIN ==================== -->
 <div class="modal" id="adminModal"><div class="admin-panel-box"><div class="admin-panel-head"><div style="display:flex;gap:10px;align-items:center"><img id="logoAdminHead" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3" style="width:36px;height:36px;border-radius:10px;object-fit:cover"><div><div id="platformNameAdmin" style="font-weight:800;font-size:14px">Panel KIGO XPRESS</div><div style="font-size:10px;color:#888">Gestión Firebase</div></div></div><div style="display:flex;gap:8px"><button class="iconBtn" onclick="logout()"><i class="material-icons" style="font-size:18px">logout</i></button><button class="iconBtn" onclick="closeAdmin()"><i class="material-icons" style="font-size:18px">close</i></button></div></div>
-<div class="adminTabs">
-<button class="adminTab active" id="tabClientes" onclick="switchAdminTab('clientes')">Clientes</button>
-<button class="adminTab" id="tabMod" onclick="switchAdminTab('mod')">Modificaciones</button>
-<button class="adminTab" id="tabAjustes" onclick="switchAdminTab('ajustes')">Ajustes</button>
-<button class="adminTab" id="tabSoporte" onclick="switchAdminTab('soporte')">Soporte</button>
-</div>
+<div class="adminTabs"><button class="adminTab active" id="tabClientes" onclick="switchAdminTab('clientes')">Clientes</button><button class="adminTab" id="tabMod" onclick="switchAdminTab('mod')">Modificaciones</button><button class="adminTab" id="tabAjustes" onclick="switchAdminTab('ajustes')">Ajustes</button><button class="adminTab" id="tabSoporte" onclick="switchAdminTab('soporte')">Soporte</button></div>
 <div class="adminContent">
-<div id="panelClientes">
-<div class="clientes-top">
-<button class="clientes-btn active" id="btnAddCliente" onclick="showAddCliente()">Agregar nuevo cliente</button>
-<button class="clientes-btn" id="btnListCliente" onclick="showListClientes()">Lista de clientes</button>
-</div>
-<div id="addClienteView">
-<div class="adminCard">
-<div style="font-size:11px;font-weight:800;margin-bottom:10px">AGREGAR ALIADO / CLIENTE</div>
-<input id="clienteNombre" class="cliente-input" placeholder="Nombre del aliado">
-<div class="searchWrap">
-<input id="clienteUbicacion" class="cliente-input" style="margin-bottom:0" placeholder="Escribe colonia o dirección...">
-<button class="iconBtnSmall" onclick="buscarUbicacionCliente()"><i class="material-icons" style="font-size:18px">search</i></button>
-</div>
-<div id="clienteMiniMap" class="miniMap"></div>
-<div id="clienteConfirmText" style="font-size:11px;color:#666;margin-top:6px;display:none"></div>
-<button onclick="guardarCliente()" style="width:100%;margin-top:10px;padding:12px;border:none;border-radius:10px;background:#111;color:#fff;font-weight:800;font-size:13px;cursor:pointer">Guardar aliado</button>
-</div>
-</div>
-<div id="listClienteView" style="display:none"><div id="listaClientesContainer"></div></div>
-</div>
+<div id="panelClientes"><div class="clientes-top"><button class="clientes-btn active" id="btnAddCliente" onclick="showAddCliente()">Agregar nuevo cliente</button><button class="clientes-btn" id="btnListCliente" onclick="showListClientes()">Lista de clientes</button></div><div id="addClienteView"><div class="adminCard"><div style="font-size:11px;font-weight:800;margin-bottom:10px">AGREGAR ALIADO / CLIENTE</div><input id="clienteNombre" class="cliente-input" placeholder="Nombre del aliado"><div class="searchWrap"><input id="clienteUbicacion" class="cliente-input" style="margin-bottom:0" placeholder="Escribe colonia o dirección..."><button class="iconBtnSmall" onclick="buscarUbicacionCliente()"><i class="material-icons" style="font-size:18px">search</i></button></div><div id="clienteMiniMap" class="miniMap"></div><div id="clienteConfirmText" style="font-size:11px;color:#666;margin-top:6px;display:none"></div><button onclick="guardarCliente()" style="width:100%;margin-top:10px;padding:12px;border:none;border-radius:10px;background:#111;color:#fff;font-weight:800;font-size:13px;cursor:pointer">Guardar aliado</button></div></div><div id="listClienteView" style="display:none"><div id="listaClientesContainer"></div></div></div>
 <div id="panelMod" style="display:none"><div class="adminCard"><div style="font-size:12px;font-weight:900;margin-bottom:12px">MODIFICACIONES DE MARCA</div><div class="mod-label">Logo centrado en el mapa</div><div class="mod-row"><img id="previewMapa" class="mod-preview" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3"><input type="file" id="inputLogoMapa" accept="image/*" style="font-size:11px"></div><div class="mod-label">Logo del panel / login</div><div class="mod-row"><img id="previewLogin" class="mod-preview" style="border-radius:10px" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3"><input type="file" id="inputLogoLogin" accept="image/*" style="font-size:11px"></div><div class="mod-label">Icono de la App (512x512)</div><div class="mod-row"><img id="previewPWA" class="mod-preview" style="border-radius:16px; border:2px solid #111" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3"><input type="file" id="inputPWAIcon" accept="image/*" style="font-size:11px"></div><div class="mod-label">Nombre de la plataforma</div><input id="inputPlatformName" class="mod-input" placeholder="Ej: KIGO XPRESS"><div class="mod-label">Color principal</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:12px"><input type="color" id="inputPrimaryColor" value="#E53935" style="width:50px;height:40px;border:none;border-radius:8px"><div style="display:flex;gap:6px"><div class="color-dot" style="background:#E53935" onclick="setColor('#E53935')"></div><div class="color-dot" style="background:#111" onclick="setColor('#111111')"></div><div class="color-dot" style="background:#2563eb" onclick="setColor('#2563eb')"></div><div class="color-dot" style="background:#16a34a" onclick="setColor('#16a34a')"></div></div></div><button onclick="guardarModificaciones()" style="width:100%;padding:14px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:900;font-size:13px;cursor:pointer">Guardar modificaciones</button></div></div>
 <div id="panelAjustes" style="display:none"><div class="adminCard"><div style="font-size:12px;font-weight:900;margin-bottom:10px">TARIFAS POR LLUVIA</div><div class="tarifa-grid"><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Azul ≤0.4mm</div><input id="tarifaAzul" type="number" class="mod-input" style="margin-top:6px" value="0"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Verde 0.5-2.4mm</div><input id="tarifaVerde" type="number" class="mod-input" style="margin-top:6px" value="5"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Amarillo 2.5-7.4mm</div><input id="tarifaAmarillo" type="number" class="mod-input" style="margin-top:6px" value="9"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Rojo 7.5-15mm</div><input id="tarifaRojo" type="number" class="mod-input" style="margin-top:6px" value="12"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Morado >15mm</div><input id="tarifaMorado" type="number" class="mod-input" style="margin-top:6px" value="18"></div></div></div><div class="adminCard"><div style="font-size:12px;font-weight:900;margin-bottom:10px">COBRO POR KILÓMETROS</div><div style="font-size:10px;color:#666;margin-bottom:10px" id="infoCobroTexto"></div><div class="mod-label">Tarifa base (hasta 2km)</div><input id="tarifaBase" type="number" class="mod-input" value="35"><div class="tarifa-grid"><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Cada cuántos metros cobra extra</div><input id="tarifaMetros" type="number" class="mod-input" value="650"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">$ por cada extra</div><input id="tarifaExtraMonto" type="number" class="mod-input" value="5"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Extra si ambos lejos del centro (>800m)</div><input id="tarifaLejosCentro" type="number" class="mod-input" value="5"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Tarifa fija SOP-Lindavista</div><input id="tarifaSOP" type="number" class="mod-input" value="45"></div></div><button onclick="guardarTarifas()" style="width:100%;margin-top:12px;padding:14px;border:none;border-radius:12px;background:#E53935;color:#fff;font-weight:900;font-size:13px;cursor:pointer">Guardar todas las tarifas</button></div></div>
 <div id="panelSoporte" style="display:none"><div class="adminCard"><div style="font-size:12px;font-weight:900;margin-bottom:10px">ESTADO DEL SISTEMA</div><div style="border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:800"><span id="dotFirebase" class="status-dot status-warn"></span>Firebase</div><div style="font-size:10px;color:#888" id="txtFirebase">Verificando...</div></div><div id="badgeFirebase" style="font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;background:#fef3c7;color:#92400e">...</div></div><div style="border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:800"><span id="dotRadar" class="status-dot status-warn"></span>Radar de lluvia</div><div style="font-size:10px;color:#888" id="txtRadar">Verificando...</div></div><div id="badgeRadar" style="font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;background:#fef3c7;color:#92400e">...</div></div><div style="border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:800"><span id="dotClima" class="status-dot status-warn"></span>API Clima</div><div style="font-size:10px;color:#888" id="txtClima">Verificando...</div></div><div id="badgeClima" style="font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;background:#fef3c7;color:#92400e">...</div></div><button onclick="verificarSistema()" style="width:100%;padding:12px;border:1px solid #111;border-radius:10px;background:#fff;font-weight:800;font-size:12px;cursor:pointer">Verificar de nuevo</button><div style="margin-top:10px;padding:10px;background:#f7f7f8;border-radius:10px;font-size:10px;line-height:1.6"><div>Clientes guardados: <b id="statClientes">0</b></div><div>Última verificación: <b id="statHora">--</b></div><div>Plataforma: <b id="statPlatform">KIGO XPRESS</b></div></div></div></div>
@@ -183,6 +222,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script>
+// ==================== SECCION A: CONFIG FIREBASE Y VARIABLES GLOBALES ====================
 const firebaseConfig = {apiKey:"AIzaSyD1eh7jbI-T43XvMErYsxi9c_fw4PI61oA",authDomain:"santillos-1ac6d.firebaseapp.com",databaseURL:"https://santillos-1ac6d-default-rtdb.firebaseio.com",projectId:"santillos-1ac6d",storageBucket:"santillos-1ac6d.firebasestorage.app",messagingSenderId:"285600299102",appId:"1:285600299102:web:9590597c2b3d8888821ccf"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
@@ -194,12 +234,28 @@ let extraLluvia=0,lastPrecip=0,lastInfo="";
 let clientesGuardados=[],tempClienteLat=null,tempClienteLng=null,tempClienteDir="",editandoId=null;
 let configMarca={logoMapa:"",logoLogin:"",pwaIcon:"",platformName:"KIGO XPRESS",primaryColor:"#E53935"};
 let configTarifas={azul:0,verde:5,amarillo:9,rojo:12,morado:18,base:35,metros:650,extraMonto:5,lejosCentro:5,sop:45};
-let tipoActivo='aliados';
+let tipoActivo='aliados', subTipoActivo='recoger';
 function distMts(lat1,lon1,lat2,lon2){const R=6371000;const dLat=(lat2-lat1)*Math.PI/180;const dLon=(lon2-lon1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
+
+// ==================== SECCION B: MANEJO DE BOTONES PRINCIPALES Y SUB-BOTONES ====================
 function activarTipo(t){tipoActivo=t;document.getElementById('btnAliados').classList.toggle('active', t==='aliados');document.getElementById('btnNuevo').classList.toggle('active', t==='nuevo');document.getElementById('boxAliados').classList.toggle('show', t==='aliados');document.getElementById('boxNuevo').classList.toggle('show', t==='nuevo');}
-function limpiarAliado(){document.getElementById('pickupInput').value="";document.getElementById('pickupSuggestions').classList.remove('show');document.getElementById('aliadoDireccionInfo').style.display='none';pickupLat=null;pickupLng=null;pickupName="";if(pickupMarker)pickupMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});document.getElementById('distance').innerText='— km';document.getElementById('duration').innerText='—';document.getElementById('price').innerText='POR COTIZAR';}
-function limpiarDestino(){document.getElementById('destinationInput').value="";document.getElementById('destinationSuggestions').classList.remove('show');destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});document.getElementById('distance').innerText='— km';document.getElementById('duration').innerText='—';document.getElementById('price').innerText='POR COTIZAR';}
+function activarSubTipo(t){
+  subTipoActivo=t;
+  document.getElementById('subRecoger').classList.toggle('active', t==='recoger');
+  document.getElementById('subComprar').classList.toggle('active', t==='comprar');
+  document.getElementById('formRecoger').classList.toggle('show', t==='recoger');
+  document.getElementById('formComprar').classList.toggle('show', t==='comprar');
+}
+
+// ==================== SECCION C: LIMPIEZA DE INPUTS (X DENTRO) ====================
+function limpiarAliado(){document.getElementById('pickupInput').value="";document.getElementById('pickupSuggestions').classList.remove('show');document.getElementById('aliadoDireccionInfo').style.display='none';pickupLat=null;pickupLng=null;pickupName="";if(pickupMarker)pickupMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();}
+function limpiarDestino(){document.getElementById('destinationInput').value="";document.getElementById('destinationSuggestions').classList.remove('show');destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();}
 function limpiarNuevoDireccion(){document.getElementById('nuevoDireccionInput').value="";document.getElementById('nuevoMiniMap').classList.remove('show');pickupLat=null;pickupLng=null;}
+function limpiarAliadoEntregaComprar(){document.getElementById('aliadoEntregaComprar').value="";document.getElementById('aliadoEntregaSuggestions').classList.remove('show');document.getElementById('direccionEntregaComprar').value="";destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();}
+function limpiarDireccionEntregaComprar(){document.getElementById('direccionEntregaComprar').value="";document.getElementById('aliadoEntregaComprar').value="";destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();}
+function resetPrecios(){document.getElementById('distance').innerText='— km';document.getElementById('duration').innerText='—';document.getElementById('price').innerText='POR COTIZAR';document.getElementById("whatsappButton").classList.remove("show");document.getElementById("whatsappRepartidorButton").classList.remove("show");}
+
+// ==================== SECCION D: GOOGLE MAPS INIT Y AUTOCOMPLETE ====================
 function initGoogleMaps(){
   map=new google.maps.Map(document.getElementById("map"),{center:CENTRO,zoom:14,disableDefaultUI:true});
   geocoder=new google.maps.Geocoder();
@@ -208,17 +264,35 @@ function initGoogleMaps(){
   const inputDest=document.getElementById("destinationInput");
   const inputNuevoDir=document.getElementById("nuevoDireccionInput");
   const inputClienteUbic=document.getElementById("clienteUbicacion");
+  const inputDirEntregaComprar=document.getElementById("direccionEntregaComprar");
+
+  // Autocomplete destino recoger
   new google.maps.places.Autocomplete(inputDest,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;destinationLat=place.geometry.location.lat(); destinationLng=place.geometry.location.lng(); destName=place.name||place.formatted_address;if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);document.getElementById("destinationSuggestions").classList.remove("show");intentarTrazarRutaAuto();});
+
+  // Autocomplete dirección entrega comprar (escribir)
+  new google.maps.places.Autocomplete(inputDirEntregaComprar,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){
+    const place=this.getPlace(); if(!place.geometry) return;
+    // Si escribe dirección, borra aliado
+    document.getElementById('aliadoEntregaComprar').value="";
+    destinationLat=place.geometry.location.lat(); destinationLng=place.geometry.location.lng(); destName=place.formatted_address;
+    if(destinationMarker) destinationMarker.setMap(null);
+    destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});
+    map.setCenter(place.geometry.location); map.setZoom(16);
+    intentarTrazarRutaAuto();
+  });
+
   new google.maps.places.Autocomplete(inputNuevoDir,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;pickupLat=place.geometry.location.lat(); pickupLng=place.geometry.location.lng(); pickupName=document.getElementById("nuevoNombre").value||place.formatted_address;if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:place.geometry.location,map:map});const miniDiv=document.getElementById("nuevoMiniMap"); miniDiv.classList.add("show");setTimeout(()=>{if(!nuevoMiniMapG) nuevoMiniMapG=new google.maps.Map(document.getElementById("nuevoMiniMap"),{center:place.geometry.location,zoom:16,disableDefaultUI:true});else nuevoMiniMapG.setCenter(place.geometry.location);if(nuevoMiniMarkerG) nuevoMiniMarkerG.setMap(null);nuevoMiniMarkerG=new google.maps.Marker({position:place.geometry.location,map:nuevoMiniMapG});},200);intentarTrazarRutaAuto();});
   new google.maps.places.Autocomplete(inputClienteUbic,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;tempClienteLat=place.geometry.location.lat(); tempClienteLng=place.geometry.location.lng(); tempClienteDir=place.formatted_address;document.getElementById("clienteConfirmText").style.display="block"; document.getElementById("clienteConfirmText").innerText="Ubicación encontrada: "+tempClienteDir;const miniDiv=document.getElementById("clienteMiniMap"); miniDiv.classList.add("show");setTimeout(()=>{if(!clienteMiniMapG) clienteMiniMapG=new google.maps.Map(document.getElementById("clienteMiniMap"),{center:{lat:tempClienteLat,lng:tempClienteLng},zoom:16,disableDefaultUI:true});else clienteMiniMapG.setCenter({lat:tempClienteLat,lng:tempClienteLng});if(clienteMiniMarkerG) clienteMiniMarkerG.setMap(null);clienteMiniMarkerG=new google.maps.Marker({position:{lat:tempClienteLat,lng:tempClienteLng},map:clienteMiniMapG});},200);});
   checarClimaGeneral();
 }
+
+// ==================== SECCION E: BUSCADOR DE ALIADOS ====================
 function mostrarAliadosEnPickup(filtro=""){
   const c=document.getElementById("pickupSuggestions"); c.innerHTML="";
   let lista=clientesGuardados;
   if(filtro) lista=clientesGuardados.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()) || x.direccion.toLowerCase().includes(filtro.toLowerCase()));
   if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">Sin aliados con ese nombre</div>'; c.classList.add("show"); return;}
-  const header=document.createElement("div"); header.className="client-header"; header.innerText="TUS ALIADOS GUARDADOS - TOCA PARA SELECCIONAR"; c.appendChild(header);
+  const header=document.createElement("div"); header.className="client-header"; header.innerText="TUS ALIADOS GUARDADOS"; c.appendChild(header);
   const orden=[...lista].sort((a,b)=>a.nombre.localeCompare(b.nombre)).slice(0,20);
   orden.forEach(cl=>{
     const el=document.createElement("div"); el.className="suggestion";
@@ -238,19 +312,70 @@ function mostrarAliadosEnPickup(filtro=""){
   });
   c.classList.add("show");
 }
+function mostrarAliadosEntregaComprar(filtro=""){
+  const c=document.getElementById("aliadoEntregaSuggestions"); c.innerHTML="";
+  let lista=clientesGuardados;
+  if(filtro) lista=clientesGuardados.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()));
+  if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">Sin aliados</div>'; c.classList.add("show"); return;}
+  const header=document.createElement("div"); header.className="client-header"; header.innerText="ALIADOS PARA ENTREGA"; c.appendChild(header);
+  const orden=[...lista].sort((a,b)=>a.nombre.localeCompare(b.nombre)).slice(0,20);
+  orden.forEach(cl=>{
+    const el=document.createElement("div"); el.className="suggestion";
+    el.innerHTML=`<div><i class="material-icons" style="font-size:18px">store</i></div><div><div style="font-weight:800;font-size:13px">${cl.nombre}</div><div style="font-size:10px;color:#777">${cl.direccion.substring(0,70)}</div></div>`;
+    el.onclick=()=>{
+      // Si elige aliado, borra dirección escrita
+      document.getElementById('direccionEntregaComprar').value="";
+      destinationLat=cl.lat; destinationLng=cl.lng; destName=cl.nombre;
+      document.getElementById("aliadoEntregaComprar").value=cl.nombre;
+      c.classList.remove("show");
+      if(destinationMarker) destinationMarker.setMap(null);
+      destinationMarker=new google.maps.Marker({position:{lat:cl.lat,lng:cl.lng},map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});
+      map.setCenter({lat:cl.lat,lng:cl.lng}); map.setZoom(16);
+      intentarTrazarRutaAuto();
+    };
+    c.appendChild(el);
+  });
+  c.classList.add("show");
+}
 document.getElementById("pickupInput").addEventListener("focus", function(){ mostrarAliadosEnPickup(this.value.trim()); });
 document.getElementById("pickupInput").addEventListener("input", function(){ mostrarAliadosEnPickup(this.value.trim()); });
+document.getElementById("aliadoEntregaComprar").addEventListener("focus", function(){ mostrarAliadosEntregaComprar(this.value.trim()); });
+document.getElementById("aliadoEntregaComprar").addEventListener("input", function(){ mostrarAliadosEntregaComprar(this.value.trim()); });
+
+// ==================== SECCION F: CALCULO DE RUTA AUTOMATICA ====================
 async function intentarTrazarRutaAuto(){
-  if(!pickupLat ||!destinationLat) return;
+  // Para COMPRAR: origen es donde comprar (si no hay, usa pickup aliado como referencia), destino es entrega
+  // Simplificamos: si estamos en comprar y no hay pickupLat, usamos CENTRO o el lugar de compra geocodificado
+  let origenLat = pickupLat;
+  let origenLng = pickupLng;
+  let origenNombre = pickupName;
+
+  // Si es comprar y tenemos donde comprar escrito, intentamos geocodificar donde comprar para origen de ruta
+  if(subTipoActivo==='comprar'){
+    const dondeComprarTxt = document.getElementById('dondeComprar').value.trim();
+    if(dondeComprarTxt &&!pickupLat){
+      // usamos geocoder para donde comprar
+      try{
+        const geo = await new Promise((res,rej)=>{geocoder.geocode({address:dondeComprarTxt+", Dolores Hidalgo, Mexico"}, (r,s)=>{if(s==="OK") res(r[0]); else rej();});});
+        origenLat = geo.geometry.location.lat();
+        origenLng = geo.geometry.location.lng();
+        origenNombre = dondeComprarTxt;
+        if(pickupMarker) pickupMarker.setMap(null);
+        pickupMarker=new google.maps.Marker({position:{lat:origenLat,lng:origenLng},map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#2563eb",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});
+      }catch(e){}
+    }
+  }
+
+  if(!origenLat ||!destinationLat) return;
   const lluviaDestino = await getLluviaColonia(destinationLat, destinationLng);
-  const lluviaOrigen = await getLluviaColonia(pickupLat, pickupLng);
+  const lluviaOrigen = await getLluviaColonia(origenLat, origenLng);
   let precipFinal = Math.max(lluviaDestino.precip, lluviaOrigen.precip);
-  let coloniaLluviosa = lluviaDestino.precip >= lluviaOrigen.precip? destName : pickupName;
+  let coloniaLluviosa = lluviaDestino.precip >= lluviaOrigen.precip? destName : origenNombre;
   const getExtraYColor=(precip)=>{if(precip<=0.4) return {extra:configTarifas.azul, color:"#60a5fa", emoji:"🔵", txt:"Azul leve"};if(precip>0.4 && precip<2.5) return {extra:configTarifas.verde, color:"#22c55e", emoji:"🟢", txt:"Verde"};if(precip>=2.5 && precip<7.5) return {extra:configTarifas.amarillo, color:"#eab308", emoji:"🟡", txt:"Amarillo"};if(precip>=7.5 && precip<15) return {extra:configTarifas.rojo, color:"#ef4444", emoji:"🔴", txt:"Rojo"};return {extra:configTarifas.morado, color:"#a855f7", emoji:"🟣", txt:"Morado"};};
   const info=getExtraYColor(precipFinal); extraLluvia=info.extra; lastPrecip=precipFinal; lastInfo=`${info.emoji} ${info.txt} en ${coloniaLluviosa}`;
   const badge=document.getElementById("weatherBadge");
   if(precipFinal>0.4){badge.style.background=info.color; badge.className="weather-badge show"; badge.innerText=`${info.emoji} ${info.txt} en ${coloniaLluviosa} (${precipFinal}mm) +$${info.extra}`;} else {badge.classList.remove("show"); extraLluvia=0;}
-  directionsService.route({origin:{lat:pickupLat,lng:pickupLng},destination:{lat:destinationLat,lng:destinationLng},travelMode: google.maps.TravelMode.DRIVING,provideRouteAlternatives:true}, (result,status)=>{
+  directionsService.route({origin:{lat:origenLat,lng:origenLng},destination:{lat:destinationLat,lng:destinationLng},travelMode: google.maps.TravelMode.DRIVING,provideRouteAlternatives:true}, (result,status)=>{
     if(status!=="OK" ||!result.routes.length) return;
     let best=result.routes[0]; let bestDist=best.legs[0].distance.value;
     for(let r of result.routes){ if(r.legs[0].distance.value < bestDist){ best=r; bestDist=r.legs[0].distance.value; } }
@@ -259,8 +384,8 @@ async function intentarTrazarRutaAuto(){
     const leg=best.legs[0]; const km=leg.distance.value/1000;
     let precio=configTarifas.base;
     if(leg.distance.value>2000){let extra=leg.distance.value-2000;precio=configTarifas.base+Math.ceil(extra/configTarifas.metros)*configTarifas.extraMonto;}
-    if(distMts(pickupLat,pickupLng,CENTRO.lat,CENTRO.lng)>800&&distMts(destinationLat,destinationLng,CENTRO.lat,CENTRO.lng)>800){precio+=configTarifas.lejosCentro;}
-    let esSOP_Lindavista = (pickupName.toLowerCase().includes("sop") && destName.toLowerCase().includes("linda")) || (destName.toLowerCase().includes("sop") && pickupName.toLowerCase().includes("linda"));
+    if(distMts(origenLat,origenLng,CENTRO.lat,CENTRO.lng)>800&&distMts(destinationLat,destinationLng,CENTRO.lat,CENTRO.lng)>800){precio+=configTarifas.lejosCentro;}
+    let esSOP_Lindavista = (origenNombre.toLowerCase().includes("sop") && destName.toLowerCase().includes("linda")) || (destName.toLowerCase().includes("sop") && origenNombre.toLowerCase().includes("linda"));
     if(esSOP_Lindavista) precio=configTarifas.sop;
     if(extraLluvia>0) precio+=extraLluvia;
     document.getElementById("distance").innerText=km.toFixed(2)+" km";
@@ -271,6 +396,8 @@ async function intentarTrazarRutaAuto(){
     document.getElementById("whatsappRepartidorButton").classList.add("show");
   });
 }
+
+// ==================== SECCION G: MARCA Y TARIFAS (FIREBASE) ====================
 function actualizarManifestPWA(){const iconSrc=configMarca.pwaIcon||configMarca.logoLogin||configMarca.logoMapa||"https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3";const name=configMarca.platformName||"KIGO XPRESS";const color=configMarca.primaryColor||"#E53935";const manifest={name:name,short_name:name.substring(0,12),display:"standalone",background_color:"#ffffff",theme_color:color,icons:[{src:iconSrc,sizes:"192x192",type:"image/png",purpose:"any maskable"},{src:iconSrc,sizes:"512x512",type:"image/png",purpose:"any maskable"}]};const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});const url=URL.createObjectURL(blob);document.getElementById("manifestLink").href=url;document.getElementById("appleIcon").href=iconSrc;document.getElementById("themeColorMeta").content=color;document.getElementById("appleTitle").content=name;}
 db.ref("kigo_config").on("value",(snap)=>{const v=snap.val(); if(v){configMarca=v; aplicarConfigMarca();}});
 db.ref("kigo_tarifas").on("value",(snap)=>{const v=snap.val(); if(v){configTarifas=v; aplicarConfigTarifas();}});
@@ -282,7 +409,9 @@ document.getElementById("inputLogoLogin").addEventListener("change", function(e)
 document.getElementById("inputPWAIcon").addEventListener("change", function(e){const file=e.target.files[0]; if(!file) return; const reader=new FileReader();reader.onload=function(ev){document.getElementById("previewPWA").src=ev.target.result; configMarca.pwaIcon=ev.target.result; actualizarManifestPWA();};reader.readAsDataURL(file);});
 function guardarModificaciones(){const nombre=document.getElementById("inputPlatformName").value.trim()||"KIGO XPRESS";const color=document.getElementById("inputPrimaryColor").value||"#E53935";configMarca.platformName=nombre; configMarca.primaryColor=color;db.ref("kigo_config").set(configMarca).then(()=>{aplicarConfigMarca(); alert("Marca y icono de App guardados");});}
 function guardarTarifas(){configTarifas={azul:parseInt(document.getElementById("tarifaAzul").value)||0,verde:parseInt(document.getElementById("tarifaVerde").value)||0,amarillo:parseInt(document.getElementById("tarifaAmarillo").value)||0,rojo:parseInt(document.getElementById("tarifaRojo").value)||0,morado:parseInt(document.getElementById("tarifaMorado").value)||0,base:parseInt(document.getElementById("tarifaBase").value)||35,metros:parseInt(document.getElementById("tarifaMetros").value)||650,extraMonto:parseInt(document.getElementById("tarifaExtraMonto").value)||5,lejosCentro:parseInt(document.getElementById("tarifaLejosCentro").value)||5,sop:parseInt(document.getElementById("tarifaSOP").value)||45};db.ref("kigo_tarifas").set(configTarifas).then(()=>{aplicarConfigTarifas(); alert("Tarifas guardadas");});}
-function verificarSistema(){document.getElementById("statHora").innerText=new Date().toLocaleTimeString();document.getElementById("statClientes").innerText=clientesGuardados.length;db.ref("kigo_clientes").once("value").then(()=>{document.getElementById("dotFirebase").className="status-dot status-ok";document.getElementById("txtFirebase").innerText="Conectado";document.getElementById("badgeFirebase").innerText="CONECTADO"; document.getElementById("badgeFirebase").style.background="#dcfce7"; document.getElementById("badgeFirebase").style.color="#166534";}).catch(()=>{document.getElementById("dotFirebase").className="status-dot status-bad";document.getElementById("txtFirebase").innerText="Error";document.getElementById("badgeFirebase").innerText="ERROR"; document.getElementById("badgeFirebase").style.background="#fee2e2"; document.getElementById("badgeFirebase").style.color="#991b1b";});fetch("https://api.rainviewer.com/public/weather-maps.json").then(r=>r.json()).then(j=>{if(j.radar && j.radar.past && j.radar.past.length){document.getElementById("dotRadar").className="status-dot status-ok";document.getElementById("txtRadar").innerText="Radar activo";document.getElementById("badgeRadar").innerText="ACTIVO"; document.getElementById("badgeRadar").style.background="#dcfce7"; document.getElementById("badgeRadar").style.color="#166534";}else{throw "no radar";}}).catch(()=>{document.getElementById("dotRadar").className="status-dot status-bad";document.getElementById("txtRadar").innerText="No se pudo cargar radar";document.getElementById("badgeRadar").innerText="FALLA";});fetch("https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City").then(r=>r.json()).then(d=>{document.getElementById("dotClima").className="status-dot status-ok";document.getElementById("txtClima").innerText="Clima OK - "+Math.round(d.current.temperature_2m)+"°C";document.getElementById("badgeClima").innerText="OK";});}
+
+// ==================== SECCION H: ADMIN Y CLIENTES ====================
+function verificarSistema(){document.getElementById("statHora").innerText=new Date().toLocaleTimeString();document.getElementById("statClientes").innerText=clientesGuardados.length;db.ref("kigo_clientes").once("value").then(()=>{document.getElementById("dotFirebase").className="status-dot status-ok";document.getElementById("txtFirebase").innerText="Conectado";document.getElementById("badgeFirebase").innerText="CONECTADO"; document.getElementById("badgeFirebase").style.background="#dcfce7"; document.getElementById("badgeFirebase").style.color="#166534";}).catch(()=>{document.getElementById("dotFirebase").className="status-dot status-bad";document.getElementById("txtFirebase").innerText="Error";document.getElementById("badgeFirebase").innerText="ERROR";});fetch("https://api.rainviewer.com/public/weather-maps.json").then(r=>r.json()).then(j=>{if(j.radar && j.radar.past && j.radar.past.length){document.getElementById("dotRadar").className="status-dot status-ok";document.getElementById("txtRadar").innerText="Radar activo";document.getElementById("badgeRadar").innerText="ACTIVO";}}).catch(()=>{document.getElementById("dotRadar").className="status-dot status-bad";document.getElementById("txtRadar").innerText="No se pudo cargar radar";});fetch("https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City").then(r=>r.json()).then(d=>{document.getElementById("dotClima").className="status-dot status-ok";document.getElementById("txtClima").innerText="Clima OK - "+Math.round(d.current.temperature_2m)+"°C";document.getElementById("badgeClima").innerText="OK";});}
 db.ref("kigo_clientes").on("value", (snap)=>{const val=snap.val(); clientesGuardados=[];if(val){Object.keys(val).forEach(k=>{clientesGuardados.push({fbKey:k,...val[k]});});}renderListaClientes(); document.getElementById("statClientes").innerText=clientesGuardados.length;});
 function showAddCliente(){document.getElementById("btnAddCliente").classList.add("active");document.getElementById("btnListCliente").classList.remove("active");document.getElementById("addClienteView").style.display="block";document.getElementById("listClienteView").style.display="none";}
 function showListClientes(){document.getElementById("btnListCliente").classList.add("active");document.getElementById("btnAddCliente").classList.remove("active");document.getElementById("addClienteView").style.display="none";document.getElementById("listClienteView").style.display="block";renderListaClientes();}
@@ -301,10 +430,19 @@ function openAdmin(){document.getElementById("adminModal").classList.add("show")
 function closeAdmin(){document.getElementById("adminModal").classList.remove("show");}
 function logout(){isLogged=false;closeAdmin();}
 function switchAdminTab(tab){document.querySelectorAll('.adminTab').forEach(b=>b.classList.remove('active'));document.getElementById('panelClientes').style.display='none';document.getElementById('panelMod').style.display='none';document.getElementById('panelAjustes').style.display='none';document.getElementById('panelSoporte').style.display='none';if(tab==='clientes'){document.getElementById('tabClientes').classList.add('active'); document.getElementById('panelClientes').style.display='block';}if(tab==='mod'){document.getElementById('tabMod').classList.add('active'); document.getElementById('panelMod').style.display='block';}if(tab==='ajustes'){document.getElementById('tabAjustes').classList.add('active'); document.getElementById('panelAjustes').style.display='block';}if(tab==='soporte'){document.getElementById('tabSoporte').classList.add('active'); document.getElementById('panelSoporte').style.display='block'; verificarSistema();}}
-document.getElementById("whatsappButton").onclick=()=>{const linkRuta=`https://www.google.com/maps/dir/${pickupLat},${pickupLng}/${destinationLat},${destinationLng}`;const mensaje=`*COTIZACIÓN ${configMarca.platformName}* \n\n Recoger: ${pickupName}\n Entregar: ${destName}\n Distancia: ${ultimaDistancia}\n Valor: ${ultimoPrecio}\n${extraLluvia>0?`Lluvia: ${lastInfo} (${lastPrecip}mm) +$${extraLluvia}\n`:"Sin lluvia\n"}\n Ver ruta: ${linkRuta}\n\n¿Confirmamos servicio?`;const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`; window.open(url,"_blank");};
+
+// ==================== SECCION I: WHATSAPP Y RESET ====================
+document.getElementById("whatsappButton").onclick=()=>{
+  const productos = document.getElementById('productosComprar').value;
+  const dondeComprar = document.getElementById('dondeComprar').value;
+  const tel = subTipoActivo==='recoger'? document.getElementById('telefonoRecoger').value : document.getElementById('telefonoComprar').value;
+  const linkRuta=`https://www.google.com/maps/dir/${pickupLat||''},${pickupLng||''}/${destinationLat},${destinationLng}`;
+  let mensaje=`*COTIZACIÓN ${configMarca.platformName}* - ${subTipoActivo.toUpperCase()} \n\n Recoger: ${pickupName} ${dondeComprar? '('+dondeComprar+')':''}\n ${productos? 'Productos: '+productos+'\n':''} Entregar: ${destName}\n Distancia: ${ultimaDistancia}\n Valor: ${ultimoPrecio}\n Tel: ${tel}\n ${extraLluvia>0?`Lluvia: ${lastInfo} (${lastPrecip}mm) +$${extraLluvia}\n`:""}\n Ver ruta: ${linkRuta}\n\n¿Confirmamos servicio?`;
+  const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`; window.open(url,"_blank");
+};
 document.getElementById("whatsappRepartidorButton").onclick=()=>{const linkRecoger=`https://www.google.com/maps/search/?api=1&query=${pickupLat},${pickupLng}`;const mensaje=`Pedido # \n Recoger: ${linkRecoger}\n Cliente: ${pickupName}\n Precio: ${ultimoPrecio}\n Distancia: ${ultimaDistancia}`;const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`; window.open(url,"_blank");};
-document.getElementById("resetBtn").onclick=()=>{pickupLat=null;pickupLng=null;destinationLat=null;destinationLng=null;pickupName="";destName="";document.getElementById("pickupInput").value="";document.getElementById("destinationInput").value="";document.getElementById("distance").innerText="— km";document.getElementById("duration").innerText="—";document.getElementById("price").innerText="POR COTIZAR";document.getElementById("whatsappButton").classList.remove("show"); document.getElementById("whatsappRepartidorButton").classList.remove("show"); document.getElementById("weatherBadge").classList.remove("show");document.getElementById("aliadoDireccionInfo").style.display="none";if(pickupMarker) pickupMarker.setMap(null); if(destinationMarker) destinationMarker.setMap(null);if(directionsRenderer) directionsRenderer.setDirections({routes:[]});map.setCenter(CENTRO); map.setZoom(14);};
-document.addEventListener("click",e=>{if(!e.target.closest(".input-wrapper")){document.getElementById("pickupSuggestions").classList.remove("show");document.getElementById("destinationSuggestions").classList.remove("show");}});
+document.getElementById("resetBtn").onclick=()=>{pickupLat=null;pickupLng=null;destinationLat=null;destinationLng=null;pickupName="";destName="";document.getElementById("pickupInput").value="";document.getElementById("destinationInput").value="";document.getElementById("aliadoEntregaComprar").value="";document.getElementById("direccionEntregaComprar").value="";document.getElementById("productosComprar").value="";document.getElementById("dondeComprar").value="";document.getElementById('distance').innerText='— km';document.getElementById('duration').innerText='—';document.getElementById('price').innerText='POR COTIZAR';document.getElementById("whatsappButton").classList.remove("show"); document.getElementById("whatsappRepartidorButton").classList.remove("show"); document.getElementById("weatherBadge").classList.remove("show");document.getElementById("aliadoDireccionInfo").style.display="none";if(pickupMarker) pickupMarker.setMap(null); if(destinationMarker) destinationMarker.setMap(null);if(directionsRenderer) directionsRenderer.setDirections({routes:[]});map.setCenter(CENTRO); map.setZoom(14);};
+document.addEventListener("click",e=>{if(!e.target.closest(".input-wrapper")){document.getElementById("pickupSuggestions").classList.remove("show");document.getElementById("destinationSuggestions").classList.remove("show");document.getElementById("aliadoEntregaSuggestions").classList.remove("show");}});
 document.getElementById("loginModal").addEventListener("click",e=>{if(e.target.id==="loginModal") closeLogin();});
 document.getElementById("adminModal").addEventListener("click",e=>{if(e.target.id==="adminModal") closeAdmin();});
 </script>
