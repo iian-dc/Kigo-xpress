@@ -15,7 +15,7 @@
 .app{max-width:500px;margin:auto;background:#fff;min-height:100vh;display:flex;flex-direction:column}
 #map{width:100%;height:52vh}.map-container{position:relative;overflow:hidden}
 .map-message{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:999;background:white; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:2px; box-shadow:0 2px 10px rgba(0,0,0,.25);}
-.panel{padding:14px;border-radius:22px 22px 0 0;margin-top:-18px;position:relative;z-index:1000;background:#fff;flex:1;box-shadow:0 -4px 20px rgba(0,0,0,.12)}
+.panel{padding:14px;border-radius:22px 22px 0 0;margin-top:-18px;position:relative;z-index:1000;background:#fff;flex:1;box-shadow:0 -4px 20px rgba(0,0,0,.12);padding-bottom:80px}
 .colonia-input{width:100%;padding:13px 38px 13px 14px;border:1.5px solid #ddd;border-radius:12px;font-size:13px;font-weight:600;outline:none}
 .suggestions{position:absolute;left:0;right:0;top:100%;margin-top:6px;background:#fff;border:1px solid #ddd;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,.18);z-index:9999;display:none;max-height:220px;overflow-y:auto}
 .suggestions.show{display:block}
@@ -87,6 +87,20 @@
 .tiempo-btn.active{background:#111;color:#fff;border-color:#111}
 .tiempo-btn.active i{color:#fff}
 .tiempo-btn i{color:#111}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:#fff;border-top:1.5px solid #eee;display:flex;justify-content:space-around;padding:8px 0 14px;z-index:999;box-shadow:0 -4px 15px rgba(0,0,0,.08)}
+.bottom-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 20px;border-radius:12px;cursor:pointer;border:none;background:transparent;font-weight:800;font-size:10px;color:#888}
+.bottom-btn.active{color:#E53935;background:#fff1f1}
+.pedidos-panel-box{width:100%;max-width:500px;background:#fff;border-radius:22px 22px 0 0;overflow:hidden;box-shadow:0 -10px 40px rgba(0,0,0,.3);border:1px solid #eee;height:88vh;display:flex;flex-direction:column;position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:10001}
+.pedidos-tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;border-bottom:1px solid #eee;white-space:nowrap}
+.pedido-tab{flex-shrink:0;padding:8px 12px;border-radius:999px;border:1px solid #e5e7eb;background:#f7f7f8;font-size:10px;font-weight:800;cursor:pointer}
+.pedido-tab.active{background:#111;color:#fff;border-color:#111}
+.pedido-card{border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}
+.pedido-status{font-size:9px;font-weight:900;padding:4px 8px;border-radius:999px;display:inline-block;margin-bottom:6px}
+.st-pendiente{background:#fef3c7;color:#92400e}
+.st-camino{background:#dbeafe;color:#1e40af}
+.st-recogido{background:#e0e7ff;color:#4338ca}
+.st-entregar{background:#fce7f3;color:#9d174d}
+.st-finalizado{background:#dcfce7;color:#166534}
 </style>
 </head>
 <body>
@@ -100,24 +114,20 @@
 <div id="weatherBadge" class="weather-badge"></div>
 </div>
 <div class="panel">
-
 <div class="info-top-bar">
 <div style="display:flex;gap:10px;align-items:center"><i class="material-icons" style="font-size:16px">route</i><span id="distance">— km</span> • <span id="duration">—</span></div>
 <div style="display:flex;align-items:center;gap:6px"><i class="material-icons" style="font-size:16px">payments</i><span id="price">POR COTIZAR</span></div>
 </div>
-
 <div class="tipo-tabs">
 <button id="btnAliados" class="tipo-btn aliados active" onclick="activarTipo('aliados')"><i class="material-icons" style="font-size:16px">store</i> ALIADOS</button>
 <button id="btnNuevo" class="tipo-btn nuevo" onclick="activarTipo('nuevo')"><i class="material-icons" style="font-size:16px">person_add</i> CLIENTE NUEVO</button>
 </div>
-
 <div id="boxAliados" class="aliados-box show">
   <div class="sub-tabs">
     <button id="subRecoger" class="sub-btn active" onclick="activarSubTipo('recoger')"><i class="material-icons" style="font-size:14px">inventory_2</i> RECOGER</button>
     <button id="subComprar" class="sub-btn" onclick="activarSubTipo('comprar')"><i class="material-icons" style="font-size:14px">shopping_bag</i> COMPRAR</button>
     <button class="sub-btn-trash" onclick="resetAliadosForm()"><i class="material-icons" style="font-size:18px">delete</i></button>
   </div>
-
   <div id="formRecoger" class="sub-form show">
     <div class="form-label">NOMBRE DEL ALIADO</div>
     <div class="input-wrapper">
@@ -148,7 +158,6 @@
       <div class="input-clear" onclick="document.getElementById('tiempoCustom').value=''; limpiarTiempo()"><i class="material-icons" style="font-size:14px">close</i></div>
     </div>
   </div>
-
   <div id="formComprar" class="sub-form">
     <div class="form-label">PRODUCTOS A COMPRAR</div>
     <div class="input-wrapper">
@@ -182,7 +191,7 @@
       <div class="input-clear" onclick="document.getElementById('telefonoComprar').value=''"><i class="material-icons" style="font-size:14px">close</i></div>
     </div>
     <div class="precio-manual-box">
-      <div class="form-label" style="margin-top:0; color:#92400e"><i class="material-icons" style="font-size:14px; vertical-align:middle">payments</i> PRECIO DEL SERVICIO (vacío, tú lo pones)</div>
+      <div class="form-label" style="margin-top:0; color:#92400e"><i class="material-icons" style="font-size:14px; vertical-align:middle">payments</i> PRECIO DEL SERVICIO</div>
       <div class="input-wrapper">
         <input id="precioManualComprar" class="colonia-input" type="number" placeholder="Ej: 40, 45, 50" oninput="actualizarPrecioManual()">
         <div class="input-clear" onclick="document.getElementById('precioManualComprar').value=''; actualizarPrecioManual()"><i class="material-icons" style="font-size:14px">close</i></div>
@@ -190,7 +199,6 @@
     </div>
   </div>
 </div>
-
 <div id="boxNuevo" class="aliados-box">
   <div class="sub-tabs">
     <button id="subNuevoRecoger" class="sub-btn active" onclick="activarSubTipoNuevo('recoger')"><i class="material-icons" style="font-size:14px">inventory_2</i> RECOGER</button>
@@ -247,7 +255,7 @@
       <div class="input-clear" onclick="document.getElementById('telefonoNuevoComprar').value=''"><i class="material-icons" style="font-size:14px">close</i></div>
     </div>
     <div class="precio-manual-box">
-      <div class="form-label" style="margin-top:0; color:#92400e"><i class="material-icons" style="font-size:14px; vertical-align:middle">payments</i> PRECIO DEL SERVICIO (vacío, tú lo pones)</div>
+      <div class="form-label" style="margin-top:0; color:#92400e"><i class="material-icons" style="font-size:14px; vertical-align:middle">payments</i> PRECIO DEL SERVICIO</div>
       <div class="input-wrapper">
         <input id="precioManualNuevoComprar" class="colonia-input" type="number" placeholder="Ej: 40, 45, 50" oninput="actualizarPrecioManualNuevo()">
         <div class="input-clear" onclick="document.getElementById('precioManualNuevoComprar').value=''; actualizarPrecioManualNuevo()"><i class="material-icons" style="font-size:14px">close</i></div>
@@ -255,67 +263,39 @@
     </div>
   </div>
 </div>
-
 <button id="whatsappButton" class="btn-whatsapp"><i class="material-icons" style="font-size:18px">chat</i> Compartir cotización al cliente</button>
 <button id="whatsappRepartidorButton" class="btn-repartidor"><i class="material-icons" style="font-size:18px">two_wheeler</i> Compartir con repartidor</button>
+</div>
+<div class="bottom-nav">
+<button class="bottom-btn active" id="btnNavMapa" onclick="switchBottom('mapa')"><i class="material-icons" style="font-size:20px">map</i>Mapa</button>
+<button class="bottom-btn" id="btnNavPedidos" onclick="openPedidos()"><i class="material-icons" style="font-size:20px">receipt_long</i>Pedidos <span id="badgePedidos" style="background:#E53935;color:#fff;border-radius:10px;padding:1px 6px;font-size:9px;display:none">0</span></button>
 </div>
 </div>
 
 <div class="modal" id="loginModal"><div class="login-box"><div class="login-head"><div style="display:flex;gap:10px;align-items:center"><img id="logoLoginImg" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3" style="width:36px;height:36px;border-radius:10px;object-fit:cover;background:#111"><div><div id="platformNameLogin" style="font-weight:800;font-size:13px">KIGO XPRESS</div><div style="font-size:10px;color:#888">Acceso administrador</div></div></div><button class="iconBtn" onclick="closeLogin()"><i class="material-icons" style="font-size:18px">close</i></button></div><div class="login-body"><div style="position:relative;display:flex;align-items:center"><i class="material-icons" style="position:absolute;left:12px;color:#888;font-size:18px">person</i><input id="loginUser" class="login-input" placeholder="Usuario" value="admin"></div><div style="position:relative;display:flex;align-items:center"><i class="material-icons" style="position:absolute;left:12px;color:#888;font-size:18px">lock</i><input id="loginPass" type="password" class="login-input" placeholder="Contraseña" value="0831"></div><button onclick="doLogin()" style="width:100%;padding:14px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:900;font-size:14px;cursor:pointer">Ingresar</button></div></div></div>
-
 <div class="modal" id="adminModal"><div class="admin-panel-box"><div class="admin-panel-head"><div style="display:flex;gap:10px;align-items:center"><img id="logoAdminHead" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3" style="width:36px;height:36px;border-radius:10px;object-fit:cover"><div><div id="platformNameAdmin" style="font-weight:800;font-size:14px">Panel KIGO XPRESS</div><div style="font-size:10px;color:#888">Gestión Firebase</div></div></div><div style="display:flex;gap:8px"><button class="iconBtn" onclick="logout()"><i class="material-icons" style="font-size:18px">logout</i></button><button class="iconBtn" onclick="closeAdmin()"><i class="material-icons" style="font-size:18px">close</i></button></div></div>
 <div class="adminTabs"><button class="adminTab active" id="tabClientes" onclick="switchAdminTab('clientes')">Clientes</button><button class="adminTab" id="tabMod" onclick="switchAdminTab('mod')">Modificaciones</button><button class="adminTab" id="tabAjustes" onclick="switchAdminTab('ajustes')">Ajustes</button><button class="adminTab" id="tabSoporte" onclick="switchAdminTab('soporte')">Soporte</button></div>
 <div class="adminContent">
 <div id="panelClientes"><div class="clientes-top"><button class="clientes-btn active" id="btnAddCliente" onclick="showAddCliente()">Agregar nuevo cliente</button><button class="clientes-btn" id="btnListCliente" onclick="showListClientes()">Lista de clientes</button></div><div id="addClienteView"><div class="adminCard"><div style="font-size:11px;font-weight:800;margin-bottom:10px">AGREGAR ALIADO / CLIENTE</div><input id="clienteNombre" class="cliente-input" placeholder="Nombre del aliado"><div class="searchWrap"><input id="clienteUbicacion" class="cliente-input" style="margin-bottom:0" placeholder="Escribe colonia o dirección..."><button class="iconBtnSmall" onclick="buscarUbicacionCliente()"><i class="material-icons" style="font-size:18px">search</i></button></div><div id="clienteMiniMap" class="miniMap"></div><div id="clienteConfirmText" style="font-size:11px;color:#666;margin-top:6px;display:none"></div><button onclick="guardarCliente()" style="width:100%;margin-top:10px;padding:12px;border:none;border-radius:10px;background:#111;color:#fff;font-weight:800;font-size:13px;cursor:pointer">Guardar aliado</button></div></div><div id="listClienteView" style="display:none"><div id="listaClientesContainer"></div></div></div>
-
 <div id="panelMod" style="display:none"><div class="adminCard"><div style="font-size:12px;font-weight:900;margin-bottom:12px">MODIFICACIONES DE MARCA</div><div class="mod-label">Logo centrado en el mapa</div><div class="mod-row"><img id="previewMapa" class="mod-preview" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3"><input type="file" id="inputLogoMapa" accept="image/*" style="font-size:11px"></div><div class="mod-label">Logo del panel / login</div><div class="mod-row"><img id="previewLogin" class="mod-preview" style="border-radius:10px" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3"><input type="file" id="inputLogoLogin" accept="image/*" style="font-size:11px"></div><div class="mod-label">Icono de la App (512x512)</div><div class="mod-row"><img id="previewPWA" class="mod-preview" style="border-radius:16px; border:2px solid #111" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3"><input type="file" id="inputPWAIcon" accept="image/*" style="font-size:11px"></div><div class="mod-label">Nombre de la plataforma</div><input id="inputPlatformName" class="mod-input" placeholder="Ej: KIGO XPRESS"><div class="mod-label">Color principal</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:12px"><input type="color" id="inputPrimaryColor" value="#E53935" style="width:50px;height:40px;border:none;border-radius:8px"><div style="display:flex;gap:6px"><div class="color-dot" style="background:#E53935" onclick="setColor('#E53935')"></div><div class="color-dot" style="background:#111" onclick="setColor('#111111')"></div><div class="color-dot" style="background:#2563eb" onclick="setColor('#2563eb')"></div><div class="color-dot" style="background:#16a34a" onclick="setColor('#16a34a')"></div></div></div><button onclick="guardarModificaciones()" style="width:100%;padding:14px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:900;font-size:13px;cursor:pointer">Guardar modificaciones</button></div></div>
-
 <div id="panelAjustes" style="display:none">
-<div class="adminCard">
-<div style="font-size:12px;font-weight:900;margin-bottom:10px">TARIFAS POR LLUVIA</div>
-<div class="tarifa-grid">
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Azul ≤0.4mm</div><input id="tarifaAzul" type="number" class="mod-input" style="margin-top:6px" value="0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Verde 0.5-2.4mm</div><input id="tarifaVerde" type="number" class="mod-input" style="margin-top:6px" value="5"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Amarillo 2.5-7.4mm</div><input id="tarifaAmarillo" type="number" class="mod-input" style="margin-top:6px" value="9"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Rojo 7.5-15mm</div><input id="tarifaRojo" type="number" class="mod-input" style="margin-top:6px" value="12"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Morado >15mm</div><input id="tarifaMorado" type="number" class="mod-input" style="margin-top:6px" value="18"></div>
-</div>
-</div>
-<div class="adminCard">
-<div style="font-size:13px;font-weight:900;margin-bottom:4px">COBRO POR KILÓMETROS - ORGANIZADO</div>
-<div style="font-size:10px;color:#666;margin-bottom:12px" id="infoCobroTexto"></div>
-<div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:12px;margin-bottom:10px">
-<div style="font-size:11px;font-weight:900;color:#166534;margin-bottom:8px">📍 ZONA CENTRO (Centro a Centro = $35)</div>
-<div class="mod-label" style="margin-top:0">Radio considerado CENTRO (metros desde el jardín principal)</div>
-<input id="tarifaRadioCentro" type="number" class="mod-input" value="800" placeholder="Ej: 800">
-<div class="mod-label">Tarifa fija si AMBOS están dentro del centro</div>
-<input id="tarifaCentroCentro" type="number" class="mod-input" value="35">
-</div>
-<div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:12px;margin-bottom:10px">
-<div style="font-size:11px;font-weight:900;color:#9a3412;margin-bottom:8px">🚀 CENTRO HACIA AFUERA (Centro → Fuera)</div>
-<div class="mod-label" style="margin-top:0">Tarifa base hasta 2km</div>
-<input id="tarifaBase" type="number" class="mod-input" value="35">
-<div class="tarifa-grid">
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Cada cuántos metros cobra extra después de 2km</div><input id="tarifaMetros" type="number" class="mod-input" value="650"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">$ por cada extra (ej: $5)</div><input id="tarifaExtraMonto" type="number" class="mod-input" value="5"></div>
-</div>
-</div>
-<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:12px;margin-bottom:10px">
-<div style="font-size:11px;font-weight:900;color:#991b1b;margin-bottom:8px">📦 FUERA DE CENTRO y MUY LEJOS</div>
-<div class="tarifa-grid">
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Extra si ambos están fuera del centro (>radio)</div><input id="tarifaLejosCentro" type="number" class="mod-input" value="5"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Metros para considerar MUY LEJOS del centro</div><input id="tarifaMuyLejosMetros" type="number" class="mod-input" value="2000"></div>
-</div>
-<div class="mod-label">Tarifa adicional si uno está MUY LEJOS (>2km del centro)</div>
-<input id="tarifaMuyLejos" type="number" class="mod-input" value="10">
-<div class="mod-label">Tarifa fija SOP-Lindavista (especial)</div>
-<input id="tarifaSOP" type="number" class="mod-input" value="45">
-</div>
-<button onclick="guardarTarifas()" style="width:100%;margin-top:12px;padding:14px;border:none;border-radius:12px;background:#E53935;color:#fff;font-weight:900;font-size:13px;cursor:pointer">Guardar todas las tarifas</button>
-</div>
-</div>
+<div class="adminCard"><div style="font-size:12px;font-weight:900;margin-bottom:10px">TARIFAS POR LLUVIA</div><div class="tarifa-grid"><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Azul ≤0.4mm</div><input id="tarifaAzul" type="number" class="mod-input" style="margin-top:6px" value="0"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Verde 0.5-2.4mm</div><input id="tarifaVerde" type="number" class="mod-input" style="margin-top:6px" value="5"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Amarillo 2.5-7.4mm</div><input id="tarifaAmarillo" type="number" class="mod-input" style="margin-top:6px" value="9"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Rojo 7.5-15mm</div><input id="tarifaRojo" type="number" class="mod-input" style="margin-top:6px" value="12"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Morado >15mm</div><input id="tarifaMorado" type="number" class="mod-input" style="margin-top:6px" value="18"></div></div></div>
+<div class="adminCard"><div style="font-size:13px;font-weight:900;margin-bottom:4px">COBRO POR KILÓMETROS - ORGANIZADO</div><div style="font-size:10px;color:#666;margin-bottom:12px" id="infoCobroTexto"></div><div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:12px;margin-bottom:10px"><div style="font-size:11px;font-weight:900;color:#166534;margin-bottom:8px">📍 ZONA CENTRO</div><div class="mod-label" style="margin-top:0">Radio CENTRO (metros)</div><input id="tarifaRadioCentro" type="number" class="mod-input" value="800"><div class="mod-label">Tarifa fija si AMBOS están dentro del centro</div><input id="tarifaCentroCentro" type="number" class="mod-input" value="35"></div><div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:12px;margin-bottom:10px"><div style="font-size:11px;font-weight:900;color:#9a3412;margin-bottom:8px">🚀 CENTRO → FUERA</div><div class="mod-label" style="margin-top:0">Tarifa base hasta 2km</div><input id="tarifaBase" type="number" class="mod-input" value="35"><div class="tarifa-grid"><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Cada cuántos metros extra después de 2km</div><input id="tarifaMetros" type="number" class="mod-input" value="650"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">$ por cada extra</div><input id="tarifaExtraMonto" type="number" class="mod-input" value="5"></div></div></div><div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:12px;margin-bottom:10px"><div style="font-size:11px;font-weight:900;color:#991b1b;margin-bottom:8px">📦 FUERA y MUY LEJOS</div><div class="tarifa-grid"><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Extra si ambos fuera</div><input id="tarifaLejosCentro" type="number" class="mod-input" value="5"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Metros MUY LEJOS</div><input id="tarifaMuyLejosMetros" type="number" class="mod-input" value="2000"></div></div><div class="mod-label">Tarifa adicional si uno está MUY LEJOS</div><input id="tarifaMuyLejos" type="number" class="mod-input" value="10"><div class="mod-label">Tarifa SOP-Lindavista</div><input id="tarifaSOP" type="number" class="mod-input" value="45"></div><button onclick="guardarTarifas()" style="width:100%;margin-top:12px;padding:14px;border:none;border-radius:12px;background:#E53935;color:#fff;font-weight:900;font-size:13px;cursor:pointer">Guardar todas las tarifas</button></div></div>
 <div id="panelSoporte" style="display:none"><div class="adminCard"><div style="font-size:12px;font-weight:900;margin-bottom:10px">ESTADO DEL SISTEMA</div><div style="border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:800"><span id="dotFirebase" class="status-dot status-warn"></span>Firebase</div><div style="font-size:10px;color:#888" id="txtFirebase">Verificando...</div></div><div id="badgeFirebase" style="font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;background:#fef3c7;color:#92400e">...</div></div></div></div>
 </div></div></div>
+
+<!-- PANEL PEDIDOS NUEVO -->
+<div class="modal" id="pedidosModal" style="align-items:flex-end;padding:0"><div class="pedidos-panel-box"><div class="admin-panel-head"><div style="display:flex;gap:10px;align-items:center"><i class="material-icons">receipt_long</i><div><div style="font-weight:900;font-size:14px">PEDIDOS KIGO XPRESS</div><div style="font-size:10px;color:#888">Seguimiento en tiempo real</div></div></div><div style="display:flex;gap:8px"><button class="iconBtn" onclick="closePedidos()"><i class="material-icons">close</i></button></div></div>
+<div class="pedidos-tabs" id="pedidosTabs">
+<button class="pedido-tab active" onclick="filtrarPedidos('todos')">Todos</button>
+<button class="pedido-tab" onclick="filtrarPedidos('pendiente')">Pendientes</button>
+<button class="pedido-tab" onclick="filtrarPedidos('en_camino')">En Camino</button>
+<button class="pedido-tab" onclick="filtrarPedidos('recogido')">Recogido</button>
+<button class="pedido-tab" onclick="filtrarPedidos('a_entregar')">A Entregar</button>
+<button class="pedido-tab" onclick="filtrarPedidos('finalizado')">Finalizados</button>
+</div>
+<div class="adminContent" id="listaPedidosContainer"><div style="text-align:center;padding:30px;color:#888;font-size:12px">No hay pedidos aún</div></div>
+</div></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -329,57 +309,109 @@ let pickupMarker=null,destinationMarker=null,clienteMiniMapG=null,clienteMiniMar
 let pickupLat=null,pickupLng=null,destinationLat=null,destinationLng=null,compraLat=null,compraLng=null;
 let nuevoRecogidaLat=null,nuevoRecogidaLng=null,nuevoEntregaLat=null,nuevoEntregaLng=null,compraNuevoLat=null,compraNuevoLng=null,nuevoEntregaComprarLat=null,nuevoEntregaComprarLng=null;
 let ultimaDistancia="",ultimoPrecio="",pickupName="",destName="",dondeComprarNombre="",nuevoRecogidaNombre="",nuevoEntregaNombre="",dondeComprarNuevoNombre="",aliadoDireccionTexto="";
-let extraLluvia=0,lastPrecip=0,lastInfo="";
-let clientesGuardados=[],tempClienteLat=null,tempClienteLng=null,tempClienteDir="",editandoId=null;
+let extraLluvia=0;let clientesGuardados=[],tempClienteLat=null,tempClienteLng=null,tempClienteDir="",editandoId=null;
 let configMarca={logoMapa:"",logoLogin:"",pwaIcon:"",platformName:"KIGO XPRESS",primaryColor:"#E53935"};
 let configTarifas={azul:0,verde:5,amarillo:9,rojo:12,morado:18,base:35,centroCentro:35,radioCentro:800,metros:650,extraMonto:5,lejosCentro:5,muyLejosMetros:2000,muyLejos:10,sop:45};
 let tipoActivo='aliados', subTipoActivo='recoger', subTipoNuevo='recoger', tiempoRecogida='', tiempoRecogidaNuevo='';
+let pedidosGuardados=[], filtroPedidoActual='todos';
 function distMts(lat1,lon1,lat2,lon2){const R=6371000;const dLat=(lat2-lat1)*Math.PI/180;const dLon=(lon2-lon1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
 
-function activarTipo(t){tipoActivo=t;document.getElementById('btnAliados').classList.toggle('active', t==='aliados');document.getElementById('btnNuevo').classList.toggle('active', t==='nuevo');document.getElementById('boxAliados').classList.toggle('show', t==='aliados');document.getElementById('boxNuevo').classList.toggle('show', t==='nuevo');}
-function activarSubTipo(t){limpiarFormulariosAliados();subTipoActivo=t;document.getElementById('subRecoger').classList.toggle('active', t==='recoger');document.getElementById('subComprar').classList.toggle('active', t==='comprar');document.getElementById('formRecoger').classList.toggle('show', t==='recoger');document.getElementById('formComprar').classList.toggle('show', t==='comprar');}
-function activarSubTipoNuevo(t){limpiarFormulariosNuevo();subTipoNuevo=t;document.getElementById('subNuevoRecoger').classList.toggle('active', t==='recoger');document.getElementById('subNuevoComprar').classList.toggle('active', t==='comprar');document.getElementById('formNuevoRecoger').classList.toggle('show', t==='recoger');document.getElementById('formNuevoComprar').classList.toggle('show', t==='comprar');}
+// ===== PERSISTENCIA LOCAL - NO SE BORRA AL MINIMIZAR =====
+const STORAGE_KEY='kigo_estado_v5';
+function guardarEstadoLocal(){
+  const estado={
+    pickupInput: document.getElementById('pickupInput').value,
+    destinationInput: document.getElementById('destinationInput').value,
+    aliadoEntregaComprar: document.getElementById('aliadoEntregaComprar').value,
+    direccionEntregaComprar: document.getElementById('direccionEntregaComprar').value,
+    productosComprar: document.getElementById('productosComprar').value,
+    dondeComprar: document.getElementById('dondeComprar').value,
+    telefonoRecoger: document.getElementById('telefonoRecoger').value,
+    telefonoComprar: document.getElementById('telefonoComprar').value,
+    precioManualComprar: document.getElementById('precioManualComprar').value,
+    tiempoCustom: document.getElementById('tiempoCustom').value,
+    nuevoDireccionInput: document.getElementById('nuevoDireccionInput').value,
+    nuevoEntregaInput: document.getElementById('nuevoEntregaInput').value,
+    productosNuevoComprar: document.getElementById('productosNuevoComprar').value,
+    dondeComprarNuevo: document.getElementById('dondeComprarNuevo').value,
+    direccionEntregaNuevoComprar: document.getElementById('direccionEntregaNuevoComprar').value,
+    telefonoNuevoRecoger: document.getElementById('telefonoNuevoRecoger').value,
+    telefonoNuevoComprar: document.getElementById('telefonoNuevoComprar').value,
+    tiempoCustomNuevo: document.getElementById('tiempoCustomNuevo').value,
+    precioManualNuevoComprar: document.getElementById('precioManualNuevoComprar').value,
+    tipoActivo, subTipoActivo, subTipoNuevo, tiempoRecogida, tiempoRecogidaNuevo,
+    pickupLat, pickupLng, destinationLat, destinationLng, compraLat, compraLng,
+    nuevoRecogidaLat, nuevoRecogidaLng, nuevoEntregaLat, nuevoEntregaLng,
+    compraNuevoLat, compraNuevoLng, nuevoEntregaComprarLat, nuevoEntregaComprarLng,
+    ultimaDistancia, ultimoPrecio, pickupName, destName, aliadoDireccionTexto,
+    timestamp: Date.now()
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+}
+function restaurarEstadoLocal(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const e=JSON.parse(raw);
+    if(Date.now()-e.timestamp > 1000*60*60*12) return; // 12h max
+    const setVal=(id,val)=>{const el=document.getElementById(id); if(el && val) el.value=val;};
+    setVal('pickupInput',e.pickupInput); setVal('destinationInput',e.destinationInput);
+    setVal('aliadoEntregaComprar',e.aliadoEntregaComprar); setVal('direccionEntregaComprar',e.direccionEntregaComprar);
+    setVal('productosComprar',e.productosComprar); setVal('dondeComprar',e.dondeComprar);
+    setVal('telefonoRecoger',e.telefonoRecoger); setVal('telefonoComprar',e.telefonoComprar);
+    setVal('precioManualComprar',e.precioManualComprar); setVal('tiempoCustom',e.tiempoCustom);
+    setVal('nuevoDireccionInput',e.nuevoDireccionInput); setVal('nuevoEntregaInput',e.nuevoEntregaInput);
+    setVal('productosNuevoComprar',e.productosNuevoComprar); setVal('dondeComprarNuevo',e.dondeComprarNuevo);
+    setVal('direccionEntregaNuevoComprar',e.direccionEntregaNuevoComprar);
+    setVal('telefonoNuevoRecoger',e.telefonoNuevoRecoger); setVal('telefonoNuevoComprar',e.telefonoNuevoComprar);
+    setVal('tiempoCustomNuevo',e.tiempoCustomNuevo); setVal('precioManualNuevoComprar',e.precioManualNuevoComprar);
+    tipoActivo=e.tipoActivo||'aliados'; subTipoActivo=e.subTipoActivo||'recoger'; subTipoNuevo=e.subTipoNuevo||'recoger';
+    tiempoRecogida=e.tiempoRecogida||''; tiempoRecogidaNuevo=e.tiempoRecogidaNuevo||'';
+    pickupLat=e.pickupLat; pickupLng=e.pickupLng; destinationLat=e.destinationLat; destinationLng=e.destinationLng;
+    compraLat=e.compraLat; compraLng=e.compraLng; nuevoRecogidaLat=e.nuevoRecogidaLat; nuevoRecogidaLng=e.nuevoRecogidaLng;
+    nuevoEntregaLat=e.nuevoEntregaLat; nuevoEntregaLng=e.nuevoEntregaLng; compraNuevoLat=e.compraNuevoLat; compraNuevoLng=e.compraNuevoLng;
+    nuevoEntregaComprarLat=e.nuevoEntregaComprarLat; nuevoEntregaComprarLng=e.nuevoEntregaComprarLng;
+    ultimaDistancia=e.ultimaDistancia||""; ultimoPrecio=e.ultimoPrecio||""; pickupName=e.pickupName||""; destName=e.destName||""; aliadoDireccionTexto=e.aliadoDireccionTexto||"";
+    activarTipo(tipoActivo); activarSubTipo(subTipoActivo); activarSubTipoNuevo(subTipoNuevo);
+    if(e.pickupInput && e.aliadoDireccionTexto){document.getElementById('aliadoDireccionInfo').style.display='block'; document.getElementById('aliadoDireccionInfo').innerText="📍 "+e.aliadoDireccionTexto+" (BD)";}
+    if(e.ultimaDistancia){document.getElementById('distance').innerText=e.ultimaDistancia; document.getElementById('price').innerText=e.ultimoPrecio; if(e.ultimoPrecio && e.ultimoPrecio!=='POR COTIZAR'){document.getElementById('whatsappButton').classList.add('show'); document.getElementById('whatsappRepartidorButton').classList.add('show');}}
+  }catch(err){}
+}
+setInterval(guardarEstadoLocal,1000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){guardarEstadoLocal();}});
 
-function limpiarFormulariosAliados(){
-  document.getElementById('pickupInput').value=""; document.getElementById('destinationInput').value=""; document.getElementById('aliadoEntregaComprar').value=""; document.getElementById('direccionEntregaComprar').value=""; document.getElementById('productosComprar').value=""; document.getElementById('dondeComprar').value=""; document.getElementById('telefonoRecoger').value=""; document.getElementById('telefonoComprar').value=""; document.getElementById('aliadoDireccionInfo').style.display='none'; document.getElementById('tiempoCustom').value=""; tiempoRecogida=""; document.querySelectorAll('.tiempo-btn').forEach(b=>{b.classList.remove('active');});
-  document.getElementById('wrapAliadoEntrega').style.display='block'; document.getElementById('wrapDireccionEntrega').style.display='block';
-  pickupLat=null; pickupLng=null; destinationLat=null; destinationLng=null; compraLat=null; compraLng=null; pickupName=""; destName=""; dondeComprarNombre=""; aliadoDireccionTexto="";
-  if(pickupMarker) pickupMarker.setMap(null); if(destinationMarker) destinationMarker.setMap(null); if(directionsRenderer) directionsRenderer.setDirections({routes:[]});
-  document.getElementById('distance').innerText='— km'; document.getElementById('duration').innerText='—'; document.getElementById('price').innerText='POR COTIZAR';
-  document.getElementById("whatsappButton").classList.remove("show"); document.getElementById("whatsappRepartidorButton").classList.remove("show");
-}
-function limpiarFormulariosNuevo(){
-  document.getElementById('nuevoDireccionInput').value=""; document.getElementById('nuevoEntregaInput').value=""; document.getElementById('productosNuevoComprar').value=""; document.getElementById('dondeComprarNuevo').value=""; document.getElementById('direccionEntregaNuevoComprar').value=""; document.getElementById('telefonoNuevoRecoger').value=""; document.getElementById('telefonoNuevoComprar').value=""; document.getElementById('tiempoCustomNuevo').value=""; tiempoRecogidaNuevo=""; document.getElementById('nuevoMiniMap').classList.remove('show');
-  nuevoRecogidaLat=null; nuevoRecogidaLng=null; nuevoEntregaLat=null; nuevoEntregaLng=null; compraNuevoLat=null; compraNuevoLng=null; nuevoEntregaComprarLat=null; nuevoEntregaComprarLng=null;
-  if(pickupMarker) pickupMarker.setMap(null); if(destinationMarker) destinationMarker.setMap(null); if(directionsRenderer) directionsRenderer.setDirections({routes:[]});
-  document.getElementById('distance').innerText='— km'; document.getElementById('duration').innerText='—'; document.getElementById('price').innerText='POR COTIZAR';
-}
+function activarTipo(t){tipoActivo=t;document.getElementById('btnAliados').classList.toggle('active', t==='aliados');document.getElementById('btnNuevo').classList.toggle('active', t==='nuevo');document.getElementById('boxAliados').classList.toggle('show', t==='aliados');document.getElementById('boxNuevo').classList.toggle('show', t==='nuevo');guardarEstadoLocal();}
+function activarSubTipo(t){subTipoActivo=t;document.getElementById('subRecoger').classList.toggle('active', t==='recoger');document.getElementById('subComprar').classList.toggle('active', t==='comprar');document.getElementById('formRecoger').classList.toggle('show', t==='recoger');document.getElementById('formComprar').classList.toggle('show', t==='comprar');guardarEstadoLocal();}
+function activarSubTipoNuevo(t){subTipoNuevo=t;document.getElementById('subNuevoRecoger').classList.toggle('active', t==='recoger');document.getElementById('subNuevoComprar').classList.toggle('active', t==='comprar');document.getElementById('formNuevoRecoger').classList.toggle('show', t==='recoger');document.getElementById('formNuevoComprar').classList.toggle('show', t==='comprar');guardarEstadoLocal();}
+function limpiarFormulariosAliados(){document.getElementById('pickupInput').value=""; document.getElementById('destinationInput').value=""; document.getElementById('aliadoEntregaComprar').value=""; document.getElementById('direccionEntregaComprar').value=""; document.getElementById('productosComprar').value=""; document.getElementById('dondeComprar').value=""; document.getElementById('telefonoRecoger').value=""; document.getElementById('telefonoComprar').value=""; document.getElementById('aliadoDireccionInfo').style.display='none'; document.getElementById('tiempoCustom').value=""; tiempoRecogida=""; document.querySelectorAll('.tiempo-btn').forEach(b=>{b.classList.remove('active');});document.getElementById('wrapAliadoEntrega').style.display='block'; document.getElementById('wrapDireccionEntrega').style.display='block';pickupLat=null; pickupLng=null; destinationLat=null; destinationLng=null; compraLat=null; compraLng=null; pickupName=""; destName=""; dondeComprarNombre=""; aliadoDireccionTexto="";if(pickupMarker) pickupMarker.setMap(null); if(destinationMarker) destinationMarker.setMap(null); if(directionsRenderer) directionsRenderer.setDirections({routes:[]});document.getElementById('distance').innerText='— km'; document.getElementById('duration').innerText='—'; document.getElementById('price').innerText='POR COTIZAR';document.getElementById("whatsappButton").classList.remove("show"); document.getElementById("whatsappRepartidorButton").classList.remove("show");localStorage.removeItem(STORAGE_KEY);}
+function limpiarFormulariosNuevo(){document.getElementById('nuevoDireccionInput').value=""; document.getElementById('nuevoEntregaInput').value=""; document.getElementById('productosNuevoComprar').value=""; document.getElementById('dondeComprarNuevo').value=""; document.getElementById('direccionEntregaNuevoComprar').value=""; document.getElementById('telefonoNuevoRecoger').value=""; document.getElementById('telefonoNuevoComprar').value=""; document.getElementById('tiempoCustomNuevo').value=""; tiempoRecogidaNuevo=""; document.getElementById('nuevoMiniMap').classList.remove('show');nuevoRecogidaLat=null; nuevoRecogidaLng=null; nuevoEntregaLat=null; nuevoEntregaLng=null; compraNuevoLat=null; compraNuevoLng=null; nuevoEntregaComprarLat=null; nuevoEntregaComprarLng=null;if(pickupMarker) pickupMarker.setMap(null); if(destinationMarker) destinationMarker.setMap(null); if(directionsRenderer) directionsRenderer.setDirections({routes:[]});document.getElementById('distance').innerText='— km'; document.getElementById('duration').innerText='—'; document.getElementById('price').innerText='POR COTIZAR';localStorage.removeItem(STORAGE_KEY);}
 function resetAliadosForm(){limpiarFormulariosAliados(); document.getElementById('precioManualComprar').value='';}
 function resetNuevoForm(){limpiarFormulariosNuevo(); document.getElementById('precioManualNuevoComprar').value='';}
-function seleccionarTiempo(t){tiempoRecogida=t; document.getElementById('tiempoCustom').value=t; document.querySelectorAll('#formRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(t==='5 min') document.getElementById('t5').classList.add('active'); if(t==='10 min') document.getElementById('t10').classList.add('active'); if(t==='20 min') document.getElementById('t20').classList.add('active');}
-function seleccionarTiempoNuevo(t){tiempoRecogidaNuevo=t; document.getElementById('tiempoCustomNuevo').value=t; document.querySelectorAll('#formNuevoRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(t==='5 min') document.getElementById('nt5').classList.add('active'); if(t==='10 min') document.getElementById('nt10').classList.add('active'); if(t==='20 min') document.getElementById('nt20').classList.add('active');}
-function limpiarTiempo(){tiempoRecogida=document.getElementById('tiempoCustom').value; document.querySelectorAll('#formRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(tiempoRecogida==='5 min') document.getElementById('t5').classList.add('active'); if(tiempoRecogida==='10 min') document.getElementById('t10').classList.add('active'); if(tiempoRecogida==='20 min') document.getElementById('t20').classList.add('active');}
-function limpiarTiempoNuevo(){tiempoRecogidaNuevo=document.getElementById('tiempoCustomNuevo').value; document.querySelectorAll('#formNuevoRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(tiempoRecogidaNuevo==='5 min') document.getElementById('nt5').classList.add('active'); if(tiempoRecogidaNuevo==='10 min') document.getElementById('nt10').classList.add('active'); if(tiempoRecogidaNuevo==='20 min') document.getElementById('nt20').classList.add('active');}
+function seleccionarTiempo(t){tiempoRecogida=t; document.getElementById('tiempoCustom').value=t; document.querySelectorAll('#formRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(t==='5 min') document.getElementById('t5').classList.add('active'); if(t==='10 min') document.getElementById('t10').classList.add('active'); if(t==='20 min') document.getElementById('t20').classList.add('active');guardarEstadoLocal();}
+function seleccionarTiempoNuevo(t){tiempoRecogidaNuevo=t; document.getElementById('tiempoCustomNuevo').value=t; document.querySelectorAll('#formNuevoRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(t==='5 min') document.getElementById('nt5').classList.add('active'); if(t==='10 min') document.getElementById('nt10').classList.add('active'); if(t==='20 min') document.getElementById('nt20').classList.add('active');guardarEstadoLocal();}
+function limpiarTiempo(){tiempoRecogida=document.getElementById('tiempoCustom').value; document.querySelectorAll('#formRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(tiempoRecogida==='5 min') document.getElementById('t5').classList.add('active'); if(tiempoRecogida==='10 min') document.getElementById('t10').classList.add('active'); if(tiempoRecogida==='20 min') document.getElementById('t20').classList.add('active');guardarEstadoLocal();}
+function limpiarTiempoNuevo(){tiempoRecogidaNuevo=document.getElementById('tiempoCustomNuevo').value; document.querySelectorAll('#formNuevoRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(tiempoRecogidaNuevo==='5 min') document.getElementById('nt5').classList.add('active'); if(tiempoRecogidaNuevo==='10 min') document.getElementById('nt10').classList.add('active'); if(tiempoRecogidaNuevo==='20 min') document.getElementById('nt20').classList.add('active');guardarEstadoLocal();}
 document.getElementById('tiempoCustom').addEventListener('input', limpiarTiempo);
 document.getElementById('tiempoCustomNuevo').addEventListener('input', limpiarTiempoNuevo);
-function limpiarAliado(){document.getElementById('pickupInput').value="";document.getElementById('pickupSuggestions').classList.remove('show');document.getElementById('aliadoDireccionInfo').style.display='none';pickupLat=null;pickupLng=null;pickupName="";aliadoDireccionTexto="";if(pickupMarker)pickupMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();}
-function limpiarDestino(){document.getElementById('destinationInput').value="";document.getElementById('destinationSuggestions').classList.remove('show');destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();}
-function limpiarNuevoDireccion(){document.getElementById('nuevoDireccionInput').value="";document.getElementById('nuevoMiniMap').classList.remove('show');nuevoRecogidaLat=null; nuevoRecogidaLng=null; if(pickupMarker)pickupMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();}
-function limpiarNuevoEntrega(){document.getElementById('nuevoEntregaInput').value="";nuevoEntregaLat=null; nuevoEntregaLng=null; if(destinationMarker)destinationMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();}
-function limpiarAliadoEntregaComprar(){document.getElementById('aliadoEntregaComprar').value="";document.getElementById('aliadoEntregaSuggestions').classList.remove('show');destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});document.getElementById('wrapDireccionEntrega').style.display='block';resetPrecios();}
-function limpiarDireccionEntregaComprar(){document.getElementById('direccionEntregaComprar').value="";destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});document.getElementById('wrapAliadoEntrega').style.display='block';resetPrecios();}
-function limpiarDondeComprar(){compraLat=null; compraLng=null; dondeComprarNombre=""; if(pickupMarker) pickupMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]}); resetPrecios();}
-function limpiarDondeComprarNuevo(){compraNuevoLat=null; compraNuevoLng=null; dondeComprarNuevoNombre=""; if(pickupMarker)pickupMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]}); resetPrecios();}
-function limpiarDireccionEntregaNuevo(){nuevoEntregaComprarLat=null; nuevoEntregaComprarLng=null; if(destinationMarker)destinationMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]}); resetPrecios();}
+function limpiarAliado(){document.getElementById('pickupInput').value="";document.getElementById('pickupSuggestions').classList.remove('show');document.getElementById('aliadoDireccionInfo').style.display='none';pickupLat=null;pickupLng=null;pickupName="";aliadoDireccionTexto="";if(pickupMarker)pickupMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();guardarEstadoLocal();}
+function limpiarDestino(){document.getElementById('destinationInput').value="";document.getElementById('destinationSuggestions').classList.remove('show');destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();guardarEstadoLocal();}
+function limpiarNuevoDireccion(){document.getElementById('nuevoDireccionInput').value="";document.getElementById('nuevoMiniMap').classList.remove('show');nuevoRecogidaLat=null; nuevoRecogidaLng=null; if(pickupMarker)pickupMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();guardarEstadoLocal();}
+function limpiarNuevoEntrega(){document.getElementById('nuevoEntregaInput').value="";nuevoEntregaLat=null; nuevoEntregaLng=null; if(destinationMarker)destinationMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();guardarEstadoLocal();}
+function limpiarAliadoEntregaComprar(){document.getElementById('aliadoEntregaComprar').value="";document.getElementById('aliadoEntregaSuggestions').classList.remove('show');destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});document.getElementById('wrapDireccionEntrega').style.display='block';resetPrecios();guardarEstadoLocal();}
+function limpiarDireccionEntregaComprar(){document.getElementById('direccionEntregaComprar').value="";destinationLat=null;destinationLng=null;destName="";if(destinationMarker)destinationMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});document.getElementById('wrapAliadoEntrega').style.display='block';resetPrecios();guardarEstadoLocal();}
+function limpiarDondeComprar(){compraLat=null; compraLng=null; dondeComprarNombre=""; if(pickupMarker) pickupMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]}); resetPrecios();guardarEstadoLocal();}
+function limpiarDondeComprarNuevo(){compraNuevoLat=null; compraNuevoLng=null; dondeComprarNuevoNombre=""; if(pickupMarker)pickupMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]}); resetPrecios();guardarEstadoLocal();}
+function limpiarDireccionEntregaNuevo(){nuevoEntregaComprarLat=null; nuevoEntregaComprarLng=null; if(destinationMarker)destinationMarker.setMap(null); if(directionsRenderer)directionsRenderer.setDirections({routes:[]}); resetPrecios();guardarEstadoLocal();}
 function resetPrecios(){document.getElementById('distance').innerText='— km';document.getElementById('duration').innerText='—';}
-function actualizarPrecioManual(){const val = document.getElementById('precioManualComprar').value; if(val && parseInt(val)>0){document.getElementById('price').innerText='$'+val+' MXN'; ultimoPrecio='$'+val+' MXN'; document.getElementById("whatsappButton").classList.add("show"); document.getElementById("whatsappRepartidorButton").classList.add("show");} else {document.getElementById('price').innerText='POR COTIZAR';}}
-function actualizarPrecioManualNuevo(){const val = document.getElementById('precioManualNuevoComprar').value; if(val && parseInt(val)>0){document.getElementById('price').innerText='$'+val+' MXN'; ultimoPrecio='$'+val+' MXN'; document.getElementById("whatsappButton").classList.add("show"); document.getElementById("whatsappRepartidorButton").classList.add("show");} else {document.getElementById('price').innerText='POR COTIZAR';}}
+function actualizarPrecioManual(){const val = document.getElementById('precioManualComprar').value; if(val && parseInt(val)>0){document.getElementById('price').innerText='$'+val+' MXN'; ultimoPrecio='$'+val+' MXN'; document.getElementById("whatsappButton").classList.add("show"); document.getElementById("whatsappRepartidorButton").classList.add("show");} else {document.getElementById('price').innerText='POR COTIZAR';}guardarEstadoLocal();}
+function actualizarPrecioManualNuevo(){const val = document.getElementById('precioManualNuevoComprar').value; if(val && parseInt(val)>0){document.getElementById('price').innerText='$'+val+' MXN'; ultimoPrecio='$'+val+' MXN'; document.getElementById("whatsappButton").classList.add("show"); document.getElementById("whatsappRepartidorButton").classList.add("show");} else {document.getElementById('price').innerText='POR COTIZAR';}guardarEstadoLocal();}
 
 function initGoogleMaps(){
   map=new google.maps.Map(document.getElementById("map"),{center:CENTRO,zoom:14,disableDefaultUI:true});
   geocoder=new google.maps.Geocoder();
   directionsService=new google.maps.DirectionsService();
   directionsRenderer=new google.maps.DirectionsRenderer({map:map,suppressMarkers:true,polylineOptions:{strokeColor:"#E53935",strokeWeight:6,strokeOpacity:0.9}});
+  restaurarEstadoLocal();
   const inputDest=document.getElementById("destinationInput");
   const inputDirEntregaComprar=document.getElementById("direccionEntregaComprar");
   const inputDondeComprar=document.getElementById("dondeComprar");
@@ -388,171 +420,90 @@ function initGoogleMaps(){
   const inputDondeComprarNuevo=document.getElementById("dondeComprarNuevo");
   const inputDirEntregaNuevo=document.getElementById("direccionEntregaNuevoComprar");
   const inputClienteUbic=document.getElementById("clienteUbicacion");
-  new google.maps.places.Autocomplete(inputDest,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;destinationLat=place.geometry.location.lat(); destinationLng=place.geometry.location.lng(); destName=place.name||place.formatted_address;if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAuto();});
-  new google.maps.places.Autocomplete(inputDirEntregaComprar,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;document.getElementById('wrapAliadoEntrega').style.display='none';document.getElementById('aliadoEntregaComprar').value="";destinationLat=place.geometry.location.lat(); destinationLng=place.geometry.location.lng(); destName=place.formatted_address;if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAuto();});
-  new google.maps.places.Autocomplete(inputDondeComprar,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;compraLat=place.geometry.location.lat(); compraLng=place.geometry.location.lng(); dondeComprarNombre=place.name||place.formatted_address;if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#2563eb",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAuto();});
-  new google.maps.places.Autocomplete(inputNuevoDir,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;nuevoRecogidaLat=place.geometry.location.lat(); nuevoRecogidaLng=place.geometry.location.lng(); nuevoRecogidaNombre=place.formatted_address;if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#16a34a",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});const miniDiv=document.getElementById("nuevoMiniMap"); miniDiv.classList.add("show");setTimeout(()=>{if(!nuevoMiniMapG) nuevoMiniMapG=new google.maps.Map(document.getElementById("nuevoMiniMap"),{center:{lat:nuevoRecogidaLat,lng:nuevoRecogidaLng},zoom:16,disableDefaultUI:true});else nuevoMiniMapG.setCenter({lat:nuevoRecogidaLat,lng:nuevoRecogidaLng});if(nuevoMiniMarkerG) nuevoMiniMarkerG.setMap(null);nuevoMiniMarkerG=new google.maps.Marker({position:{lat:nuevoRecogidaLat,lng:nuevoRecogidaLng},map:nuevoMiniMapG});},200);map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAutoNuevoRecoger();});
-  new google.maps.places.Autocomplete(inputNuevoEnt,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;nuevoEntregaLat=place.geometry.location.lat(); nuevoEntregaLng=place.geometry.location.lng(); nuevoEntregaNombre=place.formatted_address;if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAutoNuevoRecoger();});
-  new google.maps.places.Autocomplete(inputDondeComprarNuevo,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;compraNuevoLat=place.geometry.location.lat(); compraNuevoLng=place.geometry.location.lng(); dondeComprarNuevoNombre=place.formatted_address;if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#2563eb",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAutoNuevoComprar();});
-  new google.maps.places.Autocomplete(inputDirEntregaNuevo,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;nuevoEntregaComprarLat=place.geometry.location.lat(); nuevoEntregaComprarLng=place.geometry.location.lng(); nuevoEntregaNombre=place.formatted_address;if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAutoNuevoComprar();});
+  new google.maps.places.Autocomplete(inputDest,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;destinationLat=place.geometry.location.lat(); destinationLng=place.geometry.location.lng(); destName=place.name||place.formatted_address;if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAuto();guardarEstadoLocal();});
+  new google.maps.places.Autocomplete(inputDirEntregaComprar,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;document.getElementById('wrapAliadoEntrega').style.display='none';document.getElementById('aliadoEntregaComprar').value="";destinationLat=place.geometry.location.lat(); destinationLng=place.geometry.location.lng(); destName=place.formatted_address;if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAuto();guardarEstadoLocal();});
+  new google.maps.places.Autocomplete(inputDondeComprar,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;compraLat=place.geometry.location.lat(); compraLng=place.geometry.location.lng(); dondeComprarNombre=place.name||place.formatted_address;if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#2563eb",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAuto();guardarEstadoLocal();});
+  new google.maps.places.Autocomplete(inputNuevoDir,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;nuevoRecogidaLat=place.geometry.location.lat(); nuevoRecogidaLng=place.geometry.location.lng(); nuevoRecogidaNombre=place.formatted_address;if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#16a34a",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});const miniDiv=document.getElementById("nuevoMiniMap"); miniDiv.classList.add("show");setTimeout(()=>{if(!nuevoMiniMapG) nuevoMiniMapG=new google.maps.Map(document.getElementById("nuevoMiniMap"),{center:{lat:nuevoRecogidaLat,lng:nuevoRecogidaLng},zoom:16,disableDefaultUI:true});else nuevoMiniMapG.setCenter({lat:nuevoRecogidaLat,lng:nuevoRecogidaLng});if(nuevoMiniMarkerG) nuevoMiniMarkerG.setMap(null);nuevoMiniMarkerG=new google.maps.Marker({position:{lat:nuevoRecogidaLat,lng:nuevoRecogidaLng},map:nuevoMiniMapG});},200);map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAutoNuevoRecoger();guardarEstadoLocal();});
+  new google.maps.places.Autocomplete(inputNuevoEnt,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;nuevoEntregaLat=place.geometry.location.lat(); nuevoEntregaLng=place.geometry.location.lng(); nuevoEntregaNombre=place.formatted_address;if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAutoNuevoRecoger();guardarEstadoLocal();});
+  new google.maps.places.Autocomplete(inputDondeComprarNuevo,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;compraNuevoLat=place.geometry.location.lat(); compraNuevoLng=place.geometry.location.lng(); dondeComprarNuevoNombre=place.formatted_address;if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#2563eb",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAutoNuevoComprar();guardarEstadoLocal();});
+  new google.maps.places.Autocomplete(inputDirEntregaNuevo,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address","name"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;nuevoEntregaComprarLat=place.geometry.location.lat(); nuevoEntregaComprarLng=place.geometry.location.lng(); nuevoEntregaNombre=place.formatted_address;if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:place.geometry.location,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter(place.geometry.location); map.setZoom(16);intentarTrazarRutaAutoNuevoComprar();guardarEstadoLocal();});
   new google.maps.places.Autocomplete(inputClienteUbic,{componentRestrictions:{country:["mx"]},fields:["geometry","formatted_address"]}).addListener("place_changed",function(){const place=this.getPlace(); if(!place.geometry) return;tempClienteLat=place.geometry.location.lat(); tempClienteLng=place.geometry.location.lng(); tempClienteDir=place.formatted_address;document.getElementById("clienteConfirmText").style.display="block"; document.getElementById("clienteConfirmText").innerText="Ubicación encontrada: "+tempClienteDir;const miniDiv=document.getElementById("clienteMiniMap"); miniDiv.classList.add("show");setTimeout(()=>{if(!clienteMiniMapG) clienteMiniMapG=new google.maps.Map(document.getElementById("clienteMiniMap"),{center:{lat:tempClienteLat,lng:tempClienteLng},zoom:16,disableDefaultUI:true});else clienteMiniMapG.setCenter({lat:tempClienteLat,lng:tempClienteLng});if(clienteMiniMarkerG) clienteMiniMarkerG.setMap(null);clienteMiniMarkerG=new google.maps.Marker({position:{lat:tempClienteLat,lng:tempClienteLng},map:clienteMiniMapG});},200);});
   checarClimaGeneral();
+  document.querySelectorAll('.colonia-input').forEach(inp=>{inp.addEventListener('input', guardarEstadoLocal);});
 }
-
-function mostrarAliadosEnPickup(filtro=""){
-  const c=document.getElementById("pickupSuggestions"); c.innerHTML="";
-  let lista=clientesGuardados;
-  if(filtro) lista=clientesGuardados.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()) || x.direccion.toLowerCase().includes(filtro.toLowerCase()));
-  if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">Sin aliados</div>'; c.classList.add("show"); return;}
-  const header=document.createElement("div"); header.className="client-header"; header.innerText="TUS ALIADOS GUARDADOS"; c.appendChild(header);
-  const orden=[...lista].sort((a,b)=>a.nombre.localeCompare(b.nombre)).slice(0,20);
-  orden.forEach(cl=>{
-    const el=document.createElement("div"); el.className="suggestion";
-    el.innerHTML=`<div><i class="material-icons" style="font-size:18px">store</i></div><div><div style="font-weight:800;font-size:13px">${cl.nombre}</div><div style="font-size:10px;color:#777">${cl.direccion.substring(0,70)}</div></div>`;
-    el.onclick=()=>{pickupLat=cl.lat; pickupLng=cl.lng; pickupName=cl.nombre; aliadoDireccionTexto=cl.direccion; document.getElementById("pickupInput").value=cl.nombre;document.getElementById("aliadoDireccionInfo").style.display="block";document.getElementById("aliadoDireccionInfo").innerText="📍 "+cl.direccion+" (BD)";c.classList.remove("show");if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:{lat:cl.lat,lng:cl.lng},map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#16a34a",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter({lat:cl.lat,lng:cl.lng}); map.setZoom(15);if(destinationLat){intentarTrazarRutaAuto();}};
-    c.appendChild(el);
-  });
-  c.classList.add("show");
-}
-function mostrarAliadosEntregaComprar(filtro=""){
-  const c=document.getElementById("aliadoEntregaSuggestions"); c.innerHTML="";
-  let lista=clientesGuardados;
-  if(filtro) lista=clientesGuardados.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()));
-  if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">Sin aliados</div>'; c.classList.add("show"); return;}
-  const header=document.createElement("div"); header.className="client-header"; header.innerText="ALIADOS PARA ENTREGA"; c.appendChild(header);
-  const orden=[...lista].sort((a,b)=>a.nombre.localeCompare(b.nombre)).slice(0,20);
-  orden.forEach(cl=>{
-    const el=document.createElement("div"); el.className="suggestion";
-    el.innerHTML=`<div><i class="material-icons" style="font-size:18px">store</i></div><div><div style="font-weight:800;font-size:13px">${cl.nombre}</div><div style="font-size:10px;color:#777">${cl.direccion.substring(0,70)}</div></div>`;
-    el.onclick=()=>{document.getElementById('wrapDireccionEntrega').style.display='none';document.getElementById('direccionEntregaComprar').value="";destinationLat=cl.lat; destinationLng=cl.lng; destName=cl.nombre;document.getElementById("aliadoEntregaComprar").value=cl.nombre;c.classList.remove("show");if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:{lat:cl.lat,lng:cl.lng},map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter({lat:cl.lat,lng:cl.lng}); map.setZoom(16);intentarTrazarRutaAuto();};
-    c.appendChild(el);
-  });
-  c.classList.add("show");
-}
+function mostrarAliadosEnPickup(filtro=""){const c=document.getElementById("pickupSuggestions"); c.innerHTML="";let lista=clientesGuardados;if(filtro) lista=clientesGuardados.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()) || x.direccion.toLowerCase().includes(filtro.toLowerCase()));if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">Sin aliados</div>'; c.classList.add("show"); return;}const header=document.createElement("div"); header.className="client-header"; header.innerText="TUS ALIADOS GUARDADOS"; c.appendChild(header);const orden=[...lista].sort((a,b)=>a.nombre.localeCompare(b.nombre)).slice(0,20);orden.forEach(cl=>{const el=document.createElement("div"); el.className="suggestion";el.innerHTML=`<div><i class="material-icons" style="font-size:18px">store</i></div><div><div style="font-weight:800;font-size:13px">${cl.nombre}</div><div style="font-size:10px;color:#777">${cl.direccion.substring(0,70)}</div></div>`;el.onclick=()=>{pickupLat=cl.lat; pickupLng=cl.lng; pickupName=cl.nombre; aliadoDireccionTexto=cl.direccion; document.getElementById("pickupInput").value=cl.nombre;document.getElementById("aliadoDireccionInfo").style.display="block";document.getElementById("aliadoDireccionInfo").innerText="📍 "+cl.direccion+" (BD)";c.classList.remove("show");if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:{lat:cl.lat,lng:cl.lng},map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#16a34a",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter({lat:cl.lat,lng:cl.lng}); map.setZoom(15);if(destinationLat){intentarTrazarRutaAuto();}guardarEstadoLocal();};c.appendChild(el);});c.classList.add("show");}
+function mostrarAliadosEntregaComprar(filtro=""){const c=document.getElementById("aliadoEntregaSuggestions"); c.innerHTML="";let lista=clientesGuardados;if(filtro) lista=clientesGuardados.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()));if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">Sin aliados</div>'; c.classList.add("show"); return;}const header=document.createElement("div"); header.className="client-header"; header.innerText="ALIADOS PARA ENTREGA"; c.appendChild(header);const orden=[...lista].sort((a,b)=>a.nombre.localeCompare(b.nombre)).slice(0,20);orden.forEach(cl=>{const el=document.createElement("div"); el.className="suggestion";el.innerHTML=`<div><i class="material-icons" style="font-size:18px">store</i></div><div><div style="font-weight:800;font-size:13px">${cl.nombre}</div><div style="font-size:10px;color:#777">${cl.direccion.substring(0,70)}</div></div>`;el.onclick=()=>{document.getElementById('wrapDireccionEntrega').style.display='none';document.getElementById('direccionEntregaComprar').value="";destinationLat=cl.lat; destinationLng=cl.lng; destName=cl.nombre;document.getElementById("aliadoEntregaComprar").value=cl.nombre;c.classList.remove("show");if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:{lat:cl.lat,lng:cl.lng},map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter({lat:cl.lat,lng:cl.lng}); map.setZoom(16);intentarTrazarRutaAuto();guardarEstadoLocal();};c.appendChild(el);});c.classList.add("show");}
 document.getElementById("pickupInput").addEventListener("focus", function(){ mostrarAliadosEnPickup(this.value.trim()); });
-document.getElementById("pickupInput").addEventListener("input", function(){ mostrarAliadosEnPickup(this.value.trim()); });
+document.getElementById("pickupInput").addEventListener("input", function(){ mostrarAliadosEnPickup(this.value.trim()); guardarEstadoLocal();});
 document.getElementById("aliadoEntregaComprar").addEventListener("focus", function(){ mostrarAliadosEntregaComprar(this.value.trim()); });
-document.getElementById("aliadoEntregaComprar").addEventListener("input", function(){ mostrarAliadosEntregaComprar(this.value.trim()); });
+document.getElementById("aliadoEntregaComprar").addEventListener("input", function(){ mostrarAliadosEntregaComprar(this.value.trim()); guardarEstadoLocal();});
 
-async function calcularPrecioOrganizado(origenLat, origenLng, destinoLat, destinoLng, distanciaMetros){
-  let precio = configTarifas.base;
-  let distCentroOrigen = distMts(origenLat, origenLng, CENTRO.lat, CENTRO.lng);
-  let distCentroDestino = distMts(destinoLat, destinoLng, CENTRO.lat, CENTRO.lng);
-  let ambosEnCentro = distCentroOrigen <= configTarifas.radioCentro && distCentroDestino <= configTarifas.radioCentro;
-  let ambosFueraCentro = distCentroOrigen > configTarifas.radioCentro && distCentroDestino > configTarifas.radioCentro;
-  let muyLejos = distCentroOrigen > configTarifas.muyLejosMetros || distCentroDestino > configTarifas.muyLejosMetros;
-  if(ambosEnCentro){precio = configTarifas.centroCentro;} else {
-    if(distanciaMetros > 2000){let extra = distanciaMetros - 2000;precio = configTarifas.base + Math.ceil(extra / configTarifas.metros) * configTarifas.extraMonto;} else {precio = configTarifas.base;}
-    if(ambosFueraCentro){precio += configTarifas.lejosCentro;}
-    if(muyLejos){precio += configTarifas.muyLejos;}
-  }
-  return precio;
-}
-async function intentarTrazarRutaAuto(){
-  let origenLat, origenLng, origenNombre;
-  if(subTipoActivo==='comprar'){
-    origenLat = compraLat; origenLng = compraLng; origenNombre = dondeComprarNombre || document.getElementById('dondeComprar').value;
-    if(!origenLat && origenNombre){try{const geo = await new Promise((res,rej)=>{geocoder.geocode({address:origenNombre+", Dolores Hidalgo, Mexico"}, (r,s)=>{if(s==="OK") res(r[0]); else rej();});});origenLat = geo.geometry.location.lat(); origenLng = geo.geometry.location.lng(); compraLat=origenLat; compraLng=origenLng;}catch(e){ return; }}
-  } else {origenLat = pickupLat; origenLng = pickupLng; origenNombre = pickupName;}
-  if(!origenLat ||!destinationLat) return;
-  const lluviaDestino = await getLluviaColonia(destinationLat, destinationLng);
-  const lluviaOrigen = await getLluviaColonia(origenLat, origenLng);
-  let precipFinal = Math.max(lluviaDestino.precip, lluviaOrigen.precip);
-  const getExtraYColor=(precip)=>{if(precip<=0.4) return {extra:configTarifas.azul, color:"#60a5fa", txt:"Azul leve"};if(precip>0.4 && precip<2.5) return {extra:configTarifas.verde, color:"#22c55e", txt:"Verde"};if(precip>=2.5 && precip<7.5) return {extra:configTarifas.amarillo, color:"#eab308", txt:"Amarillo"};if(precip>=7.5 && precip<15) return {extra:configTarifas.rojo, color:"#ef4444", txt:"Rojo"};return {extra:configTarifas.morado, color:"#a855f7", txt:"Morado"};};
-  const info=getExtraYColor(precipFinal); extraLluvia=info.extra;
-  const badge=document.getElementById("weatherBadge");
-  if(precipFinal>0.4){badge.style.background=info.color; badge.className="weather-badge show"; badge.innerText=`${info.txt} (${precipFinal}mm) +$${info.extra}`;} else {badge.classList.remove("show"); extraLluvia=0;}
-  directionsService.route({origin:{lat:origenLat,lng:origenLng},destination:{lat:destinationLat,lng:destinationLng},travelMode: google.maps.TravelMode.DRIVING,provideRouteAlternatives:true}, async (result,status)=>{
-    if(status!=="OK" ||!result.routes.length) return;
-    let best=result.routes[0]; let bestDist=best.legs[0].distance.value;
-    for(let r of result.routes){ if(r.legs[0].distance.value < bestDist){ best=r; bestDist=r.legs[0].distance.value; } }
-    const idx=result.routes.indexOf(best);
-    directionsRenderer.setDirections(result); directionsRenderer.setRouteIndex(idx);
-    const leg=best.legs[0]; const km=leg.distance.value/1000;
-    let precio;
-    if(subTipoActivo==='comprar'){
-      const manual = document.getElementById('precioManualComprar').value;
-      if(manual && parseInt(manual)>0){precio = parseInt(manual);} else {document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;ultimaDistancia=km.toFixed(2)+" km";return;}
-    } else {precio = await calcularPrecioOrganizado(origenLat, origenLng, destinationLat, destinationLng, leg.distance.value);}
-    if(extraLluvia>0) precio+=extraLluvia;
-    document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;document.getElementById("price").innerText="$"+precio+" MXN";ultimaDistancia=km.toFixed(2)+" km";ultimoPrecio="$"+precio+" MXN";document.getElementById("whatsappButton").classList.add("show");document.getElementById("whatsappRepartidorButton").classList.add("show");
+async function calcularPrecioOrganizado(origenLat, origenLng, destinoLat, destinoLng, distanciaMetros){let precio = configTarifas.base;let distCentroOrigen = distMts(origenLat, origenLng, CENTRO.lat, CENTRO.lng);let distCentroDestino = distMts(destinoLat, destinoLng, CENTRO.lat, CENTRO.lng);let ambosEnCentro = distCentroOrigen <= configTarifas.radioCentro && distCentroDestino <= configTarifas.radioCentro;let ambosFueraCentro = distCentroOrigen > configTarifas.radioCentro && distCentroDestino > configTarifas.radioCentro;let muyLejos = distCentroOrigen > configTarifas.muyLejosMetros || distCentroDestino > configTarifas.muyLejosMetros;if(ambosEnCentro){precio = configTarifas.centroCentro;} else {if(distanciaMetros > 2000){let extra = distanciaMetros - 2000;precio = configTarifas.base + Math.ceil(extra / configTarifas.metros) * configTarifas.extraMonto;} else {precio = configTarifas.base;}if(ambosFueraCentro){precio += configTarifas.lejosCentro;}if(muyLejos){precio += configTarifas.muyLejos;}}return precio;}
+async function intentarTrazarRutaAuto(){let origenLat, origenLng, origenNombre;if(subTipoActivo==='comprar'){origenLat = compraLat; origenLng = compraLng; origenNombre = dondeComprarNombre || document.getElementById('dondeComprar').value;if(!origenLat && origenNombre){try{const geo = await new Promise((res,rej)=>{geocoder.geocode({address:origenNombre+", Dolores Hidalgo, Mexico"}, (r,s)=>{if(s==="OK") res(r[0]); else rej();});});origenLat = geo.geometry.location.lat(); origenLng = geo.geometry.location.lng(); compraLat=origenLat; compraLng=origenLng;}catch(e){ return; }}} else {origenLat = pickupLat; origenLng = pickupLng; origenNombre = pickupName;}if(!origenLat ||!destinationLat) return;const lluviaDestino = await getLluviaColonia(destinationLat, destinationLng);const lluviaOrigen = await getLluviaColonia(origenLat, origenLng);let precipFinal = Math.max(lluviaDestino.precip, lluviaOrigen.precip);const getExtraYColor=(precip)=>{if(precip<=0.4) return {extra:configTarifas.azul, color:"#60a5fa", txt:"Azul leve"};if(precip>0.4 && precip<2.5) return {extra:configTarifas.verde, color:"#22c55e", txt:"Verde"};if(precip>=2.5 && precip<7.5) return {extra:configTarifas.amarillo, color:"#eab308", txt:"Amarillo"};if(precip>=7.5 && precip<15) return {extra:configTarifas.rojo, color:"#ef4444", txt:"Rojo"};return {extra:configTarifas.morado, color:"#a855f7", txt:"Morado"};};const info=getExtraYColor(precipFinal); extraLluvia=info.extra;const badge=document.getElementById("weatherBadge");if(precipFinal>0.4){badge.style.background=info.color; badge.className="weather-badge show"; badge.innerText=`${info.txt} (${precipFinal}mm) +$${info.extra}`;} else {badge.classList.remove("show"); extraLluvia=0;}directionsService.route({origin:{lat:origenLat,lng:origenLng},destination:{lat:destinationLat,lng:destinationLng},travelMode: google.maps.TravelMode.DRIVING,provideRouteAlternatives:true}, async (result,status)=>{if(status!=="OK" ||!result.routes.length) return;let best=result.routes[0]; let bestDist=best.legs[0].distance.value;for(let r of result.routes){ if(r.legs[0].distance.value < bestDist){ best=r; bestDist=r.legs[0].distance.value; } }const idx=result.routes.indexOf(best);directionsRenderer.setDirections(result); directionsRenderer.setRouteIndex(idx);const leg=best.legs[0]; const km=leg.distance.value/1000;let precio;if(subTipoActivo==='comprar'){const manual = document.getElementById('precioManualComprar').value;if(manual && parseInt(manual)>0){precio = parseInt(manual);} else {document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;ultimaDistancia=km.toFixed(2)+" km";return;}} else {precio = await calcularPrecioOrganizado(origenLat, origenLng, destinationLat, destinationLng, leg.distance.value);}if(extraLluvia>0) precio+=extraLluvia;document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;document.getElementById("price").innerText="$"+precio+" MXN";ultimaDistancia=km.toFixed(2)+" km";ultimoPrecio="$"+precio+" MXN";document.getElementById("whatsappButton").classList.add("show");document.getElementById("whatsappRepartidorButton").classList.add("show");guardarEstadoLocal();});}
+async function intentarTrazarRutaAutoNuevoRecoger(){if(!nuevoRecogidaLat ||!nuevoEntregaLat) return;directionsService.route({origin:{lat:nuevoRecogidaLat,lng:nuevoRecogidaLng},destination:{lat:nuevoEntregaLat,lng:nuevoEntregaLng},travelMode: google.maps.TravelMode.DRIVING,provideRouteAlternatives:true}, async (result,status)=>{if(status!=="OK" ||!result.routes.length) return;let best=result.routes[0]; let bestDist=best.legs[0].distance.value;for(let r of result.routes){ if(r.legs[0].distance.value < bestDist){ best=r; bestDist=r.legs[0].distance.value; } }const idx=result.routes.indexOf(best); directionsRenderer.setDirections(result); directionsRenderer.setRouteIndex(idx);const leg=best.legs[0]; const km=leg.distance.value/1000; let precio = await calcularPrecioOrganizado(nuevoRecogidaLat, nuevoRecogidaLng, nuevoEntregaLat, nuevoEntregaLng, leg.distance.value);document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;document.getElementById("price").innerText="$"+precio+" MXN";ultimaDistancia=km.toFixed(2)+" km";ultimoPrecio="$"+precio+" MXN";document.getElementById("whatsappButton").classList.add("show");document.getElementById("whatsappRepartidorButton").classList.add("show");guardarEstadoLocal();});}
+async function intentarTrazarRutaAutoNuevoComprar(){let origenLat = compraNuevoLat; let origenLng = compraNuevoLng;let origenNombre = dondeComprarNuevoNombre || document.getElementById('dondeComprarNuevo').value;if(!origenLat && origenNombre){try{const geo = await new Promise((res,rej)=>{geocoder.geocode({address:origenNombre+", Dolores Hidalgo, Mexico"}, (r,s)=>{if(s==="OK") res(r[0]); else rej();});});origenLat = geo.geometry.location.lat(); origenLng = geo.geometry.location.lng(); compraNuevoLat=origenLat; compraNuevoLng=origenLng;}catch(e){ return; }}if(!origenLat ||!nuevoEntregaComprarLat) return;directionsService.route({origin:{lat:origenLat,lng:origenLng},destination:{lat:nuevoEntregaComprarLat,lng:nuevoEntregaComprarLng},travelMode: google.maps.TravelMode.DRIVING,provideRouteAlternatives:true}, (result,status)=>{if(status!=="OK" ||!result.routes.length) return;let best=result.routes[0]; let bestDist=best.legs[0].distance.value;for(let r of result.routes){ if(r.legs[0].distance.value < bestDist){ best=r; bestDist=r.legs[0].distance.value; } }const idx=result.routes.indexOf(best); directionsRenderer.setDirections(result); directionsRenderer.setRouteIndex(idx);const leg=best.legs[0]; const km=leg.distance.value/1000;const manual = document.getElementById('precioManualNuevoComprar').value;let precio; if(manual && parseInt(manual)>0){precio=parseInt(manual);} else {document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;ultimaDistancia=km.toFixed(2)+" km";return;}document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;document.getElementById("price").innerText="$"+precio+" MXN";ultimaDistancia=km.toFixed(2)+" km";ultimoPrecio="$"+precio+" MXN";document.getElementById("whatsappButton").classList.add("show");document.getElementById("whatsappRepartidorButton").classList.add("show");guardarEstadoLocal();});}
+
+// ===== PEDIDOS =====
+function openPedidos(){document.getElementById('pedidosModal').classList.add('show'); document.getElementById('btnNavMapa').classList.remove('active'); document.getElementById('btnNavPedidos').classList.add('active'); renderPedidos();}
+function closePedidos(){document.getElementById('pedidosModal').classList.remove('show'); document.getElementById('btnNavPedidos').classList.remove('active'); document.getElementById('btnNavMapa').classList.add('active');}
+function switchBottom(tipo){if(tipo==='mapa'){closePedidos();}}
+function filtrarPedidos(filtro){filtroPedidoActual=filtro; document.querySelectorAll('.pedido-tab').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); renderPedidos();}
+function renderPedidos(){
+  const cont=document.getElementById('listaPedidosContainer');
+  let lista=pedidosGuardados;
+  if(filtroPedidoActual!=='todos'){lista=pedidosGuardados.filter(p=>p.estado===filtroPedidoActual);}
+  if(!lista.length){cont.innerHTML=`<div style="text-align:center;padding:30px;color:#888"><i class="material-icons" style="font-size:40px">inbox</i><div style="margin-top:10px;font-size:12px">No hay pedidos en ${filtroPedidoActual}</div></div>`; return;}
+  lista=lista.sort((a,b)=>b.timestamp - a.timestamp);
+  cont.innerHTML="";
+  lista.forEach(p=>{
+    const div=document.createElement('div'); div.className='pedido-card';
+    let statusClass='st-pendiente'; let statusText='PENDIENTE';
+    if(p.estado==='en_camino'){statusClass='st-camino'; statusText='EN CAMINO';}
+    if(p.estado==='recogido'){statusClass='st-recogido'; statusText='RECOGIDO';}
+    if(p.estado==='a_entregar'){statusClass='st-entregar'; statusText='A ENTREGAR';}
+    if(p.estado==='finalizado'){statusClass='st-finalizado'; statusText='FINALIZADO';}
+    div.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center"><span class="pedido-status ${statusClass}">${statusText}</span><span style="font-size:10px;color:#888">${new Date(p.timestamp).toLocaleTimeString()}</span></div>
+      <div style="font-weight:800;font-size:13px;margin:6px 0">${p.tipo}</div>
+      <div style="font-size:11px;color:#555;line-height:1.4">${p.resumen}</div>
+      <div style="font-size:11px;margin-top:6px"><b>${p.precio}</b> • ${p.distancia}</div>
+      <div style="display:flex;gap:6px;margin-top:10px;overflow-x:auto">
+        <button onclick="cambiarEstadoPedido('${p.fbKey}','en_camino')" style="padding:6px 10px;border-radius:8px;border:1px solid #ddd;background:#fff;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap">En Camino</button>
+        <button onclick="cambiarEstadoPedido('${p.fbKey}','recogido')" style="padding:6px 10px;border-radius:8px;border:1px solid #ddd;background:#fff;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap">Recogido</button>
+        <button onclick="cambiarEstadoPedido('${p.fbKey}','a_entregar')" style="padding:6px 10px;border-radius:8px;border:1px solid #ddd;background:#fff;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap">A Entregar</button>
+        <button onclick="cambiarEstadoPedido('${p.fbKey}','finalizado')" style="padding:6px 10px;border-radius:8px;border:1px solid #16a34a;background:#dcfce7;color:#166534;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap">Finalizado</button>
+      </div>
+    `;
+    cont.appendChild(div);
   });
 }
-async function intentarTrazarRutaAutoNuevoRecoger(){
-  if(!nuevoRecogidaLat ||!nuevoEntregaLat) return;
-  directionsService.route({origin:{lat:nuevoRecogidaLat,lng:nuevoRecogidaLng},destination:{lat:nuevoEntregaLat,lng:nuevoEntregaLng},travelMode: google.maps.TravelMode.DRIVING,provideRouteAlternatives:true}, async (result,status)=>{
-    if(status!=="OK" ||!result.routes.length) return;
-    let best=result.routes[0]; let bestDist=best.legs[0].distance.value;
-    for(let r of result.routes){ if(r.legs[0].distance.value < bestDist){ best=r; bestDist=r.legs[0].distance.value; } }
-    const idx=result.routes.indexOf(best); directionsRenderer.setDirections(result); directionsRenderer.setRouteIndex(idx);
-    const leg=best.legs[0]; const km=leg.distance.value/1000; let precio = await calcularPrecioOrganizado(nuevoRecogidaLat, nuevoRecogidaLng, nuevoEntregaLat, nuevoEntregaLng, leg.distance.value);
-    document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;document.getElementById("price").innerText="$"+precio+" MXN";ultimaDistancia=km.toFixed(2)+" km";ultimoPrecio="$"+precio+" MXN";document.getElementById("whatsappButton").classList.add("show");document.getElementById("whatsappRepartidorButton").classList.add("show");
-  });
+function cambiarEstadoPedido(fbKey, nuevoEstado){db.ref('kigo_pedidos/'+fbKey).update({estado:nuevoEstado});}
+function guardarPedidoFirebase(tipo, resumen, precio, distancia, mensajeCompleto){
+  const pedido={tipo, resumen, precio, distancia, mensaje: mensajeCompleto, estado:'pendiente', timestamp: Date.now(), fecha: new Date().toLocaleString()};
+  db.ref('kigo_pedidos').push(pedido);
 }
-async function intentarTrazarRutaAutoNuevoComprar(){
-  let origenLat = compraNuevoLat; let origenLng = compraNuevoLng;
-  let origenNombre = dondeComprarNuevoNombre || document.getElementById('dondeComprarNuevo').value;
-  if(!origenLat && origenNombre){try{const geo = await new Promise((res,rej)=>{geocoder.geocode({address:origenNombre+", Dolores Hidalgo, Mexico"}, (r,s)=>{if(s==="OK") res(r[0]); else rej();});});origenLat = geo.geometry.location.lat(); origenLng = geo.geometry.location.lng(); compraNuevoLat=origenLat; compraNuevoLng=origenLng;}catch(e){ return; }}
-  if(!origenLat ||!nuevoEntregaComprarLat) return;
-  directionsService.route({origin:{lat:origenLat,lng:origenLng},destination:{lat:nuevoEntregaComprarLat,lng:nuevoEntregaComprarLng},travelMode: google.maps.TravelMode.DRIVING,provideRouteAlternatives:true}, (result,status)=>{
-    if(status!=="OK" ||!result.routes.length) return;
-    let best=result.routes[0]; let bestDist=best.legs[0].distance.value;
-    for(let r of result.routes){ if(r.legs[0].distance.value < bestDist){ best=r; bestDist=r.legs[0].distance.value; } }
-    const idx=result.routes.indexOf(best); directionsRenderer.setDirections(result); directionsRenderer.setRouteIndex(idx);
-    const leg=best.legs[0]; const km=leg.distance.value/1000;
-    const manual = document.getElementById('precioManualNuevoComprar').value;
-    let precio; if(manual && parseInt(manual)>0){precio=parseInt(manual);} else {document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;ultimaDistancia=km.toFixed(2)+" km";return;}
-    document.getElementById("distance").innerText=km.toFixed(2)+" km";document.getElementById("duration").innerText=leg.duration.text;document.getElementById("price").innerText="$"+precio+" MXN";ultimaDistancia=km.toFixed(2)+" km";ultimoPrecio="$"+precio+" MXN";document.getElementById("whatsappButton").classList.add("show");document.getElementById("whatsappRepartidorButton").classList.add("show");
-  });
-}
+db.ref('kigo_pedidos').on('value', snap=>{
+  const val=snap.val(); pedidosGuardados=[];
+  if(val){Object.keys(val).forEach(k=>{pedidosGuardados.push({fbKey:k,...val[k]});});}
+  const badge=document.getElementById('badgePedidos');
+  const pendientes=pedidosGuardados.filter(p=>p.estado!=='finalizado').length;
+  if(pendientes>0){badge.innerText=pendientes; badge.style.display='inline-block';} else {badge.style.display='none';}
+  if(document.getElementById('pedidosModal').classList.contains('show')){renderPedidos();}
+});
 
 function actualizarManifestPWA(){const iconSrc=configMarca.pwaIcon||configMarca.logoLogin||configMarca.logoMapa||"https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3";const name=configMarca.platformName||"KIGO XPRESS";const color=configMarca.primaryColor||"#E53935";const manifest={name:name,short_name:name.substring(0,12),display:"standalone",background_color:"#ffffff",theme_color:color,icons:[{src:iconSrc,sizes:"192x192",type:"image/png",purpose:"any maskable"},{src:iconSrc,sizes:"512x512",type:"image/png",purpose:"any maskable"}]};const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});const url=URL.createObjectURL(blob);document.getElementById("manifestLink").href=url;document.getElementById("appleIcon").href=iconSrc;document.getElementById("themeColorMeta").content=color;document.getElementById("appleTitle").content=name;}
 db.ref("kigo_config").on("value",(snap)=>{const v=snap.val(); if(v){configMarca=v; aplicarConfigMarca();}});
 db.ref("kigo_tarifas").on("value",(snap)=>{const v=snap.val(); if(v){configTarifas={...configTarifas,...v}; aplicarConfigTarifas();}});
-function aplicarConfigMarca(){if(configMarca.logoMapa){document.getElementById("logoMapaImg").src=configMarca.logoMapa; document.getElementById("previewMapa").src=configMarca.logoMapa;}if(configMarca.logoLogin){document.getElementById("logoLoginImg").src=configMarca.logoLogin; document.getElementById("logoAdminHead").src=configMarca.logoLogin; document.getElementById("previewLogin").src=configMarca.logoLogin;}if(configMarca.pwaIcon){document.getElementById("previewPWA").src=configMarca.pwaIcon;}if(configMarca.platformName){document.getElementById("platformNameLogin").innerText=configMarca.platformName; document.getElementById("platformNameAdmin").innerText="Panel "+configMarca.platformName; document.getElementById("inputPlatformName").value=configMarca.platformName; document.title=configMarca.platformName; document.getElementById("statPlatform").innerText=configMarca.platformName;}if(configMarca.primaryColor){document.getElementById("inputPrimaryColor").value=configMarca.primaryColor;}actualizarManifestPWA();}
-function aplicarConfigTarifas(){
-document.getElementById("tarifaAzul").value=configTarifas.azul;
-document.getElementById("tarifaVerde").value=configTarifas.verde;
-document.getElementById("tarifaAmarillo").value=configTarifas.amarillo;
-document.getElementById("tarifaRojo").value=configTarifas.rojo;
-document.getElementById("tarifaMorado").value=configTarifas.morado;
-document.getElementById("tarifaBase").value=configTarifas.base;
-document.getElementById("tarifaCentroCentro").value=configTarifas.centroCentro;
-document.getElementById("tarifaRadioCentro").value=configTarifas.radioCentro;
-document.getElementById("tarifaMetros").value=configTarifas.metros;
-document.getElementById("tarifaExtraMonto").value=configTarifas.extraMonto;
-document.getElementById("tarifaLejosCentro").value=configTarifas.lejosCentro;
-document.getElementById("tarifaMuyLejosMetros").value=configTarifas.muyLejosMetros;
-document.getElementById("tarifaMuyLejos").value=configTarifas.muyLejos;
-document.getElementById("tarifaSOP").value=configTarifas.sop;
-document.getElementById("infoCobroTexto").innerText=`Centro radio ${configTarifas.radioCentro}m: Centro-Centro=$${configTarifas.centroCentro} | Base hasta 2km=$${configTarifas.base}, extra $${configTarifas.extraMonto} cada ${configTarifas.metros}m`;
-}
+function aplicarConfigMarca(){if(configMarca.logoMapa){document.getElementById("logoMapaImg").src=configMarca.logoMapa; document.getElementById("previewMapa").src=configMarca.logoMapa;}if(configMarca.logoLogin){document.getElementById("logoLoginImg").src=configMarca.logoLogin; document.getElementById("logoAdminHead").src=configMarca.logoLogin; document.getElementById("previewLogin").src=configMarca.logoLogin;}if(configMarca.pwaIcon){document.getElementById("previewPWA").src=configMarca.pwaIcon;}if(configMarca.platformName){document.getElementById("platformNameLogin").innerText=configMarca.platformName; document.getElementById("platformNameAdmin").innerText="Panel "+configMarca.platformName; document.getElementById("inputPlatformName").value=configMarca.platformName; document.title=configMarca.platformName;}if(configMarca.primaryColor){document.getElementById("inputPrimaryColor").value=configMarca.primaryColor;}actualizarManifestPWA();}
+function aplicarConfigTarifas(){document.getElementById("tarifaAzul").value=configTarifas.azul;document.getElementById("tarifaVerde").value=configTarifas.verde;document.getElementById("tarifaAmarillo").value=configTarifas.amarillo;document.getElementById("tarifaRojo").value=configTarifas.rojo;document.getElementById("tarifaMorado").value=configTarifas.morado;document.getElementById("tarifaBase").value=configTarifas.base;document.getElementById("tarifaCentroCentro").value=configTarifas.centroCentro;document.getElementById("tarifaRadioCentro").value=configTarifas.radioCentro;document.getElementById("tarifaMetros").value=configTarifas.metros;document.getElementById("tarifaExtraMonto").value=configTarifas.extraMonto;document.getElementById("tarifaLejosCentro").value=configTarifas.lejosCentro;document.getElementById("tarifaMuyLejosMetros").value=configTarifas.muyLejosMetros;document.getElementById("tarifaMuyLejos").value=configTarifas.muyLejos;document.getElementById("tarifaSOP").value=configTarifas.sop;document.getElementById("infoCobroTexto").innerText=`Centro radio ${configTarifas.radioCentro}m: Centro-Centro=$${configTarifas.centroCentro} | Base hasta 2km=$${configTarifas.base}`;}
 function setColor(c){document.getElementById("inputPrimaryColor").value=c;}
 document.getElementById("inputLogoMapa").addEventListener("change", function(e){const file=e.target.files[0]; if(!file) return; const reader=new FileReader();reader.onload=function(ev){document.getElementById("previewMapa").src=ev.target.result; configMarca.logoMapa=ev.target.result; document.getElementById("logoMapaImg").src=ev.target.result; actualizarManifestPWA();};reader.readAsDataURL(file);});
 document.getElementById("inputLogoLogin").addEventListener("change", function(e){const file=e.target.files[0]; if(!file) return; const reader=new FileReader();reader.onload=function(ev){document.getElementById("previewLogin").src=ev.target.result; configMarca.logoLogin=ev.target.result; document.getElementById("logoLoginImg").src=ev.target.result; document.getElementById("logoAdminHead").src=ev.target.result; actualizarManifestPWA();};reader.readAsDataURL(file);});
 document.getElementById("inputPWAIcon").addEventListener("change", function(e){const file=e.target.files[0]; if(!file) return; const reader=new FileReader();reader.onload=function(ev){document.getElementById("previewPWA").src=ev.target.result; configMarca.pwaIcon=ev.target.result; actualizarManifestPWA();};reader.readAsDataURL(file);});
 function guardarModificaciones(){const nombre=document.getElementById("inputPlatformName").value.trim()||"KIGO XPRESS";const color=document.getElementById("inputPrimaryColor").value||"#E53935";configMarca.platformName=nombre; configMarca.primaryColor=color;db.ref("kigo_config").set(configMarca).then(()=>{aplicarConfigMarca(); alert("Marca guardada");});}
-function guardarTarifas(){
-configTarifas={
-azul:parseInt(document.getElementById("tarifaAzul").value)||0,
-verde:parseInt(document.getElementById("tarifaVerde").value)||0,
-amarillo:parseInt(document.getElementById("tarifaAmarillo").value)||0,
-rojo:parseInt(document.getElementById("tarifaRojo").value)||0,
-morado:parseInt(document.getElementById("tarifaMorado").value)||0,
-base:parseInt(document.getElementById("tarifaBase").value)||35,
-centroCentro:parseInt(document.getElementById("tarifaCentroCentro").value)||35,
-radioCentro:parseInt(document.getElementById("tarifaRadioCentro").value)||800,
-metros:parseInt(document.getElementById("tarifaMetros").value)||650,
-extraMonto:parseInt(document.getElementById("tarifaExtraMonto").value)||5,
-lejosCentro:parseInt(document.getElementById("tarifaLejosCentro").value)||5,
-muyLejosMetros:parseInt(document.getElementById("tarifaMuyLejosMetros").value)||2000,
-muyLejos:parseInt(document.getElementById("tarifaMuyLejos").value)||10,
-sop:parseInt(document.getElementById("tarifaSOP").value)||45
-};
-db.ref("kigo_tarifas").set(configTarifas).then(()=>{aplicarConfigTarifas(); alert("Tarifas guardadas ✅");});
-}
-function verificarSistema(){document.getElementById("statHora").innerText=new Date().toLocaleTimeString();document.getElementById("statClientes").innerText=clientesGuardados.length;db.ref("kigo_clientes").once("value").then(()=>{document.getElementById("dotFirebase").className="status-dot status-ok";document.getElementById("txtFirebase").innerText="Conectado";document.getElementById("badgeFirebase").innerText="CONECTADO";}).catch(()=>{document.getElementById("dotFirebase").className="status-dot status-bad";});}
-db.ref("kigo_clientes").on("value", (snap)=>{const val=snap.val(); clientesGuardados=[];if(val){Object.keys(val).forEach(k=>{clientesGuardados.push({fbKey:k,...val[k]});});}renderListaClientes(); document.getElementById("statClientes").innerText=clientesGuardados.length;});
+function guardarTarifas(){configTarifas={azul:parseInt(document.getElementById("tarifaAzul").value)||0,verde:parseInt(document.getElementById("tarifaVerde").value)||0,amarillo:parseInt(document.getElementById("tarifaAmarillo").value)||0,rojo:parseInt(document.getElementById("tarifaRojo").value)||0,morado:parseInt(document.getElementById("tarifaMorado").value)||0,base:parseInt(document.getElementById("tarifaBase").value)||35,centroCentro:parseInt(document.getElementById("tarifaCentroCentro").value)||35,radioCentro:parseInt(document.getElementById("tarifaRadioCentro").value)||800,metros:parseInt(document.getElementById("tarifaMetros").value)||650,extraMonto:parseInt(document.getElementById("tarifaExtraMonto").value)||5,lejosCentro:parseInt(document.getElementById("tarifaLejosCentro").value)||5,muyLejosMetros:parseInt(document.getElementById("tarifaMuyLejosMetros").value)||2000,muyLejos:parseInt(document.getElementById("tarifaMuyLejos").value)||10,sop:parseInt(document.getElementById("tarifaSOP").value)||45};db.ref("kigo_tarifas").set(configTarifas).then(()=>{aplicarConfigTarifas(); alert("Tarifas guardadas ✅");});}
+function verificarSistema(){db.ref("kigo_clientes").once("value").then(()=>{document.getElementById("dotFirebase").className="status-dot status-ok";document.getElementById("txtFirebase").innerText="Conectado";document.getElementById("badgeFirebase").innerText="CONECTADO";}).catch(()=>{document.getElementById("dotFirebase").className="status-dot status-bad";});}
+db.ref("kigo_clientes").on("value", (snap)=>{const val=snap.val(); clientesGuardados=[];if(val){Object.keys(val).forEach(k=>{clientesGuardados.push({fbKey:k,...val[k]});});}renderListaClientes();});
 function showAddCliente(){document.getElementById("btnAddCliente").classList.add("active");document.getElementById("btnListCliente").classList.remove("active");document.getElementById("addClienteView").style.display="block";document.getElementById("listClienteView").style.display="none";}
 function showListClientes(){document.getElementById("btnListCliente").classList.add("active");document.getElementById("btnAddCliente").classList.remove("active");document.getElementById("addClienteView").style.display="none";document.getElementById("listClienteView").style.display="block";renderListaClientes();}
 async function buscarUbicacionCliente(){const txt=document.getElementById("clienteUbicacion").value.trim(); if(!txt){alert("Escribe una ubicación");return;}geocoder.geocode({address: txt + ", Dolores Hidalgo, Mexico", componentRestrictions:{country:"MX"}}, (results,status)=>{if(status!=="OK" ||!results[0]){alert("No se encontró ubicación");return;}tempClienteLat=results[0].geometry.location.lat();tempClienteLng=results[0].geometry.location.lng();tempClienteDir=results[0].formatted_address;document.getElementById("clienteConfirmText").style.display="block"; document.getElementById("clienteConfirmText").innerText="Ubicación encontrada: "+tempClienteDir;const miniDiv=document.getElementById("clienteMiniMap"); miniDiv.classList.add("show");setTimeout(()=>{if(!clienteMiniMapG) clienteMiniMapG=new google.maps.Map(document.getElementById("clienteMiniMap"),{center:{lat:tempClienteLat,lng:tempClienteLng},zoom:16,disableDefaultUI:true});else clienteMiniMapG.setCenter({lat:tempClienteLat,lng:tempClienteLng});if(clienteMiniMarkerG) clienteMiniMarkerG.setMap(null);clienteMiniMarkerG=new google.maps.Marker({position:{lat:tempClienteLat,lng:tempClienteLng},map:clienteMiniMapG});},200);});}
@@ -571,66 +522,49 @@ function closeAdmin(){document.getElementById("adminModal").classList.remove("sh
 function logout(){isLogged=false;closeAdmin();}
 function switchAdminTab(tab){document.querySelectorAll('.adminTab').forEach(b=>b.classList.remove('active'));document.getElementById('panelClientes').style.display='none';document.getElementById('panelMod').style.display='none';document.getElementById('panelAjustes').style.display='none';document.getElementById('panelSoporte').style.display='none';if(tab==='clientes'){document.getElementById('tabClientes').classList.add('active'); document.getElementById('panelClientes').style.display='block';}if(tab==='mod'){document.getElementById('tabMod').classList.add('active'); document.getElementById('panelMod').style.display='block';}if(tab==='ajustes'){document.getElementById('tabAjustes').classList.add('active'); document.getElementById('panelAjustes').style.display='block';}if(tab==='soporte'){document.getElementById('tabSoporte').classList.add('active'); document.getElementById('panelSoporte').style.display='block'; verificarSistema();}}
 
-// ==================== WHATSAPP NUEVO TEXTO ====================
 document.getElementById("whatsappButton").onclick=()=>{
-  let mensaje="";
-
+  let mensaje=""; let tipo=""; let resumen="";
   if(tipoActivo==='aliados'){
     if(subTipoActivo==='recoger'){
-      // FORMATO QUE PEDISTE: COTIZACION Kigo Xpress (Aliado)
       const aliado = pickupName || document.getElementById('pickupInput').value || "No especificado";
       const recoger = aliadoDireccionTexto || "No especificada";
       const entregar = destName || document.getElementById('destinationInput').value || "No especificada";
       const tel = document.getElementById('telefonoRecoger').value || "No especificado";
       const tiempo = document.getElementById('tiempoCustom').value || tiempoRecogida || "No especificado";
       const ruta = `https://www.google.com/maps/dir/${pickupLat},${pickupLng}/${destinationLat},${destinationLng}`;
-      mensaje = `COTIZACIÓN Kigo Xpress (Aliado)
-
-👤 Aliado: ${aliado}
-📍 Recoger: ${recoger}
-🏠 Entregar: ${entregar}
-📏 Distancia: ${ultimaDistancia || "— km"}
-💰 Valor: ${ultimoPrecio || document.getElementById('price').innerText}
-📞 Tel: ${tel}
-⏱️ Tiempo: ${tiempo}
-🗺️ Ver ruta: ${ruta}`;
+      mensaje = `COTIZACIÓN Kigo Xpress (Aliado)\n\n👤 Aliado: ${aliado}\n📍 Recoger: ${recoger}\n🏠 Entregar: ${entregar}\n📏 Distancia: ${ultimaDistancia || "— km"}\n💰 Valor: ${ultimoPrecio || document.getElementById('price').innerText}\n📞 Tel: ${tel}\n⏱️ Tiempo: ${tiempo}\n🗺️ Ver ruta: ${ruta}`;
+      tipo=`Aliado - Recoger: ${aliado}`; resumen=`Recoger: ${recoger} → Entregar: ${entregar} Tel:${tel}`;
     } else {
-      // FORMATO QUE PEDISTE: COTIZACION Kigo Xpress (Compras)
       const productos = document.getElementById('productosComprar').value || "No especificado";
       const comprarEn = document.getElementById('dondeComprar').value || "No especificado";
       const entregar = destName || document.getElementById('direccionEntregaComprar').value || document.getElementById('aliadoEntregaComprar').value || "No especificada";
       const tel = document.getElementById('telefonoComprar').value || "No especificado";
-      mensaje = `COTIZACIÓN Kigo Xpress (Compras)
-
-🛒 Productos: ${productos}
-🏪 Comprar en: ${comprarEn}
-🏠 Entregar en: ${entregar}
-📏 Distancia: ${ultimaDistancia || "— km"}
-💰 Valor: ${ultimoPrecio || document.getElementById('price').innerText}
-📞 Tel: ${tel}`;
+      mensaje = `COTIZACIÓN Kigo Xpress (Compras)\n\n🛒 Productos: ${productos}\n🏪 Comprar en: ${comprarEn}\n🏠 Entregar en: ${entregar}\n📏 Distancia: ${ultimaDistancia || "— km"}\n💰 Valor: ${ultimoPrecio || document.getElementById('price').innerText}\n📞 Tel: ${tel}`;
+      tipo=`Aliado - Comprar`; resumen=`Productos: ${productos} Comprar:${comprarEn} → ${entregar}`;
     }
   } else {
-    // Cliente nuevo mantiene formato anterior por ahora hasta que me digas como lo quieres
     if(subTipoNuevo==='recoger'){
       mensaje=`*COTIZACIÓN ${configMarca.platformName}* - RECOGER (NUEVO)\n\n Recogida: ${nuevoRecogidaNombre || document.getElementById('nuevoDireccionInput').value}\n Entrega: ${nuevoEntregaNombre || document.getElementById('nuevoEntregaInput').value}\n Distancia: ${ultimaDistancia}\n Valor: ${ultimoPrecio}\n Tel: ${document.getElementById('telefonoNuevoRecoger').value}\n Tiempo: ${document.getElementById('tiempoCustomNuevo').value}`;
+      tipo=`Nuevo - Recoger`; resumen=`${nuevoRecogidaNombre} → ${nuevoEntregaNombre}`;
     } else {
       mensaje=`*COTIZACIÓN ${configMarca.platformName}* - COMPRAR (NUEVO)\n\n Productos: ${document.getElementById('productosNuevoComprar').value}\n Donde comprar: ${document.getElementById('dondeComprarNuevo').value}\n Entrega: ${nuevoEntregaNombre || document.getElementById('direccionEntregaNuevoComprar').value}\n Distancia: ${ultimaDistancia}\n Valor: ${ultimoPrecio}\n Tel: ${document.getElementById('telefonoNuevoComprar').value}`;
+      tipo=`Nuevo - Comprar`; resumen=`Productos: ${document.getElementById('productosNuevoComprar').value}`;
     }
   }
-
+  guardarPedidoFirebase(tipo, resumen, ultimoPrecio || document.getElementById('price').innerText, ultimaDistancia, mensaje);
   const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`; window.open(url,"_blank");
 };
-
 document.getElementById("whatsappRepartidorButton").onclick=()=>{
   const linkRecoger=`https://www.google.com/maps/search/?api=1&query=${pickupLat||nuevoRecogidaLat||compraLat||compraNuevoLat},${pickupLng||nuevoRecogidaLng||compraLng||compraNuevoLng}`;
-  const mensaje=`Pedido # \n Recoger: ${linkRecoger}\n Precio: ${ultimoPrecio}\n Distancia: ${ultimaDistancia}`;
+  const mensaje=`Pedido Kigo Xpress\n Recoger: ${linkRecoger}\n Precio: ${ultimoPrecio}\n Distancia: ${ultimaDistancia}`;
+  guardarPedidoFirebase("Repartidor", `Recoger: ${linkRecoger}`, ultimoPrecio, ultimaDistancia, mensaje);
   const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`; window.open(url,"_blank");
 };
-
 document.getElementById("resetBtn").onclick=()=>{resetAliadosForm(); resetNuevoForm(); map.setCenter(CENTRO); map.setZoom(14);};
 document.addEventListener("click",e=>{if(!e.target.closest(".input-wrapper")){document.getElementById("pickupSuggestions").classList.remove("show");document.getElementById("destinationSuggestions").classList.remove("show");document.getElementById("aliadoEntregaSuggestions").classList.remove("show");}});
 document.getElementById("loginModal").addEventListener("click",e=>{if(e.target.id==="loginModal") closeLogin();});
 document.getElementById("adminModal").addEventListener("click",e=>{if(e.target.id==="adminModal") closeAdmin();});
+document.getElementById("pedidosModal").addEventListener("click",e=>{if(e.target.id==="pedidosModal") closePedidos();});
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTV1sm6McEIkv-cheaVFCD_svp_a--6wg&libraries=places&callback=initGoogleMaps"></script>
 </body>
