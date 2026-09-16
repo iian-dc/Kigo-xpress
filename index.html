@@ -95,20 +95,21 @@
 .bottom-btn.seguimiento.active{color:#111;background:#f3f4f6}
 .pedidos-panel-box{width:100%;max-width:500px;background:#fff;border-radius:22px 22px 0 0;overflow:hidden;box-shadow:0 -10px 40px rgba(0,0,0,.3);border:1px solid #eee;height:80vh;display:flex;flex-direction:column;position:fixed;bottom:75px;left:50%;transform:translateX(-50%);z-index:5000}
 .pedidos-tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;border-bottom:1px solid #eee;white-space:nowrap}
-.pedido-tab{flex-shrink:0;padding:8px 12px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;color:#111;font-size:10px;font-weight:800;cursor:pointer}
+.pedido-tab{flex-shrink:0;padding:8px 14px;border-radius:999px;border:1.5px solid #111;background:#fff;color:#111;font-size:10px;font-weight:800;cursor:pointer;transition:.2s}
 .pedido-tab.active{background:#111!important;color:#fff!important;border-color:#111!important}
-.pedido-card-azul{background:#e0f2fe;border:1.5px solid #bae6fd;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 2px 10px rgba(14,165,233,.15)}
+.pedido-card-blanca{background:#fff;border:1.5px solid #e5e7eb;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .pedido-status{font-size:9px;font-weight:900;padding:5px 10px;border-radius:999px;display:inline-block}
 .st-camino{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
 .st-recogido{background:#e0e7ff;color:#4338ca;border:1px solid #c4b5fd}
 .st-entregar{background:#fce7f3;color:#9d174d;border:1px solid #f9a8d4}
 .st-finalizado{background:#dcfce7;color:#166534;border:1px solid #86efac}
-.tiempo-badge-amarillo{background:#fef08a;color:#713f12;border:1.5px solid #facc15;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:900;display:inline-flex;align-items:center;gap:4px;box-shadow:0 0 8px rgba(250,204,21,.4)}
-.valor-verde-neon{font-size:20px;font-weight:900;color:#16a34a;text-shadow:0 0 8px rgba(34,197,94,.3);margin-top:6px;display:flex;align-items:center;gap:6px}
+.tiempo-badge-amarillo{background:#fef08a;color:#713f12;border:1.5px solid #facc15;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:4px;box-shadow:0 0 8px rgba(250,204,21,.3)}
+.valor-verde-neon{font-size:20px;font-weight:900;color:#16a34a;margin-top:8px;display:flex;align-items:center;gap:6px}
 .edit-box{margin-top:10px;padding:10px;background:#f9fafb;border:1px solid #ddd;border-radius:10px;display:none}
 .edit-box.show{display:block}
 .btn-hist-gris{background:#e5e7eb!important;color:#9ca3af!important;border-color:#e5e7eb!important;cursor:not-allowed!important}
 .btn-hist-verde{background:#16a34a!important;color:#fff!important;border-color:#16a34a!important}
+.btn-editar-blanco{background:#fff!important;color:#111!important;border:1.5px solid #111!important}
 </style>
 </head>
 <body>
@@ -296,11 +297,11 @@
 
 <div class="pedidos-panel-box" id="seguimientoPanel" style="display:none"><div class="admin-panel-head" style="background:#111;color:#fff"><div style="display:flex;gap:10px;align-items:center"><i class="material-icons">local_shipping</i><div><div style="font-weight:900;font-size:14px">SEGUIMIENTO</div><div style="font-size:10px;color:#aaa">Pedidos en orden de llegada</div></div></div><button class="iconBtn" onclick="closeSeguimiento()" style="background:#333;color:#fff;border-color:#333"><i class="material-icons">close</i></button></div>
 <div class="pedidos-tabs" id="seguimientoTabs">
-<button class="pedido-tab active" data-filtro="todos" onclick="filtrarSeguimiento(this,'todos')">Todos</button>
-<button class="pedido-tab" data-filtro="en_camino" onclick="filtrarSeguimiento(this,'en_camino')">En Camino</button>
-<button class="pedido-tab" data-filtro="recogido" onclick="filtrarSeguimiento(this,'recogido')">Recogido</button>
-<button class="pedido-tab" data-filtro="a_entregar" onclick="filtrarSeguimiento(this,'a_entregar')">A Entregar</button>
-<button class="pedido-tab" data-filtro="finalizado" onclick="filtrarSeguimiento(this,'finalizado')">Finalizados</button>
+<button class="pedido-tab active" onclick="filtrarSeguimiento(this,'todos')">Todos</button>
+<button class="pedido-tab" onclick="filtrarSeguimiento(this,'en_camino')">En Camino</button>
+<button class="pedido-tab" onclick="filtrarSeguimiento(this,'recogido')">Recogido</button>
+<button class="pedido-tab" onclick="filtrarSeguimiento(this,'a_entregar')">A Entregar</button>
+<button class="pedido-tab" onclick="filtrarSeguimiento(this,'finalizado')">Finalizados</button>
 </div>
 <div class="adminContent" id="listaSeguimientoContainer"></div>
 </div>
@@ -393,11 +394,10 @@ function openSeguimiento(){document.getElementById('seguimientoPanel').style.dis
 function closeSeguimiento(){document.getElementById('seguimientoPanel').style.display='none'; document.getElementById('btnNavSeguimiento').classList.remove('active'); document.getElementById('btnNavMapa').classList.add('active');}
 function filtrarSeguimiento(btn,filtro){
   filtroSeguimientoActual=filtro;
-  document.querySelectorAll('#seguimientoTabs.pedido-tab').forEach(b=>{b.classList.remove('active');});
+  document.querySelectorAll('#seguimientoTabs.pedido-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderSeguimiento();
 }
-
 function renderSeguimiento(){
   const cont=document.getElementById('listaSeguimientoContainer');
   let lista=[...pedidosGuardados];
@@ -408,7 +408,7 @@ function renderSeguimiento(){
   lista.forEach((p,idx)=>{
     const codigo = p.fbKey? p.fbKey.substring(p.fbKey.length-6).toUpperCase() : ('000'+(idx+1)).slice(-6);
     const fechaHora = p.fecha || new Date(p.timestamp).toLocaleString();
-    const tiempoRecoger = p.tiempo? `<span class="tiempo-badge-amarillo"><i class="material-icons" style="font-size:14px">schedule</i> Recoger ${p.tiempo}</span>` : '';
+    const tiempoHtml = p.tiempo? `<div style="display:flex;justify-content:center;margin-top:6px"><span class="tiempo-badge-amarillo"><i class="material-icons" style="font-size:14px">schedule</i> Recoger ${p.tiempo}</span></div>` : '';
     let statusClass='st-camino';
     if(p.estado==='en_camino'){statusClass='st-camino';}
     if(p.estado==='recogido'){statusClass='st-recogido';}
@@ -417,71 +417,40 @@ function renderSeguimiento(){
     const esFinalizado = p.estado==='finalizado';
     const btnHistClass = esFinalizado? 'btn-hist-verde' : 'btn-hist-gris';
     const btnHistDisabled = esFinalizado? '' : 'disabled';
-    const div=document.createElement('div'); div.className='pedido-card-azul';
+    const div=document.createElement('div'); div.className='pedido-card-blanca';
     div.innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
-          <div style="font-size:10px;font-weight:900;color:#0369a1">CÓDIGO: #${codigo}</div>
-          <div style="font-size:10px;color:#075985;margin-top:2px">Creado: ${fechaHora}</div>
-          <div style="margin-top:4px">${tiempoRecoger}</div>
+          <div style="font-size:11px;font-weight:900;color:#000">CÓDIGO: #${codigo}</div>
+          <div style="font-size:10px;color:#000;margin-top:2px;font-weight:600">Creado: ${fechaHora}</div>
         </div>
-        <div style="text-align:right"><span class="pedido-status ${statusClass}">${p.estado.toUpperCase().replace('_',' ')}</span><div style="font-size:9px;color:#0284c7;margin-top:4px;font-weight:800">#${idx+1}</div></div>
+        <div style="text-align:right"><span class="pedido-status ${statusClass}">${p.estado.toUpperCase().replace('_',' ')}</span></div>
       </div>
-      <div style="margin-top:12px;background:#fff;border-radius:12px;padding:10px;border:1px solid #e0f2fe">
-        <div style="font-size:10px;font-weight:900;color:#0369a1">📦 RECOGER EN:</div>
-        <div style="font-size:11px;color:#111;font-weight:700">${p.recogerEn||p.tipo||''}</div>
-        <div style="margin-top:8px;font-size:10px;font-weight:900;color:#0369a1">🏠 ENTREGAR EN:</div>
-        <div style="font-size:11px;color:#111;font-weight:700">${p.entregarEn||''}</div>
-        ${p.telefono?`<div style="font-size:10px;color:#555;margin-top:4px">📞 ${p.telefono}</div>`:''}
+      ${tiempoHtml}
+      <div style="margin-top:12px;background:#f9fafb;border-radius:12px;padding:10px;border:1px solid #eee">
+        <div style="font-size:10px;font-weight:900;color:#16a34a">📦 RECOGER EN:</div>
+        <div style="font-size:11px;color:#111;font-weight:700;margin-top:2px">${p.recogerEn||p.tipo||''}</div>
+        <div style="margin-top:10px;font-size:10px;font-weight:900;color:#dc2626">🏠 ENTREGAR EN:</div>
+        <div style="font-size:11px;color:#111;font-weight:700;margin-top:2px">${p.entregarEn||''}</div>
+        ${p.telefono?`<div style="font-size:10px;color:#555;margin-top:6px">📞 ${p.telefono}</div>`:''}
+        ${p.resumen?`<div style="font-size:10px;color:#666;margin-top:4px">${p.resumen}</div>`:''}
       </div>
       <div class="valor-verde-neon"><i class="material-icons" style="font-size:20px">payments</i> ${p.precio} • ${p.distancia||''}</div>
       <div style="display:flex;gap:6px;margin-top:12px">
-        <button onclick="toggleEditar('${p.fbKey}')" style="flex:1;padding:9px;border-radius:10px;border:1.5px solid #0ea5e9;background:#fff;color:#0ea5e9;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px"><i class="material-icons" style="font-size:14px">edit</i> Editar</button>
+        <button onclick="toggleEditar('${p.fbKey}')" class="btn-editar-blanco" style="flex:1;padding:9px;border-radius:10px;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px"><i class="material-icons" style="font-size:14px">edit</i> Editar</button>
         <button onclick="verHistorial('${p.fbKey}')" ${btnHistDisabled} class="${btnHistClass}" style="flex:1;padding:9px;border-radius:10px;border:1px solid #ddd;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px"><i class="material-icons" style="font-size:14px">history</i> Historial ${esFinalizado?'✅':''}</button>
       </div>
       <div id="editBox_${p.fbKey}" class="edit-box">
-        <div style="font-size:11px;font-weight:900;margin-bottom:8px">EDITAR PEDIDO</div>
-
-        <div class="mod-label">Recoger en</div>
-        <div class="input-wrapper"><input id="editRecoger_${p.fbKey}" class="mod-input" value="${p.recogerEn||''}"><div class="input-clear" onclick="document.getElementById('editRecoger_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-
-        <div class="mod-label">Entregar en</div>
-        <div class="input-wrapper"><input id="editEntregar_${p.fbKey}" class="mod-input" value="${p.entregarEn||''}"><div class="input-clear" onclick="document.getElementById('editEntregar_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-
-        <div class="mod-label">Resumen / Notas</div>
-        <div class="input-wrapper"><input id="editResumen_${p.fbKey}" class="mod-input" value="${p.resumen||''}"><div class="input-clear" onclick="document.getElementById('editResumen_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-
-        <div class="mod-label">Precio</div>
-        <div class="input-wrapper"><input id="editPrecio_${p.fbKey}" class="mod-input" value="${p.precio}"><div class="input-clear" onclick="document.getElementById('editPrecio_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-
-        <div class="mod-label">Distancia</div>
-        <div class="input-wrapper"><input id="editDist_${p.fbKey}" class="mod-input" value="${p.distancia}"><div class="input-clear" onclick="document.getElementById('editDist_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-
-        <div class="mod-label">Tiempo recogida</div>
-        <div class="input-wrapper"><input id="editTiempo_${p.fbKey}" class="mod-input" value="${p.tiempo||''}"><div class="input-clear" onclick="document.getElementById('editTiempo_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-
-        <div class="mod-label">Estado (Repartidor)</div>
-        <select id="editEstado_${p.fbKey}" class="mod-input" style="padding-right:12px">
-          <option value="en_camino" ${p.estado==='en_camino'?'selected':''}>En Camino</option>
-          <option value="recogido" ${p.estado==='recogido'?'selected':''}>Recogido</option>
-          <option value="a_entregar" ${p.estado==='a_entregar'?'selected':''}>A Entregar</option>
-          <option value="finalizado" ${p.estado==='finalizado'?'selected':''}>Finalizado</option>
-        </select>
-        <div style="display:flex;gap:6px;margin-top:10px">
-          <button onclick="guardarEdicion('${p.fbKey}')" style="flex:1;padding:10px;border:none;border-radius:8px;background:#16a34a;color:#fff;font-weight:800;font-size:11px;cursor:pointer">Guardar</button>
-          <button onclick="toggleEditar('${p.fbKey}')" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;background:#fff;font-weight:800;font-size:11px;cursor:pointer">Cancelar</button>
-          <button onclick="eliminarPedido('${p.fbKey}')" style="padding:10px;border:1px solid #fecaca;background:#fff1f1;color:#E53935;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer"><i class="material-icons" style="font-size:16px">delete</i></button>
-        </div>
+        <div class="mod-label">Recoger en</div><div class="input-wrapper"><input id="editRecoger_${p.fbKey}" class="mod-input" value="${p.recogerEn||''}"><div class="input-clear" onclick="document.getElementById('editRecoger_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+        <div class="mod-label">Entregar en</div><div class="input-wrapper"><input id="editEntregar_${p.fbKey}" class="mod-input" value="${p.entregarEn||''}"><div class="input-clear" onclick="document.getElementById('editEntregar_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+        <div class="mod-label">Resumen</div><div class="input-wrapper"><input id="editResumen_${p.fbKey}" class="mod-input" value="${p.resumen||''}"><div class="input-clear" onclick="document.getElementById('editResumen_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+        <div class="mod-label">Precio</div><div class="input-wrapper"><input id="editPrecio_${p.fbKey}" class="mod-input" value="${p.precio}"><div class="input-clear" onclick="document.getElementById('editPrecio_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+        <div class="mod-label">Distancia</div><div class="input-wrapper"><input id="editDist_${p.fbKey}" class="mod-input" value="${p.distancia}"><div class="input-clear" onclick="document.getElementById('editDist_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+        <div class="mod-label">Tiempo</div><div class="input-wrapper"><input id="editTiempo_${p.fbKey}" class="mod-input" value="${p.tiempo||''}"><div class="input-clear" onclick="document.getElementById('editTiempo_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+        <div class="mod-label">Estado</div><select id="editEstado_${p.fbKey}" class="mod-input" style="padding-right:12px"><option value="en_camino" ${p.estado==='en_camino'?'selected':''}>En Camino</option><option value="recogido" ${p.estado==='recogido'?'selected':''}>Recogido</option><option value="a_entregar" ${p.estado==='a_entregar'?'selected':''}>A Entregar</option><option value="finalizado" ${p.estado==='finalizado'?'selected':''}>Finalizado</option></select>
+        <div style="display:flex;gap:6px;margin-top:10px"><button onclick="guardarEdicion('${p.fbKey}')" style="flex:1;padding:10px;border:none;border-radius:8px;background:#16a34a;color:#fff;font-weight:800;font-size:11px;cursor:pointer">Guardar</button><button onclick="toggleEditar('${p.fbKey}')" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;background:#fff;font-weight:800;font-size:11px;cursor:pointer">Cancelar</button><button onclick="eliminarPedido('${p.fbKey}')" style="padding:10px;border:1px solid #fecaca;background:#fff1f1;color:#E53935;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer"><i class="material-icons" style="font-size:16px">delete</i></button></div>
       </div>
-      <div id="histBox_${p.fbKey}" class="edit-box" style="background:#f0fdf4;border-color:#bbf7d0">
-        <div style="font-size:12px;font-weight:900;color:#166534">✅ HISTORIAL</div>
-        <div style="font-size:11px;margin-top:8px;line-height:1.6;background:#fff;padding:8px;border-radius:8px;border:1px solid #dcfce7">
-          <div>📅 <b>Creado:</b> ${p.fecha||new Date(p.timestamp).toLocaleString()}</div>
-          ${p.confirmadoEn?`<div>✅ <b>Confirmado:</b> ${new Date(p.confirmadoEn).toLocaleString()}</div>`:''}
-          ${p.historial?.finalizado?`<div style="color:#16a34a;font-weight:800">🏁 <b>Finalizado:</b> ${new Date(p.historial.finalizado).toLocaleString()}</div>`:''}
-        </div>
-        <button onclick="verHistorial('${p.fbKey}')" style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:10px;font-weight:800">Cerrar</button>
-      </div>
+      <div id="histBox_${p.fbKey}" class="edit-box" style="background:#f0fdf4;border-color:#bbf7d0"><div style="font-size:12px;font-weight:900;color:#166534">✅ HISTORIAL</div><div style="font-size:11px;margin-top:8px;background:#fff;padding:8px;border-radius:8px;border:1px solid #dcfce7">📅 <b>Creado:</b> ${p.fecha||new Date(p.timestamp).toLocaleString()} ${p.historial?.finalizado?`<div style="color:#16a34a;font-weight:800">🏁 Finalizado: ${new Date(p.historial.finalizado).toLocaleString()}</div>`:''}</div><button onclick="verHistorial('${p.fbKey}')" style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:10px;font-weight:800">Cerrar</button></div>
     `;
     cont.appendChild(div);
   });
