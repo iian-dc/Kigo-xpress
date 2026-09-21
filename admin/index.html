@@ -47,9 +47,6 @@
 .adminTab.active{background:#111;color:#fff;border-color:#111}
 .adminContent{padding:18px;overflow-y:auto;flex:1;background:#fcfcfd}
 .adminCard{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;margin-bottom:12px}
-.clientes-top{display:flex;gap:8px;margin-bottom:12px}
-.clientes-btn{flex:1;padding:10px;border:1px solid #111;border-radius:10px;font-weight:800;font-size:12px;cursor:pointer;background:#fff;color:#111}
-.clientes-btn.active{background:#111;color:#fff}
 .cliente-input{width:100%;padding:12px;border:1.5px solid #ddd;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:8px;outline:none}
 .cliente-row{display:flex;align-items:center;justify-content:space-between;padding:12px;border:1px solid #eee;border-radius:12px;margin-bottom:8px;background:#fff}
 .cliente-actions{display:flex;gap:6px}
@@ -66,9 +63,7 @@
 .tarifa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tarifa-item{border:1px solid #eee;border-radius:10px;padding:10px;background:#fff}
 .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
-.status-ok{background:#22c55e}
-.status-bad{background:#ef4444}
-.status-warn{background:#f59e0b}
+.status-ok{background:#22c55e}.status-bad{background:#ef4444}.status-warn{background:#f59e0b}
 .tipo-tabs{display:flex;gap:8px;margin-bottom:10px}
 .tipo-btn{flex:1;padding:10px 10px;border-radius:10px;border:1.5px solid #ddd;font-weight:800;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
 .tipo-btn.aliados.active{background:#E53935;color:#fff;border-color:#E53935}
@@ -82,13 +77,10 @@
 .sub-form{margin-top:10px;padding:10px;background:#fff;border-radius:12px;border:1px solid #eee;display:none}
 .sub-form.show{display:block}
 .form-label{font-size:10px;font-weight:800;color:#666;margin:10px 0 6px}
-.form-label:first-child{margin-top:0}
 .precio-manual-box{margin-top:12px;background:#fffde7;border:1.5px dashed #f59e0b;border-radius:12px;padding:10px}
 .tiempo-tabs{display:flex;gap:6px;margin:8px 0}
-.tiempo-btn{flex:1;padding:8px;border-radius:8px;border:1.5px solid #ddd;background:#fff;color:#111;font-weight:800;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:.2s}
+.tiempo-btn{flex:1;padding:8px;border-radius:8px;border:1.5px solid #ddd;background:#fff;color:#111;font-weight:800;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
 .tiempo-btn.active{background:#111;color:#fff;border-color:#111}
-.tiempo-btn.active i{color:#fff}
-.tiempo-btn i{color:#111}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;width:100%;max-width:500px;margin:0 auto;background:#ffffff;border-top:2px solid #111;display:flex;justify-content:space-around;padding:8px 0 14px;z-index:6000;box-shadow:0 -6px 20px rgba(0,0,0,.15)}
 .bottom-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 16px;border-radius:12px;cursor:pointer;border:none;background:transparent;font-weight:900;font-size:10px;color:#888}
 .bottom-btn.active{color:#E53935;background:#fff1f1}
@@ -96,26 +88,44 @@
 .pedidos-panel-box{width:100%;max-width:500px;background:#fff;border-radius:22px 22px 0 0;overflow:hidden;box-shadow:0 -10px 40px rgba(0,0,0,.3);border:1px solid #eee;height:80vh;display:flex;flex-direction:column;position:fixed;bottom:75px;left:50%;transform:translateX(-50%);z-index:5000}
 .pedidos-tabs{display:flex;gap:6px;padding:10px;overflow-x:auto;background:#fff;border-bottom:1px solid #eee;white-space:nowrap}
 .pedido-tab{flex-shrink:0;padding:8px 14px;border-radius:999px;border:1.5px solid #111;background:#fff;color:#111;font-size:10px;font-weight:800;cursor:pointer;transition:.2s}
-.pedido-tab.active{background:#111!important;color:#fff!important;border-color:#111!important}
-.pedido-card-blanca{background:#fff;border:1.5px solid #e5e7eb;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.pedido-status{font-size:9px;font-weight:900;padding:5px 10px;border-radius:999px;display:inline-block}
+.pedido-card-blanca{border:1.5px solid #e5e7eb;border-radius:12px;padding:10px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.06);background:#fff}
+.pedido-status{font-size:8px;font-weight:900;padding:3px 7px;border-radius:999px;display:inline-block}
 .st-camino{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
 .st-recogido{background:#e0e7ff;color:#4338ca;border:1px solid #c4b5fd}
 .st-entregar{background:#fce7f3;color:#9d174d;border:1px solid #f9a8d4}
 .st-finalizado{background:#dcfce7;color:#166534;border:1px solid #86efac}
-.tiempo-badge-amarillo{background:#fef08a;color:#713f12;border:1.5px solid #facc15;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:4px;box-shadow:0 0 8px rgba(250,204,21,.3)}
-.valor-verde-neon{font-size:20px;font-weight:900;color:#16a34a;margin-top:8px;display:flex;align-items:center;gap:6px}
+.tiempo-badge-amarillo{background:#fef08a;color:#713f12;border:1.5px solid #facc15;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.valor-verde-neon{font-size:16px;font-weight:900;color:#16a34a;margin-top:6px;display:flex;align-items:center;gap:6px}
 .edit-box{margin-top:10px;padding:10px;background:#f9fafb;border:1px solid #ddd;border-radius:10px;display:none}
 .edit-box.show{display:block}
 .btn-hist-gris{background:#e5e7eb!important;color:#9ca3af!important;border-color:#e5e7eb!important;cursor:not-allowed!important}
 .btn-hist-verde{background:#16a34a!important;color:#fff!important;border-color:#16a34a!important}
 .btn-editar-blanco{background:#fff!important;color:#111!important;border:1.5px solid #111!important}
-/* ACTUALIZACIONES PEDIDAS - TABS NEGRO/BLANCO + NEON AZUL + BADGE PEQUEÑO */
-#seguimientoTabs .pedido-tab{background:#fff!important;color:#111!important;border:1.5px solid #111!important}
-#seguimientoTabs .pedido-tab.active{background:#111!important;color:#fff!important;border-color:#111!important}
-.pedido-card-blanca{padding:10px!important;margin-bottom:8px!important;border-radius:12px!important}
-.pedido-card-blanca.neon-azul{background:#e0f2fe!important;border:1.5px solid #7dd3fc!important;box-shadow:0 0 12px rgba(125,211,252,.6), 0 0 20px rgba(56,189,248,.3)!important}
+/* SEGUIMIENTO NEON */
+#seguimientoTabs .pedido-tab{border-width:1.5px!important;font-weight:900!important}
+#seguimientoTabs .pedido-tab[data-f='todos']{background:#fff!important;color:#111!important;border-color:#111!important}
+#seguimientoTabs .pedido-tab[data-f='todos'].active{background:#111!important;color:#fff!important}
+#seguimientoTabs .pedido-tab[data-f='en_camino']{background:#fff!important;color:#0284c7!important;border-color:#7dd3fc!important}
+#seguimientoTabs .pedido-tab[data-f='en_camino'].active{background:#e0f2fe!important;color:#0284c7!important;box-shadow:0 0 10px rgba(125,211,252,.8)!important}
+#seguimientoTabs .pedido-tab[data-f='a_recoger']{background:#fff!important;color:#d97706!important;border-color:#fcd34d!important}
+#seguimientoTabs .pedido-tab[data-f='a_recoger'].active{background:#fef3c7!important;color:#92400e!important;box-shadow:0 0 10px rgba(252,211,77,.8)!important}
+#seguimientoTabs .pedido-tab[data-f='recogido']{background:#fff!important;color:#7c3aed!important;border-color:#c4b5fd!important}
+#seguimientoTabs .pedido-tab[data-f='recogido'].active{background:#ede9fe!important;color:#5b21b6!important;box-shadow:0 0 10px rgba(196,181,253,.8)!important}
+#seguimientoTabs .pedido-tab[data-f='a_entregar']{background:#fff!important;color:#db2777!important;border-color:#f9a8d4!important}
+#seguimientoTabs .pedido-tab[data-f='a_entregar'].active{background:#fce7f3!important;color:#9d174d!important;box-shadow:0 0 10px rgba(249,168,212,.8)!important}
+#seguimientoTabs .pedido-tab[data-f='finalizado']{background:#fff!important;color:#16a34a!important;border-color:#86efac!important}
+#seguimientoTabs .pedido-tab[data-f='finalizado'].active{background:#dcfce7!important;color:#166534!important;box-shadow:0 0 10px rgba(134,239,172,.8)!important}
+.pedido-card-blanca.neon-en_camino{background:#e0f2fe!important;border-color:#7dd3fc!important;box-shadow:0 0 12px rgba(125,211,252,.6)!important}
+.pedido-card-blanca.neon-a_recoger{background:#fef3c7!important;border-color:#fcd34d!important;box-shadow:0 0 12px rgba(252,211,77,.6)!important}
+.pedido-card-blanca.neon-recogido{background:#ede9fe!important;border-color:#c4b5fd!important;box-shadow:0 0 12px rgba(196,181,253,.6)!important}
+.pedido-card-blanca.neon-a_entregar{background:#fce7f3!important;border-color:#f9a8d4!important;box-shadow:0 0 12px rgba(249,168,212,.6)!important}
+.pedido-card-blanca.neon-finalizado{background:#dcfce7!important;border-color:#86efac!important;box-shadow:0 0 12px rgba(134,239,172,.6)!important}
 .bottom-btn.seguimiento span#badgeSeguimiento.show-flex{display:inline-flex!important}
+#modalEditarPedido{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);z-index:9000;display:none;align-items:center;justify-content:center;padding:16px}
+#modalEditarPedido.show{display:flex}
+.modalEditBox{width:100%;max-width:420px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);max-height:90vh;display:flex;flex-direction:column}
+.modalEditHead{padding:14px 16px;background:#111;color:#fff;display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:13px}
+.modalEditBody{padding:16px;overflow-y:auto;display:grid;gap:8px;max-height:70vh}
 </style>
 </head>
 <body>
@@ -301,17 +311,32 @@
 <div id="panelSoporte" style="display:none"><div class="adminCard"><div style="font-size:12px;font-weight:900;margin-bottom:10px">ESTADO DEL SISTEMA</div><div style="border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:800"><span id="dotFirebase" class="status-dot status-warn"></span>Firebase</div><div style="font-size:10px;color:#888" id="txtFirebase">Verificando...</div></div><div id="badgeFirebase" style="font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;background:#fef3c7;color:#92400e">...</div></div></div></div>
 </div></div></div>
 
-<!-- SEGUIMIENTO - TABS YA EN NEGRO/BLANCO COMO PEDISTE -->
+<!-- SEGUIMIENTO ACTUALIZADO: TODOS / A RECOGER / RECOGIDO / A ENTREGAR / FINALIZADOS + COLORES NEON -->
 <div class="pedidos-panel-box" id="seguimientoPanel" style="display:none"><div class="admin-panel-head" style="background:#111;color:#fff"><div style="display:flex;gap:10px;align-items:center"><i class="material-icons">local_shipping</i><div><div style="font-weight:900;font-size:14px">SEGUIMIENTO</div><div style="font-size:10px;color:#aaa">Pedidos en orden de llegada</div></div></div><button class="iconBtn" onclick="closeSeguimiento()" style="background:#333;color:#fff;border-color:#333"><i class="material-icons">close</i></button></div>
 <div class="pedidos-tabs" id="seguimientoTabs">
-<button class="pedido-tab active" onclick="filtrarSeguimiento(this,'todos')">Todos</button>
-<button class="pedido-tab" onclick="filtrarSeguimiento(this,'en_camino')">En Camino</button>
-<button class="pedido-tab" onclick="filtrarSeguimiento(this,'recogido')">Recogido</button>
-<button class="pedido-tab" onclick="filtrarSeguimiento(this,'a_entregar')">A Entregar</button>
-<button class="pedido-tab" onclick="filtrarSeguimiento(this,'finalizado')">Finalizados</button>
+<button class="pedido-tab active" data-f="todos" onclick="filtrarSeguimiento(this,'todos')">Todos</button>
+<button class="pedido-tab" data-f="a_recoger" onclick="filtrarSeguimiento(this,'a_recoger')">A Recoger</button>
+<button class="pedido-tab" data-f="recogido" onclick="filtrarSeguimiento(this,'recogido')">Recogido</button>
+<button class="pedido-tab" data-f="a_entregar" onclick="filtrarSeguimiento(this,'a_entregar')">A Entregar</button>
+<button class="pedido-tab" data-f="finalizado" onclick="filtrarSeguimiento(this,'finalizado')">Finalizados</button>
 </div>
 <div class="adminContent" id="listaSeguimientoContainer"></div>
 </div>
+
+<!-- MODAL EDITAR EN SEGUNDO PLANO CENTRADO -->
+<div id="modalEditarPedido"><div class="modalEditBox"><div class="modalEditHead"><span>✏️ EDITAR PEDIDO</span><button class="iconBtn" onclick="cerrarModalEditar()" style="background:#333;color:#fff;border-color:#333;width:28px;height:28px"><i class="material-icons" style="font-size:16px">close</i></button></div><div class="modalEditBody">
+<div class="mod-label">Nombre del aliado / Recoger en</div><div class="input-wrapper"><input id="editModalRecoger" class="mod-input"><div class="input-clear" onclick="document.getElementById('editModalRecoger').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Dirección del aliado</div><div class="input-wrapper"><input id="editModalDireccionAliado" class="mod-input" placeholder="Dirección completa"><div class="input-clear" onclick="document.getElementById('editModalDireccionAliado').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Dirección de entrega</div><div class="input-wrapper"><input id="editModalEntregar" class="mod-input"><div class="input-clear" onclick="document.getElementById('editModalEntregar').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Teléfono de entrega</div><div class="input-wrapper"><input id="editModalTelefono" class="mod-input" type="tel"><div class="input-clear" onclick="document.getElementById('editModalTelefono').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Resumen / Productos</div><div class="input-wrapper"><input id="editModalResumen" class="mod-input"><div class="input-clear" onclick="document.getElementById('editModalResumen').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Precio</div><div class="input-wrapper"><input id="editModalPrecio" class="mod-input"><div class="input-clear" onclick="document.getElementById('editModalPrecio').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Distancia</div><div class="input-wrapper"><input id="editModalDist" class="mod-input"><div class="input-clear" onclick="document.getElementById('editModalDist').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Tiempo de recogida</div><div class="input-wrapper"><input id="editModalTiempo" class="mod-input" placeholder="Ej: 10 min, 1 hora..."><div class="input-clear" onclick="document.getElementById('editModalTiempo').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Estado del pedido</div><select id="editModalEstado" class="mod-input" style="padding-right:12px"><option value="en_camino">En Camino (azul cielo)</option><option value="a_recoger">A Recoger (amarillo)</option><option value="recogido">Recogido (morado)</option><option value="a_entregar">A Entregar (rosa)</option><option value="finalizado">Finalizado (verde)</option></select>
+<div style="display:flex;gap:8px;margin-top:12px"><button onclick="guardarEdicionModal()" style="flex:1;padding:12px;border:none;border-radius:10px;background:#16a34a;color:#fff;font-weight:900;font-size:12px;cursor:pointer">Guardar cambios</button><button onclick="cerrarModalEditar()" style="flex:1;padding:12px;border:1.5px solid #ddd;border-radius:10px;background:#fff;font-weight:800;font-size:12px;cursor:pointer">Cancelar</button></div>
+<button id="btnEliminarModal" style="width:100%;margin-top:8px;padding:10px;border:1.5px solid #fecaca;background:#fff1f1;color:#E53935;border-radius:10px;font-weight:800;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="material-icons" style="font-size:16px">delete</i> Eliminar pedido</button>
+</div></div></div>
 
 <!-- CLIENTES CON CONTADOR VERDE -->
 <div class="pedidos-panel-box" id="clientesPanel" style="display:none"><div class="admin-panel-head" style="background:#111;color:#fff"><div style="display:flex;gap:10px;align-items:center"><i class="material-icons">group</i><div><div style="font-weight:900;font-size:14px">CLIENTES</div><div style="font-size:10px;color:#aaa">Gestión de aliados</div></div></div><button class="iconBtn" onclick="closeClientes()" style="background:#333;color:#fff;border-color:#333"><i class="material-icons">close</i></button></div>
@@ -357,13 +382,13 @@ let tipoActivo='aliados', subTipoActivo='recoger', subTipoNuevo='recoger', tiemp
 let pedidosGuardados=[], filtroSeguimientoActual='todos';
 let tempClienteNewLat=null,tempClienteNewLng=null,tempClienteNewDir="",editandoNewId=null;
 let clienteMiniMapNewG=null,clienteMiniMarkerNewG=null;
+let pedidoEditandoKey=null;
 
 function distMts(lat1,lon1,lat2,lon2){const R=6371000;const dLat=(lat2-lat1)*Math.PI/180;const dLon=(lon2-lon1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
-const STORAGE_KEY='kigo_estado_v8';
+const STORAGE_KEY='kigo_estado_v9';
 function guardarEstadoLocal(){const estado={pickupInput: document.getElementById('pickupInput').value,destinationInput: document.getElementById('destinationInput').value,aliadoEntregaComprar: document.getElementById('aliadoEntregaComprar').value,direccionEntregaComprar: document.getElementById('direccionEntregaComprar').value,productosComprar: document.getElementById('productosComprar').value,dondeComprar: document.getElementById('dondeComprar').value,telefonoRecoger: document.getElementById('telefonoRecoger').value,telefonoComprar: document.getElementById('telefonoComprar').value,precioManualComprar: document.getElementById('precioManualComprar').value,tiempoCustom: document.getElementById('tiempoCustom').value,nuevoDireccionInput: document.getElementById('nuevoDireccionInput').value,nuevoEntregaInput: document.getElementById('nuevoEntregaInput').value,productosNuevoComprar: document.getElementById('productosNuevoComprar').value,dondeComprarNuevo: document.getElementById('dondeComprarNuevo').value,direccionEntregaNuevoComprar: document.getElementById('direccionEntregaNuevoComprar').value,telefonoNuevoRecoger: document.getElementById('telefonoNuevoRecoger').value,telefonoNuevoComprar: document.getElementById('telefonoNuevoComprar').value,tiempoCustomNuevo: document.getElementById('tiempoCustomNuevo').value,precioManualNuevoComprar: document.getElementById('precioManualNuevoComprar').value,tipoActivo, subTipoActivo, subTipoNuevo, tiempoRecogida, tiempoRecogidaNuevo,pickupLat, pickupLng, destinationLat, destinationLng, compraLat, compraLng,nuevoRecogidaLat, nuevoRecogidaLng, nuevoEntregaLat, nuevoEntregaLng,compraNuevoLat, compraNuevoLng, nuevoEntregaComprarLat, nuevoEntregaComprarLng,ultimaDistancia, ultimoPrecio, pickupName, destName, aliadoDireccionTexto,recogerEnNombre,entregarEnNombre,telefonoPedido,timestamp: Date.now()};localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));}
 function restaurarEstadoLocal(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw) return;const e=JSON.parse(raw);if(Date.now()-e.timestamp > 1000*60*60*12) return;const setVal=(id,val)=>{const el=document.getElementById(id); if(el && val) el.value=val;};setVal('pickupInput',e.pickupInput); setVal('destinationInput',e.destinationInput);setVal('aliadoEntregaComprar',e.aliadoEntregaComprar); setVal('direccionEntregaComprar',e.direccionEntregaComprar);setVal('productosComprar',e.productosComprar); setVal('dondeComprar',e.dondeComprar);setVal('telefonoRecoger',e.telefonoRecoger); setVal('telefonoComprar',e.telefonoComprar);setVal('precioManualComprar',e.precioManualComprar); setVal('tiempoCustom',e.tiempoCustom);setVal('nuevoDireccionInput',e.nuevoDireccionInput); setVal('nuevoEntregaInput',e.nuevoEntregaInput);setVal('productosNuevoComprar',e.productosNuevoComprar); setVal('dondeComprarNuevo',e.dondeComprarNuevo);setVal('direccionEntregaNuevoComprar',e.direccionEntregaNuevoComprar);setVal('telefonoNuevoRecoger',e.telefonoNuevoRecoger); setVal('telefonoNuevoComprar',e.telefonoNuevoComprar);setVal('tiempoCustomNuevo',e.tiempoCustomNuevo); setVal('precioManualNuevoComprar',e.precioManualNuevoComprar);tipoActivo=e.tipoActivo||'aliados'; subTipoActivo=e.subTipoActivo||'recoger'; subTipoNuevo=e.subTipoNuevo||'recoger';tiempoRecogida=e.tiempoRecogida||''; tiempoRecogidaNuevo=e.tiempoRecogidaNuevo||'';pickupLat=e.pickupLat; pickupLng=e.pickupLng; destinationLat=e.destinationLat; destinationLng=e.destinationLng;compraLat=e.compraLat; compraLng=e.compraLng; nuevoRecogidaLat=e.nuevoRecogidaLat; nuevoRecogidaLng=e.nuevoRecogidaLng;nuevoEntregaLat=e.nuevoEntregaLat; nuevoEntregaLng=e.nuevoEntregaLng; compraNuevoLat=e.compraNuevoLat; compraNuevoLng=e.compraNuevoLng;nuevoEntregaComprarLat=e.nuevoEntregaComprarLat; nuevoEntregaComprarLng=e.nuevoEntregaComprarLng;ultimaDistancia=e.ultimaDistancia||""; ultimoPrecio=e.ultimoPrecio||""; pickupName=e.pickupName||""; destName=e.destName||""; aliadoDireccionTexto=e.aliadoDireccionTexto||"";recogerEnNombre=e.recogerEnNombre||"";entregarEnNombre=e.entregarEnNombre||"";telefonoPedido=e.telefonoPedido||"";activarTipo(tipoActivo); activarSubTipo(subTipoActivo); activarSubTipoNuevo(subTipoNuevo);if(e.pickupInput && e.aliadoDireccionTexto){document.getElementById('aliadoDireccionInfo').style.display='block'; document.getElementById('aliadoDireccionInfo').innerText="📍 "+e.aliadoDireccionTexto+" (BD)";}if(e.ultimaDistancia){document.getElementById('distance').innerText=e.ultimaDistancia; document.getElementById('price').innerText=e.ultimoPrecio; if(e.ultimoPrecio && e.ultimoPrecio!=='POR COTIZAR'){document.getElementById('whatsappButton').classList.add('show'); document.getElementById('whatsappRepartidorButton').classList.add('show'); document.getElementById('confirmarServicioMapaButton').classList.add('show');}}}catch(err){}}
 setInterval(guardarEstadoLocal,1000);
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){guardarEstadoLocal();}});
 function activarTipo(t){tipoActivo=t;document.getElementById('btnAliados').classList.toggle('active', t==='aliados');document.getElementById('btnNuevo').classList.toggle('active', t==='nuevo');document.getElementById('boxAliados').classList.toggle('show', t==='aliados');document.getElementById('boxNuevo').classList.toggle('show', t==='nuevo');guardarEstadoLocal();}
 function activarSubTipo(t){subTipoActivo=t;document.getElementById('subRecoger').classList.toggle('active', t==='recoger');document.getElementById('subComprar').classList.toggle('active', t==='comprar');document.getElementById('formRecoger').classList.toggle('show', t==='recoger');document.getElementById('formComprar').classList.toggle('show', t==='comprar');guardarEstadoLocal();}
 function activarSubTipoNuevo(t){subTipoNuevo=t;document.getElementById('subNuevoRecoger').classList.toggle('active', t==='recoger');document.getElementById('subNuevoComprar').classList.toggle('active', t==='comprar');document.getElementById('formNuevoRecoger').classList.toggle('show', t==='recoger');document.getElementById('formNuevoComprar').classList.toggle('show', t==='comprar');guardarEstadoLocal();}
@@ -371,10 +396,10 @@ function limpiarFormulariosAliados(){document.getElementById('pickupInput').valu
 function limpiarFormulariosNuevo(){document.getElementById('nuevoDireccionInput').value=""; document.getElementById('nuevoEntregaInput').value=""; document.getElementById('productosNuevoComprar').value=""; document.getElementById('dondeComprarNuevo').value=""; document.getElementById('direccionEntregaNuevoComprar').value=""; document.getElementById('telefonoNuevoRecoger').value=""; document.getElementById('telefonoNuevoComprar').value=""; document.getElementById('tiempoCustomNuevo').value=""; tiempoRecogidaNuevo=""; document.getElementById('nuevoMiniMap').classList.remove('show');nuevoRecogidaLat=null; nuevoRecogidaLng=null; nuevoEntregaLat=null; nuevoEntregaLng=null; compraNuevoLat=null; compraNuevoLng=null; nuevoEntregaComprarLat=null; nuevoEntregaComprarLng=null;if(pickupMarker) pickupMarker.setMap(null); if(destinationMarker) destinationMarker.setMap(null); if(directionsRenderer) directionsRenderer.setDirections({routes:[]});document.getElementById('distance').innerText='— km'; document.getElementById('duration').innerText='—'; document.getElementById('price').innerText='POR COTIZAR'; document.getElementById("confirmarServicioMapaButton").classList.remove("show");localStorage.removeItem(STORAGE_KEY);}
 function resetAliadosForm(){limpiarFormulariosAliados(); document.getElementById('precioManualComprar').value='';}
 function resetNuevoForm(){limpiarFormulariosNuevo(); document.getElementById('precioManualNuevoComprar').value='';}
-function seleccionarTiempo(t){tiempoRecogida=t; document.getElementById('tiempoCustom').value=t; document.querySelectorAll('#formRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(t==='5 min') document.getElementById('t5').classList.add('active'); if(t==='10 min') document.getElementById('t10').classList.add('active'); if(t==='20 min') document.getElementById('t20').classList.add('active');guardarEstadoLocal();}
-function seleccionarTiempoNuevo(t){tiempoRecogidaNuevo=t; document.getElementById('tiempoCustomNuevo').value=t; document.querySelectorAll('#formNuevoRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(t==='5 min') document.getElementById('nt5').classList.add('active'); if(t==='10 min') document.getElementById('nt10').classList.add('active'); if(t==='20 min') document.getElementById('nt20').classList.add('active');guardarEstadoLocal();}
-function limpiarTiempo(){tiempoRecogida=document.getElementById('tiempoCustom').value; document.querySelectorAll('#formRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(tiempoRecogida==='5 min') document.getElementById('t5').classList.add('active'); if(tiempoRecogida==='10 min') document.getElementById('t10').classList.add('active'); if(tiempoRecogida==='20 min') document.getElementById('t20').classList.add('active');guardarEstadoLocal();}
-function limpiarTiempoNuevo(){tiempoRecogidaNuevo=document.getElementById('tiempoCustomNuevo').value; document.querySelectorAll('#formNuevoRecoger.tiempo-btn').forEach(b=>{b.classList.remove('active');}); if(tiempoRecogidaNuevo==='5 min') document.getElementById('nt5').classList.add('active'); if(tiempoRecogidaNuevo==='10 min') document.getElementById('nt10').classList.add('active'); if(tiempoRecogidaNuevo==='20 min') document.getElementById('nt20').classList.add('active');guardarEstadoLocal();}
+function seleccionarTiempo(t){tiempoRecogida=t; document.getElementById('tiempoCustom').value=t; if(t==='5 min') document.getElementById('t5').classList.add('active'); if(t==='10 min') document.getElementById('t10').classList.add('active'); if(t==='20 min') document.getElementById('t20').classList.add('active');guardarEstadoLocal();}
+function seleccionarTiempoNuevo(t){tiempoRecogidaNuevo=t; document.getElementById('tiempoCustomNuevo').value=t; if(t==='5 min') document.getElementById('nt5').classList.add('active'); if(t==='10 min') document.getElementById('nt10').classList.add('active'); if(t==='20 min') document.getElementById('nt20').classList.add('active');guardarEstadoLocal();}
+function limpiarTiempo(){tiempoRecogida=document.getElementById('tiempoCustom').value; guardarEstadoLocal();}
+function limpiarTiempoNuevo(){tiempoRecogidaNuevo=document.getElementById('tiempoCustomNuevo').value; guardarEstadoLocal();}
 document.getElementById('tiempoCustom').addEventListener('input', limpiarTiempo);
 document.getElementById('tiempoCustomNuevo').addEventListener('input', limpiarTiempoNuevo);
 function limpiarAliado(){document.getElementById('pickupInput').value="";document.getElementById('pickupSuggestions').classList.remove('show');document.getElementById('aliadoDireccionInfo').style.display='none';pickupLat=null;pickupLng=null;pickupName="";aliadoDireccionTexto="";if(pickupMarker)pickupMarker.setMap(null);if(directionsRenderer)directionsRenderer.setDirections({routes:[]});resetPrecios();guardarEstadoLocal();}
@@ -448,84 +473,103 @@ function filtrarSeguimiento(btn,filtro){
 function renderSeguimiento(){
   const cont=document.getElementById('listaSeguimientoContainer');
   let lista=[...pedidosGuardados];
-  if(filtroSeguimientoActual!=='todos'){lista=lista.filter(p=>p.estado===filtroSeguimientoActual);}
+  if(filtroSeguimientoActual!=='todos'){
+    lista=lista.filter(p=>p.estado===filtroSeguimientoActual);
+  }
   if(!lista.length){cont.innerHTML=`<div style="text-align:center;padding:30px;color:#888"><i class="material-icons" style="font-size:40px">local_shipping</i><div style="margin-top:10px;font-size:12px">No hay pedidos en ${filtroSeguimientoActual}</div></div>`; return;}
   lista=lista.sort((a,b)=>a.timestamp - b.timestamp);
   cont.innerHTML="";
-  lista.forEach((p,idx)=>{
-    const codigo = p.fbKey? p.fbKey.substring(p.fbKey.length-6).toUpperCase() : ('000'+(idx+1)).slice(-6);
+  lista.forEach((p)=>{
+    const codigo = p.fbKey? p.fbKey.substring(p.fbKey.length-6).toUpperCase() : '';
     const fechaHora = p.fecha || new Date(p.timestamp).toLocaleString();
-    const tiempoHtml = p.tiempo? `<div style="display:flex;justify-content:center;margin-top:4px"><span class="tiempo-badge-amarillo" style="font-size:9px;padding:3px 8px"><i class="material-icons" style="font-size:12px">schedule</i> Recoger ${p.tiempo}</span></div>` : '';
+    const tieneTiempo = p.tiempo && p.tiempo.trim()!=='';
+    const tiempoNeon = tieneTiempo? `<span style="background:#fef08a;color:#713f12;border:1.5px solid #facc15;padding:3px 8px;border-radius:999px;font-size:9px;font-weight:900;display:inline-flex;align-items:center;gap:3px;margin-left:8px;box-shadow:0 0 8px rgba(250,204,21,.4)"><i class="material-icons" style="font-size:12px">schedule</i> ${p.tiempo}</span>` : '';
     let statusClass='st-camino';
-    if(p.estado==='en_camino'){statusClass='st-camino';}
-    if(p.estado==='recogido'){statusClass='st-recogido';}
-    if(p.estado==='a_entregar'){statusClass='st-entregar';}
-    if(p.estado==='finalizado'){statusClass='st-finalizado';}
+    let neonCard='neon-a_recoger';
+    let estadoTexto = p.estado.toUpperCase().replace('_',' ');
+    if(p.estado==='en_camino'){statusClass='st-camino'; neonCard='neon-en_camino'; estadoTexto='A RECOGER';}
+    if(p.estado==='a_recoger'){statusClass='st-camino'; neonCard='neon-a_recoger'; estadoTexto='A RECOGER';}
+    if(p.estado==='recogido'){statusClass='st-recogido'; neonCard='neon-recogido';}
+    if(p.estado==='a_entregar'){statusClass='st-entregar'; neonCard='neon-a_entregar';}
+    if(p.estado==='finalizado'){statusClass='st-finalizado'; neonCard='neon-finalizado';}
     const esFinalizado = p.estado==='finalizado';
-    const esRecienLlegado = p.estado==='en_camino';
-    const claseNeon = esRecienLlegado? ' neon-azul' : '';
     const btnHistClass = esFinalizado? 'btn-hist-verde' : 'btn-hist-gris';
     const btnHistDisabled = esFinalizado? '' : 'disabled';
-    const div=document.createElement('div'); div.className='pedido-card-blanca'+claseNeon;
+    const nombreAliado = p.recogerEn? p.recogerEn.split(' - ')[0] : (p.tipo||'');
+    const direccionAliado = p.direccionAliado || (p.recogerEn && p.recogerEn.includes(' - ')? p.recogerEn.split(' - ').slice(1).join(' - ') : '') || '';
+    const div=document.createElement('div'); div.className='pedido-card-blanca '+neonCard;
     div.innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
-          <div style="font-size:10px;font-weight:900;color:#000">CÓDIGO: #${codigo}</div>
-          <div style="font-size:9px;color:#000;margin-top:1px;font-weight:600">Creado: ${fechaHora}</div>
+          <div style="font-size:14px;font-weight:900;color:#111;letter-spacing:0.5px">#${codigo}</div>
+          <div style="font-size:9px;color:#111;margin-top:2px;display:flex;align-items:center;flex-wrap:wrap">Creado: ${fechaHora} ${tiempoNeon}</div>
         </div>
-        <div style="text-align:right"><span class="pedido-status ${statusClass}" style="font-size:8px;padding:3px 7px">${p.estado.toUpperCase().replace('_',' ')}</span></div>
+        <div style="text-align:right"><span class="pedido-status ${statusClass}" style="font-size:8px;padding:3px 7px">${estadoTexto}</span></div>
       </div>
-      ${tiempoHtml}
-      <div style="margin-top:8px;background:#f9fafb;border-radius:10px;padding:8px;border:1px solid #eee">
+      <div style="margin-top:8px;background:#fff;border-radius:10px;padding:8px;border:1px solid rgba(0,0,0,.08)">
         <div style="font-size:9px;font-weight:900;color:#16a34a">📦 RECOGER EN:</div>
-        <div style="font-size:10px;color:#111;font-weight:700;margin-top:1px">${p.recogerEn||p.tipo||''}</div>
-        <div style="margin-top:6px;font-size:9px;font-weight:900;color:#dc2626">🏠 ENTREGAR EN:</div>
+        <div style="font-size:11px;color:#111;font-weight:800;margin-top:1px">${nombreAliado}</div>
+        ${direccionAliado?`<div style="font-size:9px;color:#555;margin-top:2px">📍 ${direccionAliado}</div>`:''}
+        <div style="margin-top:8px;font-size:9px;font-weight:900;color:#dc2626">🏠 ENTREGAR EN:</div>
         <div style="font-size:10px;color:#111;font-weight:700;margin-top:1px">${p.entregarEn||''}</div>
         ${p.telefono?`<div style="font-size:9px;color:#555;margin-top:4px">📞 ${p.telefono}</div>`:''}
-        ${p.resumen?`<div style="font-size:9px;color:#666;margin-top:2px">${p.resumen}</div>`:''}
+        ${p.resumen && p.resumen!==p.entregarEn?`<div style="font-size:9px;color:#666;margin-top:2px">${p.resumen}</div>`:''}
       </div>
-      <div class="valor-verde-neon" style="font-size:16px;margin-top:6px"><i class="material-icons" style="font-size:16px">payments</i> ${p.precio} • ${p.distancia||''}</div>
+      <div class="valor-verde-neon"><i class="material-icons" style="font-size:16px">payments</i> ${p.precio} • ${p.distancia||''}</div>
       <div style="display:flex;gap:5px;margin-top:8px">
-        <button onclick="toggleEditar('${p.fbKey}')" class="btn-editar-blanco" style="flex:1;padding:7px;border-radius:8px;font-size:10px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><i class="material-icons" style="font-size:12px">edit</i> Editar</button>
-        <button onclick="verHistorial('${p.fbKey}')" ${btnHistDisabled} class="${btnHistClass}" style="flex:1;padding:7px;border-radius:8px;border:1px solid #ddd;font-size:10px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><i class="material-icons" style="font-size:12px">history</i> Historial ${esFinalizado?'✅':''}</button>
+        <button onclick="abrirModalEditar('${p.fbKey}')" class="btn-editar-blanco" style="flex:1;padding:7px;border-radius:8px;font-size:10px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><i class="material-icons" style="font-size:12px">edit</i> Editar</button>
+        <button onclick="verHistorialModal('${p.fbKey}')" ${btnHistDisabled} class="${btnHistClass}" style="flex:1;padding:7px;border-radius:8px;border:1px solid #ddd;font-size:10px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><i class="material-icons" style="font-size:12px">history</i> Historial ${esFinalizado?'✅':''}</button>
       </div>
-      <div id="editBox_${p.fbKey}" class="edit-box">
-        <div class="mod-label">Recoger en</div><div class="input-wrapper"><input id="editRecoger_${p.fbKey}" class="mod-input" value="${p.recogerEn||''}"><div class="input-clear" onclick="document.getElementById('editRecoger_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-        <div class="mod-label">Entregar en</div><div class="input-wrapper"><input id="editEntregar_${p.fbKey}" class="mod-input" value="${p.entregarEn||''}"><div class="input-clear" onclick="document.getElementById('editEntregar_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-        <div class="mod-label">Resumen</div><div class="input-wrapper"><input id="editResumen_${p.fbKey}" class="mod-input" value="${p.resumen||''}"><div class="input-clear" onclick="document.getElementById('editResumen_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-        <div class="mod-label">Precio</div><div class="input-wrapper"><input id="editPrecio_${p.fbKey}" class="mod-input" value="${p.precio}"><div class="input-clear" onclick="document.getElementById('editPrecio_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-        <div class="mod-label">Distancia</div><div class="input-wrapper"><input id="editDist_${p.fbKey}" class="mod-input" value="${p.distancia}"><div class="input-clear" onclick="document.getElementById('editDist_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-        <div class="mod-label">Tiempo</div><div class="input-wrapper"><input id="editTiempo_${p.fbKey}" class="mod-input" value="${p.tiempo||''}"><div class="input-clear" onclick="document.getElementById('editTiempo_${p.fbKey}').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-        <div class="mod-label">Estado</div><select id="editEstado_${p.fbKey}" class="mod-input" style="padding-right:12px"><option value="en_camino" ${p.estado==='en_camino'?'selected':''}>En Camino</option><option value="recogido" ${p.estado==='recogido'?'selected':''}>Recogido</option><option value="a_entregar" ${p.estado==='a_entregar'?'selected':''}>A Entregar</option><option value="finalizado" ${p.estado==='finalizado'?'selected':''}>Finalizado</option></select>
-        <div style="display:flex;gap:6px;margin-top:10px"><button onclick="guardarEdicion('${p.fbKey}')" style="flex:1;padding:10px;border:none;border-radius:8px;background:#16a34a;color:#fff;font-weight:800;font-size:11px;cursor:pointer">Guardar</button><button onclick="toggleEditar('${p.fbKey}')" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;background:#fff;font-weight:800;font-size:11px;cursor:pointer">Cancelar</button><button onclick="eliminarPedido('${p.fbKey}')" style="padding:10px;border:1px solid #fecaca;background:#fff1f1;color:#E53935;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer"><i class="material-icons" style="font-size:16px">delete</i></button></div>
-      </div>
-      <div id="histBox_${p.fbKey}" class="edit-box" style="background:#f0fdf4;border-color:#bbf7d0"><div style="font-size:12px;font-weight:900;color:#166534">✅ HISTORIAL</div><div style="font-size:11px;margin-top:8px;background:#fff;padding:8px;border-radius:8px;border:1px solid #dcfce7">📅 <b>Creado:</b> ${p.fecha||new Date(p.timestamp).toLocaleString()} ${p.historial?.finalizado?`<div style="color:#16a34a;font-weight:800">🏁 Finalizado: ${new Date(p.historial.finalizado).toLocaleString()}</div>`:''}</div><button onclick="verHistorial('${p.fbKey}')" style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:10px;font-weight:800">Cerrar</button></div>
+      <div id="histBox_${p.fbKey}" class="edit-box" style="background:#f0fdf4;border-color:#bbf7d0"><div style="font-size:12px;font-weight:900;color:#166534">✅ HISTORIAL</div><div style="font-size:11px;margin-top:8px;background:#fff;padding:8px;border-radius:8px;border:1px solid #dcfce7">📅 <b>Creado:</b> ${p.fecha||new Date(p.timestamp).toLocaleString()} ${p.historial?.finalizado?`<div style="color:#16a34a;font-weight:800">🏁 Finalizado: ${new Date(p.historial.finalizado).toLocaleString()}</div>`:''}</div><button onclick="document.getElementById('histBox_${p.fbKey}').classList.remove('show')" style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:10px;font-weight:800">Cerrar</button></div>
     `;
     cont.appendChild(div);
   });
 }
-function toggleEditar(fbKey){const box=document.getElementById('editBox_'+fbKey); if(box){box.classList.toggle('show'); const hb=document.getElementById('histBox_'+fbKey); if(hb) hb.classList.remove('show');}}
-function verHistorial(fbKey){
+
+function abrirModalEditar(fbKey){
+  const p=pedidosGuardados.find(x=>x.fbKey===fbKey);
+  if(!p) return;
+  pedidoEditandoKey=fbKey;
+  const nombreAliado = p.recogerEn? p.recogerEn.split(' - ')[0] : '';
+  const direccionAliado = p.direccionAliado || (p.recogerEn && p.recogerEn.includes(' - ')? p.recogerEn.split(' - ').slice(1).join(' - ') : '');
+  document.getElementById('editModalRecoger').value = nombreAliado;
+  document.getElementById('editModalDireccionAliado').value = direccionAliado || '';
+  document.getElementById('editModalEntregar').value = p.entregarEn || '';
+  document.getElementById('editModalTelefono').value = p.telefono || '';
+  document.getElementById('editModalResumen').value = p.resumen || '';
+  document.getElementById('editModalPrecio').value = p.precio || '';
+  document.getElementById('editModalDist').value = p.distancia || '';
+  document.getElementById('editModalTiempo').value = p.tiempo || '';
+  document.getElementById('editModalEstado').value = p.estado || 'a_recoger';
+  document.getElementById('modalEditarPedido').classList.add('show');
+  document.getElementById('btnEliminarModal').onclick=()=>{if(confirm("¿Eliminar este servicio?")){db.ref('kigo_pedidos/'+fbKey).remove().then(()=>{cerrarModalEditar();});}};
+}
+function cerrarModalEditar(){document.getElementById('modalEditarPedido').classList.remove('show'); pedidoEditandoKey=null;}
+function guardarEdicionModal(){
+  if(!pedidoEditandoKey) return;
+  const nombre = document.getElementById('editModalRecoger').value.trim();
+  const direccionAli = document.getElementById('editModalDireccionAliado').value.trim();
+  const recogerEn = direccionAli? `${nombre} - ${direccionAli}` : nombre;
+  const entregarEn=document.getElementById('editModalEntregar').value;
+  const telefono=document.getElementById('editModalTelefono').value;
+  const resumen=document.getElementById('editModalResumen').value;
+  const precio=document.getElementById('editModalPrecio').value;
+  const dist=document.getElementById('editModalDist').value;
+  const tiempo=document.getElementById('editModalTiempo').value;
+  const estado=document.getElementById('editModalEstado').value;
+  const updates={recogerEn, direccionAliado: direccionAli, entregarEn, telefono, resumen, precio, distancia:dist, tiempo, estado};
+  updates[`historial/${estado}`]=Date.now();
+  db.ref('kigo_pedidos/'+pedidoEditandoKey).update(updates).then(()=>{alert("Pedido actualizado ✅"); cerrarModalEditar();});
+}
+function verHistorialModal(fbKey){
   const p=pedidosGuardados.find(x=>x.fbKey===fbKey);
   if(!p) return;
   if(p.estado!=='finalizado'){alert("⏳ El historial solo se activa cuando está FINALIZADO."); return;}
-  const box=document.getElementById('histBox_'+fbKey); if(box){box.classList.toggle('show'); document.getElementById('editBox_'+fbKey).classList.remove('show');}
+  const box=document.getElementById('histBox_'+fbKey); if(box){box.classList.toggle('show');}
 }
-function guardarEdicion(fbKey){
-  const recogerEn=document.getElementById('editRecoger_'+fbKey).value;
-  const entregarEn=document.getElementById('editEntregar_'+fbKey).value;
-  const resumen=document.getElementById('editResumen_'+fbKey).value;
-  const precio=document.getElementById('editPrecio_'+fbKey).value;
-  const dist=document.getElementById('editDist_'+fbKey).value;
-  const tiempo=document.getElementById('editTiempo_'+fbKey).value;
-  const estado=document.getElementById('editEstado_'+fbKey).value;
-  const updates={recogerEn, entregarEn, resumen, precio, distancia:dist, tiempo, estado};
-  updates[`historial/${estado}`]=Date.now();
-  db.ref('kigo_pedidos/'+fbKey).update(updates).then(()=>{alert("Pedido actualizado");});
-}
-function eliminarPedido(fbKey){if(!confirm("¿Eliminar este servicio?")) return; db.ref('kigo_pedidos/'+fbKey).remove().then(()=>{alert("Eliminado");});}
 function guardarPedidoFirebase(tipo, resumen, precio, distancia, mensajeCompleto, tiempo, estadoInicial, recogerEn, entregarEn, telefono){
-  const pedido={tipo, resumen, precio, distancia, mensaje: mensajeCompleto, estado: estadoInicial||'en_camino', tiempo: tiempo||"", timestamp: Date.now(), fecha: new Date().toLocaleString(), recogerEn: recogerEn||tipo, entregarEn: entregarEn||resumen, telefono: telefono||"", historial:{creado: Date.now(), en_camino: Date.now()}, confirmadoEn: Date.now()};
+  const partes = (recogerEn||'').split(' - '); const dirAli = partes.length>1? partes.slice(1).join(' - ') : aliadoDireccionTexto||'';
+  const pedido={tipo, resumen, precio, distancia, mensaje: mensajeCompleto, estado: estadoInicial||'a_recoger', tiempo: tiempo||"", timestamp: Date.now(), fecha: new Date().toLocaleString(), recogerEn: recogerEn||tipo, direccionAliado: dirAli, entregarEn: entregarEn||resumen, telefono: telefono||"", historial:{creado: Date.now(), a_recoger: Date.now()}, confirmadoEn: Date.now()};
   return db.ref('kigo_pedidos').push(pedido);
 }
 db.ref('kigo_pedidos').on('value', snap=>{
@@ -579,7 +623,6 @@ function editarClienteNew(fbKey){
  setTimeout(()=>{if(!clienteMiniMapNewG) clienteMiniMapNewG=new google.maps.Map(document.getElementById("clienteMiniMapNew"),{center:{lat:c.lat,lng:c.lng},zoom:16,disableDefaultUI:true});else clienteMiniMapNewG.setCenter({lat:c.lat,lng:c.lng});if(clienteMiniMarkerNewG) clienteMiniMarkerNewG.setMap(null);clienteMiniMarkerNewG=new google.maps.Marker({position:{lat:c.lat,lng:c.lng},map:clienteMiniMapNewG});},200);
 }
 function eliminarClienteNew(fbKey){if(!confirm("¿Eliminar cliente?")) return; db.ref("kigo_clientes/"+fbKey).remove();}
-
 function actualizarManifestPWA(){const iconSrc=configMarca.pwaIcon||configMarca.logoLogin||configMarca.logoMapa||"https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3";const name=configMarca.platformName||"KIGO XPRESS";const color=configMarca.primaryColor||"#E53935";const manifest={name:name,short_name:name.substring(0,12),display:"standalone",background_color:"#ffffff",theme_color:color,icons:[{src:iconSrc,sizes:"192x192",type:"image/png",purpose:"any maskable"},{src:iconSrc,sizes:"512x512",type:"image/png",purpose:"any maskable"}]};const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});const url=URL.createObjectURL(blob);document.getElementById("manifestLink").href=url;document.getElementById("appleIcon").href=iconSrc;document.getElementById("themeColorMeta").content=color;document.getElementById("appleTitle").content=name;}
 db.ref("kigo_config").on("value",(snap)=>{const v=snap.val(); if(v){configMarca=v; aplicarConfigMarca();}});
 db.ref("kigo_tarifas").on("value",(snap)=>{const v=snap.val(); if(v){configTarifas={...configTarifas,...v}; aplicarConfigTarifas();}});
@@ -641,7 +684,7 @@ document.getElementById("confirmarServicioMapaButton").onclick=()=>{
   if(tipoActivo==='aliados'){
     if(subTipoActivo==='recoger'){
       const aliado = pickupName || document.getElementById('pickupInput').value || "No especificado";
-      recogerEn = (aliadoDireccionTexto || pickupName || document.getElementById('pickupInput').value);
+      recogerEn = (aliadoDireccionTexto? `${aliado} - ${aliadoDireccionTexto}` : aliado);
       entregarEn = (destName || document.getElementById('destinationInput').value);
       telefono = document.getElementById('telefonoRecoger').value;
       tiempo = document.getElementById('tiempoCustom').value || tiempoRecogida || "";
@@ -671,7 +714,7 @@ document.getElementById("confirmarServicioMapaButton").onclick=()=>{
   const precio = ultimoPrecio || document.getElementById('price').innerText;
   const dist = ultimaDistancia;
   const mensajeCompleto = `${tipo} - ${resumen} - ${precio}`;
-  guardarPedidoFirebase(tipo, resumen, precio, dist, mensajeCompleto, tiempo, 'en_camino', recogerEn, entregarEn, telefono).then(()=>{
+  guardarPedidoFirebase(tipo, resumen, precio, dist, mensajeCompleto, tiempo, 'a_recoger', recogerEn, entregarEn, telefono).then(()=>{
     alert("✅ Servicio confirmado - Enviado a Seguimiento");
     resetAliadosForm(); resetNuevoForm();
     if(map){map.setCenter(CENTRO); map.setZoom(14);}
@@ -682,6 +725,7 @@ document.getElementById("resetBtn").onclick=()=>{resetAliadosForm(); resetNuevoF
 document.addEventListener("click",e=>{if(!e.target.closest(".input-wrapper")){document.getElementById("pickupSuggestions").classList.remove("show");document.getElementById("destinationSuggestions").classList.remove("show");document.getElementById("aliadoEntregaSuggestions").classList.remove("show");}});
 document.getElementById("loginModal").addEventListener("click",e=>{if(e.target.id==="loginModal") closeLogin();});
 document.getElementById("adminModal").addEventListener("click",e=>{if(e.target.id==="adminModal") closeAdmin();});
+document.getElementById("modalEditarPedido").addEventListener("click",e=>{if(e.target.id==="modalEditarPedido") cerrarModalEditar();});
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTV1sm6McEIkv-cheaVFCD_svp_a--6wg&libraries=places&callback=initGoogleMaps"></script>
 </body>
