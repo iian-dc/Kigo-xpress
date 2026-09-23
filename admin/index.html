@@ -604,3 +604,74 @@ function renderSeguimiento(){
     cont.appendChild(div);
   });
 }  
+function abrirModalEditar(fbKey){
+  const p=pedidosGuardados.find(x=>x.fbKey===fbKey); if(!p) return;
+  pedidoEditandoKey=fbKey;
+  const esCompra = p.tipo && p.tipo.toLowerCase().includes('comprar');
+  document.getElementById('editSectionTipo').innerText = `TIPO: ${p.tipo || 'RECOGER'} ${esCompra?'🛒':'📦'}`;
+  const nombreAliado = p.recogerEn? p.recogerEn.split(' - ')[0] : '';
+  const direccionAliado = p.direccionAliado || (p.recogerEn && p.recogerEn.includes(' - ')? p.recogerEn.split(' - ').slice(1).join(' - ') : '');
+  document.getElementById('editModalRecoger').value = nombreAliado;
+  document.getElementById('editModalDireccionAliado').value = direccionAliado || '';
+  document.getElementById('editModalEntregar').value = p.entregarEn || '';
+  document.getElementById('editModalTelefono').value = p.telefono || '';
+  document.getElementById('editModalResumen').value = p.resumen || '';
+  document.getElementById('editModalPrecio').value = p.precio || '';
+  document.getElementById('editModalDist').value = p.distancia || '';
+  document.getElementById('editModalTiempo').value = p.tiempo || '';
+  document.getElementById('editModalEstado').value = p.estado || 'a_recoger';
+  document.getElementById('wrapResumen').style.display='block';
+  document.getElementById('labelResumen').style.display='block';
+  document.getElementById('labelResumen').innerText = esCompra?'Productos a comprar / Qué se va a recoger':'Descripción del pedido / Qué se recoge';
+  document.getElementById('modalEditarPedido').classList.add('show');
+  document.getElementById('btnEliminarModal').onclick=()=>{if(confirm("¿Eliminar este servicio?")){db.ref('kigo_pedidos/'+fbKey).remove().then(()=>{cerrarModalEditar();});}};
+}
+function cerrarModalEditar(){document.getElementById('modalEditarPedido').classList.remove('show'); pedidoEditandoKey=null;}
+function guardarEdicionModal(){
+  if(!pedidoEditandoKey) return;
+  const nombre = document.getElementById('editModalRecoger').value.trim();
+  const direccionAli = document.getElementById('editModalDireccionAliado').value.trim();
+  const recogerEn = direccionAli? `${nombre} - ${direccionAli}` : nombre;
+  const entregarEn=document.getElementById('editModalEntregar').value;
+  const telefono=document.getElementById('editModalTelefono').value;
+  const resumen=document.getElementById('editModalResumen').value;
+  const precio=document.getElementById('editModalPrecio').value;
+  const dist=document.getElementById('editModalDist').value;
+  const tiempo=document.getElementById('editModalTiempo').value;
+  const estado=document.getElementById('editModalEstado').value;
+  const updates={recogerEn, direccionAliado: direccionAli, entregarEn, telefono, resumen, precio, distancia:dist, tiempo, estado};
+  updates[`historial/${estado}`]=Date.now();
+  db.ref('kigo_pedidos/'+pedidoEditandoKey).update(updates).then(()=>{alert("Pedido actualizado ✅"); cerrarModalEditar();});
+}
+function verHistorialModal(fbKey){
+  const p=pedidosGuardados.find(x=>x.fbKey===fbKey); if(!p) return;
+  if(p.estado!=='finalizado'){alert("⏳ El historial solo se activa cuando está FINALIZADO."); return;}
+  const box=document.getElementById('histBox_'+fbKey); if(box){box.classList.toggle('show');}
+}
+function guardarPedidoFirebase(tipo, resumen, precio, distancia, mensajeCompleto, tiempo, estadoInicial, recogerEn, entregarEn, telefono){
+  const partes = (recogerEn||'').split(' - '); const dirAli = partes.length>1? partes.slice(1).join(' - ') : aliadoDireccionTexto||'';
+  const pedido={tipo, resumen, precio, distancia, mensaje: mensajeCompleto, estado: estadoInicial||'a_recoger', tiempo: tiempo||"", timestamp: Date.now(), fecha: new Date().toLocaleString(), recogerEn: recogerEn||tipo, direccionAliado: dirAli, entregarEn: entregarEn||resumen, telefono: telefono||"", historial:{creado: Date.now(), a_recoger: Date.now()}, confirmadoEn: Date.now()};
+  return db.ref('kigo_pedidos').push(pedido);
+}
+db.ref('kigo_pedidos').on('value', snap=>{
+  const val=snap.val(); pedidosGuardados=[];
+  if(val){Object.keys(val).forEach(k=>{pedidosGuardados.push({fbKey:k,...val[k]});});}
+  const badgeS=document.getElementById('badgeSeguimiento');
+  const seguimiento=pedidosGuardados.filter(p=>p.estado!=='finalizado').length;
+  if(seguimiento>0){badgeS.innerText=seguimiento; badgeS.style.display='inline-flex'; badgeS.classList.add('show-flex');} else {badgeS.style.display='none'; badgeS.classList.remove('show-flex');}
+  if(document.getElementById('seguimientoPanel').style.display==='flex'){renderSeguimiento();}
+});
+function renderListaClientesBottom(){
+ const cont=document.getElementById("listaClientesBottomContainer");
+ const contadorVerde=document.getElementById("contadorClientesVerde");
+ if(contadorVerde){contadorVerde.innerText=`${clientesGuardados.length} clientes`;}
+ if(!clientesGuardados.length){cont.innerHTML='<div class="adminCard" style="text-align:center;padding:30px;color:#888"><i class="material-icons" style="font-size:32px">group</i><div style="margin-top:8px;font-size:12px">No hay aliados aún</div><div style="font-size:10px">Ve a Agregar Cliente</div></div>';return;}
+ const orden=[...clientesGuardados].sort((a,b)=>a.nombre.localeCompare(b.nombre));
+ cont.innerHTML="";
+ orden.forEach(c=>{
+  const div=document.createElement("div"); div.className="cliente-row";
+  div.innerHTML=`<div style="flex:1"><div style="font-weight:800;font-size:13px">${c.nombre}</div><div style="font-size:10px;color:#777">${c.direccion.substring(0,80)}</div><div style="font-size:10px;color:#111;font-weight:700;margin-top:2px">📞 ${c.telefono||'Sin teléfono'}</div></div><div class="cliente-actions"><button class="iconBtn" onclick="editarClienteNew('${c.fbKey}')"><i class="material-icons" style="font-size:16px">edit</i></button><button class="iconBtn" style="color:#E53935;border-color:#fecaca;background:#fff1f1" onclick="eliminarClienteNew('${c.fbKey}')"><i class="material-icons" style="font-size:16px">delete</i></button></div>`;
+  cont.appendChild(div);
+ });
+  }
+  
