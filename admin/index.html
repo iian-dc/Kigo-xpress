@@ -674,4 +674,137 @@ function renderListaClientesBottom(){
   cont.appendChild(div);
  });
   }
-  
+ async function buscarUbicacionClienteNew(){
+ const txt=document.getElementById("clienteUbicacionNew").value.trim(); if(!txt){alert("Escribe una ubicación");return;}
+ geocoder.geocode({address: txt + ", Dolores Hidalgo, Mexico", componentRestrictions:{country:"MX"}}, (results,status)=>{
+  if(status!=="OK" ||!results[0]){alert("No se encontró ubicación");return;}
+  tempClienteNewLat=results[0].geometry.location.lat();tempClienteNewLng=results[0].geometry.location.lng();tempClienteNewDir=results[0].formatted_address;
+  document.getElementById("clienteConfirmTextNew").style.display="block"; document.getElementById("clienteConfirmTextNew").innerText="Ubicación encontrada: "+tempClienteNewDir;
+  const miniDiv=document.getElementById("clienteMiniMapNew"); miniDiv.classList.add("show");
+  setTimeout(()=>{if(!clienteMiniMapNewG) clienteMiniMapNewG=new google.maps.Map(document.getElementById("clienteMiniMapNew"),{center:{lat:tempClienteNewLat,lng:tempClienteNewLng},zoom:16,disableDefaultUI:true});else clienteMiniMapNewG.setCenter({lat:tempClienteNewLat,lng:tempClienteNewLng});if(clienteMiniMarkerNewG) clienteMiniMarkerNewG.setMap(null);clienteMiniMarkerNewG=new google.maps.Marker({position:{lat:tempClienteNewLat,lng:tempClienteNewLng},map:clienteMiniMapNewG});},200);
+ });
+}
+function guardarClienteNew(){
+ const nombre=document.getElementById("clienteNombreNew").value.trim();
+ const telefono=document.getElementById("clienteTelefonoNew").value.trim();
+ if(!nombre){alert("Escribe nombre");return;} if(!tempClienteNewLat){alert("Busca la ubicación primero");return;}
+ if(editandoNewId){db.ref("kigo_clientes/"+editandoNewId).update({nombre:nombre, telefono:telefono, direccion:tempClienteNewDir, lat:tempClienteNewLat, lng:tempClienteNewLng}); editandoNewId=null;}
+ else {db.ref("kigo_clientes").push({id:Date.now(), nombre:nombre, telefono:telefono, direccion:tempClienteNewDir, lat:tempClienteNewLat, lng:tempClienteNewLng});}
+ document.getElementById("clienteNombreNew").value=""; document.getElementById("clienteTelefonoNew").value=""; document.getElementById("clienteUbicacionNew").value=""; document.getElementById("clienteMiniMapNew").classList.remove("show"); document.getElementById("clienteConfirmTextNew").style.display="none"; tempClienteNewLat=null;tempClienteNewLng=null;
+ alert("Aliado guardado ✅"); switchClientesTab('listado');
+}
+function editarClienteNew(fbKey){
+ const c=clientesGuardados.find(x=>x.fbKey===fbKey); if(!c) return; editandoNewId=fbKey;
+ document.getElementById("clienteNombreNew").value=c.nombre; document.getElementById("clienteTelefonoNew").value=c.telefono||""; document.getElementById("clienteUbicacionNew").value=c.direccion;
+ tempClienteNewLat=c.lat; tempClienteNewLng=c.lng; tempClienteNewDir=c.direccion;
+ switchClientesTab('agregar');
+ document.getElementById("clienteConfirmTextNew").style.display="block"; document.getElementById("clienteConfirmTextNew").innerText="Ubicación cargada: "+c.direccion;
+ const miniDiv=document.getElementById("clienteMiniMapNew"); miniDiv.classList.add("show");
+ setTimeout(()=>{if(!clienteMiniMapNewG) clienteMiniMapNewG=new google.maps.Map(document.getElementById("clienteMiniMapNew"),{center:{lat:c.lat,lng:c.lng},zoom:16,disableDefaultUI:true});else clienteMiniMapNewG.setCenter({lat:c.lat,lng:c.lng});if(clienteMiniMarkerNewG) clienteMiniMarkerNewG.setMap(null);clienteMiniMarkerNewG=new google.maps.Marker({position:{lat:c.lat,lng:c.lng},map:clienteMiniMapNewG});},200);
+}
+function eliminarClienteNew(fbKey){if(!confirm("¿Eliminar cliente?")) return; db.ref("kigo_clientes/"+fbKey).remove();}
+function actualizarManifestPWA(){const iconSrc=configMarca.pwaIcon||configMarca.logoLogin||configMarca.logoMapa||"https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3";const name=configMarca.platformName||"KIGO XPRESS";const color=configMarca.primaryColor||"#E53935";const manifest={name:name,short_name:name.substring(0,12),display:"standalone",background_color:"#ffffff",theme_color:color,icons:[{src:iconSrc,sizes:"192x192",type:"image/png",purpose:"any maskable"},{src:iconSrc,sizes:"512x512",type:"image/png",purpose:"any maskable"}]};const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});const url=URL.createObjectURL(blob);document.getElementById("manifestLink").href=url;document.getElementById("appleIcon").href=iconSrc;document.getElementById("themeColorMeta").content=color;document.getElementById("appleTitle").content=name;}
+db.ref("kigo_config").on("value",(snap)=>{const v=snap.val(); if(v){configMarca=v; aplicarConfigMarca();}});
+db.ref("kigo_tarifas").on("value",(snap)=>{const v=snap.val(); if(v){configTarifas={...configTarifas,...v}; aplicarConfigTarifas();}});
+function aplicarConfigMarca(){if(configMarca.logoMapa){document.getElementById("logoMapaImg").src=configMarca.logoMapa; document.getElementById("previewMapa").src=configMarca.logoMapa;}if(configMarca.logoLogin){document.getElementById("logoLoginImg").src=configMarca.logoLogin; document.getElementById("logoAdminHead").src=configMarca.logoLogin; document.getElementById("previewLogin").src=configMarca.logoLogin;}if(configMarca.pwaIcon){document.getElementById("previewPWA").src=configMarca.pwaIcon;}if(configMarca.platformName){document.getElementById("platformNameLogin").innerText=configMarca.platformName; document.getElementById("platformNameAdmin").innerText="Panel "+configMarca.platformName; document.getElementById("inputPlatformName").value=configMarca.platformName; document.title=configMarca.platformName;}if(configMarca.primaryColor){document.getElementById("inputPrimaryColor").value=configMarca.primaryColor;}actualizarManifestPWA();}
+function aplicarConfigTarifas(){document.getElementById("tarifaAzul").value=configTarifas.azul;document.getElementById("tarifaVerde").value=configTarifas.verde;document.getElementById("tarifaAmarillo").value=configTarifas.amarillo;document.getElementById("tarifaRojo").value=configTarifas.rojo;document.getElementById("tarifaMorado").value=configTarifas.morado;document.getElementById("tarifaBase").value=configTarifas.base;document.getElementById("tarifaCentroCentro").value=configTarifas.centroCentro;document.getElementById("tarifaRadioCentro").value=configTarifas.radioCentro;document.getElementById("tarifaMetros").value=configTarifas.metros;document.getElementById("tarifaExtraMonto").value=configTarifas.extraMonto;document.getElementById("tarifaLejosCentro").value=configTarifas.lejosCentro;document.getElementById("tarifaMuyLejosMetros").value=configTarifas.muyLejosMetros;document.getElementById("tarifaMuyLejos").value=configTarifas.muyLejos;document.getElementById("tarifaSOP").value=configTarifas.sop;document.getElementById("infoCobroTexto").innerText=`Centro radio ${configTarifas.radioCentro}m: Centro-Centro=$${configTarifas.centroCentro} | Base hasta 2km=$${configTarifas.base}`;}
+function setColor(c){document.getElementById("inputPrimaryColor").value=c;}
+document.getElementById("inputLogoMapa").addEventListener("change", function(e){const file=e.target.files[0]; if(!file) return; const reader=new FileReader();reader.onload=function(ev){document.getElementById("previewMapa").src=ev.target.result; configMarca.logoMapa=ev.target.result; document.getElementById("logoMapaImg").src=ev.target.result; actualizarManifestPWA();};reader.readAsDataURL(file);});
+document.getElementById("inputLogoLogin").addEventListener("change", function(e){const file=e.target.files[0]; if(!file) return; const reader=new FileReader();reader.onload=function(ev){document.getElementById("previewLogin").src=ev.target.result; configMarca.logoLogin=ev.target.result; document.getElementById("logoLoginImg").src=ev.target.result; document.getElementById("logoAdminHead").src=ev.target.result; actualizarManifestPWA();};reader.readAsDataURL(file);});
+document.getElementById("inputPWAIcon").addEventListener("change", function(e){const file=e.target.files[0]; if(!file) return; const reader=new FileReader();reader.onload=function(ev){document.getElementById("previewPWA").src=ev.target.result; configMarca.pwaIcon=ev.target.result; actualizarManifestPWA();};reader.readAsDataURL(file);});
+function guardarModificaciones(){const nombre=document.getElementById("inputPlatformName").value.trim()||"KIGO XPRESS";const color=document.getElementById("inputPrimaryColor").value||"#E53935";configMarca.platformName=nombre; configMarca.primaryColor=color;db.ref("kigo_config").set(configMarca).then(()=>{aplicarConfigMarca(); alert("Marca guardada");});}
+function guardarTarifas(){configTarifas={azul:parseInt(document.getElementById("tarifaAzul").value)||0,verde:parseInt(document.getElementById("tarifaVerde").value)||0,amarillo:parseInt(document.getElementById("tarifaAmarillo").value)||0,rojo:parseInt(document.getElementById("tarifaRojo").value)||0,morado:parseInt(document.getElementById("tarifaMorado").value)||0,base:parseInt(document.getElementById("tarifaBase").value)||35,centroCentro:parseInt(document.getElementById("tarifaCentroCentro").value)||35,radioCentro:parseInt(document.getElementById("tarifaRadioCentro").value)||800,metros:parseInt(document.getElementById("tarifaMetros").value)||650,extraMonto:parseInt(document.getElementById("tarifaExtraMonto").value)||5,lejosCentro:parseInt(document.getElementById("tarifaLejosCentro").value)||5,muyLejosMetros:parseInt(document.getElementById("tarifaMuyLejosMetros").value)||2000,muyLejos:parseInt(document.getElementById("tarifaMuyLejos").value)||10,sop:parseInt(document.getElementById("tarifaSOP").value)||45};db.ref("kigo_tarifas").set(configTarifas).then(()=>{aplicarConfigTarifas(); alert("Tarifas guardadas ✅");});}
+function verificarSistema(){db.ref("kigo_clientes").once("value").then(()=>{document.getElementById("dotFirebase").className="status-dot status-ok";document.getElementById("txtFirebase").innerText="Conectado";document.getElementById("badgeFirebase").innerText="CONECTADO";}).catch(()=>{document.getElementById("dotFirebase").className="status-dot status-bad";});}
+db.ref("kigo_clientes").on("value", (snap)=>{const val=snap.val(); clientesGuardados=[];if(val){Object.keys(val).forEach(k=>{clientesGuardados.push({fbKey:k,...val[k]});});}renderListaClientesBottom();});
+async function getLluviaColonia(lat,lng){try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=precipitation,weather_code&timezone=America/Mexico_City`); const data=await r.json(); return {precip: data.current.precipitation};}catch(e){ return {precip:0}; }}
+async function checarClimaGeneral(){try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City"); const data=await r.json(); const temp=Math.round(data.current.temperature_2m); document.getElementById("weatherWidget").innerText=`☀️ ${temp}°C`;}catch(e){}}
+let creds={user:"admin",pass:"0831"}; let isLogged=false;
+function openLogin(){ if(isLogged){openAdmin();} else {document.getElementById("loginModal").classList.add("show");} }
+function closeLogin(){document.getElementById("loginModal").classList.remove("show");}
+function doLogin(){ let u=document.getElementById("loginUser").value; let p=document.getElementById("loginPass").value; if(u===creds.user && p===creds.pass){isLogged=true;closeLogin();openAdmin();} else {alert("❌ Incorrecto");}}
+function openAdmin(){document.getElementById("adminModal").classList.add("show"); switchAdminTab('mod'); verificarSistema();}
+function closeAdmin(){document.getElementById("adminModal").classList.remove("show");}
+function logout(){isLogged=false;closeAdmin();}
+function switchAdminTab(tab){document.querySelectorAll('.adminTab').forEach(b=>b.classList.remove('active'));document.getElementById('panelMod').style.display='none';document.getElementById('panelAjustes').style.display='none';document.getElementById('panelSoporte').style.display='none';if(tab==='mod'){document.getElementById('tabMod').classList.add('active'); document.getElementById('panelMod').style.display='block';}if(tab==='ajustes'){document.getElementById('tabAjustes').classList.add('active'); document.getElementById('panelAjustes').style.display='block';}if(tab==='soporte'){document.getElementById('tabSoporte').classList.add('active'); document.getElementById('panelSoporte').style.display='block'; verificarSistema();}}
+document.getElementById("whatsappButton").onclick=()=>{
+  let mensaje=""; if(tipoActivo==='aliados'){
+    if(subTipoActivo==='recoger'){
+      const aliado = pickupName || document.getElementById('pickupInput').value || "No especificado";
+      const recoger = aliadoDireccionTexto || "No especificada";
+      const entregar = destName || document.getElementById('destinationInput').value || "No especificada";
+      const tel = document.getElementById('telefonoRecoger').value || "No especificado";
+      const tiempo = document.getElementById('tiempoCustom').value || tiempoRecogida || "";
+      mensaje = `COTIZACIÓN Kigo Xpress (Aliado)\n\n👤 Aliado: ${aliado}\n📍 Recoger: ${recoger}\n🏠 Entregar: ${entregar}\n📏 Distancia: ${ultimaDistancia || "— km"}\n💰 Valor: ${ultimoPrecio || document.getElementById('price').innerText}\n📞 Tel: ${tel}\n⏱️ Tiempo: ${tiempo}\n🗺️ Ver ruta: https://www.google.com/maps/dir/${pickupLat},${pickupLng}/${destinationLat},${destinationLng}`;
+    } else {
+      const productos = document.getElementById('productosComprar').value || "No especificado";
+      const comprarEn = document.getElementById('dondeComprar').value || "No especificado";
+      const entregar = destName || document.getElementById('direccionEntregaComprar').value || document.getElementById('aliadoEntregaComprar').value || "No especificada";
+      const tel = document.getElementById('telefonoComprar').value || "No especificado";
+      mensaje = `COTIZACIÓN Kigo Xpress (Compras)\n\n🛒 Productos: ${productos}\n🏪 Comprar en: ${comprarEn}\n🏠 Entregar en: ${entregar}\n📏 Distancia: ${ultimaDistancia || "— km"}\n💰 Valor: ${ultimoPrecio || document.getElementById('price').innerText}\n📞 Tel: ${tel}`;
+    }
+  } else {
+    if(subTipoNuevo==='recoger'){
+      const tiempo = document.getElementById('tiempoCustomNuevo').value || tiempoRecogidaNuevo || "";
+      mensaje=`*COTIZACIÓN ${configMarca.platformName}* - RECOGER (NUEVO)\n\n Recogida: ${nuevoRecogidaNombre || document.getElementById('nuevoDireccionInput').value}\n Entrega: ${nuevoEntregaNombre || document.getElementById('nuevoEntregaInput').value}\n Distancia: ${ultimaDistancia}\n Valor: ${ultimoPrecio}\n Tel: ${document.getElementById('telefonoNuevoRecoger').value}\n Tiempo: ${tiempo}`;
+    } else {
+      mensaje=`*COTIZACIÓN ${configMarca.platformName}* - COMPRAR (NUEVO)\n\n Productos: ${document.getElementById('productosNuevoComprar').value}\n Donde comprar: ${document.getElementById('dondeComprarNuevo').value}\n Entrega: ${nuevoEntregaNombre || document.getElementById('direccionEntregaNuevoComprar').value}\n Distancia: ${ultimaDistancia}\n Valor: ${ultimoPrecio}\n Tel: ${document.getElementById('telefonoNuevoComprar').value}`;
+    }
+  }
+  const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`; window.open(url,"_blank");
+};
+document.getElementById("whatsappRepartidorButton").onclick=()=>{
+  const linkRecoger=`https://www.google.com/maps/search/?api=1&query=${pickupLat||nuevoRecogidaLat||compraLat||compraNuevoLat},${pickupLng||nuevoRecogidaLng||compraLng||compraNuevoLng}`;
+  const mensaje=`Pedido Kigo Xpress\n Recoger: ${linkRecoger}\n Precio: ${ultimoPrecio}\n Distancia: ${ultimaDistancia}`;
+  const url=`https://wa.me/?text=${encodeURIComponent(mensaje)}`; window.open(url,"_blank");
+};
+document.getElementById("confirmarServicioMapaButton").onclick=()=>{
+  let tipo="", resumen="", tiempo="", recogerEn="", entregarEn="", telefono="";
+  if(tipoActivo==='aliados'){
+    if(subTipoActivo==='recoger'){
+      const aliado = pickupName || document.getElementById('pickupInput').value || "No especificado";
+      recogerEn = (aliadoDireccionTexto? `${aliado} - ${aliadoDireccionTexto}` : aliado);
+      entregarEn = (destName || document.getElementById('destinationInput').value);
+      telefono = document.getElementById('telefonoRecoger').value;
+      tiempo = document.getElementById('tiempoCustom').value || tiempoRecogida || "";
+      tipo=`Aliado - Recoger: ${aliado}`; resumen=`${recogerEn} → ${entregarEn}`;
+    } else {
+      const productos = document.getElementById('productosComprar').value || "No especificado";
+      const comprarEn = document.getElementById('dondeComprar').value || "No especificado";
+      recogerEn = comprarEn;
+      entregarEn = destName || document.getElementById('direccionEntregaComprar').value || document.getElementById('aliadoEntregaComprar').value || "No especificada";
+      telefono = document.getElementById('telefonoComprar').value;
+      tipo=`Aliado - Comprar: ${productos}`; resumen=`Comprar ${productos} en ${comprarEn}`;
+    }
+  } else {
+    if(subTipoNuevo==='recoger'){
+      tiempo = document.getElementById('tiempoCustomNuevo').value || tiempoRecogidaNuevo || "";
+      recogerEn = nuevoRecogidaNombre||document.getElementById('nuevoDireccionInput').value;
+      entregarEn = nuevoEntregaNombre||document.getElementById('nuevoEntregaInput').value;
+      telefono = document.getElementById('telefonoNuevoRecoger').value;
+      tipo=`Nuevo - Recoger`; resumen=`${recogerEn} → ${entregarEn}`;
+    } else {
+      recogerEn = dondeComprarNuevoNombre||document.getElementById('dondeComprarNuevo').value;
+      entregarEn = nuevoEntregaNombre||document.getElementById('direccionEntregaNuevoComprar').value;
+      telefono = document.getElementById('telefonoNuevoComprar').value;
+      tipo=`Nuevo - Comprar: ${document.getElementById('productosNuevoComprar').value}`; resumen=`${recogerEn} → ${entregarEn}`;
+    }
+  }
+  const precio = ultimoPrecio || document.getElementById('price').innerText;
+  const dist = ultimaDistancia;
+  const mensajeCompleto = `${tipo} - ${resumen} - ${precio}`;
+  guardarPedidoFirebase(tipo, resumen, precio, dist, mensajeCompleto, tiempo, 'a_recoger', recogerEn, entregarEn, telefono).then(()=>{
+    alert("✅ Servicio confirmado - Enviado a Seguimiento");
+    resetAliadosForm(); resetNuevoForm();
+    if(map){map.setCenter(CENTRO); map.setZoom(14);}
+    openSeguimiento();
+  });
+};
+document.getElementById("resetBtn").onclick=()=>{resetAliadosForm(); resetNuevoForm(); map.setCenter(CENTRO); map.setZoom(14);};
+document.addEventListener("click",e=>{if(!e.target.closest(".input-wrapper")){document.getElementById("pickupSuggestions").classList.remove("show");document.getElementById("destinationSuggestions").classList.remove("show");document.getElementById("aliadoEntregaSuggestions").classList.remove("show");}});
+document.getElementById("loginModal").addEventListener("click",e=>{if(e.target.id==="loginModal") closeLogin();});
+document.getElementById("adminModal").addEventListener("click",e=>{if(e.target.id==="adminModal") closeAdmin();});
+document.getElementById("modalEditarPedido").addEventListener("click",e=>{if(e.target.id==="modalEditarPedido") cerrarModalEditar();});
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTV1sm6McEIkv-cheaVFCD_svp_a--6wg&libraries=places&callback=initGoogleMaps"></script>
+</body>
+</html> 
