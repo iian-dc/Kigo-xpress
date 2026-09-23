@@ -288,3 +288,142 @@
 <button id="confirmarServicioMapaButton" class="btn-confirmar"><i class="material-icons" style="font-size:20px">check_circle</i> Confirmar servicio</button>
 </div>
 </div>
+<div class="bottom-nav">
+<button id="btnNavMapa" class="bottom-btn active" onclick="switchBottom('mapa')"><i class="material-icons">map</i>Mapa</button>
+<button id="btnNavSeguimiento" class="bottom-btn seguimiento" onclick="openSeguimiento()"><i class="material-icons">local_shipping</i>Seguimiento <span id="badgeSeguimiento" class="pedido-status st-camino" style="display:none;font-size:8px;padding:1px 5px;margin-left:2px"></span></button>
+<button id="btnNavClientes" class="bottom-btn" onclick="openClientes()"><i class="material-icons">group</i>Clientes <span id="contadorClientesVerde" style="font-size:8px;background:#dcfce7;color:#166534;padding:2px 6px;border-radius:999px;margin-left:2px">0 clientes</span></button>
+</div>
+
+<div id="loginModal" class="modal">
+<div class="login-box">
+<div class="login-head"><div style="display:flex;gap:10px;align-items:center"><img id="logoLoginImg" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3" style="width:28px;height:28px;border-radius:50%;object-fit:cover"><div><div id="platformNameLogin" style="font-weight:900;font-size:13px">KIGO XPRESS</div><div style="font-size:10px;color:#777">Panel administrador</div></div></div><button class="iconBtn" onclick="closeLogin()"><i class="material-icons">close</i></button></div>
+<div class="login-body">
+<div class="input-wrapper"><i class="material-icons" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:#888">person</i><input id="loginUser" class="login-input" placeholder="Usuario"></div>
+<div class="input-wrapper"><i class="material-icons" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:#888">lock</i><input id="loginPass" class="login-input" type="password" placeholder="Contraseña"></div>
+<button onclick="doLogin()" style="padding:12px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><i class="material-icons">login</i> Ingresar</button>
+</div>
+</div>
+</div>
+
+<div id="adminModal" class="modal">
+<div class="admin-panel-box">
+<div class="admin-panel-head"><div style="display:flex;gap:10px;align-items:center"><img id="logoAdminHead" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3" style="width:28px;height:28px;border-radius:50%;object-fit:cover"><div><div id="platformNameAdmin" style="font-weight:900;font-size:13px">Panel KIGO XPRESS</div><div style="font-size:10px;color:#777">Administrar marca y tarifas</div></div></div><button class="iconBtn" onclick="closeAdmin()"><i class="material-icons">close</i></button></div>
+<div class="adminTabs">
+<button id="tabMod" class="adminTab active" onclick="switchAdminTab('mod')"><i class="material-icons" style="font-size:14px;vertical-align:middle">brush</i> Modificar</button>
+<button id="tabAjustes" class="adminTab" onclick="switchAdminTab('ajustes')"><i class="material-icons" style="font-size:14px;vertical-align:middle">tune</i> Ajustes</button>
+<button id="tabSoporte" class="adminTab" onclick="switchAdminTab('soporte')"><i class="material-icons" style="font-size:14px;vertical-align:middle">help</i> Soporte</button>
+<button class="adminTab" onclick="logout()" style="margin-left:auto;color:#E53935;border-color:#fecaca;background:#fff1f1"><i class="material-icons" style="font-size:14px;vertical-align:middle">logout</i> Salir</button>
+</div>
+<div class="adminContent">
+<div id="panelMod">
+<div class="adminCard"><div style="font-weight:900;font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="material-icons" style="font-size:18px">image</i> Logos y marca</div>
+<div class="mod-label">Nombre plataforma</div><input id="inputPlatformName" class="mod-input" placeholder="Ej: KIGO XPRESS">
+<div class="mod-label">Color principal</div><div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input id="inputPrimaryColor" type="color" value="#E53935" style="width:44px;height:36px;border-radius:10px;border:1px solid #ddd"><div class="color-dot" style="background:#E53935" onclick="setColor('#E53935')"></div><div class="color-dot" style="background:#111" onclick="setColor('#111111')"></div><div class="color-dot" style="background:#16a34a" onclick="setColor('#16a34a')"></div><div class="color-dot" style="background:#2563eb" onclick="setColor('#2563eb')"></div></div>
+<div class="mod-row"><img id="previewMapa" class="mod-preview"><div style="flex:1"><div class="mod-label" style="margin:0 0 4px">Logo en mapa</div><input id="inputLogoMapa" type="file" accept="image/*"></div></div>
+<div class="mod-row"><img id="previewLogin" class="mod-preview"><div style="flex:1"><div class="mod-label" style="margin:0 0 4px">Logo login y admin</div><input id="inputLogoLogin" type="file" accept="image/*"></div></div>
+<div class="mod-row"><img id="previewPWA" class="mod-preview"><div style="flex:1"><div class="mod-label" style="margin:0 0 4px">Icono PWA</div><input id="inputPWAIcon" type="file" accept="image/*"></div></div>
+<button onclick="guardarModificaciones()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:800;cursor:pointer;margin-top:12px">Guardar marca</button>
+</div>
+<div class="adminCard"><div style="font-weight:900;font-size:13px;margin-bottom:8px"><i class="material-icons" style="font-size:18px;vertical-align:middle">attach_money</i> Tarifas de lluvia y distancia</div>
+<div class="tarifa-grid">
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#60a5fa">Azul (leve)</div><input id="tarifaAzul" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#22c55e">Verde</div><input id="tarifaVerde" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#eab308">Amarillo</div><input id="tarifaAmarillo" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#ef4444">Rojo</div><input id="tarifaRojo" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#a855f7">Morado</div><input id="tarifaMorado" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Base hasta 2km</div><input id="tarifaBase" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Centro-Centro</div><input id="tarifaCentroCentro" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Radio centro (m)</div><input id="tarifaRadioCentro" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Metros por extra</div><input id="tarifaMetros" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Monto extra</div><input id="tarifaExtraMonto" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Lejos del centro</div><input id="tarifaLejosCentro" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Muy lejos m</div><input id="tarifaMuyLejosMetros" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Muy lejos extra</div><input id="tarifaMuyLejos" class="mod-input" type="number" style="margin:6px 0 0"></div>
+<div class="tarifa-item"><div style="font-size:10px;font-weight:800">SOP</div><input id="tarifaSOP" class="mod-input" type="number" style="margin:6px 0 0"></div>
+</div>
+<div id="infoCobroTexto" style="margin-top:10px;font-size:10px;color:#666;background:#f9fafb;padding:8px;border-radius:8px;border:1px solid #eee"></div>
+<button onclick="guardarTarifas()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;cursor:pointer;margin-top:12px">Guardar tarifas</button>
+</div>
+</div>
+<div id="panelAjustes" style="display:none"><div class="adminCard"><div style="font-weight:900;font-size:13px">Ajustes generales</div><div style="font-size:11px;color:#666;margin-top:6px">Aquí puedes verificar el estado del sistema y conexión Firebase.</div></div></div>
+<div id="panelSoporte" style="display:none"><div class="adminCard"><div style="font-weight:900;font-size:13px;margin-bottom:10px">Estado del sistema</div><div style="display:flex;align-items:center;justify-content:space-between;padding:8px;border:1px solid #eee;border-radius:10px;margin-bottom:8px"><div style="display:flex;align-items:center"><span id="dotFirebase" class="status-dot status-warn"></span><span style="font-size:12px;font-weight:700">Firebase</span></div><div style="display:flex;align-items:center;gap:8px"><span id="txtFirebase" style="font-size:11px;color:#666">Verificando...</span><span id="badgeFirebase" class="pedido-status st-camino">--</span></div></div><button onclick="verificarSistema()" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff;font-weight:800;cursor:pointer">Verificar conexión</button></div></div>
+</div>
+</div>
+</div>
+
+<div id="seguimientoPanel" class="modal" style="align-items:flex-end;padding:0">
+<div class="pedidos-panel-box">
+<div style="padding:12px 16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;background:#111;color:#fff;border-radius:22px 22px 0 0">
+<div style="display:flex;align-items:center;gap:8px"><i class="material-icons">local_shipping</i><span style="font-weight:900;font-size:14px">SEGUIMIENTO DE PEDIDOS</span></div>
+<button class="iconBtn" onclick="closeSeguimiento()" style="background:#333;color:#fff;border-color:#333"><i class="material-icons">close</i></button>
+</div>
+<div id="seguimientoTabs" class="pedidos-tabs">
+<button class="pedido-tab active" data-f="todos" onclick="filtrarSeguimiento(this,'todos')">TODOS</button>
+<button class="pedido-tab" data-f="a_recoger" onclick="filtrarSeguimiento(this,'a_recoger')">A RECOGER</button>
+<button class="pedido-tab" data-f="recogido" onclick="filtrarSeguimiento(this,'recogido')">RECOGIDO</button>
+<button class="pedido-tab" data-f="a_entregar" onclick="filtrarSeguimiento(this,'a_entregar')">A ENTREGAR</button>
+<button class="pedido-tab" data-f="finalizado" onclick="filtrarSeguimiento(this,'finalizado')">FINALIZADOS</button>
+</div>
+<div id="listaSeguimientoContainer" style="padding:12px;overflow-y:auto;flex:1;background:#fcfcfd"></div>
+</div>
+</div>
+
+<div id="modalEditarPedido">
+<div class="modalEditBox">
+<div class="modalEditHead"><span>✏️ EDITAR PEDIDO</span><button class="iconBtn" onclick="cerrarModalEditar()" style="background:#333;color:#fff;border-color:#333;width:28px;height:28px"><i class="material-icons" style="font-size:16px">close</i></button></div>
+<div class="modalEditBody">
+<div id="editSectionTipo" style="background:#f3f4f6;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:800;color:#111;margin-bottom:4px">TIPO: -</div>
+
+<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px">
+<div style="font-size:10px;font-weight:900;color:#166534;margin-bottom:6px">📦 DATOS DE RECOGIDA</div>
+<div class="mod-label" style="margin-top:0">Nombre del aliado / Tienda donde recoger</div><div class="input-wrapper"><input id="editModalRecoger" class="mod-input"><div class="input-clear" onclick="document.getElementById('editModalRecoger').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Dirección del aliado / Dirección de recogida</div><div class="input-wrapper"><input id="editModalDireccionAliado" class="mod-input" placeholder="Calle, colonia, referencia..."><div class="input-clear" onclick="document.getElementById('editModalDireccionAliado').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label" id="labelResumen" style="display:none">Productos / Resumen del pedido</div><div class="input-wrapper" id="wrapResumen" style="display:none"><input id="editModalResumen" class="mod-input" placeholder="Ej: 1kg manzana, documentos, pedido..."><div class="input-clear" onclick="document.getElementById('editModalResumen').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+</div>
+
+<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:10px;margin-top:8px">
+<div style="font-size:10px;font-weight:900;color:#991b1b;margin-bottom:6px">🏠 DATOS DE ENTREGA</div>
+<div class="mod-label" style="margin-top:0">Dirección de entrega (cliente final)</div><div class="input-wrapper"><input id="editModalEntregar" class="mod-input" placeholder="Colonia, calle, número, referencia..."><div class="input-clear" onclick="document.getElementById('editModalEntregar').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Teléfono de entrega</div><div class="input-wrapper"><input id="editModalTelefono" class="mod-input" type="tel" placeholder="418..."><div class="input-clear" onclick="document.getElementById('editModalTelefono').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+</div>
+
+<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px;margin-top:8px">
+<div style="font-size:10px;font-weight:900;color:#92400e;margin-bottom:6px">💰 COSTO Y TIEMPO DE RECOGIDA</div>
+<div class="mod-label" style="margin-top:0">Precio del servicio (ej: $35 MXN)</div><div class="input-wrapper"><input id="editModalPrecio" class="mod-input" placeholder="$35 MXN"><div class="input-clear" onclick="document.getElementById('editModalPrecio').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Distancia (ej: 2.5 km)</div><div class="input-wrapper"><input id="editModalDist" class="mod-input" placeholder="2.5 km"><div class="input-clear" onclick="document.getElementById('editModalDist').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Tiempo en que se debe recoger</div><div class="input-wrapper"><input id="editModalTiempo" class="mod-input" placeholder="Ej: 20 min, 1 hora, enseguida..."><div class="input-clear" onclick="document.getElementById('editModalTiempo').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
+<div class="mod-label">Estado del pedido</div><select id="editModalEstado" class="mod-input" style="padding-right:12px"><option value="a_recoger">A Recoger (amarillo neón)</option><option value="recogido">Recogido (morado neón)</option><option value="a_entregar">A Entregar (rosa neón)</option><option value="finalizado">Finalizado (verde neón)</option></select>
+</div>
+
+<div style="display:flex;gap:8px;margin-top:12px"><button onclick="guardarEdicionModal()" style="flex:1;padding:12px;border:none;border-radius:10px;background:#16a34a;color:#fff;font-weight:900;font-size:12px;cursor:pointer">Guardar cambios</button><button onclick="cerrarModalEditar()" style="flex:1;padding:12px;border:1.5px solid #ddd;border-radius:10px;background:#fff;font-weight:800;font-size:12px;cursor:pointer">Cancelar</button></div>
+<button id="btnEliminarModal" style="width:100%;margin-top:8px;padding:10px;border:1.5px solid #fecaca;background:#fff1f1;color:#E53935;border-radius:10px;font-weight:800;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="material-icons" style="font-size:16px">delete</i> Eliminar pedido</button>
+</div>
+</div>
+</div>
+
+<div id="clientesPanel" class="modal" style="align-items:flex-end;padding:0">
+<div class="pedidos-panel-box">
+<div style="padding:12px 16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:22px 22px 0 0">
+<div style="display:flex;align-items:center;gap:8px"><i class="material-icons" style="color:#16a34a">group</i><span style="font-weight:900;font-size:14px">CLIENTES</span></div>
+<button class="iconBtn" onclick="closeClientes()"><i class="material-icons">close</i></button>
+</div>
+<div class="pedidos-tabs">
+<button id="tabListadoAliados" class="pedido-tab active" style="background:#111;color:#fff" onclick="switchClientesTab('listado')">Listado</button>
+<button id="tabAgregarCliente" class="pedido-tab" onclick="switchClientesTab('agregar')">Agregar aliado</button>
+</div>
+<div style="padding:12px;overflow-y:auto;flex:1;background:#fcfcfd">
+<div id="clientesListadoView"><div id="listaClientesBottomContainer"></div></div>
+<div id="clientesAgregarView" style="display:none">
+<div class="adminCard">
+<div class="form-label">Nombre del aliado</div><input id="clienteNombreNew" class="cliente-input" placeholder="Ej: Tienda La Esperanza">
+<div class="form-label">Teléfono</div><input id="clienteTelefonoNew" class="cliente-input" placeholder="418..." type="tel">
+<div class="form-label">Ubicación</div>
+<div class="searchWrap"><input id="clienteUbicacionNew" class="cliente-input" style="margin-bottom:0" placeholder="Calle, colonia..."><button class="iconBtnSmall" onclick="buscarUbicacionClienteNew()"><i class="material-icons">search</i></button></div>
+<div id="clienteConfirmTextNew" style="font-size:11px;color:#16a34a;font-weight:800;margin-top:8px;display:none"></div>
+<div id="clienteMiniMapNew" class="miniMap"></div>
+<button onclick="guardarClienteNew()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px"><i class="material-icons">save</i> Guardar aliado</button>
+</div>
+</div>
+</div>
+</div>
+</div>
