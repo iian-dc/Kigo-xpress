@@ -2,86 +2,131 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Kigo V15 - Historial Copia Exacta + #ID Contable</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-:root{--border:#e5e7eb}
-body{background:#f8f9fb;padding-bottom:20px}
-.card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:10px;margin:8px}
-.wrap{position:relative;background:#fff;border:1.5px solid var(--border);border-radius:10px;display:flex;align-items:center;padding:0 10px;height:36px;margin-top:4px}
-.wrap input{width:100%;height:100%;border:none;outline:none;font-size:11px;font-weight:600;background:transparent}
-.resumen-box{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin:8px}
-.resumen-item{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:8px;text-align:center}
-.resumen-item b{font-size:12px;display:block}.resumen-item span{font-size:7px;font-weight:800;color:#6b7280;text-transform:uppercase}
-.tab-hist{height:28px;padding:0 12px;border-radius:20px;border:1px solid var(--border);background:#fff;font-size:8px;font-weight:800;cursor:pointer}
-.tab-hist.active{background:#0a0a0a;color:#fff}
-.top{position:sticky;top:0;z-index:50;background:#0a0a0a;color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
-.btn{padding:6px 8px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-size:8px;font-weight:800;cursor:pointer}
-@media(max-width:700px){.resumen-box{grid-template-columns:1fr 1fr}}
-</style>
+<title>KIGO - Historial Corregido Final</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>
+*{box-sizing:border-box;font-family:Inter,Arial}body{margin:0;background:#f6f7fb;color:#111}
+.header{position:sticky;top:0;z-index:10;background:#111;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.subcats{display:flex;gap:6px;padding:12px 14px;overflow:auto;background:#fff;border-bottom:1px solid #e5e7eb}
+.subcats button{padding:8px 16px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-weight:800;font-size:11px;cursor:pointer;white-space:nowrap}
+.subcats button.active{background:#111;color:#fff;border-color:#111}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 14px}
+.stat{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:12px}
+.stat b{font-size:18px;display:block}.stat span{font-size:10px;color:#666;font-weight:800;text-transform:uppercase}
+.filters{background:#fff;margin:0 14px;padding:12px;border-radius:14px;border:1px solid #e5e7eb;display:flex;gap:8px}
+.filters input{padding:8px 10px;border-radius:10px;border:1px solid #ddd;font-size:12px;flex:1}
+.table-wrap{background:#fff;margin:14px;border-radius:14px;border:1px solid #e5e7eb;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{position:sticky;top:0;background:#f9fafb;padding:10px 8px;text-align:left;font-size:10px;text-transform:uppercase;border-bottom:1px solid #e5e7eb;white-space:nowrap}
+td{padding:10px 8px;border-bottom:1px solid #f1f1f1;white-space:nowrap}
+.btn{padding:6px 10px;border-radius:8px;border:none;font-weight:800;font-size:10px;cursor:pointer}
+.btn-white{background:#fff;border:1px solid #ddd}.btn-green{background:#16a34a;color:#fff}.btn-red{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}.btn-blue{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
+.pill{padding:3px 8px;border-radius:999px;font-size:9px;font-weight:900}
+.pagado-si{background:#dcfce7;color:#166534}.pagado-no{background:#fee2e2;color:#991b1b}
+</style>
 </head>
 <body>
-<div class="top"><div style="font-weight:800;font-size:12px">KIGO XPRESS V15 - HISTORIAL - <span id="totalCount">0</span> PEDIDOS</div><button onclick="window.location.href='https://iian-dc.github.io/Kigoxpress/login/'" style="background:#fff;border:none;border-radius:10px;padding:6px 12px;font-weight:900;font-size:10px">Salir</button></div>
+<div class="header"><b>KIGO HISTORIAL - <span id="totalCount">0</span> PEDIDOS</b><button onclick="window.location.href='https://iian-dc.github.io/Kigoxpress/login/'" style="background:#fff;border:none;border-radius:999px;padding:6px 12px;font-weight:900;font-size:11px">Salir</button></div>
 
-<div id="view-historial" class="view" style="display:block">
-<div style="display:flex;gap:4px;padding:8px;overflow-x:auto">
-<button id="hHoy" class="tab-hist active" onclick="setHistPeriodo('hoy')">HOY</button>
-<button id="hMes" class="tab-hist" onclick="setHistPeriodo('mes')">MES</button>
-<button id="hTodo" class="tab-hist" onclick="setHistPeriodo('todo')">TODO</button>
-<button id="hFecha" class="tab-hist" onclick="setHistPeriodo('fecha')">RANGO</button>
-<div class="wrap" style="flex:1;min-width:140px;margin-top:0"><input type="text" id="busqueda" placeholder="🔍 Buscar cliente, repa..." oninput="aplicarFiltros()"></div>
-</div>
-<div id="rangoFechas" style="display:none;padding:0 8px 8px;gap:4px"><div class="wrap" style="flex:1"><input type="date" id="fDesde"></div><div class="wrap" style="flex:1"><input type="date" id="fHasta"></div><button onclick="aplicarFiltroFecha()" style="height:36px;padding:0 12px;border-radius:10px;background:#0a0a0a;color:#fff;border:none;font-size:8px;font-weight:800">FILTRAR</button></div>
-<div class="resumen-box">
-<div class="resumen-item"><b id="rTotalPedidos">0</b><span>Total</span></div>
-<div class="resumen-item"><b id="rTotalIngresado">$0</b><span>Ingresado</span></div>
-<div class="resumen-item"><b id="rTotalRepa">$0</b><span>Repa gana</span></div>
-<div class="resumen-item" style="border-color:#86efac;background:#f0fdf4"><b id="rMisIngresos" style="color:#10b981">$0</b><span>Mis ingresos</span></div>
-</div>
-<div class="card" style="padding:0;overflow:hidden">
-<div style="display:flex;background:#0a0a0a;color:#fff;padding:8px 10px;font-size:7px;font-weight:800"><div style="flex:1"> #ID / FECHA / CLIENTE / REPA</div><div style="width:90px;text-align:center">VALORES</div><div style="width:110px;text-align:center">ACCIONES</div></div>
-<div id="listaHistorial"></div>
-</div>
+<div class="subcats">
+<button id="btnTodos" class="active" onclick="filtrarTiempo('todos',this)">Todos</button>
+<button id="btnHoy" onclick="filtrarTiempo('hoy',this)">Hoy</button>
+<button id="btnAyer" onclick="filtrarTiempo('ayer',this)">Ayer</button>
+<button id="btnSemana" onclick="filtrarTiempo('semana',this)">Esta Semana</button>
+<button id="btnMes" onclick="filtrarTiempo('mes',this)">Este Mes</button>
 </div>
 
-<div id="modalEditar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;align-items:center;justify-content:center;padding:14px"><div style="background:#fff;width:100%;max-width:360px;border-radius:16px;padding:16px">
-<b>Editar #<span id="editIdNum"></span></b>
-<input id="editCliente" placeholder="Cliente" style="width:100%;padding:10px;margin-top:8px;border-radius:10px;border:1.5px solid #e5e7eb">
-<input id="editPrecio" placeholder="Valor" style="width:100%;padding:10px;margin-top:6px;border-radius:10px;border:1.5px solid #e5e7eb">
-<label style="display:flex;gap:6px;margin-top:8px;font-size:11px;font-weight:800"><input type="checkbox" id="editPagado"> Repartidor pagó</label>
-<div style="display:flex;gap:6px;margin-top:10px"><button onclick="guardarEdicion()" style="flex:1;height:40px;background:#10b981;color:#fff;border:none;border-radius:10px;font-weight:800">Guardar</button><button onclick="document.getElementById('modalEditar').style.display='none'" style="flex:1;height:40px;background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;font-weight:800">Cancelar</button></div>
+<div class="stats-grid">
+<div class="stat"><span>Total</span><b id="statTotal">0</b></div>
+<div class="stat"><span>Ingresos</span><b id="statIngresos" style="color:#16a34a">$0</b></div>
+<div class="stat"><span>Pagados</span><b id="statPagados">0</b></div>
+<div class="stat"><span>No Pagados</span><b id="statNoPagados">0</b></div>
+</div>
+
+<div class="filters">
+<input id="busqueda" placeholder="🔍 Buscar cliente, repartidor..." oninput="aplicarFiltros()">
+<button class="btn btn-green" onclick="exportarCSV()">Exportar</button>
+</div>
+
+<div class="table-wrap">
+<table><thead><tr>
+<th>#ID</th><th>Fecha Origen</th><th>Cliente</th><th>Tipo Servicio</th><th>Repartidor</th><th>Valor Total</th><th>Estado Pago</th><th>Acciones</th>
+</tr></thead>
+<tbody id="tbodyHistorial"><tr><td colspan="8" style="text-align:center;padding:30px">Cargando con fecha real corregida...</td></tr></tbody></table>
+</div>
+
+<div id="modalEditar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;align-items:center;justify-content:center;padding:14px"><div style="background:#fff;width:100%;max-width:400px;border-radius:16px;padding:16px">
+<b>Editar Pedido #<span id="editIdNum"></span></b>
+<input id="editCliente" placeholder="Cliente" style="width:100%;padding:8px;margin-top:8px;border-radius:8px;border:1px solid #ddd">
+<input id="editPrecio" placeholder="Valor Total" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd">
+<label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:800"><input type="checkbox" id="editPagado"> Repartidor ya pagó</label>
+<div style="display:flex;gap:6px;margin-top:10px"><button class="btn btn-green" style="flex:1" onclick="guardarEdicion()">Guardar</button><button class="btn btn-white" style="flex:1" onclick="document.getElementById('modalEditar').style.display='none'">Cancelar</button></div>
 </div></div>
 
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-let todosPedidos=[]; let filtrados=[]; let periodoActual='hoy'; let editandoKey=null; let editandoRuta=null;
+let todosPedidos=[]; let filtrados=[]; let tiempoActual='todos'; let editandoKey=null; let editandoRuta=null;
 </script>
 <script>
 function fechaCorta(ts){
- if(!ts || ts===0) return '-';
+ if(!ts || ts===0) return 'Sin fecha';
  const d=new Date(ts);
- if(isNaN(d.getTime())) return '-';
+ if(isNaN(d.getTime())) return 'Sin fecha';
+ return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+function fechaSolo(ts){
+ if(!ts) return '-';
+ const d=new Date(ts);
  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
 }
+
+// CORRECCIÓN FECHA REAL - LEE TODOS LOS CAMPOS POSIBLES DE TU BASE
 function parseFechaReal(p){
-  if(p.timestamp && Number(p.timestamp)>1000000000) return Number(p.timestamp);
-  if(p.fechaTimestamp &&!isNaN(p.fechaTimestamp)) return Number(p.fechaTimestamp);
-  if(p.createdAt &&!isNaN(p.createdAt)) return Number(p.createdAt);
-  if(p.confirmadoEn &&!isNaN(p.confirmadoEn)) return Number(p.confirmadoEn);
-  if(p.fecha &&!isNaN(p.fecha) && String(p.fecha).length>8) return Number(p.fecha);
-  if(p.fecha && typeof p.fecha==='string'){
-    const partes = p.fecha.split(' ')[0].split('/');
-    if(partes.length===3){ const d=new Date(parseInt(partes[2]), parseInt(partes[1])-1, parseInt(partes[0])); if(!isNaN(d.getTime())) return d.getTime(); }
-    const d2=new Date(p.fecha); if(!isNaN(d2.getTime())) return d2.getTime();
+  const campos = [
+    p.timestamp, p.fechaTimestamp, p.createdAt, p.confirmadoEn, 
+    p.fechaCreacion, p.fecha_creacion, p.creadoEn, p.horaCreacion,
+    p.fecha, p.date, p.fechaPedido, p.fechaOriginal
+  ];
+  for(let val of campos){
+    if(!val) continue;
+    // Si es número timestamp
+    if(!isNaN(val)){
+      const n=Number(val);
+      if(n>1000000000000) return n; // ms
+      if(n>1000000000) return n*1000; // seg
+      if(n>100000) return n; // ya es timestamp
+    }
+    // Si es string fecha
+    if(typeof val==='string'){
+      // DD/MM/YYYY HH:mm:ss
+      if(val.includes('/')){
+        const partes = val.split(' ')[0].split('/');
+        if(partes.length===3){
+          const dia=parseInt(partes[0]), mes=parseInt(partes[1])-1, anio=parseInt(partes[2]);
+          if(anio>2000 && anio<2030){
+            const horaPart = val.split(' ')[1]||'00:00';
+            const [h,m]=horaPart.split(':');
+            const d=new Date(anio,mes,dia,parseInt(h)||0,parseInt(m)||0);
+            if(!isNaN(d.getTime())) return d.getTime();
+          }
+        }
+      }
+      const d=new Date(val);
+      if(!isNaN(d.getTime()) && d.getFullYear()>2020) return d.getTime();
+    }
   }
-  if(p.fechaCreacion){ const d=new Date(p.fechaCreacion); if(!isNaN(d.getTime())) return d.getTime(); }
-  return 0;
+  return 0; // sin fecha real, no inventamos Date.now()
 }
+
+function esHoy(ts){ if(!ts) return false; const d=new Date(ts), h=new Date(); return d.getDate()===h.getDate() && d.getMonth()===h.getMonth() && d.getFullYear()===h.getFullYear(); }
+function esAyer(ts){ if(!ts) return false; const ayer=new Date(); ayer.setDate(ayer.getDate()-1); const d=new Date(ts); return d.getDate()===ayer.getDate() && d.getMonth()===ayer.getMonth() && d.getFullYear()===ayer.getFullYear(); }
+function esEstaSemana(ts){ if(!ts) return false; const ahora=new Date(); const inicioSemana=new Date(ahora); inicioSemana.setDate(ahora.getDate()-ahora.getDay()); inicioSemana.setHours(0,0,0,0); return ts>=inicioSemana.getTime(); }
+function esEsteMes(ts){ if(!ts) return false; const d=new Date(ts), h=new Date(); return d.getMonth()===h.getMonth() && d.getFullYear()===h.getFullYear(); }
+
 let datosTemp={};
 function procesarRuta(nombreRuta){
  db.ref(nombreRuta).on('value', snap=>{
@@ -91,21 +136,27 @@ function procesarRuta(nombreRuta){
   Object.keys(datosTemp).forEach(ruta=>{
    Object.keys(datosTemp[ruta]).forEach(k=>{
     const p=datosTemp[ruta][k];
-    if(typeof p==='object' &&!unidos.find(u=>u.fbKey===k)){
+    if(typeof p==='object' && p!==null &&!unidos.find(u=>u.fbKey===k)){
+     const tsReal = parseFechaReal(p);
      unidos.push({
-      fbKey:k, rutaOrigen:ruta,
-      timestamp: parseFechaReal(p),
-      clienteNombre: p.clienteNombre || p.cliente || p.aliado || 'Cliente',
-      repartidorNombre: p.repartidorNombre || p.repartidor || p.repa || p.nombreRepa || 'Sin asignar',
-      tipoServicio: p.tipoServicio || p.tipo || 'Moto Mandado',
-      razonServicio: p.razonServicio || 'Recoger',
-    ...p
+      fbKey:k,
+      rutaOrigen:ruta,
+      timestamp: tsReal,
+      fechaOriginalTexto: p.fecha||'',
+      clienteNombre: p.clienteNombre || p.cliente || p.aliado || p.nombreCliente || p.nombre || p.clienteEntrega || 'Cliente',
+      tipoServicio: p.tipoServicio || p.tipo || p.servicio || (String(p.razon||'').toLowerCase().includes('compra')?'Compras':'Moto Mandado'),
+      razonServicio: p.razonServicio || p.razon || p.descripcion || 'Recoger',
+      repartidorNombre: p.repartidorNombre || p.repartidor || p.repa || p.nombreRepa || p.driver || p.quienLlevo || 'Sin asignar',
+      precio: p.precio || p.total || p.monto || p.valor || '0',
+      ...p
      });
     }
    });
   });
+  // Ordenar por fecha real ASC para numeración contable: el primer pedido de tu historia = #1
   unidos.sort((a,b)=>(a.timestamp||0)-(b.timestamp||0));
-  unidos.forEach((ped, idx)=>{ ped.numeroContable=idx+1; });
+  unidos.forEach((ped,idx)=>{ ped.numeroContable=idx+1; });
+  // Mostrar DESC: el más nuevo arriba
   todosPedidos = unidos.slice().reverse();
   document.getElementById('totalCount').innerText=todosPedidos.length;
   aplicarFiltros();
@@ -113,81 +164,83 @@ function procesarRuta(nombreRuta){
 }
 procesarRuta('kigoHistorial'); procesarRuta('ventasKigo'); procesarRuta('kigoPedidosLive'); procesarRuta('kigoPedidosCancelados');
 
-function setHistPeriodo(periodo){
- periodoActual=periodo;
- document.querySelectorAll('.tab-hist').forEach(b=>b.classList.remove('active'));
- document.getElementById('h'+periodo.charAt(0).toUpperCase()+periodo.slice(1)).classList.add('active');
- document.getElementById('rangoFechas').style.display = periodo==='fecha'? 'flex':'none';
+function actualizarStats(lista){
+ document.getElementById('statTotal').innerText=lista.length;
+ let ingresos=0, pag=0, nopag=0;
+ lista.forEach(p=>{ const precio=parseInt(String(p.precio||'').replace(/[^0-9]/g,''))||0; ingresos+=precio; if(p.pagadoRepa===true) pag++; else nopag++; });
+ document.getElementById('statIngresos').innerText="$"+ingresos.toLocaleString()+" MXN";
+ document.getElementById('statPagados').innerText=pag;
+ document.getElementById('statNoPagados').innerText=nopag;
+}
+
+function renderTabla(lista){
+ const tbody=document.getElementById('tbodyHistorial');
+ if(!lista.length){ tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:20px">Sin pedidos en esta categoría - Total BD: ${todosPedidos.length}</td></tr>`; return; }
+ tbody.innerHTML="";
+ lista.forEach(p=>{
+  const pagado = p.pagadoRepa===true;
+  const precioNum = parseInt(String(p.precio||'').replace(/[^0-9]/g,''))||0;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+   <td><b style="background:#111;color:#fff;padding:4px 8px;border-radius:6px">#${p.numeroContable}</b></td>
+   <td title="${p.fechaOriginalTexto}">${p.timestamp? fechaSolo(p.timestamp) : 'Sin fecha'}<div style="font-size:8px;color:#999">${p.timestamp? new Date(p.timestamp).toLocaleTimeString().slice(0,5):''}</div></td>
+   <td><b>${String(p.clienteNombre).substring(0,22)}</b></td>
+   <td><span class="pill" style="background:#dbeafe;color:#1e40af">${String(p.tipoServicio).substring(0,20)} - ${String(p.razonServicio).substring(0,15)}</span></td>
+   <td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800">${String(p.repartidorNombre).substring(0,18)}</span></td>
+   <td><b style="color:#16a34a">$${precioNum.toLocaleString()}</b></td>
+   <td><span class="pill ${pagado?'pagado-si':'pagado-no'}">${pagado?'✅ PAGADO':'❌ NO PAGADO'}</span></td>
+   <td style="display:flex;gap:4px">
+    <button class="btn ${pagado?'btn-green':'btn-blue'}" onclick="togglePagado('${p.fbKey}','${p.rutaOrigen}')">${pagado?'✓':'$'}</button>
+    <button class="btn btn-white" onclick="editarPedido('${p.fbKey}')">✏️</button>
+    <button class="btn btn-red" onclick="borrarPedido('${p.fbKey}')">🗑️</button>
+   </td>
+  `;
+  tbody.appendChild(tr);
+ });
+}
+
+function filtrarTiempo(tipo,btn){
+ tiempoActual=tipo;
+ document.querySelectorAll('.subcats button').forEach(b=>b.classList.remove('active'));
+ if(btn) btn.classList.add('active');
  aplicarFiltros();
 }
-function aplicarFiltroFecha(){ aplicarFiltros(); }
 
 function aplicarFiltros(){
  const txt=(document.getElementById('busqueda').value||'').toLowerCase();
- const desdeVal=document.getElementById('fDesde').value;
- const hastaVal=document.getElementById('fHasta').value;
- const desde = desdeVal? new Date(desdeVal).getTime():0;
- const hasta = hastaVal? new Date(hastaVal).getTime()+86400000: Date.now()+86400000;
- filtrados = todosPedidos.filter(p=>{
+ filtrados=todosPedidos.filter(p=>{
   const ts=p.timestamp||0;
-  if(periodoActual==='hoy'){ if(ts===0) return false; if(new Date(ts).toDateString()!==new Date().toDateString()) return false; }
-  if(periodoActual==='mes'){ if(ts===0) return false; const d=new Date(ts), h=new Date(); if(d.getMonth()!==h.getMonth()||d.getFullYear()!==h.getFullYear()) return false; }
-  if(periodoActual==='fecha'){ if(ts===0) return false; if(ts<desde||ts>hasta) return false; }
-  if(txt){ if(!String(p.clienteNombre||'').toLowerCase().includes(txt) &&!String(p.repartidorNombre||'').toLowerCase().includes(txt)) return false; }
+  // Filtros de tiempo - respetando fecha real
+  if(tiempoActual==='hoy' && !esHoy(ts)) return false;
+  if(tiempoActual==='ayer' && !esAyer(ts)) return false;
+  if(tiempoActual==='semana' && !esEstaSemana(ts)) return false;
+  if(tiempoActual==='mes' && !esEsteMes(ts)) return false;
+  if(tiempoActual!=='todos' && ts===0) return false; // sin fecha no entra en filtros de tiempo
+  if(txt){
+   const c=String(p.clienteNombre||'').toLowerCase();
+   const r=String(p.repartidorNombre||'').toLowerCase();
+   if(!c.includes(txt) && !r.includes(txt)) return false;
+  }
   return true;
  });
  filtrados.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
- renderHistorial(filtrados);
- actualizarResumen(filtrados);
-}
-function actualizarResumen(lista){
- document.getElementById('rTotalPedidos').innerText=lista.length;
- let ingresado=0, repaGana=0;
- lista.forEach(p=>{ const precio=parseInt(String(p.precio||p.total||'').replace(/[^0-9]/g,''))||0; ingresado+=precio; repaGana+=Math.round(precio*0.7); });
- document.getElementById('rTotalIngresado').innerText='$'+ingresado.toLocaleString();
- document.getElementById('rTotalRepa').innerText='$'+repaGana.toLocaleString();
- document.getElementById('rMisIngresos').innerText='$'+(ingresado-repaGana).toLocaleString();
-}
-function renderHistorial(lista){
- const cont=document.getElementById('listaHistorial');
- if(!lista.length){ cont.innerHTML=`<div style="padding:20px;text-align:center;font-size:10px;font-weight:800">Sin pedidos - Total BD: ${todosPedidos.length}</div>`; return; }
- cont.innerHTML='';
- lista.forEach(p=>{
-  const pagado = p.pagadoRepa===true;
-  const fecha=fechaCorta(p.timestamp);
-  const precio=parseInt(String(p.precio||p.total||'').replace(/[^0-9]/g,''))||0;
-  const row=document.createElement('div');
-  row.style.cssText='display:flex;align-items:center;padding:10px;border-bottom:1px solid #f3f4f6;font-size:9px';
-  row.innerHTML=`
-   <div style="flex:1;line-height:1.3">
-    <div style="display:flex;gap:4px;align-items:center"><b style="background:#0a0a0a;color:#fff;padding:2px 6px;border-radius:6px;font-size:8px">#${p.numeroContable}</b><span style="font-weight:800">${fecha}</span><span style="background:${pagado?'#dcfce7':'#fee2e2'};color:${pagado?'#166534':'#991b1b'};padding:2px 5px;border-radius:999px;font-size:7px;font-weight:900">${pagado?'PAGADO':'NO'}</span></div>
-    <div style="margin-top:2px"><b>${String(p.clienteNombre).substring(0,24)}</b> • ${String(p.repartidorNombre).substring(0,14)}</div>
-    <div style="color:#6b7280;font-size:7px">${p.tipoServicio} - ${p.razonServicio}</div>
-   </div>
-   <div style="width:90px;text-align:center"><b style="font-size:11px">$${precio}</b><div style="font-size:7px;color:#6b7280">Repa $${Math.round(precio*0.7)}</div></div>
-   <div style="width:110px;display:flex;gap:4px;justify-content:center">
-    <button onclick="togglePagado('${p.fbKey}','${p.rutaOrigen}')" style="width:28px;height:28px;border-radius:8px;border:1.5px solid ${pagado?'#86efac':'#bfdbfe'};background:${pagado?'#dcfce7':'#dbeafe'};cursor:pointer">💰</button>
-    <button onclick="editarPedido('${p.fbKey}')" style="width:28px;height:28px;border-radius:8px;border:1.5px solid #e5e7eb;background:#fff;cursor:pointer">✏️</button>
-    <button onclick="borrarPedido('${p.fbKey}')" style="width:28px;height:28px;border-radius:8px;border:1.5px solid #fecaca;background:#fee2e2;cursor:pointer">🗑️</button>
-   </div>
-  `;
-  cont.appendChild(row);
- });
+ renderTabla(filtrados);
+ actualizarStats(filtrados);
 }
 </script>
 <script>
 window.togglePagado=function(fbKey,ruta){
  const p=todosPedidos.find(x=>x.fbKey===fbKey); if(!p) return;
  const nuevo=!p.pagadoRepa;
- if(!confirm(nuevo?'¿Marcar PAGADO?':'¿Marcar NO PAGADO?')) return;
- db.ref(`${ruta}/${fbKey}`).update({pagadoRepa:nuevo}).then(()=>{p.pagadoRepa=nuevo; aplicarFiltros();});
+ if(!confirm(nuevo?`¿Marcar #${p.numeroContable} como PAGADO?`:`¿Marcar #${p.numeroContable} como NO PAGADO?`)) return;
+ db.ref(`${ruta}/${fbKey}`).update({pagadoRepa:nuevo, repartidorPago:nuevo}).then(()=>{p.pagadoRepa=nuevo; aplicarFiltros();});
 }
 window.editarPedido=function(fbKey){
  const p=todosPedidos.find(x=>x.fbKey===fbKey); if(!p) return;
  editandoKey=fbKey; editandoRuta=p.rutaOrigen;
  document.getElementById('editIdNum').innerText=p.numeroContable;
  document.getElementById('editCliente').value=p.clienteNombre||'';
- document.getElementById('editPrecio').value=p.precio||p.total||'';
+ document.getElementById('editPrecio').value=p.precio||'';
  document.getElementById('editPagado').checked=p.pagadoRepa===true;
  document.getElementById('modalEditar').style.display='flex';
 }
@@ -198,8 +251,15 @@ window.guardarEdicion=function(){
 }
 window.borrarPedido=function(fbKey){
  const p=todosPedidos.find(x=>x.fbKey===fbKey);
- if(!confirm(`¿Borrar #${p.numeroContable}?`)) return;
+ if(!confirm(`¿Borrar pedido #${p.numeroContable} - ${p.clienteNombre}?`)) return;
  db.ref(`${p.rutaOrigen}/${fbKey}`).remove();
+}
+window.exportarCSV=function(){
+ const lista=filtrados.length?filtrados:todosPedidos;
+ let csv="#ID,Fecha Origen,Cliente,Tipo Servicio,Repartidor,Valor Total,Estado Pago\n";
+ lista.forEach(p=>{ csv+=`${p.numeroContable},"${fechaSolo(p.timestamp)}","${String(p.clienteNombre).replace(/"/g,'') }","${String(p.tipoServicio).replace(/"/g,'')}","${String(p.repartidorNombre).replace(/"/g,'')}","${String(p.precio).replace(/"/g,'')}","${p.pagadoRepa?'PAGADO':'NO PAGADO'}"\n`; });
+ const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob);
+ const a=document.createElement('a'); a.href=url; a.download=`kigo-historial-${todosPedidos.length}-pedidos-${tiempoActual}.csv`; a.click();
 }
 </script>
 </body>
