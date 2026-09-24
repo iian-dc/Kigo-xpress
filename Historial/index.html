@@ -10,7 +10,7 @@
 *{box-sizing:border-box;font-family:Inter,Arial}body{margin:0;background:#f6f7fb;color:#111}
 .header{position:sticky;top:0;z-index:10;background:#111;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
 .btn{padding:8px 12px;border-radius:10px;border:none;font-weight:800;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
-.btn-white{background:#fff;border:1px solid #ddd;color:#111}.btn-green{background:#16a34a;color:#fff}.btn-red{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
+.btn-white{background:#fff;border:1px solid #ddd;color:#111}.btn-green{background:#16a34a;color:#fff}.btn-red{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}.btn-blue{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
 .btn-salir{background:#fff;color:#111;padding:6px 14px;border-radius:999px;font-weight:900;font-size:12px}
 .subcats{display:flex;gap:6px;padding:12px 14px;overflow:auto}
 .subcats button{padding:8px 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:800;font-size:11px;cursor:pointer;white-space:nowrap}
@@ -24,12 +24,12 @@
 .table-wrap{background:#fff;margin:14px;border-radius:14px;border:1px solid #e5e7eb;overflow:auto}
 table{width:100%;border-collapse:collapse;font-size:11px}
 th{position:sticky;top:0;background:#f9fafb;padding:10px 8px;text-align:left;font-size:10px;text-transform:uppercase;border-bottom:1px solid #e5e7eb;white-space:nowrap}
-td{padding:9px 8px;border-bottom:1px solid #f1f1f1;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
-.tipo-pill{padding:2px 7px;border-radius:999px;font-size:9px;font-weight:900}.tipo-recoger{background:#dcfce7;color:#166534}.tipo-comprar{background:#fef9c3;color:#713f12}
+td{padding:9px 8px;border-bottom:1px solid #f1f1f1;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.tipo-pill{padding:2px 7px;border-radius:999px;font-size:9px;font-weight:900}.tipo-recoger{background:#dcfce7;color:#166534}.tipo-comprar{background:#fef9c3;color:#713f12}.tipo-transporte{background:#dbeafe;color:#1e40af}
 </style>
 </head>
 <body>
-<div class="header"><div style="width:20px"></div><div><button class="btn btn-salir" onclick="salir()"><i class="material-icons" style="font-size:14px">logout</i> Salir</button></div></div>
+<div class="header"><div><b>KIGO HISTORIAL - <span id="totalCount">0</span> PEDIDOS</b></div><div><button class="btn btn-salir" onclick="salir()"><i class="material-icons" style="font-size:14px">logout</i> Salir</button></div></div>
 <div class="subcats">
 <button id="btnTodos" class="active" onclick="filtrarTiempo('todos',this)">Todos</button>
 <button id="btnHoy" onclick="filtrarTiempo('hoy',this)">Hoy</button>
@@ -43,27 +43,29 @@ td{padding:9px 8px;border-bottom:1px solid #f1f1f1;white-space:nowrap;max-width:
 <div class="stat"><span>Pendientes</span><b id="statPendientes">0</b></div>
 </div>
 <div class="filters">
-<input id="busqueda" placeholder="🔍 Buscar..." oninput="aplicarFiltros()">
-<select id="filtroTipo" onchange="aplicarFiltros()"><option value="todos">Todos tipos</option><option value="recoger">Moto Mandado</option><option value="comprar">Comprar</option></select>
+<input id="busqueda" placeholder="🔍 Buscar cliente, aliado..." oninput="aplicarFiltros()">
+<select id="filtroTipo" onchange="aplicarFiltros()"><option value="todos">Todos servicios</option><option value="mandado">Moto Mandado</option><option value="transporte">Moto Transporte</option><option value="comprar">Compras</option><option value="recoger">Recoger</option></select>
 <input type="month" id="filtroMes" onchange="aplicarFiltros()"><button class="btn btn-green" onclick="exportarCSV()">Exportar</button>
 </div>
 <div class="table-wrap">
-<table><thead><tr><th>#ID</th><th>Fecha</th><th>Tipo</th><th>Recoger</th><th>Entregar</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
-<tbody id="tbodyHistorial"><tr><td colspan="8" style="text-align:center;padding:30px">Cargando kigoHistorial...</td></tr></tbody></table>
+<table><thead><tr><th>#ID</th><th>Cliente / Aliado</th><th>Tipo Servicio</th><th>Razón</th><th>Recoger</th><th>Entregar</th><th>Valor Total</th><th>¿Repa Pagó?</th><th>Acciones</th></tr></thead>
+<tbody id="tbodyHistorial"><tr><td colspan="9" style="text-align:center;padding:30px">Cargando 600+ pedidos...</td></tr></tbody></table>
 </div>
 <div id="modalEditar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;align-items:center;justify-content:center;padding:14px"><div style="background:#fff;width:100%;max-width:400px;border-radius:16px;padding:16px">
-<b>Editar Servicio</b>
-<input id="editRecoger" style="width:100%;padding:8px;margin-top:8px;border-radius:8px;border:1px solid #ddd">
-<input id="editEntregar" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd">
-<input id="editPrecio" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd">
+<b>Editar Servicio #<span id="editIdNum"></span></b>
+<input id="editCliente" placeholder="Cliente / Aliado" style="width:100%;padding:8px;margin-top:8px;border-radius:8px;border:1px solid #ddd">
+<input id="editRecoger" placeholder="Recoger en" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd">
+<input id="editEntregar" placeholder="Entregar en" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd">
+<input id="editPrecio" placeholder="Valor Total" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd">
 <select id="editEstado" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd"><option value="a_recoger">A Recoger</option><option value="recogido">Recogido</option><option value="a_entregar">A Entregar</option><option value="finalizado">Finalizado</option></select>
+<label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:800"><input type="checkbox" id="editPagado"> Repartidor ya pagó</label>
 <div style="display:flex;gap:6px;margin-top:10px"><button class="btn btn-green" style="flex:1" onclick="guardarEdicion()">Guardar</button><button class="btn btn-white" style="flex:1" onclick="document.getElementById('modalEditar').style.display='none'">Cancelar</button></div>
 </div></div>
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-let todosPedidos=[]; let filtrados=[]; let tiempoActual='todos'; let editandoKey=null;
+let todosPedidos=[]; let filtrados=[]; let tiempoActual='todos'; let editandoKey=null; let editandoRuta=null;
 function salir(){ window.location.href='https://iian-dc.github.io/Kigoxpress/login/'; }
 </script>
 <script>
@@ -72,71 +74,112 @@ function esEstaSemana(ts){if(!ts) return true; return (Date.now()-ts)<7*24*60*60
 function esEsteMes(ts){if(!ts) return true; const d=new Date(ts);const h=new Date();return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();}
 function esDelMesSeleccionado(ts, mesValor){ if(!mesValor) return true; if(!ts) return true; const d=new Date(ts); const [y,m]=mesValor.split('-'); return d.getFullYear()==parseInt(y) && (d.getMonth()+1)==parseInt(m); }
 
-// RUTA EXACTA DE TU CAPTURA
-db.ref('kigoHistorial').on('value', snap=>{
-  const val=snap.val();
-  console.log("📦 kigoHistorial:", val);
-  todosPedidos=[];
-  if(!val){
-    document.getElementById('tbodyHistorial').innerHTML=`<tr><td colspan="8" style="text-align:center;padding:30px;color:red">kigoHistorial vacío</td></tr>`;
-    return;
-  }
-  Object.keys(val).forEach(k=>{
-    const p=val[k];
-    if(typeof p==='object'){
-      todosPedidos.push({fbKey:k, rutaOrigen:'kigoHistorial', timestamp: p.timestamp || p.fechaTimestamp || p.confirmadoEn || p.historial?.creado || p.fecha? new Date(p.fecha).getTime() : Date.now(),...p});
-    }
+// FUNCIÓN PARA UNIR TODAS LAS BASES (aquí estaban tus 600)
+let datosTemp = {};
+function procesarRuta(nombreRuta){
+  db.ref(nombreRuta).on('value', snap=>{
+    const val=snap.val();
+    if(!val) return;
+    datosTemp[nombreRuta]=val;
+    // Unimos todo
+    let unidos=[];
+    Object.keys(datosTemp).forEach(ruta=>{
+      const datosRuta = datosTemp[ruta];
+      Object.keys(datosRuta).forEach(k=>{
+        const p=datosRuta[k];
+        if(typeof p==='object'){
+          // Evitar duplicados por ID
+          if(!unidos.find(u=>u.fbKey===k)){
+            unidos.push({
+              fbKey:k,
+              rutaOrigen:ruta,
+              timestamp: p.timestamp || p.fechaTimestamp || p.confirmadoEn || p.createdAt || (p.fecha? new Date(p.fecha).getTime() : Date.now()),
+              clienteNombre: p.clienteNombre || p.cliente || p.aliado || p.nombreCliente || p.nombreAliado || p.recogerEn || 'Cliente',
+              tipoServicio: p.tipoServicio || (String(p.tipo||'').toLowerCase().includes('transporte')?'Moto Transporte':'Moto Mandado'),
+              razonServicio: p.razonServicio || (String(p.tipo||'').toLowerCase().includes('comprar')||String(p.tipo||'').toLowerCase().includes('compra')?'Compras':'Recoger'),
+             ...p
+            });
+          }
+        }
+      });
+    });
+    // Ordenar de MENOR a MAYOR (más viejo primero) para numeración contable
+    unidos.sort((a,b)=>(a.timestamp||0)-(b.timestamp||0));
+    // Asignar número contable 1..N
+    unidos.forEach((pedido, idx)=>{
+      pedido.numeroContable = idx + 1;
+    });
+    // Para mostrar: invertimos para que arriba esté el MAYOR (100, 99...)
+    todosPedidos = unidos.slice().reverse();
+    console.log(`✅ Total unido: ${todosPedidos.length} pedidos de:`, Object.keys(datosTemp));
+    document.getElementById('totalCount').innerText = todosPedidos.length;
+    aplicarFiltros();
   });
-  todosPedidos.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
-  console.log(`✅ ${todosPedidos.length} pedidos de kigoHistorial cargados`);
-  aplicarFiltros();
-});
+}
 
-// También escuchamos ventasKigo y kigoPedidosLive por si hay más
-db.ref('ventasKigo').on('value', snap=>{
-  const val=snap.val();
-  if(val && todosPedidos.length===0){
-    // Si kigoHistorial estaba vacío, usamos ventasKigo
-    console.log("📦 ventasKigo:", Object.keys(val).length);
-  }
-});
+// ESTAS SON TUS 3 CARPETAS REALES DONDE ESTÁN LOS 600
+procesarRuta('kigoHistorial');
+procesarRuta('ventasKigo');
+procesarRuta('kigoPedidosLive');
+procesarRuta('kigoPedidosCancelados');
 
 function actualizarStats(lista){
  document.getElementById('statTotal').innerText=lista.length;
  let ingresos=0, fin=0, pend=0;
  lista.forEach(p=>{
   const precio=parseInt(String(p.precio||p.total||p.monto||'').replace(/[^0-9]/g,''))||0; ingresos+=precio;
-  if(p.estado==='finalizado'||p.status==='finalizado') fin++; else pend++;
+  if((p.estado||p.status)==='finalizado') fin++; else pend++;
  });
  document.getElementById('statIngresos').innerText="$"+ingresos.toLocaleString()+" MXN";
  document.getElementById('statFinalizados').innerText=fin;
  document.getElementById('statPendientes').innerText=pend;
 }
+
 function renderTabla(lista){
  const tbody=document.getElementById('tbodyHistorial');
- if(!lista.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:20px">Sin resultados - Total: ${todosPedidos.length}</td></tr>`;return;}
+ if(!lista.length){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:20px">Sin resultados - Total: ${todosPedidos.length}</td></tr>`;return;}
  tbody.innerHTML="";
  lista.forEach(p=>{
-  const idCorto=p.fbKey.substring(p.fbKey.length-6).toUpperCase();
-  const fecha=p.fecha || (p.timestamp? new Date(p.timestamp).toLocaleString() : 'Sin fecha');
-  const tipoTxt=p.tipo||p.tipoPedidoActual||p.tipoClienteActual||'Recoger';
-  let tipoClass='tipo-recoger'; if(String(tipoTxt).toLowerCase().includes('comprar')) tipoClass='tipo-comprar';
-  const estado = p.estado||p.status||'finalizado';
-  const estadoColor = estado==='finalizado'? 'background:#111;color:#fff' : 'background:#fef08a;color:#713f12';
-  const recoger = p.recogerEn||p.direccionRecoger||p.cliente||p.origen||'';
-  const entregar = p.entregarEn||p.direccionEntregar||p.destino||p.clienteDestino||'';
-  const precio = p.precio||p.total||p.monto||'';
+  const tipoTxt = p.tipoServicio || 'Moto Mandado';
+  let tipoClass='tipo-recoger';
+  if(String(tipoTxt).toLowerCase().includes('transporte')) tipoClass='tipo-transporte';
+  if(String(p.razonServicio).toLowerCase().includes('compra')) tipoClass='tipo-comprar';
+
+  const pagado = p.pagadoRepa===true || p.repartidorPago===true || p.pagado===true;
+  const pagadoHtml = pagado? `<span style="background:#dcfce7;color:#166534;padding:3px 8px;border-radius:999px;font-weight:900;font-size:9px">✅ PAGADO</span>` : `<span style="background:#fee2e2;color:#991b1b;padding:3px 8px;border-radius:999px;font-weight:900;font-size:9px">❌ NO</span>`;
+
+  const cliente = p.clienteNombre || p.cliente || 'Cliente';
+  const recoger = p.recogerEn||p.direccionRecoger||p.origen||'';
+  const entregar = p.entregarEn||p.direccionEntregar||p.destino||'';
+  const precio = p.precio||p.total||p.monto||'$0';
+
   const tr=document.createElement('tr');
-  tr.innerHTML=`<td><b>#${idCorto}</b></td><td>${fecha}</td><td><span class="tipo-pill ${tipoClass}">${tipoTxt}</span></td><td title="${recoger}">${String(recoger).substring(0,28)}</td><td title="${entregar}">${String(entregar).substring(0,28)}</td><td><b style="color:#16a34a">${precio}</b></td><td><span style="padding:2px 7px;border-radius:999px;font-size:9px;font-weight:900;${estadoColor}">${estado}</span></td><td style="display:flex;gap:4px"><button class="btn btn-white" onclick="editarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">edit</i></button><button class="btn btn-red" onclick="borrarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">delete</i></button></td>`;
+  tr.innerHTML=`
+   <td><b style="background:#111;color:#fff;padding:3px 8px;border-radius:6px">#${p.numeroContable}</b></td>
+   <td><b>${String(cliente).substring(0,22)}</b></td>
+   <td><span class="tipo-pill ${tipoClass}">${tipoTxt}</span></td>
+   <td><span class="tipo-pill" style="background:#f3f4f6;color:#111">${p.razonServicio||'Recoger'}</span></td>
+   <td title="${recoger}">${String(recoger).substring(0,24)}</td>
+   <td title="${entregar}">${String(entregar).substring(0,24)}</td>
+   <td><b style="color:#16a34a">${precio}</b></td>
+   <td>${pagadoHtml}</td>
+   <td style="display:flex;gap:4px">
+     <button class="btn ${pagado?'btn-green':'btn-blue'}" onclick="togglePagado('${p.fbKey}','${p.rutaOrigen}')" style="padding:5px 8px" title="Marcar pagado"><i class="material-icons" style="font-size:14px">${pagado?'check':'payments'}</i></button>
+     <button class="btn btn-white" onclick="editarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">edit</i></button>
+     <button class="btn btn-red" onclick="borrarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">delete</i></button>
+   </td>
+  `;
   tbody.appendChild(tr);
  });
 }
+
 function filtrarTiempo(tipo,btn){
  tiempoActual=tipo;
  document.querySelectorAll('.subcats button').forEach(b=>b.classList.remove('active'));
  if(btn) btn.classList.add('active');
  aplicarFiltros();
 }
+
 function aplicarFiltros(){
  const txt=(document.getElementById('busqueda').value||'').toLowerCase();
  const tipoF=document.getElementById('filtroTipo').value;
@@ -148,50 +191,77 @@ function aplicarFiltros(){
   if(tiempoActual==='mes' &&!esEsteMes(ts)) return false;
   if(mesF &&!esDelMesSeleccionado(ts, mesF)) return false;
   if(txt){
-    const rec = String(p.recogerEn||p.direccionRecoger||p.cliente||'').toLowerCase();
-    const ent = String(p.entregarEn||p.direccionEntregar||'').toLowerCase();
-    if(!rec.includes(txt)&&!ent.includes(txt)) return false;
+    const cli = String(p.clienteNombre||p.cliente||'').toLowerCase();
+    const rec = String(p.recogerEn||'').toLowerCase();
+    if(!cli.includes(txt)&&!rec.includes(txt)) return false;
   }
-  const t=String(p.tipo||'').toLowerCase();
-  if(tipoF==='recoger'&&!t.includes('recoger')&&!t.includes('aliado')) return false;
-  if(tipoF==='comprar'&&!t.includes('comprar')) return false;
+  const t=String(p.tipoServicio+' '+p.razonServicio+' '+p.tipo||'').toLowerCase();
+  if(tipoF==='mandado'&&!t.includes('mandado')) return false;
+  if(tipoF==='transporte'&&!t.includes('transporte')) return false;
+  if(tipoF==='comprar'&&!t.includes('compra')) return false;
+  if(tipoF==='recoger'&&!t.includes('recoger')) return false;
   return true;
  });
  renderTabla(filtrados); actualizarStats(filtrados);
 }
 </script>
 <script>
-function editarPedido(fbKey){
+window.togglePagado=function(fbKey,ruta){
+  const p=todosPedidos.find(x=>x.fbKey===fbKey);
+  if(!p) return;
+  const nuevoEstado =!(p.pagadoRepa===true);
+  const texto = nuevoEstado? "¿Marcar como PAGADO por repartidor?" : "¿Marcar como NO PAGADO?";
+  if(!confirm(texto)) return;
+  db.ref(`${ruta||p.rutaOrigen}/${fbKey}`).update({pagadoRepa: nuevoEstado, repartidorPago: nuevoEstado, pagado: nuevoEstado}).then(()=>{
+    // Actualización local rápida
+    p.pagadoRepa = nuevoEstado;
+    aplicarFiltros();
+  });
+}
+
+window.editarPedido=function(fbKey){
  const p=todosPedidos.find(x=>x.fbKey===fbKey); if(!p) return;
- editandoKey=fbKey;
- document.getElementById('editRecoger').value=p.recogerEn||p.direccionRecoger||p.cliente||'';
- document.getElementById('editEntregar').value=p.entregarEn||p.direccionEntregar||p.destino||'';
+ editandoKey=fbKey; editandoRuta=p.rutaOrigen;
+ document.getElementById('editIdNum').innerText = p.numeroContable;
+ document.getElementById('editCliente').value=p.clienteNombre||p.cliente||'';
+ document.getElementById('editRecoger').value=p.recogerEn||p.direccionRecoger||'';
+ document.getElementById('editEntregar').value=p.entregarEn||p.direccionEntregar||'';
  document.getElementById('editPrecio').value=p.precio||p.total||'';
  document.getElementById('editEstado').value=p.estado||p.status||'finalizado';
+ document.getElementById('editPagado').checked = p.pagadoRepa===true;
  document.getElementById('modalEditar').style.display='flex';
 }
-function guardarEdicion(){
+
+window.guardarEdicion=function(){
  if(!editandoKey) return;
  const updates={
+   clienteNombre: document.getElementById('editCliente').value,
+   cliente: document.getElementById('editCliente').value,
    recogerEn: document.getElementById('editRecoger').value,
    entregarEn: document.getElementById('editEntregar').value,
    precio: document.getElementById('editPrecio').value,
    total: document.getElementById('editPrecio').value,
-   estado: document.getElementById('editEstado').value
+   estado: document.getElementById('editEstado').value,
+   pagadoRepa: document.getElementById('editPagado').checked,
+   repartidorPago: document.getElementById('editPagado').checked
  };
- db.ref(`kigoHistorial/${editandoKey}`).update(updates).then(()=>{alert("Actualizado ✅");document.getElementById('modalEditar').style.display='none';});
+ db.ref(`${editandoRuta}/${editandoKey}`).update(updates).then(()=>{alert("Actualizado ✅ #"+document.getElementById('editIdNum').innerText);document.getElementById('modalEditar').style.display='none';});
 }
-function borrarPedido(fbKey){
- if(!confirm("¿Borrar este servicio de kigoHistorial? 🗑️")) return;
- db.ref(`kigoHistorial/${fbKey}`).remove().then(()=>{alert("Borrado ✅");});
+
+window.borrarPedido=function(fbKey){
+ const p=todosPedidos.find(x=>x.fbKey===fbKey);
+ const ruta = p? p.rutaOrigen : 'kigoHistorial';
+ if(!confirm(`¿Borrar pedido #${p.numeroContable} 🗑️?`)) return;
+ db.ref(`${ruta}/${fbKey}`).remove().then(()=>{alert("Borrado ✅");});
 }
-function exportarCSV(){
+
+window.exportarCSV=function(){
  const lista=filtrados.length? filtrados : todosPedidos;
  if(!lista.length){alert("No hay datos");return;}
- let csv="ID,Fecha,Tipo,Recoger,Entregar,Precio,Estado\n";
- lista.forEach(p=>{const f=p.fecha||new Date(p.timestamp||Date.now()).toLocaleString();csv+=`${p.fbKey},"${f}","${p.tipo||''}","${p.recogerEn||''}","${p.entregarEn||''}","${p.precio||''}","${p.estado||''}"\n`;});
+ let csv="#ID,Cliente,TipoServicio,Razon,Recoger,Entregar,Valor,Estado,PagadoRepa\n";
+ lista.forEach(p=>{csv+=`${p.numeroContable},"${p.clienteNombre||''}","${p.tipoServicio||''}","${p.razonServicio||''}","${(p.recogerEn||'').replace(/"/g,'""')}","${(p.entregarEn||'').replace(/"/g,'""')}","${p.precio||''}","${p.estado||''}","${p.pagadoRepa?'SI':'NO'}"\n`;});
  const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob);
- const a=document.createElement('a'); a.href=url; a.download=`kigoHistorial-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+ const a=document.createElement('a'); a.href=url; a.download=`kigo-historial-${todosPedidos.length}-pedidos-${new Date().toISOString().slice(0,10)}.csv`; a.click();
 }
 </script>
 </body>
