@@ -10,8 +10,10 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#f6f7fb;color:#0a0a0a;padding-bottom:20px}
 .top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1.5px solid #e5e7eb;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
-.logo{width:36px;height:36px;background:#0a0a0a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px;overflow:hidden}
-.subcats{background:#fff;padding:10px 12px;display:flex;gap:8px;overflow:auto;border-bottom:1px solid #e5e7eb;position:sticky;top:57px;z-index:19}
+.cat-bar{background:#fff;padding:8px 12px;display:flex;gap:8px;border-bottom:1.5px solid #e5e7eb;position:sticky;top:57px;z-index:21}
+.cat-bar button{height:36px;padding:0 18px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:9px;font-weight:900}
+.cat-bar button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
+.subcats{background:#fff;padding:10px 12px;display:flex;gap:8px;overflow:auto;border-bottom:1px solid #e5e7eb;position:sticky;top:101px;z-index:19}
 .subcats button{height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:9px;font-weight:900;white-space:nowrap}
 .subcats button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:10px 12px}
@@ -35,14 +37,26 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 .btn-b{background:#0a0a0a;color:#fff}
 .btn-r{color:#ef4444;border-color:#fecaca}
 .num{background:#0a0a0a;color:#fff;padding:4px 8px;border-radius:7px;font-weight:900}
+.btn-cerrar{height:32px;padding:0 14px;border-radius:999px;background:#0a0a0a;color:#fff;border:1px solid #0a0a0a;font-size:8px;font-weight:900}
 </style>
 </head>
 <body>
+
 <div class="top">
-<div style="display:flex;align-items:center;gap:8px"><div class="logo" id="logoRepa">K</div><div><div id="nombreRepaTxt" style="font-weight:900;font-size:11px">Historial Kigo</div><div style="font-size:7px;font-weight:800;color:#10b981">● ventasKigo REAL</div></div></div>
-<div id="totalTxt" style="font-size:8px;font-weight:900;background:#f3f4f6;padding:6px 10px;border-radius:999px">0 PEDIDOS</div>
+<div style="display:flex;align-items:center;gap:8px">
+<div style="width:36px;height:36px;background:#0a0a0a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">K</div>
+<div><div style="font-weight:900;font-size:11px">Panel Admin Kigo</div><div style="font-size:7px;font-weight:800;color:#10b981">● HISTORIAL REAL ventasKigo</div></div>
+</div>
+<button class="btn-cerrar" onclick="alert('Cerrar sesión - pendiente funcionalidad')">CERRAR SESIÓN</button>
 </div>
 
+<div class="cat-bar">
+<button class="active" id="btnCatHistorial" onclick="setCat('historial')">HISTORIAL</button>
+<button id="btnCatClientes" onclick="setCat('clientes')">CLIENTES</button>
+</div>
+
+<!-- CATEGORIA HISTORIAL -->
+<div id="view-historial">
 <div class="subcats">
 <button class="active" onclick="setSubcat('todos',this)">TODOS</button>
 <button onclick="setSubcat('hoy',this)">HOY</button>
@@ -53,7 +67,7 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 
 <div class="stats">
 <div class="stat"><span>TOTAL</span><b id="sTotal">0</b></div>
-<div class="stat"><span>INGRESOS</span><b id="sIng" style="color:#10b981">$0</b></div>
+<div class="stat"><span>MIS INGRESOS</span><b id="sIng" style="color:#10b981">$0</b></div>
 <div class="stat"><span>PAGADOS</span><b id="sPag">0</b></div>
 <div class="stat"><span>DEBEN</span><b id="sDebe" style="color:#ef4444">$0</b></div>
 </div>
@@ -74,24 +88,27 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 <tbody id="tbody"><tr><td colspan="10" style="text-align:center;padding:20px;color:#9ca3af">Cargando...</td></tr></tbody>
 </table>
 </div>
+</div>
+
+<!-- CATEGORIA CLIENTES EN BLANCO -->
+<div id="view-clientes" style="display:none;padding:20px">
+<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:40px;text-align:center">
+<div style="font-size:30px;margin-bottom:10px">👥</div>
+<div style="font-weight:900;font-size:12px">CLIENTES</div>
+<div style="font-size:8px;color:#9ca3af;margin-top:6px">Categoría lista, dime que hacemos aquí</div>
+</div>
+</div>
 
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let currentRepa = new URLSearchParams(window.location.search).get('repa') || localStorage.getItem('kigoUser') || 'Jose';
-let currentFoto = localStorage.getItem('kigoFoto_'+currentRepa) || '';
-let currentNombreVisible = localStorage.getItem('kigoNombreVisible_'+currentRepa) || currentRepa;
-document.getElementById('nombreRepaTxt').innerText = currentNombreVisible;
-document.getElementById('logoRepa').innerHTML = currentFoto? `<img src="${currentFoto}" style="width:100%;height:100%;object-fit:cover">` : currentNombreVisible.charAt(0).toUpperCase();
-
 let tarifasGlobal = {mandado:5, transporte:10};
 db.ref('kigoTarifas').once('value').then(s=>{ if(s.exists()) tarifasGlobal=s.val(); });
 
 let todos=[]; let filtrados=[]; let subcat='todos';
 
-// CORREGIDO: Lee 8/24/2026 como 24 de agosto correctamente
 function getTS(p){
   if(p.fecha && typeof p.fecha==='string'){
     let txt=p.fecha.split(' ')[0].trim();
@@ -107,7 +124,7 @@ function getTS(p){
       }
     }
   }
-  if(p.ts) return Number(p.ts) < 1e12 ? Number(p.ts)*1000 : Number(p.ts);
+  if(p.ts) return Number(p.ts) < 1e12? Number(p.ts)*1000 : Number(p.ts);
   if(p.timestamp){ let t=Number(p.timestamp); return t<1e12? t*1000 : t; }
   if(p.iso){ let d=new Date(p.iso+'T12:00:00'); if(!isNaN(d)) return d.getTime(); }
   return 0;
@@ -120,6 +137,13 @@ function esAyer(ts){ let a=new Date(); a.setDate(a.getDate()-1); return new Date
 function esSemana(ts){ let hoy=new Date(); let ini=new Date(hoy); ini.setDate(hoy.getDate()-hoy.getDay()); ini.setHours(0,0,0,0); return ts>=ini.getTime(); }
 function esMes(ts){ let d=new Date(ts), h=new Date(); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); }
 
+window.setCat=function(cat){
+  document.getElementById('view-historial').style.display = cat==='historial'?'block':'none';
+  document.getElementById('view-clientes').style.display = cat==='clientes'?'block':'none';
+  document.getElementById('btnCatHistorial').classList.toggle('active', cat==='historial');
+  document.getElementById('btnCatClientes').classList.toggle('active', cat==='clientes');
+}
+
 db.ref('ventasKigo').on('value', snap=>{
   let val=snap.val()||{};
   let lista=Object.entries(val).map(([k,v])=>({...v,_key:k,_ts:getTS(v)}));
@@ -127,7 +151,6 @@ db.ref('ventasKigo').on('value', snap=>{
   lista.sort((a,b)=>a._ts-b._ts);
   lista.forEach((p,i)=> p.numeroOrden=i+1);
   todos = lista.slice().reverse();
-  document.getElementById('totalTxt').innerText = todos.length+' PEDIDOS';
   aplicar();
 });
 
@@ -139,10 +162,10 @@ window.aplicar=function(){
   let fecha=document.getElementById('filtroFecha').value;
   let q=(document.getElementById('filtroQ').value||'').toLowerCase();
   filtrados=todos.filter(p=>{
-    if(subcat==='hoy' && !esHoy(p._ts)) return false;
-    if(subcat==='ayer' && !esAyer(p._ts)) return false;
-    if(subcat==='semana' && !esSemana(p._ts)) return false;
-    if(subcat==='mes' && !esMes(p._ts)) return false;
+    if(subcat==='hoy' &&!esHoy(p._ts)) return false;
+    if(subcat==='ayer' &&!esAyer(p._ts)) return false;
+    if(subcat==='semana' &&!esSemana(p._ts)) return false;
+    if(subcat==='mes' &&!esMes(p._ts)) return false;
     if(mes && isoM(p._ts)!==mes) return false;
     if(fecha && isoF(p._ts)!==fecha) return false;
     if(q){
@@ -160,10 +183,9 @@ function render(lista){
   if(!lista.length){ tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:20px;color:#9ca3af">Sin pedidos en ${subcat.toUpperCase()}</td></tr>`; sTotal.innerText=0; sIng.innerText='$0'; sPag.innerText=0; sDebe.innerText='$0'; return; }
   let ing=0,pag=0,debe=0;
   lista.forEach(p=>{
-    let tot=parseInt(p.valor||p.total||0)||0; ing+=tot;
     let tipo=(p.tipo||p.tipoServicio||'').toLowerCase(); let esT=tipo.includes('trans');
     let fee=p.feeKigo? parseInt(p.feeKigo) : (esT? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5));
-    if(p.pagado) pag++; else debe+=fee;
+    if(p.pagado){ ing+=fee; pag++; } else { debe+=fee; }
   });
   sTotal.innerText=lista.length; sIng.innerText='$'+ing.toLocaleString(); sPag.innerText=pag; sDebe.innerText='$'+debe.toLocaleString();
   tb.innerHTML='';
