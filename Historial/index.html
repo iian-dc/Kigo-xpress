@@ -38,6 +38,24 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 .btn-r{color:#ef4444;border-color:#fecaca}
 .num{background:#0a0a0a;color:#fff;padding:4px 8px;border-radius:7px;font-weight:900}
 .btn-cerrar{height:32px;padding:0 14px;border-radius:999px;background:#0a0a0a;color:#fff;border:1px solid #0a0a0a;font-size:8px;font-weight:900}
+
+/* MODALES ELEGANTES */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);z-index:99;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-bg.show{display:flex}
+.modal{width:100%;max-width:480px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.25);animation:pop.2s ease}
+@keyframes pop{from{transform:scale(.95) translateY(10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal-head{padding:16px 18px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
+.modal-head b{font-size:12px}
+.modal-body{padding:16px 18px;display:flex;flex-direction:column;gap:10px;max-height:70vh;overflow:auto}
+.lab{font-size:8px;font-weight:900;color:#6b7280;letter-spacing:.5px}
+.inp{height:42px;border:1.5px solid #e5e7eb;border-radius:10px;padding:0 12px;font-size:10px;font-weight:700;width:100%}
+.sel{height:42px;border:1.5px solid #e5e7eb;border-radius:10px;padding:0 12px;font-size:10px;font-weight:800;width:100%;background:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-foot{padding:12px 18px;border-top:1px solid #e5e7eb;display:flex;gap:8px;justify-content:flex-end}
+.btn-save{height:40px;padding:0 18px;border-radius:10px;background:#0a0a0a;color:#fff;border:none;font-size:9px;font-weight:900}
+.btn-cancel{height:40px;padding:0 18px;border-radius:10px;background:#fff;border:1.5px solid #e5e7eb;font-size:9px;font-weight:900}
+.btn-del-r{height:40px;padding:0 18px;border-radius:10px;background:#ef4444;color:#fff;border:none;font-size:9px;font-weight:900}
+.btn-del-g{height:40px;padding:0 18px;border-radius:10px;background:#10b981;color:#fff;border:none;font-size:9px;font-weight:900}
 </style>
 </head>
 <body>
@@ -47,7 +65,7 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 <div style="width:36px;height:36px;background:#0a0a0a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">K</div>
 <div><div style="font-weight:900;font-size:11px">Panel Admin Kigo</div><div style="font-size:7px;font-weight:800;color:#10b981">● HISTORIAL REAL ventasKigo</div></div>
 </div>
-<button class="btn-cerrar" onclick="alert('Cerrar sesión - pendiente funcionalidad')">CERRAR SESIÓN</button>
+<button class="btn-cerrar">CERRAR SESIÓN</button>
 </div>
 
 <div class="cat-bar">
@@ -55,7 +73,6 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 <button id="btnCatClientes" onclick="setCat('clientes')">CLIENTES</button>
 </div>
 
-<!-- CATEGORIA HISTORIAL -->
 <div id="view-historial">
 <div class="subcats">
 <button class="active" onclick="setSubcat('todos',this)">TODOS</button>
@@ -64,14 +81,12 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 <button onclick="setSubcat('semana',this)">ESTA SEMANA</button>
 <button onclick="setSubcat('mes',this)">ESTE MES</button>
 </div>
-
 <div class="stats">
 <div class="stat"><span>TOTAL</span><b id="sTotal">0</b></div>
 <div class="stat"><span>MIS INGRESOS</span><b id="sIng" style="color:#10b981">$0</b></div>
 <div class="stat"><span>PAGADOS</span><b id="sPag">0</b></div>
 <div class="stat"><span>DEBEN</span><b id="sDebe" style="color:#ef4444">$0</b></div>
 </div>
-
 <div class="filtros">
 <div style="font-size:8px;font-weight:900;margin-bottom:6px">FILTROS</div>
 <div class="row">
@@ -81,16 +96,14 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 <button class="btn-l" onclick="limpiar()">LIMPIAR</button>
 </div>
 </div>
-
 <div class="wrap">
 <table>
-<thead><tr><th>#ID</th><th>Fecha</th><th>Cliente / Aliado</th><th>Tipo</th><th>Repartidor</th><th>Valor Total</th><th>Debe Kigo</th><th>Pago</th><th>Editar</th><th>Eliminar</th></tr></thead>
-<tbody id="tbody"><tr><td colspan="10" style="text-align:center;padding:20px;color:#9ca3af">Cargando...</td></tr></tbody>
+<thead><tr><th>#ID</th><th>Fecha</th><th>Cliente</th><th>Servicio</th><th>Tipo Cliente</th><th>Repartidor</th><th>Valor</th><th>Debe Kigo</th><th>Pago</th><th>Editar</th><th>Eliminar</th></tr></thead>
+<tbody id="tbody"></tbody>
 </table>
 </div>
 </div>
 
-<!-- CATEGORIA CLIENTES EN BLANCO -->
 <div id="view-clientes" style="display:none;padding:20px">
 <div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:40px;text-align:center">
 <div style="font-size:30px;margin-bottom:10px">👥</div>
@@ -99,15 +112,72 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 </div>
 </div>
 
+<!-- MODAL EDITAR ELEGANTE -->
+<div id="modalEditar" class="modal-bg" onclick="if(event.target===this) cerrarEditar()">
+<div class="modal">
+<div class="modal-head"><b>✏️ EDITAR PEDIDO <span id="editNum"></span></b><button class="btn" onclick="cerrarEditar()">✕</button></div>
+<div class="modal-body">
+<div><div class="lab">TIPO DE SERVICIO (compra no es cliente)</div>
+<select id="eServicio" class="sel">
+<option value="Moto Mandado">Moto Mandado</option>
+<option value="Moto Transporte">Moto Transporte</option>
+<option value="Compra">Compra</option>
+<option value="Encomienda">Encomienda</option>
+<option value="Otro">Otro</option>
+</select></div>
+<div><div class="lab">TIPO DE CLIENTE</div>
+<select id="eTipoCliente" class="sel">
+<option value="Normal">Normal</option>
+<option value="Aliado">Aliado</option>
+<option value="VIP">VIP</option>
+<option value="Empresa">Empresa</option>
+<option value="Nuevo">Nuevo</option>
+</select></div>
+<div><div class="lab">NOMBRE CLIENTE / ALIADO</div><input id="eCliente" class="inp" placeholder="Nombre cliente"></div>
+<div class="grid2">
+<div><div class="lab">VALOR TOTAL</div><input id="eValor" type="number" class="inp" placeholder="0"></div>
+<div><div class="lab">FEE KIGO (lo que te debe)</div><input id="eFee" type="number" class="inp" placeholder="5"></div>
+</div>
+<div><div class="lab">DIRECCIÓN / NOTA / DETALLE</div><input id="eDir" class="inp" placeholder="Dirección, nota del pedido"></div>
+<div class="grid2">
+<div><div class="lab">REPARTIDOR</div><input id="eRepa" class="inp" placeholder="Repartidor"></div>
+<div><div class="lab">FECHA</div><input id="eFecha" type="date" class="inp"></div>
+</div>
+<div><div class="lab">ESTADO PAGO</div>
+<select id="ePagado" class="sel"><option value="true">✅ PAGADO</option><option value="false">❌ NO PAGADO</option></select></div>
+</div>
+<div class="modal-foot">
+<button class="btn-cancel" onclick="cerrarEditar()">Cancelar</button>
+<button class="btn-save" onclick="guardarEdicion()">Guardar cambios</button>
+</div>
+</div>
+</div>
+
+<!-- MODAL ELIMINAR ORGANIZADO -->
+<div id="modalEliminar" class="modal-bg" onclick="if(event.target===this) cerrarEliminar()">
+<div class="modal" style="max-width:380px">
+<div class="modal-head"><b>🗑️ ELIMINAR PEDIDO</b></div>
+<div class="modal-body" style="text-align:center">
+<div style="font-size:40px">⚠️</div>
+<div style="font-weight:900;font-size:13px" id="delTxt">¿Deseas eliminar este pedido?</div>
+<div style="font-size:8px;color:#6b7280">Esta acción no se puede deshacer</div>
+</div>
+<div class="modal-foot" style="justify-content:center">
+<button class="btn-del-g" onclick="cerrarEliminar()">NO, CONSERVAR</button>
+<button class="btn-del-r" onclick="confirmarEliminar()">SÍ, ELIMINAR</button>
+</div>
+</div>
+</div>
+
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let tarifasGlobal = {mandado:5, transporte:10};
+let tarifasGlobal={mandado:5,transporte:10};
 db.ref('kigoTarifas').once('value').then(s=>{ if(s.exists()) tarifasGlobal=s.val(); });
 
-let todos=[]; let filtrados=[]; let subcat='todos';
+let todos=[], filtrados=[], subcat='todos', editKey=null, delKey=null;
 
 function getTS(p){
   if(p.fecha && typeof p.fecha==='string'){
@@ -117,10 +187,7 @@ function getTS(p){
       if(parts.length===3){
         let m=parseInt(parts[0]), d=parseInt(parts[1]), y=parseInt(parts[2]);
         if(y<100) y+=2000;
-        if(m>=1&&m<=12&&d>=1&&d<=31){
-          let f=new Date(y,m-1,d,12,0,0);
-          if(!isNaN(f)) return f.getTime();
-        }
+        if(m>=1&&m<=12&&d>=1&&d<=31){ let f=new Date(y,m-1,d,12,0,0); if(!isNaN(f)) return f.getTime(); }
       }
     }
   }
@@ -147,10 +214,10 @@ window.setCat=function(cat){
 db.ref('ventasKigo').on('value', snap=>{
   let val=snap.val()||{};
   let lista=Object.entries(val).map(([k,v])=>({...v,_key:k,_ts:getTS(v)}));
-  lista = lista.filter(p=>p._ts>0);
+  lista=lista.filter(p=>p._ts>0);
   lista.sort((a,b)=>a._ts-b._ts);
   lista.forEach((p,i)=> p.numeroOrden=i+1);
-  todos = lista.slice().reverse();
+  todos=lista.slice().reverse();
   aplicar();
 });
 
@@ -162,15 +229,15 @@ window.aplicar=function(){
   let fecha=document.getElementById('filtroFecha').value;
   let q=(document.getElementById('filtroQ').value||'').toLowerCase();
   filtrados=todos.filter(p=>{
-    if(subcat==='hoy' &&!esHoy(p._ts)) return false;
-    if(subcat==='ayer' &&!esAyer(p._ts)) return false;
-    if(subcat==='semana' &&!esSemana(p._ts)) return false;
-    if(subcat==='mes' &&!esMes(p._ts)) return false;
-    if(mes && isoM(p._ts)!==mes) return false;
-    if(fecha && isoF(p._ts)!==fecha) return false;
+    if(subcat==='hoy'&&!esHoy(p._ts)) return false;
+    if(subcat==='ayer'&&!esAyer(p._ts)) return false;
+    if(subcat==='semana'&&!esSemana(p._ts)) return false;
+    if(subcat==='mes'&&!esMes(p._ts)) return false;
+    if(mes&&isoM(p._ts)!==mes) return false;
+    if(fecha&&isoF(p._ts)!==fecha) return false;
     if(q){
       let c=(p.cliente||p.clienteNombre||'').toLowerCase();
-      let r=(p.repa||p.repartidor||p.repartidorNombre||'').toLowerCase();
+      let r=(p.repa||p.repartidor||'').toLowerCase();
       if(!c.includes(q)&&!r.includes(q)) return false;
     }
     return true;
@@ -180,7 +247,7 @@ window.aplicar=function(){
 
 function render(lista){
   let tb=document.getElementById('tbody');
-  if(!lista.length){ tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:20px;color:#9ca3af">Sin pedidos en ${subcat.toUpperCase()}</td></tr>`; sTotal.innerText=0; sIng.innerText='$0'; sPag.innerText=0; sDebe.innerText='$0'; return; }
+  if(!lista.length){ tb.innerHTML=`<tr><td colspan="11" style="text-align:center;padding:20px;color:#9ca3af">Sin pedidos</td></tr>`; sTotal.innerText=0; sIng.innerText='$0'; sPag.innerText=0; sDebe.innerText='$0'; return; }
   let ing=0,pag=0,debe=0;
   lista.forEach(p=>{
     let tipo=(p.tipo||p.tipoServicio||'').toLowerCase(); let esT=tipo.includes('trans');
@@ -191,26 +258,81 @@ function render(lista){
   tb.innerHTML='';
   lista.forEach(p=>{
     let tot=parseInt(p.valor||p.total||0)||0;
-    let tipo=(p.tipo||p.tipoServicio||'Mandado'); let esT=tipo.toLowerCase().includes('trans');
-    let fee=p.feeKigo? parseInt(p.feeKigo) : (esT? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5));
+    let tipoTxt=p.tipoServicio||p.tipo||'Moto Mandado';
+    let tipoClase=tipoTxt.toLowerCase().includes('trans')?'pill-t': tipoTxt.toLowerCase().includes('compra')?'pill-no':'pill-m';
+    let fee=p.feeKigo? parseInt(p.feeKigo) : (tipoTxt.toLowerCase().includes('trans')? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5));
+    let tipoCliente=p.tipoCliente||'Normal';
     let cli=p.cliente||p.clienteNombre||'Cliente';
-    let repa=p.repa||p.repartidor||p.repartidorNombre||'';
+    let repa=p.repa||p.repartidor||'';
     let tr=document.createElement('tr');
-    tr.innerHTML=`<td><span class="num">#${p.numeroOrden}</span></td><td><b>${fFecha(p._ts)}</b></td><td><b>${cli.slice(0,24)}</b></td><td><span class="pill ${esT?'pill-t':'pill-m'}">${esT?'MOTO TRANSPORTE':'MOTO MANDADO'}</span></td><td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-weight:800;font-size:8px">${repa}</span></td><td><b style="color:#10b981">$${tot}</b></td><td><b style="color:#ef4444">$${fee}</b></td><td><button class="pill ${p.pagado?'pill-si':'pill-no'}" style="border:none;cursor:pointer" onclick="togglePago('${p._key}')">${p.pagado?'✅ PAGADO':'❌ NO PAGADO'}</button></td><td><button class="btn btn-b" onclick="editar('${p._key}')">EDITAR</button></td><td><button class="btn btn-r" onclick="eliminar('${p._key}')">ELIMINAR</button></td>`;
+    tr.innerHTML=`<td><span class="num">#${p.numeroOrden}</span></td><td><b>${fFecha(p._ts)}</b></td><td><b>${cli.slice(0,22)}</b></td><td><span class="pill ${tipoClase}">${tipoTxt.toUpperCase()}</span></td><td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-weight:800;font-size:7px">${tipoCliente}</span></td><td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-weight:800;font-size:8px">${repa}</span></td><td><b style="color:#10b981">$${tot}</b></td><td><b style="color:#ef4444">$${fee}</b></td><td><button class="pill ${p.pagado?'pill-si':'pill-no'}" style="border:none;cursor:pointer" onclick="togglePago('${p._key}')">${p.pagado?'✅ PAGADO':'❌ NO PAGADO'}</button></td><td><button class="btn btn-b" onclick="abrirEditar('${p._key}')">EDITAR</button></td><td><button class="btn btn-r" onclick="abrirEliminar('${p._key}')">ELIMINAR</button></td>`;
     tb.appendChild(tr);
   });
 }
 
 window.togglePago=function(k){ let p=todos.find(x=>x._key===k); if(!p) return; db.ref('ventasKigo/'+k).update({pagado:!p.pagado}); }
-window.eliminar=function(k){ if(confirm('¿Eliminar este pedido #?')) db.ref('ventasKigo/'+k).remove(); }
-window.editar=function(k){
+
+// MODAL EDITAR LOGICA
+window.abrirEditar=function(k){
   let p=todos.find(x=>x._key===k); if(!p) return;
-  let cli=prompt('Cliente / Aliado:', p.cliente||p.clienteNombre||''); if(cli===null) return;
-  let val=prompt('Valor total:', p.valor||p.total||''); if(val===null) return;
-  let tip=prompt('Tipo (mandado / transporte):', p.tipo||p.tipoServicio||'mandado'); if(tip===null) return;
-  let re=prompt('Repartidor:', p.repa||p.repartidor||''); if(re===null) return;
-  db.ref('ventasKigo/'+k).update({cliente:cli.trim(), clienteNombre:cli.trim(), valor:parseInt(val)||0, total:parseInt(val)||0, precio:'$'+(parseInt(val)||0), tipo: tip.toLowerCase().includes('trans')?'Transporte':'Moto Mandado', tipoServicio: tip.toLowerCase().includes('trans')?'Moto Transporte':'Moto Mandado', repa:re.trim(), repartidor:re.trim()});
+  editKey=k;
+  document.getElementById('editNum').innerText='#'+p.numeroOrden;
+  document.getElementById('eServicio').value = p.tipoServicio||p.tipo||'Moto Mandado';
+  document.getElementById('eTipoCliente').value = p.tipoCliente||'Normal';
+  document.getElementById('eCliente').value = p.cliente||p.clienteNombre||'';
+  document.getElementById('eValor').value = p.valor||p.total||0;
+  document.getElementById('eFee').value = p.feeKigo||'';
+  document.getElementById('eDir').value = p.direccion||p.nota||p.detalle||'';
+  document.getElementById('eRepa').value = p.repa||p.repartidor||'';
+  document.getElementById('eFecha').value = isoF(p._ts);
+  document.getElementById('ePagado').value = p.pagado?'true':'false';
+  document.getElementById('modalEditar').classList.add('show');
 }
+window.cerrarEditar=function(){ document.getElementById('modalEditar').classList.remove('show'); editKey=null; }
+window.guardarEdicion=function(){
+  if(!editKey) return;
+  let serv=document.getElementById('eServicio').value;
+  let tipoCli=document.getElementById('eTipoCliente').value;
+  let cli=document.getElementById('eCliente').value.trim();
+  let val=parseInt(document.getElementById('eValor').value)||0;
+  let fee=parseInt(document.getElementById('eFee').value);
+  let dir=document.getElementById('eDir').value.trim();
+  let repa=document.getElementById('eRepa').value.trim();
+  let fechaIn=document.getElementById('eFecha').value;
+  let pag=document.getElementById('ePagado').value==='true';
+  let tsFecha = fechaIn? new Date(fechaIn+'T12:00:00').getTime() : null;
+
+  let update={
+    tipoServicio: serv,
+    tipo: serv,
+    tipoCliente: tipoCli,
+    cliente: cli,
+    clienteNombre: cli,
+    valor: val,
+    total: val,
+    precio: '$'+val,
+    direccion: dir,
+    nota: dir,
+    repa: repa,
+    repartidor: repa,
+    pagado: pag
+  };
+  if(!isNaN(fee)) update.feeKigo=fee;
+  if(tsFecha){ update.ts=tsFecha; update.timestamp=tsFecha; update.iso=fechaIn; update.fecha = (serv? serv : '') + ' ' + fechaIn; }
+
+  db.ref('ventasKigo/'+editKey).update(update);
+  cerrarEditar();
+}
+
+// MODAL ELIMINAR LOGICA
+window.abrirEliminar=function(k){
+  let p=todos.find(x=>x._key===k); if(!p) return;
+  delKey=k;
+  document.getElementById('delTxt').innerText=`¿Deseas eliminar el pedido #${p.numeroOrden} de ${p.cliente||p.clienteNombre||'cliente'}?`;
+  document.getElementById('modalEliminar').classList.add('show');
+}
+window.cerrarEliminar=function(){ document.getElementById('modalEliminar').classList.remove('show'); delKey=null; }
+window.confirmarEliminar=function(){ if(!delKey) return; db.ref('ventasKigo/'+delKey).remove(); cerrarEliminar(); }
 </script>
 </body>
-</html>
+  </html>
