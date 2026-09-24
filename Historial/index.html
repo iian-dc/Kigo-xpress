@@ -8,43 +8,39 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:#f6f7fb;color:#0a0a0a}
-.top{background:#fff;border-bottom:1.5px solid #e5e7eb;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
-.logo{width:34px;height:34px;background:#0a0a0a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px;overflow:hidden}
-.subcats{background:#fff;padding:10px 12px;display:flex;gap:8px;overflow:auto;border-bottom:1px solid #e5e7eb;position:sticky;top:55px;z-index:19}
-.subcats button{padding:8px 16px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:9px;font-weight:900;white-space:nowrap;cursor:pointer}
+body{background:#f6f7fb;color:#0a0a0a;padding-bottom:20px}
+.top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1.5px solid #e5e7eb;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.logo{width:36px;height:36px;background:#0a0a0a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px;overflow:hidden}
+.subcats{background:#fff;padding:10px 12px;display:flex;gap:8px;overflow:auto;border-bottom:1px solid #e5e7eb;position:sticky;top:57px;z-index:19}
+.subcats button{height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:9px;font-weight:900;white-space:nowrap}
 .subcats button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:10px 12px}
 .stat{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;text-align:center}
-.stat b{font-size:15px;display:block}
+.stat b{font-size:14px;display:block}
 .stat span{font-size:7px;font-weight:800;color:#6b7280}
 .filtros{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;margin:0 12px 10px;padding:10px}
-.filtros .row{display:flex;gap:8px}
-.input-k{flex:1;height:38px;border:1.5px solid #e5e7eb;border-radius:10px;padding:0 10px;font-size:9px;font-weight:800;background:#fff}
-.btn-limpiar{height:38px;padding:0 12px;border-radius:10px;border:1.5px solid #e5e7eb;background:#fff;font-size:8px;font-weight:800}
-.wrap-tabla{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;margin:0 12px 20px;overflow:auto}
-table{width:100%;border-collapse:collapse;font-size:10px;min-width:950px}
-th{background:#f9fafb;padding:10px 8px;text-align:left;font-size:8px;font-weight:900;border-bottom:1px solid #e5e7eb;white-space:nowrap}
-td{padding:10px 8px;border-bottom:1px solid #f3f4f6;white-space:nowrap}
-.pill{padding:3px 8px;border-radius:999px;font-size:8px;font-weight:900;display:inline-block}
-.pill-mandado{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
-.pill-trans{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
-.pill-si{background:#dcfce7;color:#166534;border:1px solid #86efac}
-.pill-no{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+.input-k{flex:1;min-width:120px;height:38px;border:1.5px solid #e5e7eb;border-radius:10px;padding:0 10px;font-size:9px;font-weight:800;background:#fff}
+.btn-l{height:38px;padding:0 14px;border-radius:10px;border:1.5px solid #e5e7eb;background:#fff;font-size:8px;font-weight:800}
+.wrap{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;margin:0 12px;overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:1100px;font-size:10px}
+th{background:#f9fafb;padding:10px 8px;text-align:left;font-size:8px;font-weight:900;border-bottom:1px solid #e5e7eb}
+td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
+.pill{padding:3px 8px;border-radius:999px;font-size:8px;font-weight:900;display:inline-block;border:1px solid}
+.pill-m{background:#dbeafe;color:#1e40af;border-color:#bfdbfe}
+.pill-t{background:#fef3c7;color:#92400e;border-color:#fde68a}
+.pill-si{background:#dcfce7;color:#166534;border-color:#86efac}
+.pill-no{background:#fee2e2;color:#991b1b;border-color:#fecaca}
 .btn{height:28px;padding:0 10px;border-radius:8px;border:1px solid #e5e7eb;background:#fff;font-size:8px;font-weight:800;cursor:pointer}
-.btn-edit{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
-.btn-del{background:#fff;color:#ef4444;border-color:#fecaca}
-.num-id{background:#0a0a0a;color:#fff;padding:4px 8px;border-radius:7px;font-weight:900;font-size:9px}
+.btn-b{background:#0a0a0a;color:#fff}
+.btn-r{color:#ef4444;border-color:#fecaca}
+.num{background:#0a0a0a;color:#fff;padding:4px 8px;border-radius:7px;font-weight:900}
 </style>
 </head>
 <body>
-
 <div class="top">
-<div style="display:flex;align-items:center;gap:8px">
-<div class="logo" id="logoRepa">K</div>
-<div><div id="nombreRepaTxt" style="font-weight:900;font-size:11px">Repartidor</div><div style="font-size:7px;font-weight:800;color:#10b981">● HISTORIAL REAL ventasKigo</div></div>
-</div>
-<div style="font-size:8px;font-weight:900;background:#f3f4f6;padding:6px 10px;border-radius:999px" id="totalTxt">0 PEDIDOS</div>
+<div style="display:flex;align-items:center;gap:8px"><div class="logo" id="logoRepa">K</div><div><div id="nombreRepaTxt" style="font-weight:900;font-size:11px">Historial Kigo</div><div style="font-size:7px;font-weight:800;color:#10b981">● ventasKigo REAL</div></div></div>
+<div id="totalTxt" style="font-size:8px;font-weight:900;background:#f3f4f6;padding:6px 10px;border-radius:999px">0 PEDIDOS</div>
 </div>
 
 <div class="subcats">
@@ -67,28 +63,15 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6;white-space:nowrap}
 <div class="row">
 <input type="month" id="filtroMes" class="input-k" onchange="aplicar()">
 <input type="date" id="filtroFecha" class="input-k" onchange="aplicar()">
-<input type="text" id="filtroCliente" class="input-k" placeholder="Buscar cliente / repartidor" oninput="aplicar()">
-<button class="btn-limpiar" onclick="limpiar()">LIMPIAR</button>
+<input type="text" id="filtroQ" class="input-k" placeholder="Buscar cliente / repartidor" oninput="aplicar()">
+<button class="btn-l" onclick="limpiar()">LIMPIAR</button>
 </div>
 </div>
 
-<div class="wrap-tabla">
+<div class="wrap">
 <table>
-<thead>
-<tr>
-<th>#ID</th>
-<th>Fecha</th>
-<th>Cliente / Aliado</th>
-<th>Tipo Servicio</th>
-<th>Repartidor</th>
-<th>Valor Total</th>
-<th>Debe a Kigo</th>
-<th>Estado Pago</th>
-<th>Editar</th>
-<th>Eliminar</th>
-</tr>
-</thead>
-<tbody id="tbody"><tr><td colspan="10" style="text-align:center;padding:20px;color:#9ca3af">Cargando historial real...</td></tr></tbody>
+<thead><tr><th>#ID</th><th>Fecha</th><th>Cliente / Aliado</th><th>Tipo</th><th>Repartidor</th><th>Valor Total</th><th>Debe Kigo</th><th>Pago</th><th>Editar</th><th>Eliminar</th></tr></thead>
+<tbody id="tbody"><tr><td colspan="10" style="text-align:center;padding:20px;color:#9ca3af">Cargando...</td></tr></tbody>
 </table>
 </div>
 
@@ -103,140 +86,113 @@ let currentNombreVisible = localStorage.getItem('kigoNombreVisible_'+currentRepa
 document.getElementById('nombreRepaTxt').innerText = currentNombreVisible;
 document.getElementById('logoRepa').innerHTML = currentFoto? `<img src="${currentFoto}" style="width:100%;height:100%;object-fit:cover">` : currentNombreVisible.charAt(0).toUpperCase();
 
-let tarifas = {mandado:5, transporte:10};
-db.ref('kigoTarifasRepas/'+currentRepa).on('value', s=>{ if(s.exists()) tarifas=s.val(); aplicar(); });
+let tarifasGlobal = {mandado:5, transporte:10};
+db.ref('kigoTarifas').once('value').then(s=>{ if(s.exists()) tarifasGlobal=s.val(); });
 
 let todos=[]; let filtrados=[]; let subcat='todos';
 
 function getTS(p){
- if(p.ts) return Number(p.ts);
- if(p.timestamp){ let t=Number(p.timestamp); return t<1e12? t*1000 : t; }
- if(p.fecha && typeof p.fecha==='string' && p.fecha.includes('/')){
-  let a=p.fecha.split(' ')[0].split('/');
-  if(a.length===3){ let m=parseInt(a[0]), d=parseInt(a[1]), y=parseInt(a[2]); if(m>12){ d=parseInt(a[0]); m=parseInt(a[1]); } if(y<100) y+=2000; let f=new Date(y,m-1,d,12,0,0); if(!isNaN(f)) return f.getTime(); }
- }
- if(p.iso){ let f=new Date(p.iso+'T12:00:00'); if(!isNaN(f)) return f.getTime(); }
- return 0;
+  if(p.ts) return Number(p.ts) < 1e12 ? Number(p.ts)*1000 : Number(p.ts);
+  if(p.timestamp){ let t=Number(p.timestamp); return t<1e12? t*1000 : t; }
+  if(p.iso){ let d=new Date(p.iso+'T12:00:00'); if(!isNaN(d)) return d.getTime(); }
+  if(p.fecha && typeof p.fecha==='string'){
+    let txt=p.fecha.split(' ')[0].trim();
+    let sep=txt.includes('/')?'/':txt.includes('-')?'-':'/';
+    let parts=txt.split(sep);
+    if(parts.length===3){
+      let p1=parseInt(parts[0]), p2=parseInt(parts[1]), p3=parseInt(parts[2]);
+      let m,d,y;
+      if(p3>31){ // formato m/d/y o d/m/y
+        if(p1>12){ d=p1; m=p2; } else { m=p1; d=p2; }
+        y=p3;
+      } else { // formato y-m-d
+        y=parseInt(parts[0]); m=parseInt(parts[1]); d=parseInt(parts[2]);
+      }
+      if(y<100) y+=2000;
+      if(m>=1&&m<=12&&d>=1&&d<=31){
+        let f=new Date(y,m-1,d,12,0,0);
+        if(!isNaN(f)) return f.getTime();
+      }
+    }
+  }
+  return 0;
 }
 function fFecha(ts){ let d=new Date(ts); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
-function isoFecha(ts){ let d=new Date(ts); return d.toISOString().slice(0,10); }
-function isoMes(ts){ let d=new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function isoF(ts){ return new Date(ts).toISOString().slice(0,10); }
+function isoM(ts){ let d=new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
 function esHoy(ts){ return new Date(ts).toDateString()===new Date().toDateString(); }
 function esAyer(ts){ let a=new Date(); a.setDate(a.getDate()-1); return new Date(ts).toDateString()===a.toDateString(); }
-function esEstaSemana(ts){ let hoy=new Date(); let ini=new Date(hoy); ini.setDate(hoy.getDate()-hoy.getDay()); ini.setHours(0,0,0,0); return ts>=ini.getTime(); }
-function esEsteMes(ts){ let d=new Date(ts), h=new Date(); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); }
+function esSemana(ts){ let hoy=new Date(); let ini=new Date(hoy); ini.setDate(hoy.getDate()-hoy.getDay()); ini.setHours(0,0,0,0); return ts>=ini.getTime(); }
+function esMes(ts){ let d=new Date(ts), h=new Date(); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); }
 
 db.ref('ventasKigo').on('value', snap=>{
- let val=snap.val()||{};
- let lista=Object.entries(val).map(([k,v])=>({...v,_key:k})).filter(v=> (v.repa===currentRepa || v.repartidor===currentRepa || v.repartidorNombre===currentRepa || currentRepa==='Jose') );
- let seen=new Set(); let unico=[];
- lista.forEach(p=>{
-  let ts=getTS(p); let cliente=(p.cliente||p.clienteNombre||'').trim(); let tot=parseInt(p.valor||p.total||p.precio||0)||0;
-  let clave=`${ts}_${cliente}_${tot}`.toLowerCase(); if(seen.has(clave)) return; seen.add(clave); unico.push(p);
- });
- unico.sort((a,b)=>getTS(a)-getTS(b)); // 1 abajo, grande arriba después
- unico.forEach((p,i)=> p.numeroOrden=i+1 );
- todos=unico.slice().reverse(); // mayor arriba
- document.getElementById('totalTxt').innerText=todos.length+' PEDIDOS';
- aplicar();
+  let val=snap.val()||{};
+  let lista=Object.entries(val).map(([k,v])=>({...v,_key:k,_ts:getTS(v)}));
+  lista = lista.filter(p=>p._ts>0);
+  lista.sort((a,b)=>a._ts-b._ts);
+  lista.forEach((p,i)=> p.numeroOrden=i+1);
+  todos = lista.slice().reverse();
+  document.getElementById('totalTxt').innerText = todos.length+' PEDIDOS';
+  aplicar();
 });
 
-window.setSubcat=function(t,btn){
- subcat=t;
- document.querySelectorAll('.subcats button').forEach(b=>b.classList.remove('active'));
- btn.classList.add('active');
- aplicar();
-}
-window.limpiar=function(){ document.getElementById('filtroMes').value=''; document.getElementById('filtroFecha').value=''; document.getElementById('filtroCliente').value=''; subcat='todos'; document.querySelectorAll('.subcats button').forEach((b,i)=>b.classList.toggle('active',i===0)); aplicar(); }
+window.setSubcat=function(t,btn){ subcat=t; document.querySelectorAll('.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); aplicar(); }
+window.limpiar=function(){ document.getElementById('filtroMes').value=''; document.getElementById('filtroFecha').value=''; document.getElementById('filtroQ').value=''; subcat='todos'; document.querySelectorAll('.subcats button').forEach((b,i)=>b.classList.toggle('active',i===0)); aplicar(); }
 
 window.aplicar=function(){
- let mes=document.getElementById('filtroMes').value;
- let fecha=document.getElementById('filtroFecha').value;
- let q=(document.getElementById('filtroCliente').value||'').toLowerCase();
- filtrados=todos.filter(p=>{
-  let ts=getTS(p);
-  if(subcat==='hoy' &&!esHoy(ts)) return false;
-  if(subcat==='ayer' &&!esAyer(ts)) return false;
-  if(subcat==='semana' &&!esEstaSemana(ts)) return false;
-  if(subcat==='mes' &&!esEsteMes(ts)) return false;
-  if(mes && isoMes(ts)!==mes) return false;
-  if(fecha && isoFecha(ts)!==fecha) return false;
-  if(q){
-   let cli=(p.cliente||p.clienteNombre||'').toLowerCase();
-   let repa=(p.repa||p.repartidor||p.repartidorNombre||'').toLowerCase();
-   let tipo=(p.tipo||p.tipoServicio||'').toLowerCase();
-   if(!cli.includes(q)&&!repa.includes(q)&&!tipo.includes(q)) return false;
-  }
-  return true;
- });
- render(filtrados);
+  let mes=document.getElementById('filtroMes').value;
+  let fecha=document.getElementById('filtroFecha').value;
+  let q=(document.getElementById('filtroQ').value||'').toLowerCase();
+  filtrados=todos.filter(p=>{
+    if(subcat==='hoy' && !esHoy(p._ts)) return false;
+    if(subcat==='ayer' && !esAyer(p._ts)) return false;
+    if(subcat==='semana' && !esSemana(p._ts)) return false;
+    if(subcat==='mes' && !esMes(p._ts)) return false;
+    if(mes && isoM(p._ts)!==mes) return false;
+    if(fecha && isoF(p._ts)!==fecha) return false;
+    if(q){
+      let c=(p.cliente||p.clienteNombre||'').toLowerCase();
+      let r=(p.repa||p.repartidor||p.repartidorNombre||'').toLowerCase();
+      if(!c.includes(q)&&!r.includes(q)) return false;
+    }
+    return true;
+  });
+  render(filtrados);
 }
 
 function render(lista){
- let tb=document.getElementById('tbody');
- if(!lista.length){ tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:20px;color:#9ca3af">Sin pedidos en ${subcat.toUpperCase()}</td></tr>`; document.getElementById('sTotal').innerText=0; document.getElementById('sIng').innerText='$0'; document.getElementById('sPag').innerText=0; document.getElementById('sDebe').innerText='$0'; return; }
- let ing=0, pag=0, debe=0;
- lista.forEach(p=>{
-  let total=parseInt(p.valor||p.total||p.precio||0)||0; ing+=total;
-  let tipo=(p.tipo||p.tipoServicio||'').toLowerCase();
-  let fee = tipo.includes('trans')? (tarifas.transporte||10) : (tarifas.mandado||5);
-  if(p.feeKigo) fee=parseInt(p.feeKigo);
-  if(p.pagado) pag++; else debe+=fee;
- });
- document.getElementById('sTotal').innerText=lista.length;
- document.getElementById('sIng').innerText='$'+ing.toLocaleString();
- document.getElementById('sPag').innerText=pag;
- document.getElementById('sDebe').innerText='$'+debe.toLocaleString();
-
- tb.innerHTML='';
- lista.forEach(p=>{
-  let ts=getTS(p);
-  let total=parseInt(p.valor||p.total||p.precio||0)||0;
-  let tipo=(p.tipo||p.tipoServicio||'Mandado'); let tipoLow=tipo.toLowerCase();
-  let esTrans=tipoLow.includes('trans');
-  let fee = p.feeKigo? parseInt(p.feeKigo) : (esTrans? (tarifas.transporte||10) : (tarifas.mandado||5));
-  let cliente=p.cliente||p.clienteNombre||'Cliente';
-  let repa=p.repa||p.repartidor||p.repartidorNombre||currentRepa;
-  let pagado=!!p.pagado;
-  let tr=document.createElement('tr');
-  tr.innerHTML=`
-   <td><span class="num-id">#${p.numeroOrden}</span></td>
-   <td><b>${fFecha(ts)}</b></td>
-   <td><b>${cliente.substring(0,22)}</b></td>
-   <td><span class="pill ${esTrans?'pill-trans':'pill-mandado'}">${esTrans?'MOTO TRANSPORTE':'MOTO MANDADO'}</span></td>
-   <td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-weight:800;font-size:8px">${repa}</span></td>
-   <td><b style="color:#10b981">$${total}</b></td>
-   <td><b style="color:#ef4444">$${fee}</b></td>
-   <td><button class="pill ${pagado?'pill-si':'pill-no'}" style="border:none;cursor:pointer" onclick="togglePago('${p._key}')">${pagado?'✅ PAGADO':'❌ NO PAGADO'}</button></td>
-   <td><button class="btn btn-edit" onclick="editar('${p._key}')">EDITAR</button></td>
-   <td><button class="btn btn-del" onclick="eliminar('${p._key}')">ELIMINAR</button></td>
-  `;
-  tb.appendChild(tr);
- });
+  let tb=document.getElementById('tbody');
+  if(!lista.length){ tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:20px;color:#9ca3af">Sin pedidos en ${subcat.toUpperCase()}</td></tr>`; sTotal.innerText=0; sIng.innerText='$0'; sPag.innerText=0; sDebe.innerText='$0'; return; }
+  let ing=0,pag=0,debe=0;
+  lista.forEach(p=>{
+    let tot=parseInt(p.valor||p.total||0)||0; ing+=tot;
+    let tipo=(p.tipo||p.tipoServicio||'').toLowerCase(); let esT=tipo.includes('trans');
+    let fee=p.feeKigo? parseInt(p.feeKigo) : (esT? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5));
+    if(p.pagado) pag++; else debe+=fee;
+  });
+  sTotal.innerText=lista.length; sIng.innerText='$'+ing.toLocaleString(); sPag.innerText=pag; sDebe.innerText='$'+debe.toLocaleString();
+  tb.innerHTML='';
+  lista.forEach(p=>{
+    let tot=parseInt(p.valor||p.total||0)||0;
+    let tipo=(p.tipo||p.tipoServicio||'Mandado'); let esT=tipo.toLowerCase().includes('trans');
+    let fee=p.feeKigo? parseInt(p.feeKigo) : (esT? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5));
+    let cli=p.cliente||p.clienteNombre||'Cliente';
+    let repa=p.repa||p.repartidor||p.repartidorNombre||'';
+    let tr=document.createElement('tr');
+    tr.innerHTML=`<td><span class="num">#${p.numeroOrden}</span></td><td><b>${fFecha(p._ts)}</b><br><span style="font-size:7px;color:#6b7280">${isoF(p._ts)}</span></td><td><b>${cli.slice(0,24)}</b></td><td><span class="pill ${esT?'pill-t':'pill-m'}">${esT?'MOTO TRANSPORTE':'MOTO MANDADO'}</span></td><td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-weight:800;font-size:8px">${repa}</span></td><td><b style="color:#10b981">$${tot}</b></td><td><b style="color:#ef4444">$${fee}</b></td><td><button class="pill ${p.pagado?'pill-si':'pill-no'}" style="border:none;cursor:pointer" onclick="togglePago('${p._key}')">${p.pagado?'✅ PAGADO':'❌ NO PAGADO'}</button></td><td><button class="btn btn-b" onclick="editar('${p._key}')">EDITAR</button></td><td><button class="btn btn-r" onclick="eliminar('${p._key}')">ELIMINAR</button></td>`;
+    tb.appendChild(tr);
+  });
 }
 
-window.togglePago=function(k){
- let snap=todos.find(x=>x._key===k); if(!snap) return;
- db.ref('ventasKigo/'+k).update({pagado:!snap.pagado, pagadoRepa:!snap.pagado});
-}
-window.eliminar=function(k){ if(confirm('¿Eliminar este pedido?')) db.ref('ventasKigo/'+k).remove(); }
+window.togglePago=function(k){ let p=todos.find(x=>x._key===k); if(!p) return; db.ref('ventasKigo/'+k).update({pagado:!p.pagado, pagadoRepa:!p.pagado}); }
+window.eliminar=function(k){ if(confirm('¿Eliminar este pedido #?')) db.ref('ventasKigo/'+k).remove(); }
 window.editar=function(k){
- let p=todos.find(x=>x._key===k); if(!p) return;
- let nuevoCliente=prompt('Cliente / Aliado:', p.cliente||p.clienteNombre||'');
- if(nuevoCliente===null) return;
- let nuevoValor=prompt('Valor total:', p.valor||p.total||'');
- if(nuevoValor===null) return;
- let nuevoTipo=prompt('Tipo (mandado / transporte):', p.tipo||p.tipoServicio||'mandado');
- if(nuevoTipo===null) return;
- db.ref('ventasKigo/'+k).update({
-  cliente: nuevoCliente.trim(),
-  clienteNombre: nuevoCliente.trim(),
-  valor: parseInt(nuevoValor)||0,
-  total: parseInt(nuevoValor)||0,
-  precio: '$'+(parseInt(nuevoValor)||0),
-  tipo: nuevoTipo.toLowerCase().includes('trans')?'Transporte':'Moto Mandado',
-  tipoServicio: nuevoTipo.toLowerCase().includes('trans')?'Moto Transporte':'Moto Mandado'
- });
+  let p=todos.find(x=>x._key===k); if(!p) return;
+  let cli=prompt('Cliente / Aliado:', p.cliente||p.clienteNombre||''); if(cli===null) return;
+  let val=prompt('Valor total:', p.valor||p.total||''); if(val===null) return;
+  let tip=prompt('Tipo (mandado / transporte):', p.tipo||p.tipoServicio||'mandado'); if(tip===null) return;
+  let re=prompt('Repartidor:', p.repa||p.repartidor||''); if(re===null) return;
+  db.ref('ventasKigo/'+k).update({cliente:cli.trim(), clienteNombre:cli.trim(), valor:parseInt(val)||0, total:parseInt(val)||0, precio:'$'+(parseInt(val)||0), tipo: tip.toLowerCase().includes('trans')?'Transporte':'Moto Mandado', tipoServicio: tip.toLowerCase().includes('trans')?'Moto Transporte':'Moto Mandado', repa:re.trim(), repartidor:re.trim()});
 }
 </script>
 </body>
