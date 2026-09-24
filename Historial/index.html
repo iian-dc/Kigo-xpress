@@ -91,30 +91,25 @@ db.ref('kigoTarifas').once('value').then(s=>{ if(s.exists()) tarifasGlobal=s.val
 
 let todos=[]; let filtrados=[]; let subcat='todos';
 
+// CORREGIDO: Lee 8/24/2026 como 24 de agosto correctamente
 function getTS(p){
-  if(p.ts) return Number(p.ts) < 1e12 ? Number(p.ts)*1000 : Number(p.ts);
-  if(p.timestamp){ let t=Number(p.timestamp); return t<1e12? t*1000 : t; }
-  if(p.iso){ let d=new Date(p.iso+'T12:00:00'); if(!isNaN(d)) return d.getTime(); }
   if(p.fecha && typeof p.fecha==='string'){
     let txt=p.fecha.split(' ')[0].trim();
-    let sep=txt.includes('/')?'/':txt.includes('-')?'-':'/';
-    let parts=txt.split(sep);
-    if(parts.length===3){
-      let p1=parseInt(parts[0]), p2=parseInt(parts[1]), p3=parseInt(parts[2]);
-      let m,d,y;
-      if(p3>31){ // formato m/d/y o d/m/y
-        if(p1>12){ d=p1; m=p2; } else { m=p1; d=p2; }
-        y=p3;
-      } else { // formato y-m-d
-        y=parseInt(parts[0]); m=parseInt(parts[1]); d=parseInt(parts[2]);
-      }
-      if(y<100) y+=2000;
-      if(m>=1&&m<=12&&d>=1&&d<=31){
-        let f=new Date(y,m-1,d,12,0,0);
-        if(!isNaN(f)) return f.getTime();
+    if(txt.includes('/')){
+      let parts=txt.split('/');
+      if(parts.length===3){
+        let m=parseInt(parts[0]), d=parseInt(parts[1]), y=parseInt(parts[2]);
+        if(y<100) y+=2000;
+        if(m>=1&&m<=12&&d>=1&&d<=31){
+          let f=new Date(y,m-1,d,12,0,0);
+          if(!isNaN(f)) return f.getTime();
+        }
       }
     }
   }
+  if(p.ts) return Number(p.ts) < 1e12 ? Number(p.ts)*1000 : Number(p.ts);
+  if(p.timestamp){ let t=Number(p.timestamp); return t<1e12? t*1000 : t; }
+  if(p.iso){ let d=new Date(p.iso+'T12:00:00'); if(!isNaN(d)) return d.getTime(); }
   return 0;
 }
 function fFecha(ts){ let d=new Date(ts); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
@@ -179,12 +174,12 @@ function render(lista){
     let cli=p.cliente||p.clienteNombre||'Cliente';
     let repa=p.repa||p.repartidor||p.repartidorNombre||'';
     let tr=document.createElement('tr');
-    tr.innerHTML=`<td><span class="num">#${p.numeroOrden}</span></td><td><b>${fFecha(p._ts)}</b><br><span style="font-size:7px;color:#6b7280">${isoF(p._ts)}</span></td><td><b>${cli.slice(0,24)}</b></td><td><span class="pill ${esT?'pill-t':'pill-m'}">${esT?'MOTO TRANSPORTE':'MOTO MANDADO'}</span></td><td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-weight:800;font-size:8px">${repa}</span></td><td><b style="color:#10b981">$${tot}</b></td><td><b style="color:#ef4444">$${fee}</b></td><td><button class="pill ${p.pagado?'pill-si':'pill-no'}" style="border:none;cursor:pointer" onclick="togglePago('${p._key}')">${p.pagado?'✅ PAGADO':'❌ NO PAGADO'}</button></td><td><button class="btn btn-b" onclick="editar('${p._key}')">EDITAR</button></td><td><button class="btn btn-r" onclick="eliminar('${p._key}')">ELIMINAR</button></td>`;
+    tr.innerHTML=`<td><span class="num">#${p.numeroOrden}</span></td><td><b>${fFecha(p._ts)}</b></td><td><b>${cli.slice(0,24)}</b></td><td><span class="pill ${esT?'pill-t':'pill-m'}">${esT?'MOTO TRANSPORTE':'MOTO MANDADO'}</span></td><td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-weight:800;font-size:8px">${repa}</span></td><td><b style="color:#10b981">$${tot}</b></td><td><b style="color:#ef4444">$${fee}</b></td><td><button class="pill ${p.pagado?'pill-si':'pill-no'}" style="border:none;cursor:pointer" onclick="togglePago('${p._key}')">${p.pagado?'✅ PAGADO':'❌ NO PAGADO'}</button></td><td><button class="btn btn-b" onclick="editar('${p._key}')">EDITAR</button></td><td><button class="btn btn-r" onclick="eliminar('${p._key}')">ELIMINAR</button></td>`;
     tb.appendChild(tr);
   });
 }
 
-window.togglePago=function(k){ let p=todos.find(x=>x._key===k); if(!p) return; db.ref('ventasKigo/'+k).update({pagado:!p.pagado, pagadoRepa:!p.pagado}); }
+window.togglePago=function(k){ let p=todos.find(x=>x._key===k); if(!p) return; db.ref('ventasKigo/'+k).update({pagado:!p.pagado}); }
 window.eliminar=function(k){ if(confirm('¿Eliminar este pedido #?')) db.ref('ventasKigo/'+k).remove(); }
 window.editar=function(k){
   let p=todos.find(x=>x._key===k); if(!p) return;
