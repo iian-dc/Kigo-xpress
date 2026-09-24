@@ -2,205 +2,91 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KIGO - Historial</title>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<script type="importmap">{"imports":{"firebase-app":"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js","firebase-database":"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"}}</script>
-<style>
-*{box-sizing:border-box;font-family:Inter,Arial}body{margin:0;background:#f6f7fb;color:#111}
-.header{position:sticky;top:0;z-index:10;background:#111;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.btn{padding:8px 12px;border-radius:10px;border:none;font-weight:800;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
-.btn-white{background:#fff;border:1px solid #ddd;color:#111}.btn-green{background:#16a34a;color:#fff}.btn-red{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
-.btn-salir{background:#fff;color:#111;padding:6px 14px;border-radius:999px;font-weight:900;font-size:12px}
-.subcats{display:flex;gap:6px;padding:12px 14px;overflow:auto}
-.subcats button{padding:8px 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:800;font-size:11px;cursor:pointer;white-space:nowrap}
-.subcats button.active{background:#111;color:#fff;border-color:#111}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 14px 12px}
-@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
-.stat{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:12px}
-.stat b{font-size:18px;display:block}.stat span{font-size:10px;color:#666;font-weight:800;text-transform:uppercase}
-.filters{background:#fff;margin:0 14px;padding:12px;border-radius:14px;border:1px solid #e5e7eb;display:flex;flex-wrap:wrap;gap:8px}
-.filters input,.filters select{padding:8px 10px;border-radius:10px;border:1px solid #ddd;font-size:12px;flex:1;min-width:120px}
-.table-wrap{background:#fff;margin:14px;border-radius:14px;border:1px solid #e5e7eb;overflow:auto}
-table{width:100%;border-collapse:collapse;font-size:11px}
-th{position:sticky;top:0;background:#f9fafb;padding:10px 8px;text-align:left;font-size:10px;text-transform:uppercase;border-bottom:1px solid #e5e7eb;white-space:nowrap}
-td{padding:9px 8px;border-bottom:1px solid #f1f1f1;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
-.tipo-pill{padding:2px 7px;border-radius:999px;font-size:9px;font-weight:900}.tipo-recoger{background:#dcfce7;color:#166534}.tipo-comprar{background:#fef9c3;color:#713f12}
-</style>
+<title>DIAGNOSTICO KIGO</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>body{font-family:Arial;padding:16px;background:#111;color:#fff}.box{background:#222;padding:12px;border-radius:12px;margin-top:12px;font-size:12px;white-space:pre-wrap;word-break:break-all} b{color:#22c55e} button{padding:10px 16px;border-radius:10px;border:none;font-weight:900;cursor:pointer}</style>
 </head>
 <body>
-<div class="header"><div style="width:20px"></div><div><button class="btn btn-salir" onclick="salir()"><i class="material-icons" style="font-size:14px">logout</i> Salir</button></div></div>
-<div class="subcats">
-<button id="btnTodos" class="active" onclick="filtrarTiempo('todos',this)">Todos</button>
-<button id="btnHoy" onclick="filtrarTiempo('hoy',this)">Hoy</button>
-<button id="btnSemana" onclick="filtrarTiempo('semana',this)">Esta Semana</button>
-<button id="btnMes" onclick="filtrarTiempo('mes',this)">Este Mes</button>
-</div>
-<div class="stats-grid">
-<div class="stat"><span>Total Servicios</span><b id="statTotal">0</b></div>
-<div class="stat"><span>Ingresos</span><b id="statIngresos" style="color:#16a34a">$0</b></div>
-<div class="stat"><span>Finalizados</span><b id="statFinalizados">0</b></div>
-<div class="stat"><span>Pendientes</span><b id="statPendientes">0</b></div>
-</div>
-<div class="filters">
-<input id="busqueda" placeholder="🔍 Buscar..." oninput="aplicarFiltros()">
-<select id="filtroTipo" onchange="aplicarFiltros()"><option value="todos">Todos tipos</option><option value="recoger">Moto Mandado</option><option value="comprar">Comprar</option></select>
-<input type="month" id="filtroMes" onchange="aplicarFiltros()"><button class="btn btn-green" onclick="exportarCSV()">Exportar</button>
-</div>
-<div class="table-wrap">
-<table><thead><tr><th>#ID</th><th>Fecha</th><th>Tipo</th><th>Recoger</th><th>Entregar</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
-<tbody id="tbodyHistorial"><tr><td colspan="8" style="text-align:center;padding:30px">Conectando a kigo historial...</td></tr></tbody></table>
-</div>
-<div id="modalEditar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;align-items:center;justify-content:center;padding:14px"><div style="background:#fff;width:100%;max-width:400px;border-radius:16px;padding:16px">
-<b>Editar Servicio</b>
-<input id="editRecoger" style="width:100%;padding:8px;margin-top:8px;border-radius:8px;border:1px solid #ddd">
-<input id="editEntregar" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd">
-<input id="editPrecio" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd">
-<select id="editEstado" style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd"><option value="a_recoger">A Recoger</option><option value="recogido">Recogido</option><option value="a_entregar">A Entregar</option><option value="finalizado">Finalizado</option></select>
-<div style="display:flex;gap:6px;margin-top:10px"><button class="btn btn-green" style="flex:1" onclick="guardarEdicion()">Guardar</button><button class="btn btn-white" style="flex:1" onclick="document.getElementById('modalEditar').style.display='none'">Cancelar</button></div>
-</div></div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
+<h2>🔍 DIAGNÓSTICO KIGO HISTORIAL</h2>
+<div id="status" class="box">Conectando...</div>
+<button onclick="location.reload()" style="background:#fff;color:#111">↻ Recargar</button>
+<div id="rootKeys" class="box">Esperando datos root...</div>
+<div id="historialData" class="box">Esperando kigo historial...</div>
+<div id="pedidosData" class="box">Esperando kigo_pedidos...</div>
+<script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-let todosPedidos=[]; let filtrados=[]; let tiempoActual='todos'; let editandoKey=null;
-window.todosPedidosGlobal = todosPedidos;
-
-window.salir = function(){ window.location.href='https://iian-dc.github.io/Kigoxpress/login/'; }
-
-function esHoy(ts){if(!ts) return true; return new Date(ts).toDateString()===new Date().toDateString();}
-function esEstaSemana(ts){if(!ts) return true; return (Date.now()-ts)<7*24*60*60*1000;}
-function esEsteMes(ts){if(!ts) return true; const d=new Date(ts);const h=new Date();return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();}
-function esDelMesSeleccionado(ts, mesValor){ if(!mesValor) return true; if(!ts) return true; const d=new Date(ts); const [y,m]=mesValor.split('-'); return d.getFullYear()==parseInt(y) && (d.getMonth()+1)==parseInt(m); }
-
-// RUTA EXACTA QUE ME DISTE
-const rutaPrincipal = 'kigo historial';
-const rutaAlt = 'kigo_historial';
-
-function cargarDatos(ruta){
-  const r = ref(db, ruta);
-  onValue(r, (snap)=>{
-    const val=snap.val();
-    console.log(`📦 Datos en ${ruta}:`, val);
-    if(!val) return;
-    const listaTemp=[];
-    Object.keys(val).forEach(k=>{
-      const p=val[k];
-      if(typeof p==='object'){
-        listaTemp.push({fbKey:k, rutaOrigen:ruta, timestamp: p.timestamp || p.fechaTimestamp || p.confirmadoEn || p.historial?.creado || Date.now(),...p});
-      }
-    });
-    if(listaTemp.length>0){
-      todosPedidos = listaTemp;
-      todosPedidos.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
-      window.todosPedidosGlobal = todosPedidos;
-      console.log(`✅ ${listaTemp.length} pedidos cargados de ${ruta}`);
-      aplicarFiltros();
-    }
-  }, (err)=>{console.error(`Error en ${ruta}:`, err);});
-}
-
-cargarDatos(rutaPrincipal);
-cargarDatos(rutaAlt);
-cargarDatos('kigo_pedidos');
-cargarDatos('pedidosLive');
-
-window.actualizarStats=function(lista){
- document.getElementById('statTotal').innerText=lista.length;
- let ingresos=0, fin=0, pend=0;
- lista.forEach(p=>{
-  const precio=parseInt(String(p.precio||p.total||'').replace(/[^0-9]/g,''))||0; ingresos+=precio;
-  if(p.estado==='finalizado') fin++; else pend++;
- });
- document.getElementById('statIngresos').innerText="$"+ingresos.toLocaleString()+" MXN";
- document.getElementById('statFinalizados').innerText=fin;
- document.getElementById('statPendientes').innerText=pend;
-}
-window.renderTabla=function(lista){
- const tbody=document.getElementById('tbodyHistorial');
- if(!lista.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:20px">Sin resultados - Total en base: ${todosPedidos.length}</td></tr>`;return;}
- tbody.innerHTML="";
- lista.forEach(p=>{
-  const idCorto=p.fbKey.substring(p.fbKey.length-6).toUpperCase();
-  const fecha=p.fecha || (p.timestamp? new Date(p.timestamp).toLocaleString() : 'Sin fecha');
-  const tipoTxt=p.tipo||p.tipoPedidoActual||'Recoger';
-  let tipoClass='tipo-recoger'; if(String(tipoTxt).toLowerCase().includes('comprar')) tipoClass='tipo-comprar';
-  const estadoColor = p.estado==='finalizado'? 'background:#111;color:#fff' : 'background:#fef08a;color:#713f12';
-  const recoger = p.recogerEn||p.direccionRecoger||p.cliente||'';
-  const entregar = p.entregarEn||p.direccionEntregar||p.destino||'';
-  const precio = p.precio||p.total||'';
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td><b>#${idCorto}</b></td><td>${fecha}</td><td><span class="tipo-pill ${tipoClass}">${tipoTxt}</span></td><td title="${recoger}">${String(recoger).substring(0,28)}</td><td title="${entregar}">${String(entregar).substring(0,28)}</td><td><b style="color:#16a34a">${precio}</b></td><td><span style="padding:2px 7px;border-radius:999px;font-size:9px;font-weight:900;${estadoColor}">${p.estado||''}</span></td><td style="display:flex;gap:4px"><button class="btn btn-white" onclick="editarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">edit</i></button><button class="btn btn-red" onclick="borrarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">delete</i></button></td>`;
-  tbody.appendChild(tr);
- });
-}
-window.filtrarTiempo=function(tipo,btn){
- tiempoActual=tipo;
- document.querySelectorAll('.subcats button').forEach(b=>b.classList.remove('active'));
- if(btn) btn.classList.add('active');
- aplicarFiltros();
-}
-window.aplicarFiltros=function(){
- const txt=(document.getElementById('busqueda').value||'').toLowerCase();
- const tipoF=document.getElementById('filtroTipo').value;
- const mesF=document.getElementById('filtroMes').value;
- filtrados=todosPedidos.filter(p=>{
-  const ts=p.timestamp || Date.now();
-  if(tiempoActual==='hoy' &&!esHoy(ts)) return false;
-  if(tiempoActual==='semana' &&!esEstaSemana(ts)) return false;
-  if(tiempoActual==='mes' &&!esEsteMes(ts)) return false;
-  if(mesF &&!esDelMesSeleccionado(ts, mesF)) return false;
-  if(txt){
-    const rec = String(p.recogerEn||p.direccionRecoger||'').toLowerCase();
-    const ent = String(p.entregarEn||p.direccionEntregar||'').toLowerCase();
-    if(!rec.includes(txt)&&!ent.includes(txt)) return false;
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+document.getElementById('status').innerText = "✅ Firebase conectado a: " + firebaseConfig.databaseURL;
+</script>
+<script>
+// 1. LEER TODO EL ROOT PARA VER QUE CARPETAS EXISTEN
+db.ref('/').once('value').then(snap=>{
+  const val = snap.val();
+  if(!val){
+    document.getElementById('rootKeys').innerText = "❌ ROOT VACÍO - No hay ninguna carpeta en esta base\nRevisa que estés en el proyecto correcto";
+    return;
   }
-  const t=String(p.tipo||'').toLowerCase();
-  if(tipoF==='recoger'&&!t.includes('recoger')&&!t.includes('aliado')) return false;
-  if(tipoF==='comprar'&&!t.includes('comprar')) return false;
-  return true;
- });
- renderTabla(filtrados); actualizarStats(filtrados);
-}
-  window.editarPedido=function(fbKey){
- const p=window.todosPedidosGlobal.find(x=>x.fbKey===fbKey); if(!p) return;
- window.editandoKey=fbKey; window.editandoRuta=p.rutaOrigen||'kigo historial';
- document.getElementById('editRecoger').value=p.recogerEn||p.direccionRecoger||'';
- document.getElementById('editEntregar').value=p.entregarEn||p.direccionEntregar||'';
- document.getElementById('editPrecio').value=p.precio||p.total||'';
- document.getElementById('editEstado').value=p.estado||'a_recoger';
- document.getElementById('modalEditar').style.display='flex';
-}
-window.guardarEdicion=function(){
- if(!window.editandoKey) return;
- const updates={
-   recogerEn: document.getElementById('editRecoger').value,
-   entregarEn: document.getElementById('editEntregar').value,
-   precio: document.getElementById('editPrecio').value,
-   total: document.getElementById('editPrecio').value,
-   estado: document.getElementById('editEstado').value
- };
- const r = ref(db, `${window.editandoRuta}/${window.editandoKey}`);
- update(r, updates).then(()=>{alert("Actualizado ✅");document.getElementById('modalEditar').style.display='none';});
-}
-window.borrarPedido=function(fbKey){
- const p=window.todosPedidosGlobal.find(x=>x.fbKey===fbKey);
- const ruta = p? p.rutaOrigen : 'kigo historial';
- if(!confirm("¿Borrar? 🗑️")) return;
- const r = ref(db, `${ruta}/${fbKey}`);
- remove(r).then(()=>{alert("Borrado ✅");});
-}
-window.exportarCSV=function(){
- const lista=filtrados.length? filtrados : todosPedidos;
- if(!lista.length){alert("No hay datos");return;}
- let csv="ID,Fecha,Tipo,Recoger,Entregar,Precio,Estado\n";
- lista.forEach(p=>{const f=p.fecha||new Date(p.timestamp||Date.now()).toLocaleString();csv+=`${p.fbKey},"${f}","${p.tipo||''}","${p.recogerEn||''}","${p.entregarEn||''}","${p.precio||''}","${p.estado||''}"\n`;});
- const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob);
- const a=document.createElement('a'); a.href=url; a.download=`historial-kigo-${new Date().toISOString().slice(0,10)}.csv`; a.click();
-}
+  const keys = Object.keys(val);
+  document.getElementById('rootKeys').innerText = `✅ CARPETAS EN TU BASE (${keys.length}):\n${keys.join('\n')}\n\nTotal carpetas: ${keys.length}\n\nCopia esto y mándamelo`;
+  console.log("ROOT KEYS:", keys);
+
+  // Buscar automáticamente donde hay pedidos
+  keys.forEach(k=>{
+    const sub = val[k];
+    if(typeof sub==='object'){
+      const count = Object.keys(sub).length;
+      console.log(`Carpeta ${k}: ${count} registros`);
+    }
+  });
+
+}).catch(err=>{
+  document.getElementById('rootKeys').innerText = `❌ ERROR LEYENDO ROOT:\n${err.message}\n\nEsto es por REGLAS DE FIREBASE\nVe a Firebase Console > Realtime Database > Rules y pon:\n{\n "rules": { ".read": true, ".write": true }\n}`;
+});
+
+// 2. INTENTAR LEER kigo historial CON ESPACIO
+db.ref('kigo historial').once('value').then(snap=>{
+  const val=snap.val();
+  if(!val){
+    document.getElementById('historialData').innerText = "❌ 'kigo historial' (con espacio) VACÍO o NO EXISTE";
+  } else {
+    const total = Object.keys(val).length;
+    const ejemplo = Object.values(val)[0];
+    document.getElementById('historialData').innerText = `✅ 'kigo historial' ENCONTRADO: ${total} registros\n\nEJEMPLO DEL PRIMER REGISTRO:\n${JSON.stringify(ejemplo, null, 2).substring(0,1000)}`;
+  }
+}).catch(err=>{
+  document.getElementById('historialData').innerText = `❌ ERROR en 'kigo historial': ${err.message}`;
+});
+
+// 3. INTENTAR CON GUION BAJO
+db.ref('kigo_historial').once('value').then(snap=>{
+  const val=snap.val();
+  if(val){
+    document.getElementById('historialData').innerText += `\n\n✅ TAMBIÉN EXISTE 'kigo_historial' con ${Object.keys(val).length} registros`;
+  }
+});
+</script>
+<script>
+// 4. LEER kigo_pedidos y otros
+['kigo_pedidos','pedidosLive','pedidos','ventas','historial'].forEach(ruta=>{
+  db.ref(ruta).once('value').then(snap=>{
+    const val=snap.val();
+    if(val){
+      const total=Object.keys(val).length;
+      document.getElementById('pedidosData').innerText += `\n✅ ${ruta}: ${total} registros`;
+    } else {
+      document.getElementById('pedidosData').innerText += `\n❌ ${ruta}: vacío`;
+    }
+  }).catch(()=>{});
+});
+
+db.ref('kigo_pedidos').once('value').then(snap=>{
+  const val=snap.val();
+  if(val){
+    document.getElementById('pedidosData').innerText = `DATOS EN kigo_pedidos y otros:\n`;
+  }
+});
 </script>
 </body>
 </html>
