@@ -49,7 +49,7 @@ td{padding:9px 8px;border-bottom:1px solid #f1f1f1;white-space:nowrap;max-width:
 </div>
 <div class="table-wrap">
 <table><thead><tr><th>#ID</th><th>Fecha</th><th>Cliente / Aliado</th><th>Tipo Servicio</th><th>Repartidor</th><th>Estado Pago</th><th>Acciones</th></tr></thead>
-<tbody id="tbodyHistorial"><tr><td colspan="7" style="text-align:center;padding:30px">Cargando pedidos...</td></tr></tbody></table>
+<tbody id="tbodyHistorial"><tr><td colspan="7" style="text-align:center;padding:30px">Cargando pedidos con fecha real...</td></tr></tbody></table>
 </div>
 <div id="modalEditar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;align-items:center;justify-content:center;padding:14px"><div style="background:#fff;width:100%;max-width:400px;border-radius:16px;padding:16px">
 <b>Editar Servicio #<span id="editIdNum"></span></b>
@@ -69,11 +69,37 @@ let todosPedidos=[]; let filtrados=[]; let tiempoActual='todos'; let editandoKey
 function salir(){ window.location.href='https://iian-dc.github.io/Kigoxpress/login/'; }
 </script>
 <script>
-function fechaCorta(ts){ if(!ts) return '-'; const d=new Date(ts); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
-function esHoy(ts){if(!ts) return true; return new Date(ts).toDateString()===new Date().toDateString();}
-function esEstaSemana(ts){if(!ts) return true; return (Date.now()-ts)<7*24*60*60*1000;}
-function esEsteMes(ts){if(!ts) return true; const d=new Date(ts);const h=new Date();return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();}
-function esDelMesSeleccionado(ts, mesValor){ if(!mesValor) return true; if(!ts) return true; const d=new Date(ts); const [y,m]=mesValor.split('-'); return d.getFullYear()==parseInt(y) && (d.getMonth()+1)==parseInt(m); }
+function fechaCorta(ts){
+ if(!ts || ts===0) return '-';
+ const d=new Date(ts);
+ if(isNaN(d.getTime())) return '-';
+ return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+}
+function parseFechaReal(p){
+  if(p.timestamp &&!isNaN(p.timestamp) && Number(p.timestamp)>1000000000) return Number(p.timestamp);
+  if(p.fechaTimestamp &&!isNaN(p.fechaTimestamp)) return Number(p.fechaTimestamp);
+  if(p.createdAt &&!isNaN(p.createdAt)) return Number(p.createdAt);
+  if(p.confirmadoEn &&!isNaN(p.confirmadoEn)) return Number(p.confirmadoEn);
+  if(p.historial && p.historial.creado &&!isNaN(p.historial.creado)) return Number(p.historial.creado);
+  if(p.fecha &&!isNaN(p.fecha) && String(p.fecha).length>8) return Number(p.fecha);
+  if(p.fecha && typeof p.fecha==='string'){
+    const partes = p.fecha.split(' ')[0].split('/');
+    if(partes.length===3){
+      const dia=parseInt(partes[0]), mes=parseInt(partes[1])-1, anio=parseInt(partes[2]);
+      const d=new Date(anio,mes,dia);
+      if(!isNaN(d.getTime())) return d.getTime();
+    }
+    const d2=new Date(p.fecha);
+    if(!isNaN(d2.getTime())) return d2.getTime();
+  }
+  if(p.fechaCreacion){ const d=new Date(p.fechaCreacion); if(!isNaN(d.getTime())) return d.getTime(); }
+  if(p.date){ const d=new Date(p.date); if(!isNaN(d.getTime())) return d.getTime(); }
+  return 0;
+}
+function esHoy(ts){if(!ts) return false; return new Date(ts).toDateString()===new Date().toDateString();}
+function esEstaSemana(ts){if(!ts) return false; return (Date.now()-ts)<7*24*60*60*1000;}
+function esEsteMes(ts){if(!ts) return false; const d=new Date(ts);const h=new Date();return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();}
+function esDelMesSeleccionado(ts, mesValor){ if(!mesValor) return true; if(!ts) return false; const d=new Date(ts); const [y,m]=mesValor.split('-'); return d.getFullYear()==parseInt(y) && (d.getMonth()+1)==parseInt(m); }
 
 let datosTemp = {};
 function procesarRuta(nombreRuta){
@@ -88,12 +114,13 @@ function procesarRuta(nombreRuta){
         if(typeof p==='object' &&!unidos.find(u=>u.fbKey===k)){
           unidos.push({
             fbKey:k, rutaOrigen:ruta,
-            timestamp: p.timestamp || p.fechaTimestamp || p.confirmadoEn || p.createdAt || (p.fecha? new Date(p.fecha).getTime() : Date.now()),
+            timestamp: parseFechaReal(p),
+            fechaOriginal: p.fecha || '',
             clienteNombre: p.clienteNombre || p.cliente || p.aliado || p.nombreCliente || 'Cliente',
-            tipoServicio: p.tipoServicio || (String(p.tipo||'').toLowerCase().includes('transporte')?'Moto Transporte':'Moto Mandado'),
+            tipoServicio: p.tipoServicio || p.tipo || (String(p.tipo||'').toLowerCase().includes('transporte')?'Moto Transporte':'Moto Mandado'),
             razonServicio: p.razonServicio || (String(p.tipo||'').toLowerCase().includes('comprar')?'Compras':'Recoger'),
             repartidorNombre: p.repartidorNombre || p.repartidor || p.repa || p.nombreRepa || p.driver || 'Sin asignar',
-           ...p
+         ...p
           });
         }
       });
@@ -123,7 +150,7 @@ function renderTabla(lista){
   const pagadoHtml = pagado? `<span style="background:#dcfce7;color:#166534;padding:3px 8px;border-radius:999px;font-weight:900;font-size:9px">✅ PAGADO</span>` : `<span style="background:#fee2e2;color:#991b1b;padding:3px 8px;border-radius:999px;font-weight:900;font-size:9px">❌ NO</span>`;
   const tipoClass = String(p.tipoServicio).toLowerCase().includes('transporte')?'tipo-transporte': String(p.razonServicio).toLowerCase().includes('compra')?'tipo-comprar':'tipo-recoger';
   const tr=document.createElement('tr');
-  tr.innerHTML=`<td><b style="background:#111;color:#fff;padding:3px 8px;border-radius:6px">#${p.numeroContable}</b></td><td>${fechaCorta(p.timestamp)}</td><td><b>${String(p.clienteNombre).substring(0,22)}</b></td><td><span class="tipo-pill ${tipoClass}">${p.tipoServicio} - ${p.razonServicio}</span></td><td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800">${String(p.repartidorNombre).substring(0,18)}</span></td><td>${pagadoHtml}</td><td style="display:flex;gap:4px"><button class="btn ${pagado?'btn-green':'btn-blue'}" onclick="togglePagado('${p.fbKey}','${p.rutaOrigen}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">${pagado?'check':'payments'}</i></button><button class="btn btn-white" onclick="editarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">edit</i></button><button class="btn btn-red" onclick="borrarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">delete</i></button></td>`;
+  tr.innerHTML=`<td><b style="background:#111;color:#fff;padding:3px 8px;border-radius:6px">#${p.numeroContable}</b></td><td title="${p.fechaOriginal}">${fechaCorta(p.timestamp)}</td><td><b>${String(p.clienteNombre).substring(0,22)}</b></td><td><span class="tipo-pill ${tipoClass}">${p.tipoServicio} - ${p.razonServicio}</span></td><td><span style="background:#f3f4f6;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800">${String(p.repartidorNombre).substring(0,18)}</span></td><td>${pagadoHtml}</td><td style="display:flex;gap:4px"><button class="btn ${pagado?'btn-green':'btn-blue'}" onclick="togglePagado('${p.fbKey}','${p.rutaOrigen}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">${pagado?'check':'payments'}</i></button><button class="btn btn-white" onclick="editarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">edit</i></button><button class="btn btn-red" onclick="borrarPedido('${p.fbKey}')" style="padding:5px 8px"><i class="material-icons" style="font-size:14px">delete</i></button></td>`;
   tbody.appendChild(tr);
  });
 }
@@ -138,11 +165,13 @@ function aplicarFiltros(){
  const tipoF=document.getElementById('filtroTipo').value;
  const mesF=document.getElementById('filtroMes').value;
  filtrados=todosPedidos.filter(p=>{
-  const ts=p.timestamp || Date.now();
-  if(tiempoActual==='hoy' &&!esHoy(ts)) return false;
-  if(tiempoActual==='semana' &&!esEstaSemana(ts)) return false;
-  if(tiempoActual==='mes' &&!esEsteMes(ts)) return false;
-  if(mesF &&!esDelMesSeleccionado(ts, mesF)) return false;
+  const ts=p.timestamp || 0;
+  if(ts!==0){
+    if(tiempoActual==='hoy' &&!esHoy(ts)) return false;
+    if(tiempoActual==='semana' &&!esEstaSemana(ts)) return false;
+    if(tiempoActual==='mes' &&!esEsteMes(ts)) return false;
+    if(mesF &&!esDelMesSeleccionado(ts, mesF)) return false;
+  }
   if(txt){ if(!String(p.clienteNombre||'').toLowerCase().includes(txt) &&!String(p.repartidorNombre||'').toLowerCase().includes(txt)) return false; }
   const t=String(p.tipoServicio+' '+p.razonServicio||'').toLowerCase();
   if(tipoF==='mandado'&&!t.includes('mandado')) return false;
