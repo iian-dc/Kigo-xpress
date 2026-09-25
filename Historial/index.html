@@ -8,12 +8,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:#f6f7fb;color:#0a0a0a;padding-bottom:20px}
+body{background:#f6f7fb;color:#0a0a0a;padding-bottom:80px}
 .top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1.5px solid #e5e7eb;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
-.cat-bar{background:#fff;padding:8px 12px;display:flex;gap:8px;border-bottom:1.5px solid #e5e7eb;position:sticky;top:57px;z-index:21}
-.cat-bar button{height:36px;padding:0 18px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:9px;font-weight:900}
-.cat-bar button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
-.subcats{background:#fff;padding:10px 12px;display:flex;gap:8px;overflow:auto;border-bottom:1px solid #e5e7eb;position:sticky;top:101px;z-index:19}
+.cat-bar-bottom{position:fixed;bottom:0;left:0;right:0;z-index:50;background:#fff;border-top:1.5px solid #e5e7eb;padding:8px 12px;display:flex;gap:8px;justify-content:center;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+.cat-bar-bottom button{height:40px;padding:0 22px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:9px;font-weight:900;flex:1;max-width:180px}
+.cat-bar-bottom button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
+.subcats{background:#fff;padding:10px 12px;display:flex;gap:8px;overflow:auto;border-bottom:1px solid #e5e7eb;position:sticky;top:57px;z-index:19}
 .subcats button{height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:9px;font-weight:900;white-space:nowrap}
 .subcats button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:10px 12px}
@@ -70,10 +70,7 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 </div>
 <button class="btn-cerrar">CERRAR SESIÓN</button>
 </div>
-<div class="cat-bar">
-<button class="active" id="btnCatHistorial" onclick="setCat('historial')">HISTORIAL</button>
-<button id="btnCatClientes" onclick="setCat('clientes')">CLIENTES</button>
-</div>
+
 <div id="view-historial">
 <div class="subcats">
 <button class="active" onclick="setSubcat('todos',this)">TODOS</button>
@@ -105,7 +102,7 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 </div>
 </div>
 <div id="view-clientes" style="display:none">
-<div class="subcats" style="top:101px">
+<div class="subcats" style="top:57px">
 <button class="active" id="cliBtnList" onclick="setCliSub('lista',this)">LISTADO DE CLIENTES</button>
 <button id="cliBtnAdd" onclick="setCliSub('agregar',this)">AGREGAR CLIENTE</button>
 <button id="cliBtnRank" onclick="setCliSub('ranking',this)">RANKING DE CLIENTES</button>
@@ -135,7 +132,7 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 <div class="modal-body">
 <div><div class="lab">TIPO DE SERVICIO</div><select id="eServicio" class="sel"><option>Moto Mandado</option><option>Moto Transporte</option><option>Compra</option><option>Encomienda</option><option>Otro</option></select></div>
 <div><div class="lab">TIPO DE CLIENTE</div><select id="eTipoCliente" class="sel"><option>Normal</option><option>Aliado</option><option>VIP</option><option>Empresa</option><option>Nuevo</option></select></div>
-<div class="auto-wrap"><div class="lab">NOMBRE CLIENTE / ALIADO</div><input id="eCliente" class="inp" placeholder="Nombre cliente" oninput="mostrarAuto(this.value)"><div id="autoList" class="auto-list"></div></div>
+<div class="auto-wrap"><div class="lab">NOMBRE CLIENTE / ALIADO</div><input id="eCliente" class="inp" placeholder="Nombre cliente" oninput="mostrarAuto(this.value,'e')"><div id="autoList" class="auto-list"></div></div>
 <div class="grid2"><div><div class="lab">VALOR TOTAL</div><input id="eValor" type="number" class="inp"></div><div><div class="lab">FEE KIGO</div><input id="eFee" type="number" class="inp"></div></div>
 <div><div class="lab">DIRECCIÓN / NOTA</div><input id="eDir" class="inp"></div>
 <div class="grid2"><div><div class="lab">REPARTIDOR</div><input id="eRepa" class="inp"></div><div><div class="lab">FECHA</div><input id="eFecha" type="date" class="inp"></div></div>
@@ -153,12 +150,17 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 <div class="modal-foot" style="justify-content:center"><button class="btn-del-g" onclick="cerrarEliminar()">NO, CONSERVAR</button><button class="btn-del-r" onclick="confirmarEliminar()">SÍ, ELIMINAR</button></div>
 </div>
 </div>
+
+<div class="cat-bar-bottom">
+<button class="active" id="btnCatHistorial" onclick="setCat('historial')">HISTORIAL</button>
+<button id="btnCatClientes" onclick="setCat('clientes')">CLIENTES</button>
+</div>
 <!-- MODALES CLIENTE -->
 <div id="modalCliEdit" class="modal-bg" onclick="if(event.target===this) cerrarCliEdit()">
 <div class="modal">
 <div class="modal-head"><b>👤 EDITAR CLIENTE</b><button class="btn" onclick="cerrarCliEdit()">✕</button></div>
 <div class="modal-body">
-<div><div class="lab">NOMBRE</div><input id="ceNombre" class="inp"></div>
+<div class="auto-wrap"><div class="lab">NOMBRE</div><input id="ceNombre" class="inp" oninput="mostrarAuto(this.value,'ce')"><div id="autoListCe" class="auto-list"></div></div>
 <div class="grid2"><div><div class="lab">TELÉFONO</div><input id="ceTel" class="inp"></div><div><div class="lab">TIPO</div><select id="ceTipo" class="sel"><option>Normal</option><option>Aliado</option><option>VIP</option><option>Empresa</option><option>Nuevo</option></select></div></div>
 <div><div class="lab">DIRECCIÓN</div><input id="ceDir" class="inp"></div>
 </div>
@@ -183,7 +185,7 @@ let tarifasGlobal={mandado:5,transporte:10};
 db.ref('kigoTarifas').once('value').then(s=>{ if(s.exists()) tarifasGlobal=s.val(); });
 
 let todos=[], filtrados=[], subcat='todos', editKey=null, delKey=null;
-let clientesDB={}, cliEditKey=null, cliDelKey=null;
+let clientesDB={}, cliEditKey=null, cliDelKey=null, cliDelNombre=null;
 
 function getTS(p){
   if(p.fecha && typeof p.fecha==='string'){
@@ -270,18 +272,18 @@ function getListaClientesUnicos(){
   Object.values(clientesDB).forEach(c=>{ if(c.nombre) map[c.nombre.toLowerCase()]={nombre:c.nombre, dir:c.direccion||'', tel:c.telefono||''}; });
   return Object.values(map);
 }
-window.mostrarAuto=function(txt){
-  let list=document.getElementById('autoList'); if(!txt||txt.length<1){ list.classList.remove('show'); return; }
+window.mostrarAuto=function(txt,origen){
+  let idList = origen==='ce'? 'autoListCe' : 'autoList';
+  let list=document.getElementById(idList);
+  if(!txt||txt.length<1){ list.classList.remove('show'); return; }
   let uni=getListaClientesUnicos().filter(c=>c.nombre.toLowerCase().includes(txt.toLowerCase())).slice(0,6);
   if(!uni.length){ list.classList.remove('show'); return; }
-  list.innerHTML=uni.map(c=>`<div class="auto-item" onclick="seleccionarCli('${c.nombre.replace(/'/g,"\\'")}')"><span>${c.nombre}</span><span style="color:#9ca3af">${c.tel||''}</span></div>`).join('');
+  list.innerHTML=uni.map(c=>`<div class="auto-item" onclick="seleccionarCli('${c.nombre.replace(/'/g,"\\'")}','${origen}')"><span>${c.nombre}</span><span style="color:#9ca3af">${c.tel||''}</span></div>`).join('');
   list.classList.add('show');
 }
-window.seleccionarCli=function(nombre){
-  document.getElementById('eCliente').value=nombre;
-  let found=Object.values(clientesDB).find(c=>c.nombre.toLowerCase()===nombre.toLowerCase()) || getListaClientesUnicos().find(c=>c.nombre.toLowerCase()===nombre.toLowerCase());
-  if(found){ document.getElementById('eDir').value=found.dir||document.getElementById('eDir').value; }
-  document.getElementById('autoList').classList.remove('show');
+window.seleccionarCli=function(nombre,origen){
+  if(origen==='ce'){ document.getElementById('ceNombre').value=nombre; document.getElementById('autoListCe').classList.remove('show'); }
+  else { document.getElementById('eCliente').value=nombre; document.getElementById('autoList').classList.remove('show'); let found=Object.values(clientesDB).find(c=>c.nombre.toLowerCase()===nombre.toLowerCase()); if(found) document.getElementById('eDir').value=found.direccion||document.getElementById('eDir').value; }
 }
 
 window.abrirEditar=function(k){ let p=todos.find(x=>x._key===k); if(!p) return; editKey=k; document.getElementById('editNum').innerText='#'+p.numeroOrden; document.getElementById('eServicio').value=p.tipoServicio||p.tipo||'Moto Mandado'; document.getElementById('eTipoCliente').value=p.tipoCliente||'Normal'; document.getElementById('eCliente').value=p.cliente||''; document.getElementById('eValor').value=p.valor||p.total||0; document.getElementById('eFee').value=p.feeKigo||''; document.getElementById('eDir').value=p.direccion||p.nota||''; document.getElementById('eRepa').value=p.repa||p.repartidor||''; document.getElementById('eFecha').value=isoF(p._ts); document.getElementById('ePagado').value=p.pagado?'true':'false'; document.getElementById('modalEditar').classList.add('show'); }
@@ -348,7 +350,7 @@ window.abrirCliEdit=function(key,nombre){
   }
   document.getElementById('modalCliEdit').classList.add('show');
 }
-window.cerrarCliEdit=function(){ document.getElementById('modalCliEdit').classList.remove('show'); cliEditKey=null; }
+window.cerrarCliEdit=function(){ document.getElementById('modalCliEdit').classList.remove('show'); document.getElementById('autoListCe').classList.remove('show'); cliEditKey=null; }
 window.guardarCliEdit=function(){
   let nombre=document.getElementById('ceNombre').value.trim(), tel=document.getElementById('ceTel').value.trim(), tipo=document.getElementById('ceTipo').value, dir=document.getElementById('ceDir').value.trim();
   if(!nombre) return;
@@ -356,9 +358,23 @@ window.guardarCliEdit=function(){
   else { db.ref('clientesKigo').push({nombre, telefono:tel, tipo, direccion:dir, creado:Date.now()}); }
   cerrarCliEdit();
 }
-window.abrirCliDel=function(key,nombre){ cliDelKey=key||null; document.getElementById('delCliTxt').innerText=`¿Eliminar cliente ${nombre}?`; document.getElementById('modalCliDel').classList.add('show'); if(!key) cliDelKey='nombre_'+nombre; }
-window.cerrarCliDel=function(){ document.getElementById('modalCliDel').classList.remove('show'); cliDelKey=null; }
-window.confirmarCliDel=function(){ if(!cliDelKey) return; if(cliDelKey.startsWith('nombre_')){ alert('Cliente solo existe en pedidos'); } else { db.ref('clientesKigo/'+cliDelKey).remove(); } cerrarCliDel(); }
+window.abrirCliDel=function(key,nombre){ cliDelKey=key||null; cliDelNombre=nombre; document.getElementById('delCliTxt').innerText=`¿Eliminar cliente ${nombre}? Se borrará de la base y ya no aparecerá en el listado.`; document.getElementById('modalCliDel').classList.add('show'); }
+window.cerrarCliDel=function(){ document.getElementById('modalCliDel').classList.remove('show'); cliDelKey=null; cliDelNombre=null; }
+window.confirmarCliDel=function(){
+  if(cliDelKey){
+    db.ref('clientesKigo/'+cliDelKey).remove().then(()=>{ cerrarCliDel(); });
+  } else if(cliDelNombre){
+    // si es solo de pedidos, busca y borra cualquier entrada con ese nombre en clientesKigo
+    let keys = Object.keys(clientesDB).filter(k=> clientesDB[k].nombre?.toLowerCase()===cliDelNombre.toLowerCase());
+    if(keys.length>0){
+      let prom = keys.map(k=> db.ref('clientesKigo/'+k).remove());
+      Promise.all(prom).then(()=> cerrarCliDel());
+    } else {
+      alert('Este cliente solo existe en pedidos. Para que desaparezca debes borrar sus pedidos o agregarlo y luego eliminarlo.');
+      cerrarCliDel();
+    }
+  }
+}
 </script>
 </body>
 </html>
