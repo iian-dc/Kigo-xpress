@@ -198,4 +198,97 @@ window.guardarEdicion=function(){ if(!editKey) return; let serv=document.getElem
 window.abrirEliminar=function(k){ delKey=k; document.getElementById('delTxt').innerText='¿Eliminar pedido?'; document.getElementById('modalEliminar').classList.add('show'); }
 window.cerrarEliminar=function(){ document.getElementById('modalEliminar').classList.remove('show'); delKey=null; }
 window.confirmarEliminar=function(){ if(!delKey) return; db.ref('ventasKigo/'+delKey).remove(); cerrarEliminar(); }
-  
+window.renderClientes=function(){ let busca=(document.getElementById('buscaCli').value||'').toLowerCase(); let conteo={}; todos.forEach(p=>{ let n=(p.cliente||'').trim(); if(!n) return; let k=n.toLowerCase(); conteo[k]=conteo[k]||{nombre:n,count:0}; conteo[k].count++; }); let lista=Object.entries(clientesDB).map(([k,v])=>({...v,_key:k,_count:conteo[v.nombre?.toLowerCase()]?.count||0})); Object.values(conteo).forEach(c=>{ if(!Object.values(clientesDB).some(x=>x.nombre?.toLowerCase()===c.nombre.toLowerCase())) lista.push({nombre:c.nombre,_count:c.count,_key:null}); }); if(busca) lista=lista.filter(c=>c.nombre.toLowerCase().includes(busca)); lista.sort((a,b)=>b._count-a._count); document.getElementById('totalCliTxt').innerText=lista.length+' CLIENTES'; document.getElementById('listaCliWrap').innerHTML=lista.map(c=>`<div class="cli-card"><div><b>${c.nombre}</b><div style="font-size:7px">${c._count} pedidos</div></div><div style="display:flex;gap:6px"><button class="btn btn-b" onclick="abrirCliEdit('${c._key||''}','${c.nombre.replace(/'/g,"\\'")}')">EDITAR</button><button class="btn btn-r" onclick="abrirCliDel('${c._key||''}','${c.nombre.replace(/'/g,"\\'")}')">ELIMINAR</button></div></div>`).join(''); document.getElementById('rankingWrap').innerHTML=lista.slice(0,20).map((c,i)=>`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee"><span>${i+1}. ${c.nombre}</span><span style="background:#0a0a0a;color:#fff;padding:2px 8px;border-radius:999px;font-size:8px">${c._count}</span></div>`).join(''); }
+window.agregarCliente=function(){ let n=document.getElementById('newCliNombre').value.trim(); if(!n) return alert('Nombre'); db.ref('clientesKigo').push({nombre:n, telefono:document.getElementById('newCliTel').value, tipo:document.getElementById('newCliTipo').value}); document.getElementById('newCliNombre').value=''; setCliSub('lista', document.getElementById('cliBtnList')); }
+window.abrirCliEdit=function(k,n){ cliEditKey=k; document.getElementById('ceNombre').value=n; if(k&&clientesDB[k]) document.getElementById('ceTel').value=clientesDB[k].telefono||''; document.getElementById('modalCliEdit').classList.add('show'); }
+window.cerrarCliEdit=function(){ document.getElementById('modalCliEdit').classList.remove('show'); cliEditKey=null; }
+window.guardarCliEdit=function(){ let n=document.getElementById('ceNombre').value.trim(); if(!n) return; if(cliEditKey) db.ref('clientesKigo/'+cliEditKey).update({nombre:n, telefono:document.getElementById('ceTel').value}); else db.ref('clientesKigo').push({nombre:n}); cerrarCliEdit(); }
+window.abrirCliDel=function(k,n){ cliDelKey=k; cliDelNombre=n; document.getElementById('delCliTxt').innerText='¿Eliminar '+n+'?'; document.getElementById('modalCliDel').classList.add('show'); }
+window.cerrarCliDel=function(){ document.getElementById('modalCliDel').classList.remove('show'); cliDelKey=null; }
+window.confirmarCliDel=function(){ if(cliDelKey) db.ref('clientesKigo/'+cliDelKey).remove().then(()=> cerrarCliDel()); else cerrarCliDel(); }
+
+function actualizarSelectRepas(){ let sel=document.getElementById('filtroRepaDebe'); if(!sel) return; let actual=sel.value; let lista=getListaRepasUnicos().map(r=>r.nombre).sort(); sel.innerHTML='<option value="">TODOS LOS REPARTIDORES</option>'+lista.map(n=>`<option value="${n}" ${actual===n?'selected':''}>${n}</option>`).join(''); }
+
+window.renderRepas=function(){
+  let busca=(document.getElementById('buscaRepa').value||'').toLowerCase();
+  let stats={}; todos.forEach(p=>{ let n=(p.repa||p.repartidor||'').trim(); if(!n) return; let k=n.toLowerCase(); if(!stats[k]) stats[k]={nombre:n,count:0,pag:0,debe:0,ingPag:0,ingDebe:0}; let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(n, p.tipoServicio||p.tipo||''); stats[k].count++; if(p.pagado){ stats[k].pag++; stats[k].ingPag+=fee; } else { stats[k].debe++; stats[k].ingDebe+=fee; } });
+  let lista=Object.entries(repasDB).map(([k,v])=>({...v,_key:k,_s:stats[v.nombre?.toLowerCase()]||{count:0,pag:0,debe:0,ingPag:0,ingDebe:0}}));
+  Object.values(stats).forEach(s=>{ if(!Object.values(repasDB).some(r=> r.nombre?.toLowerCase()===s.nombre.toLowerCase())) lista.push({nombre:s.nombre,tarifaMandado:tarifasGlobal.mandado,tarifaTransporte:tarifasGlobal.transporte,_key:null,_s:s}); });
+  if(busca) lista=lista.filter(r=> r.nombre.toLowerCase().includes(busca)); lista.sort((a,b)=> b._s.count - a._s.count);
+  document.getElementById('totalRepaTxt').innerText=lista.length+' REPARTIDORES';
+  document.getElementById('listaRepaWrap').innerHTML=lista.map(r=>`<div class="cli-card"><div style="flex:1"><div style="font-weight:900;font-size:11px">${r.nombre} <span style="font-size:7px;background:#f3f4f6;padding:2px 6px;border-radius:999px">${r.tipo||'Moto'}</span></div><div style="font-size:7px;color:#6b7280">Tarifas: Mandado $${r.tarifaMandado||5} | Transporte $${r.tarifaTransporte||10}</div><div style="font-size:7px;margin-top:4px"><span style="background:#0a0a0a;color:#fff;padding:2px 6px;border-radius:999px">${r._s.count} pedidos</span> <span style="background:#dcfce7;padding:2px 6px;border-radius:999px">${r._s.pag} pagados $${r._s.ingPag}</span> <span style="background:#fee2e2;padding:2px 6px;border-radius:999px">${r._s.debe} deben $${r._s.ingDebe}</span></div></div><div style="display:flex;gap:4px;flex-direction:column"><button class="btn btn-b" onclick="abrirRepaEdit('${r._key||''}','${r.nombre.replace(/'/g,"\\'")}')">EDITAR TARIFA</button><button class="btn btn-r" onclick="abrirRepaDel('${r._key||''}','${r.nombre.replace(/'/g,"\\'")}')">ELIMINAR</button><button class="btn" onclick="pagarTodoRepa('${r.nombre.replace(/'/g,"\\'")}')">PAGAR TODO</button></div></div>`).join('');
+  let deudas=lista.filter(r=> r._s.ingDebe>0).sort((a,b)=> b._s.ingDebe - a._s.ingDebe);
+  document.getElementById('deudasWrap').innerHTML='<div class="fin-card"><div style="font-weight:900;font-size:11px;margin-bottom:8px">💰 RANKING DEUDAS - QUIEN MÁS DEBE</div>'+(deudas.map((r,i)=>`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #f3f4f6"><span style="font-size:9px;font-weight:900">${i+1}. ${r.nombre} - ${r._s.debe} pedidos</span><span style="background:#ef4444;color:#fff;padding:3px 8px;border-radius:999px;font-size:8px;font-weight:900">$${r._s.ingDebe}</span></div>`).join('') || 'Al día ✅')+'</div>';
+}
+window.agregarRepa=function(){ let n=document.getElementById('newRepaNombre').value.trim(); if(!n) return alert('Nombre'); let man=parseInt(document.getElementById('newRepaMan').value)||5; let trans=parseInt(document.getElementById('newRepaTrans').value)||10; db.ref('repartidoresKigo').push({nombre:n, telefono:document.getElementById('newRepaTel').value, tipo:document.getElementById('newRepaTipo').value, tarifaMandado:man, tarifaTransporte:trans}); document.getElementById('newRepaNombre').value=''; setRepaSub('lista', document.getElementById('repaBtnList')); }
+window.abrirRepaEdit=function(k,n){ if(k&&repasDB[k]){ repaEditKey=k; let r=repasDB[k]; document.getElementById('reNombre').value=r.nombre; document.getElementById('reTel').value=r.telefono||''; document.getElementById('reTipo').value=r.tipo||'Moto'; document.getElementById('reMan').value=r.tarifaMandado||5; document.getElementById('reTrans').value=r.tarifaTransporte||10; } else { repaEditKey='new_'+n; document.getElementById('reNombre').value=n; document.getElementById('reMan').value=5; document.getElementById('reTrans').value=10; } document.getElementById('modalRepaEdit').classList.add('show'); }
+window.cerrarRepaEdit=function(){ document.getElementById('modalRepaEdit').classList.remove('show'); repaEditKey=null; }
+window.guardarRepaEdit=function(){ let n=document.getElementById('reNombre').value.trim(); let man=parseInt(document.getElementById('reMan').value)||5; let trans=parseInt(document.getElementById('reTrans').value)||10; if(!n) return; let data={nombre:n, telefono:document.getElementById('reTel').value, tipo:document.getElementById('reTipo').value, tarifaMandado:man, tarifaTransporte:trans}; if(repaEditKey &&!repaEditKey.startsWith('new_')) db.ref('repartidoresKigo/'+repaEditKey).update(data); else db.ref('repartidoresKigo').push(data); cerrarRepaEdit(); }
+window.abrirRepaDel=function(k,n){ repaDelKey=k; repaDelNombre=n; document.getElementById('delRepaTxt').innerText='¿Eliminar repartidor '+n+'?'; document.getElementById('modalRepaDel').classList.add('show'); }
+window.cerrarRepaDel=function(){ document.getElementById('modalRepaDel').classList.remove('show'); repaDelKey=null; }
+window.confirmarRepaDel=function(){ if(repaDelKey) db.ref('repartidoresKigo/'+repaDelKey).remove().then(()=> cerrarRepaDel()); else cerrarRepaDel(); }
+window.pagarTodoRepa=function(nombre){ if(!confirm('¿Marcar todos los de '+nombre+' como PAGADOS?')) return; let updates={}; todos.forEach(p=>{ if((p.repa||p.repartidor||'').toLowerCase()===nombre.toLowerCase() &&!p.pagado) updates['ventasKigo/'+p._key+'/pagado']=true; }); if(Object.keys(updates).length) db.ref().update(updates); }
+
+window.renderFinanzas=function(){
+  if(!todos.length) return;
+  let dias=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  let porDia={0:0,1:0,2:0,3:0,4:0,5:0,6:0}, porDiaIng={0:0,1:0,2:0,3:0,4:0,5:0,6:0};
+  let porMes={}, ingPorMes={}, totalIng=0, totalCobrar=0, totalIngFilt=0, totalCobrarFilt=0;
+  let countMan=0, ingMan=0, countTrans=0, ingTrans=0, countCompra=0, ingCompra=0;
+  let filtroRepa=(document.getElementById('filtroRepaDebe')?.value||'').toLowerCase();
+
+  let ahora=new Date(), mesActual=ahora.getFullYear()+'-'+String(ahora.getMonth()+1).padStart(2,'0');
+  let mesAntDate=new Date(ahora); mesAntDate.setMonth(mesAntDate.getMonth()-1);
+  let mesAnt=mesAntDate.getFullYear()+'-'+String(mesAntDate.getMonth()+1).padStart(2,'0');
+
+  todos.forEach(p=>{
+    let repaNombre=(p.repa||p.repartidor||'').toLowerCase();
+    if(filtroRepa && repaNombre!==filtroRepa) {} // solo filtra debe
+    let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, p.tipoServicio||p.tipo||'');
+    let d=new Date(p._ts); let dia=d.getDay(); let mesKey=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    let esFilt =!filtroRepa || repaNombre===filtroRepa;
+    if(p.pagado){
+      totalIng+=fee; if(esFilt) totalIngFilt+=fee;
+      porDiaIng[dia]+=fee; ingPorMes[mesKey]=(ingPorMes[mesKey]||0)+fee;
+      let tipo=(p.tipoServicio||p.tipo||'').toLowerCase();
+      if(tipo.includes('trans')){ ingTrans+=fee; countTrans++; } else if(tipo.includes('compra')){ ingCompra+=fee; countCompra++; } else { ingMan+=fee; countMan++; }
+    } else {
+      totalCobrar+=fee; if(esFilt) totalCobrarFilt+=fee;
+    }
+    porDia[dia]++; porMes[mesKey]=(porMes[mesKey]||0)+1;
+  });
+
+  if(filtroRepa){
+    document.getElementById('fTotal').innerText=todos.filter(p=> (p.repa||p.repartidor||'').toLowerCase()===filtroRepa).length;
+    document.getElementById('fIng').innerText='$'+totalIngFilt.toLocaleString();
+    document.getElementById('fCobrar').innerText='$'+totalCobrarFilt.toLocaleString();
+    document.getElementById('fDebeDetalle').innerText='📌 '+filtroRepa.toUpperCase()+' TE DEBE: $'+totalCobrarFilt.toLocaleString()+' ('+todos.filter(p=> (p.repa||p.repartidor||'').toLowerCase()===filtroRepa &&!p.pagado).length+' pedidos sin pagar)';
+  } else {
+    document.getElementById('fTotal').innerText=todos.length;
+    document.getElementById('fIng').innerText='$'+totalIng.toLocaleString();
+    document.getElementById('fCobrar').innerText='$'+totalCobrar.toLocaleString();
+    document.getElementById('fDebeDetalle').innerText='Mostrando todos - Total por cobrar: $'+totalCobrar.toLocaleString();
+  }
+
+  document.getElementById('fTotalSub').innerText=(porMes[mesActual]||0)+' este mes';
+  document.getElementById('fProm').innerText='$'+(todos.length? Math.round((totalIng+totalCobrar)/todos.length):0);
+  document.getElementById('fMan').innerText='$'+ingMan.toLocaleString(); document.getElementById('fManCount').innerText=countMan+' pedidos';
+  document.getElementById('fTrans').innerText='$'+ingTrans.toLocaleString(); document.getElementById('fTransCount').innerText=countTrans+' pedidos';
+  document.getElementById('fCompra').innerText='$'+ingCompra.toLocaleString(); document.getElementById('fCompraCount').innerText=countCompra+' pedidos';
+  let maxDia=Object.keys(porDia).reduce((a,b)=> porDia[a]>porDia[b]?a:b,0);
+  document.getElementById('fMejorDia').innerText=dias[maxDia]; document.getElementById('fMejorDiaSub').innerText=porDia[maxDia]+' pedidos, $'+(porDiaIng[maxDia]||0);
+  document.getElementById('fEsteMes').innerText='$'+(ingPorMes[mesActual]||0); document.getElementById('fAntMes').innerText='$'+(ingPorMes[mesAnt]||0);
+  let vari=ingPorMes[mesAnt]? Math.round(((ingPorMes[mesActual]||0)-(ingPorMes[mesAnt]||0))/ingPorMes[mesAnt]*100):0; let vEl=document.getElementById('fVari'); vEl.innerText=(vari>=0?'+':'')+vari+'%'; vEl.style.background=vari>=0?'#dcfce7':'#fee2e2';
+
+  let maxP=Math.max(...Object.values(porDia),1);
+  document.getElementById('finSemanaWrap').innerHTML=dias.map((n,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:30px;font-size:8px;font-weight:900">${n}</span><div style="flex:1;height:18px;background:#f3f4f6;border-radius:999px;overflow:hidden"><div style="height:100%;width:${(porDia[i]/maxP*100)}%;background:#0a0a0a;border-radius:999px"></div></div><span style="font-size:8px;font-weight:900">${porDia[i]} - $${porDiaIng[i]||0}</span></div>`).join('');
+  let meses=Object.keys(porMes).sort().slice(-8); let maxM=Math.max(...meses.map(m=>porMes[m]),1);
+  document.getElementById('finMesWrap').innerHTML=meses.map(m=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:55px;font-size:8px;font-weight:900">${m}</span><div style="flex:1;height:18px;background:#f3f4f6;border-radius:999px;overflow:hidden"><div style="height:100%;width:${(porMes[m]/maxM*100)}%;background:#10b981;border-radius:999px"></div></div><span style="font-size:8px;font-weight:900">${porMes[m]} pedidos - $${ingPorMes[m]||0}</span></div>`).join('');
+  try{
+    let c1=document.getElementById('canvasMes'); let ctx1=c1.getContext('2d'); ctx1.clearRect(0,0,400,180); let vals=meses.map(m=>ingPorMes[m]||0); let maxV=Math.max(...vals,1); ctx1.strokeStyle='#0a0a0a'; ctx1.lineWidth=2; ctx1.beginPath(); vals.forEach((v,i)=>{ let x=20+i*(360/Math.max(vals.length-1,1)); let y=150 - (v/maxV*120); if(i===0) ctx1.moveTo(x,y); else ctx1.lineTo(x,y); }); ctx1.stroke(); vals.forEach((v,i)=>{ let x=20+i*(360/Math.max(vals.length-1,1)); let y=150 - (v/maxV*120); ctx1.fillStyle='#0a0a0a'; ctx1.beginPath(); ctx1.arc(x,y,4,0,Math.PI*2); ctx1.fill(); ctx1.fillStyle='#6b7280'; ctx1.font='7px Inter'; ctx1.fillText('$'+v,x-10,y-8); });
+    let c2=document.getElementById('canvasSem'); let ctx2=c2.getContext('2d'); ctx2.clearRect(0,0,400,180); let maxD=Math.max(...Object.values(porDiaIng),1); dias.forEach((n,i)=>{ let x=20+i*50; let h=(porDiaIng[i]||0)/maxD*120; ctx2.fillStyle='#0a0a0a'; ctx2.fillRect(x,150-h,30,h); ctx2.fillStyle='#6b7280'; ctx2.font='7px Inter'; ctx2.fillText(n,x+2,165); });
+  }catch(e){}
+}
+</script>
+</body>
+</html>  
