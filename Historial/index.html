@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Kigo Finanzas Fix</title>
+<title>Kigo Valoracion</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -10,11 +10,11 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#f6f7fb;color:#0a0a0a;padding-bottom:80px}
 .top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1.5px solid #e5e7eb;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
-.cat-bar-bottom{position:fixed;bottom:0;left:0;right:0;z-index:50;background:#fff;border-top:1.5px solid #e5e7eb;padding:6px 8px;display:flex;gap:4px;justify-content:center}
-.cat-bar-bottom button{height:38px;padding:0 8px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:7px;font-weight:900;flex:1}
+.cat-bar-bottom{position:fixed;bottom:0;left:0;right:0;z-index:50;background:#fff;border-top:1.5px solid #e5e7eb;padding:6px 6px;display:flex;gap:3px;justify-content:center}
+.cat-bar-bottom button{height:38px;padding:0 6px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:6.5px;font-weight:900;flex:1}
 .cat-bar-bottom button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
 .subcats{background:#fff;padding:10px 12px;display:flex;gap:8px;overflow:auto;border-bottom:1px solid #e5e7eb;position:sticky;top:57px;z-index:19}
-.subcats button{height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:9px;font-weight:900;white-space:nowrap}
+.subcats button{height:34px;padding:0 12px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:8px;font-weight:900;white-space:nowrap}
 .subcats button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:10px 12px}
 .stat{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;text-align:center}
@@ -22,7 +22,7 @@ body{background:#f6f7fb;color:#0a0a0a;padding-bottom:80px}
 .stat span{font-size:7px;font-weight:800;color:#6b7280}
 .filtros{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;margin:0 12px 10px;padding:10px}
 .row{display:flex;gap:6px;flex-wrap:wrap}
-.input-k{flex:1;min-width:120px;height:38px;border:1.5px solid #e5e7eb;border-radius:10px;padding:0 10px;font-size:9px;font-weight:800;background:#fff}
+.input-k{flex:1;min-width:100px;height:38px;border:1.5px solid #e5e7eb;border-radius:10px;padding:0 10px;font-size:9px;font-weight:800;background:#fff}
 .btn-l{height:38px;padding:0 14px;border-radius:10px;border:1.5px solid #e5e7eb;background:#fff;font-size:8px;font-weight:800}
 .wrap{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;margin:0 12px;overflow:auto}
 table{width:100%;border-collapse:collapse;min-width:1100px;font-size:10px}
@@ -53,18 +53,22 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 .btn-del-r{height:40px;padding:0 18px;border-radius:10px;background:#ef4444;color:#fff;border:none;font-size:9px;font-weight:900}
 .btn-del-g{height:40px;padding:0 18px;border-radius:10px;background:#10b981;color:#fff;border:none;font-size:9px;font-weight:900}
 .auto-wrap{position:relative}
-.auto-list{position:absolute;top:44px;left:0;right:0;background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;max-height:160px;overflow:auto;z-index:10;display:none;box-shadow:0 10px 30px rgba(0,0,0,.1)}
+.auto-list{position:absolute;top:44px;left:0;right:0;background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;max-height:160px;overflow:auto;z-index:10;display:none}
 .auto-list.show{display:block}
 .auto-item{padding:10px 12px;font-size:9px;font-weight:800;border-bottom:1px solid #f3f4f6;cursor:pointer}
-.cli-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.cli-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
 .fin-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:12px;margin-bottom:8px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:6px;min-height:58px}
+.cal-day b{font-size:8px;display:block}
+.cal-day span{font-size:6px;font-weight:800}
 </style>
 </head>
 <body>
 <div class="top">
 <div style="display:flex;align-items:center;gap:8px">
 <div style="width:36px;height:36px;background:#0a0a0a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">K</div>
-<div><div style="font-weight:900;font-size:11px">Panel Admin Kigo</div><div style="font-size:7px;font-weight:800;color:#10b981">● FINANZAS FIX + DEBE REPARTIDOR</div></div>
+<div><div style="font-weight:900;font-size:11px">Panel Admin Kigo</div><div style="font-size:7px;font-weight:800;color:#10b981">● VALORACIÓN + GASTOS + CALENDARIO</div></div>
 </div>
 <button class="btn-cerrar">CERRAR SESIÓN</button>
 </div>
@@ -74,86 +78,92 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 <button class="active" onclick="setSubcat('todos',this)">TODOS</button>
 <button onclick="setSubcat('hoy',this)">HOY</button>
 <button onclick="setSubcat('ayer',this)">AYER</button>
-<button onclick="setSubcat('semana',this)">ESTA SEMANA</button>
-<button onclick="setSubcat('mes',this)">ESTE MES</button>
+<button onclick="setSubcat('semana',this)">SEMANA</button>
+<button onclick="setSubcat('mes',this)">MES</button>
 </div>
 <div class="stats">
 <div class="stat"><span>TOTAL</span><b id="sTotal">0</b></div>
-<div class="stat"><span>MIS INGRESOS</span><b id="sIng" style="color:#10b981">$0</b></div>
+<div class="stat"><span>INGRESOS</span><b id="sIng" style="color:#10b981">$0</b></div>
 <div class="stat"><span>PAGADOS</span><b id="sPag">0</b></div>
 <div class="stat"><span>DEBEN</span><b id="sDebe" style="color:#ef4444">$0</b></div>
 </div>
 <div class="filtros"><div class="row"><input type="month" id="filtroMes" class="input-k" onchange="aplicar()"><input type="date" id="filtroFecha" class="input-k" onchange="aplicar()"><input type="text" id="filtroQ" class="input-k" placeholder="Buscar" oninput="aplicar()"><button class="btn-l" onclick="limpiar()">LIMPIAR</button></div></div>
-<div class="wrap"><table><thead><tr><th>#ID</th><th>Fecha</th><th>Cliente</th><th>Servicio</th><th>Tipo</th><th>Repartidor</th><th>Valor</th><th>Debe Kigo</th><th>Pago</th><th>Editar</th><th>Eliminar</th></tr></thead><tbody id="tbody"></tbody></table></div>
+<div class="wrap"><table><thead><tr><th>#ID</th><th>Fecha</th><th>Cliente</th><th>Servicio</th><th>Repartidor</th><th>Valor</th><th>Fee</th><th>Pago</th><th>Editar</th><th>Eliminar</th></tr></thead><tbody id="tbody"></tbody></table></div>
 </div>
 <div id="view-finanzas" style="display:none">
-<div class="subcats" style="top:57px">
-<button class="active" onclick="setFinSub('resumen',this)">RESUMEN</button>
-<button onclick="setFinSub('semana',this)">POR DÍA SEMANA</button>
-<button onclick="setFinSub('mes',this)">POR MES</button>
-<button onclick="setFinSub('graf',this)">GRÁFICAS</button>
+<div class="subcats" style="top:57px"><button class="active" onclick="setFinSub('resumen',this)">RESUMEN</button><button onclick="setFinSub('semana',this)">DÍA SEMANA</button><button onclick="setFinSub('mes',this)">POR MES</button><button onclick="setFinSub('graf',this)">GRÁFICAS</button></div>
+<div style="padding:12px">
+<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;margin-bottom:10px"><div style="font-size:8px;font-weight:900;margin-bottom:6px">FILTRAR DEBE POR REPARTIDOR</div><div style="display:flex;gap:6px"><select id="filtroRepaDebe" class="sel" onchange="renderFinanzas()"><option value="">TODOS</option></select><button class="btn-l" onclick="document.getElementById('filtroRepaDebe').value='';renderFinanzas()">TODOS</button></div><div id="fDebeDetalle" style="margin-top:8px;font-size:8px;font-weight:800;color:#ef4444"></div></div>
+<div class="stats" style="padding:0;margin-bottom:10px"><div class="stat"><span>TOTAL</span><b id="fTotal">0</b><span id="fTotalSub">0 mes</span></div><div class="stat"><span>PAGADOS</span><b id="fIng" style="color:#10b981">$0</b></div><div class="stat"><span>POR COBRAR</span><b id="fCobrar" style="color:#ef4444">$0</b></div><div class="stat"><span>PROMEDIO</span><b id="fProm">$0</b></div></div>
+<div id="fin-resumen"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"><div class="fin-card"><div class="lab">MANDADO</div><b id="fMan">$0</b><div style="font-size:7px" id="fManCount">0</div></div><div class="fin-card"><div class="lab">TRANSPORTE</div><b id="fTrans">$0</b><div style="font-size:7px" id="fTransCount">0</div></div><div class="fin-card"><div class="lab">OTROS</div><b id="fCompra">$0</b><div style="font-size:7px" id="fCompraCount">0</div></div><div class="fin-card"><div class="lab">MEJOR DÍA</div><b id="fMejorDia">-</b><div style="font-size:7px" id="fMejorDiaSub">-</div></div></div><div class="fin-card"><div style="font-weight:900;font-size:10px;margin-bottom:8px">MES vs ANTERIOR</div><div style="display:flex;justify-content:space-between;font-size:9px"><span>Este: <b id="fEsteMes">$0</b></span><span>Ant: <b id="fAntMes">$0</b></span><span id="fVari" style="padding:2px 8px;border-radius:999px">0%</span></div></div></div>
+<div id="fin-semana" style="display:none"><div class="fin-card"><div id="finSemanaWrap"></div></div></div>
+<div id="fin-mes" style="display:none"><div class="fin-card"><div id="finMesWrap"></div></div></div>
+<div id="fin-graf" style="display:none"><div class="fin-card"><canvas id="canvasMes" width="400" height="180" style="width:100%"></canvas></div><div class="fin-card" style="margin-top:8px"><canvas id="canvasSem" width="400" height="180" style="width:100%"></canvas></div></div>
 </div>
+</div>
+
+<!-- NUEVA CATEGORIA VALORACION -->
+<div id="view-valoracion" style="display:none">
+<div class="subcats" style="top:57px"><button class="active" id="valBtnGastos" onclick="setValSub('gastos',this)">GASTOS / INGRESOS</button><button id="valBtnMes" onclick="setValSub('mes',this)">POR MES</button><button id="valBtnCal" onclick="setValSub('cal',this)">CALENDARIO DIARIO</button></div>
 <div style="padding:12px">
 
-<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;margin-bottom:10px">
-<div style="font-size:8px;font-weight:900;margin-bottom:6px">FILTRAR DEBE POR REPARTIDOR</div>
-<div style="display:flex;gap:6px"><select id="filtroRepaDebe" class="sel" onchange="renderFinanzas()"><option value="">TODOS LOS REPARTIDORES</option></select><button class="btn-l" onclick="document.getElementById('filtroRepaDebe').value='';renderFinanzas()">VER TODOS</button></div>
-<div id="fDebeDetalle" style="margin-top:8px;font-size:9px;font-weight:800;color:#ef4444"></div>
+<div id="val-gastos">
+<div class="stats" style="padding:0;margin-bottom:10px"><div class="stat"><span>INGRESOS BRUTOS</span><b id="vIngBruto" style="color:#10b981">$0</b></div><div class="stat"><span>GASTOS TOTAL</span><b id="vGastos" style="color:#ef4444">$0</b></div><div class="stat"><span>GANANCIA NETA</span><b id="vNeta" style="color:#0a0a0a">$0</b></div><div class="stat"><span>MES ACTUAL NETA</span><b id="vNetaMes">$0</b></div></div>
+
+<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:12px;margin-bottom:10px">
+<div style="font-weight:900;font-size:10px;margin-bottom:8px">➕ AGREGAR GASTO</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="grid2"><select id="gastoTipo" class="sel"><option value="gasolina">⛽ Gasolina</option><option value="arreglos">🔧 Arreglos Moto</option><option value="policia">👮 Policía / Tránsito</option><option value="comida">🍔 Comida</option><option value="publicidad">📢 Publicidad</option><option value="celular">📱 Celular / Datos</option><option value="otro">💸 Otro Gasto</option></select><input id="gastoValor" type="number" class="inp" placeholder="Valor $"></div>
+<div class="grid2"><input id="gastoFecha" type="date" class="inp"><input id="gastoNota" class="inp" placeholder="Nota (opcional)"></div>
+<button class="btn-save" style="width:100%;background:#ef4444" onclick="agregarGasto()">Guardar Gasto</button>
+</div>
 </div>
 
-<div class="stats" style="padding:0;margin-bottom:10px">
-<div class="stat"><span>TOTAL PEDIDOS</span><b id="fTotal">0</b><span id="fTotalSub">0 este mes</span></div>
-<div class="stat"><span>INGRESOS PAGADOS</span><b id="fIng" style="color:#10b981">$0</b><span id="fIngSub">SOLO PAGADOS</span></div>
-<div class="stat"><span>POR COBRAR</span><b id="fCobrar" style="color:#ef4444">$0</b><span id="fCobrarSub">REPARTIDORES</span></div>
-<div class="stat"><span>PROMEDIO FEE</span><b id="fProm">$0</b><span>PROMEDIO</span></div>
+<div class="fin-card"><div style="font-weight:900;font-size:10px;margin-bottom:8px">📋 LISTADO DE GASTOS (Últimos 30)</div><div id="listaGastosWrap"></div></div>
 </div>
 
-<div id="fin-resumen">
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-<div class="fin-card"><div class="lab">RENTABILIDAD MANDADO</div><b id="fMan" style="font-size:16px">$0</b><div style="font-size:7px;color:#6b7280" id="fManCount">0 pedidos</div></div>
-<div class="fin-card"><div class="lab">RENTABILIDAD TRANSPORTE</div><b id="fTrans" style="font-size:16px">$0</b><div style="font-size:7px;color:#6b7280" id="fTransCount">0 pedidos</div></div>
-<div class="fin-card"><div class="lab">COMPRA / OTROS</div><b id="fCompra" style="font-size:16px">$0</b><div style="font-size:7px;color:#6b7280" id="fCompraCount">0 pedidos</div></div>
-<div class="fin-card"><div class="lab">MEJOR DÍA</div><b id="fMejorDia" style="font-size:16px">-</b><div style="font-size:7px;color:#6b7280" id="fMejorDiaSub">-</div></div>
-</div>
-<div class="fin-card"><div style="font-weight:900;font-size:10px;margin-bottom:8px">ESTE MES vs ANTERIOR</div><div style="display:flex;justify-content:space-between;font-size:9px"><span>Este mes: <b id="fEsteMes">$0</b></span><span>Anterior: <b id="fAntMes">$0</b></span><span id="fVari" style="padding:2px 8px;border-radius:999px;font-weight:900;background:#dcfce7">0%</span></div></div>
+<div id="val-mes" style="display:none">
+<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;margin-bottom:10px"><div style="font-size:8px;font-weight:900;margin-bottom:6px">SELECCIONAR MES PARA VER GANANCIA</div><input type="month" id="valMesSelector" class="inp" onchange="renderValoracion()"></div>
+<div id="valMesDetalle"></div>
 </div>
 
-<div id="fin-semana" style="display:none"><div class="fin-card"><div style="font-weight:900;font-size:10px;margin-bottom:10px">PEDIDOS POR DÍA DE LA SEMANA</div><div id="finSemanaWrap"></div></div></div>
-<div id="fin-mes" style="display:none"><div class="fin-card"><div style="font-weight:900;font-size:10px;margin-bottom:10px">EVOLUCIÓN MENSUAL</div><div id="finMesWrap"></div></div></div>
-<div id="fin-graf" style="display:none"><div class="fin-card" style="margin-bottom:10px"><div style="font-weight:900;font-size:10px;margin-bottom:8px">INGRESOS POR MES (Pagados)</div><canvas id="canvasMes" width="400" height="180" style="width:100%"></canvas></div><div class="fin-card"><div style="font-weight:900;font-size:10px;margin-bottom:8px">PEDIDOS POR DÍA</div><canvas id="canvasSem" width="400" height="180" style="width:100%"></canvas></div></div>
+<div id="val-cal" style="display:none">
+<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center"><button class="btn" onclick="cambiarCal(-1)">◀</button><b id="calTitulo" style="font-size:11px">CALENDARIO</b><button class="btn" onclick="cambiarCal(1)">▶</button></div><input type="month" id="valCalMes" class="inp" style="margin-top:8px" onchange="renderCalendario()"></div>
+<div class="cal-grid" style="margin-bottom:6px"><div style="font-size:7px;font-weight:900;text-align:center">DOM</div><div style="font-size:7px;font-weight:900;text-align:center">LUN</div><div style="font-size:7px;font-weight:900;text-align:center">MAR</div><div style="font-size:7px;font-weight:900;text-align:center">MIE</div><div style="font-size:7px;font-weight:900;text-align:center">JUE</div><div style="font-size:7px;font-weight:900;text-align:center">VIE</div><div style="font-size:7px;font-weight:900;text-align:center">SAB</div></div>
+<div id="calGrid" class="cal-grid"></div>
+</div>
+
 </div>
 </div>
 
 <div id="view-clientes" style="display:none">
 <div class="subcats" style="top:57px"><button class="active" id="cliBtnList" onclick="setCliSub('lista',this)">LISTADO</button><button id="cliBtnAdd" onclick="setCliSub('agregar',this)">AGREGAR</button><button id="cliBtnRank" onclick="setCliSub('ranking',this)">RANKING</button></div>
 <div id="cli-lista" style="padding:12px"><div style="display:flex;gap:6px;margin-bottom:10px"><input id="buscaCli" class="input-k" placeholder="Buscar cliente..." oninput="renderClientes()"><span id="totalCliTxt" style="background:#0a0a0a;color:#fff;padding:8px 12px;border-radius:999px;font-size:8px;font-weight:900">0 CLIENTES</span></div><div id="listaCliWrap"></div></div>
-<div id="cli-agregar" style="display:none;padding:12px"><div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:16px"><input id="newCliNombre" class="inp" placeholder="Nombre"><div class="grid2" style="margin-top:8px"><input id="newCliTel" class="inp" placeholder="Tel"><select id="newCliTipo" class="sel"><option>Normal</option><option>Aliado</option><option>VIP</option></select></div><input id="newCliDir" class="inp" style="margin-top:8px" placeholder="Dirección"><button class="btn-save" style="width:100%;margin-top:8px" onclick="agregarCliente()">Guardar Cliente</button></div></div>
+<div id="cli-agregar" style="display:none;padding:12px"><div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:16px"><input id="newCliNombre" class="inp" placeholder="Nombre"><div class="grid2" style="margin-top:8px"><input id="newCliTel" class="inp" placeholder="Tel"><select id="newCliTipo" class="sel"><option>Normal</option><option>Aliado</option><option>VIP</option></select></div><input id="newCliDir" class="inp" style="margin-top:8px" placeholder="Dirección"><button class="btn-save" style="width:100%;margin-top:8px" onclick="agregarCliente()">Guardar</button></div></div>
 <div id="cli-ranking" style="display:none;padding:12px"><div id="rankingWrap"></div></div>
 </div>
 
 <div id="view-repas" style="display:none">
-<div class="subcats" style="top:57px"><button class="active" id="repaBtnList" onclick="setRepaSub('lista',this)">LISTADO REPARTIDORES</button><button id="repaBtnAdd" onclick="setRepaSub('agregar',this)">AGREGAR REPARTIDOR</button><button id="repaBtnDeuda" onclick="setRepaSub('deudas',this)">DEUDAS</button></div>
-<div id="repa-lista" style="padding:12px"><div style="display:flex;gap:6px;margin-bottom:10px"><input id="buscaRepa" class="input-k" placeholder="Buscar repartidor..." oninput="renderRepas()"><span id="totalRepaTxt" style="background:#0a0a0a;color:#fff;padding:8px 12px;border-radius:999px;font-size:8px;font-weight:900">0 REPARTIDORES</span></div><div id="listaRepaWrap"></div></div>
-<div id="repa-agregar" style="display:none;padding:12px"><div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:16px"><div style="font-weight:900;font-size:11px;margin-bottom:10px">AGREGAR REPARTIDOR</div><input id="newRepaNombre" class="inp" placeholder="Nombre repartidor"><div class="grid2" style="margin-top:8px"><input id="newRepaTel" class="inp" placeholder="Tel"><select id="newRepaTipo" class="sel"><option>Moto</option><option>Bici</option></select></div><div class="grid2" style="margin-top:8px"><div><div class="lab">PRECIO MANDADO</div><input id="newRepaMan" type="number" class="inp" value="5"></div><div><div class="lab">PRECIO TRANSPORTE</div><input id="newRepaTrans" type="number" class="inp" value="10"></div></div><button class="btn-save" style="width:100%;margin-top:10px" onclick="agregarRepa()">Guardar Repartidor</button></div></div>
+<div class="subcats" style="top:57px"><button class="active" id="repaBtnList" onclick="setRepaSub('lista',this)">LISTADO</button><button id="repaBtnAdd" onclick="setRepaSub('agregar',this)">AGREGAR</button><button id="repaBtnDeuda" onclick="setRepaSub('deudas',this)">DEUDAS</button></div>
+<div id="repa-lista" style="padding:12px"><div style="display:flex;gap:6px;margin-bottom:10px"><input id="buscaRepa" class="input-k" placeholder="Buscar repartidor..." oninput="renderRepas()"><span id="totalRepaTxt" style="background:#0a0a0a;color:#fff;padding:8px 12px;border-radius:999px;font-size:8px;font-weight:900">0</span></div><div id="listaRepaWrap"></div></div>
+<div id="repa-agregar" style="display:none;padding:12px"><div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:16px"><input id="newRepaNombre" class="inp" placeholder="Nombre"><div class="grid2" style="margin-top:8px"><input id="newRepaTel" class="inp" placeholder="Tel"><select id="newRepaTipo" class="sel"><option>Moto</option><option>Bici</option></select></div><div class="grid2" style="margin-top:8px"><div><div class="lab">MANDADO</div><input id="newRepaMan" type="number" class="inp" value="5"></div><div><div class="lab">TRANSPORTE</div><input id="newRepaTrans" type="number" class="inp" value="10"></div></div><button class="btn-save" style="width:100%;margin-top:10px" onclick="agregarRepa()">Guardar</button></div></div>
 <div id="repa-deudas" style="display:none;padding:12px"><div id="deudasWrap"></div></div>
 </div>
 
-<div id="modalEditar" class="modal-bg" onclick="if(event.target===this) cerrarEditar()">
-<div class="modal"><div class="modal-head"><b>EDITAR PEDIDO <span id="editNum"></span></b><button class="btn" onclick="cerrarEditar()">✕</button></div><div class="modal-body"><div class="auto-wrap"><div class="lab">CLIENTE</div><input id="eCliente" class="inp" oninput="mostrarAuto(this.value,'e')"><div id="autoList" class="auto-list"></div></div><div class="grid2"><div><div class="lab">VALOR</div><input id="eValor" type="number" class="inp"></div><div><div class="lab">FEE</div><input id="eFee" type="number" class="inp"></div></div><div class="auto-wrap"><div class="lab">REPARTIDOR</div><input id="eRepa" class="inp" oninput="mostrarAutoRepa(this.value,'e')"><div id="autoListRepa" class="auto-list"></div></div><div class="grid2"><div><div class="lab">FECHA</div><input id="eFecha" type="date" class="inp"></div><div><div class="lab">PAGO</div><select id="ePagado" class="sel"><option value="true">✅ PAGADO</option><option value="false">❌ NO PAGADO</option></select></div></div><div><div class="lab">SERVICIO</div><select id="eServicio" class="sel"><option>Moto Mandado</option><option>Moto Transporte</option><option>Compra</option></select></div></div><div class="modal-foot"><button class="btn-cancel" onclick="cerrarEditar()">Cancelar</button><button class="btn-save" onclick="guardarEdicion()">Guardar</button></div></div>
-</div>
+<div id="modalEditar" class="modal-bg" onclick="if(event.target===this) cerrarEditar()"><div class="modal"><div class="modal-head"><b>EDITAR <span id="editNum"></span></b><button class="btn" onclick="cerrarEditar()">✕</button></div><div class="modal-body"><div class="auto-wrap"><div class="lab">CLIENTE</div><input id="eCliente" class="inp" oninput="mostrarAuto(this.value,'e')"><div id="autoList" class="auto-list"></div></div><div class="grid2"><input id="eValor" type="number" class="inp" placeholder="Valor"><input id="eFee" type="number" class="inp" placeholder="Fee"></div><div class="auto-wrap"><div class="lab">REPARTIDOR</div><input id="eRepa" class="inp" oninput="mostrarAutoRepa(this.value,'e')"><div id="autoListRepa" class="auto-list"></div></div><div class="grid2"><input id="eFecha" type="date" class="inp"><select id="ePagado" class="sel"><option value="true">PAGADO</option><option value="false">NO PAGADO</option></select></div><select id="eServicio" class="sel"><option>Moto Mandado</option><option>Moto Transporte</option><option>Compra</option></select></div><div class="modal-foot"><button class="btn-cancel" onclick="cerrarEditar()">Cancelar</button><button class="btn-save" onclick="guardarEdicion()">Guardar</button></div></div></div>
 <div id="modalEliminar" class="modal-bg" onclick="if(event.target===this) cerrarEliminar()"><div class="modal" style="max-width:380px"><div class="modal-head"><b>ELIMINAR</b></div><div class="modal-body" style="text-align:center"><div id="delTxt">¿Eliminar?</div></div><div class="modal-foot" style="justify-content:center"><button class="btn-del-g" onclick="cerrarEliminar()">NO</button><button class="btn-del-r" onclick="confirmarEliminar()">SÍ</button></div></div></div>
 
-<div class="cat-bar-bottom"><button class="active" id="btnCatHistorial" onclick="setCat('historial')">HISTORIAL</button><button id="btnCatFinanzas" onclick="setCat('finanzas')">FINANZAS</button><button id="btnCatClientes" onclick="setCat('clientes')">CLIENTES</button><button id="btnCatRepas" onclick="setCat('repas')">REPARTIDORES</button></div>
-<div id="modalCliEdit" class="modal-bg" onclick="if(event.target===this) cerrarCliEdit()"><div class="modal"><div class="modal-head"><b>EDITAR CLIENTE</b><button class="btn" onclick="cerrarCliEdit()">✕</button></div><div class="modal-body"><div class="auto-wrap"><div class="lab">NOMBRE</div><input id="ceNombre" class="inp" oninput="mostrarAuto(this.value,'ce')"><div id="autoListCe" class="auto-list"></div></div><div class="grid2"><input id="ceTel" class="inp" placeholder="Tel"><select id="ceTipo" class="sel"><option>Normal</option><option>Aliado</option><option>VIP</option></select></div><input id="ceDir" class="inp" placeholder="Dir"></div><div class="modal-foot"><button class="btn-cancel" onclick="cerrarCliEdit()">Cancelar</button><button class="btn-save" onclick="guardarCliEdit()">Guardar</button></div></div></div>
+<div class="cat-bar-bottom"><button class="active" id="btnCatHistorial" onclick="setCat('historial')">HISTORIAL</button><button id="btnCatFinanzas" onclick="setCat('finanzas')">FINANZAS</button><button id="btnCatValoracion" onclick="setCat('valoracion')">VALORACIÓN</button><button id="btnCatClientes" onclick="setCat('clientes')">CLIENTES</button><button id="btnCatRepas" onclick="setCat('repas')">REPARTIDORES</button></div>
+<div id="modalCliEdit" class="modal-bg" onclick="if(event.target===this) cerrarCliEdit()"><div class="modal"><div class="modal-head"><b>EDITAR CLIENTE</b><button class="btn" onclick="cerrarCliEdit()">✕</button></div><div class="modal-body"><input id="ceNombre" class="inp" style="font-size:9px" oninput="mostrarAuto(this.value,'ce')"><div id="autoListCe" class="auto-list"></div><div class="grid2" style="margin-top:8px"><input id="ceTel" class="inp" placeholder="Tel"><select id="ceTipo" class="sel"><option>Normal</option><option>Aliado</option><option>VIP</option></select></div><input id="ceDir" class="inp" placeholder="Dir" style="margin-top:8px"></div><div class="modal-foot"><button class="btn-cancel" onclick="cerrarCliEdit()">Cancelar</button><button class="btn-save" onclick="guardarCliEdit()">Guardar</button></div></div></div>
 <div id="modalCliDel" class="modal-bg" onclick="if(event.target===this) cerrarCliDel()"><div class="modal" style="max-width:380px"><div class="modal-head"><b>ELIMINAR CLIENTE</b></div><div class="modal-body" style="text-align:center"><div id="delCliTxt">¿Eliminar?</div></div><div class="modal-foot" style="justify-content:center"><button class="btn-del-g" onclick="cerrarCliDel()">NO</button><button class="btn-del-r" onclick="confirmarCliDel()">SÍ</button></div></div></div>
-<div id="modalRepaEdit" class="modal-bg" onclick="if(event.target===this) cerrarRepaEdit()"><div class="modal"><div class="modal-head"><b>EDITAR REPARTIDOR</b><button class="btn" onclick="cerrarRepaEdit()">✕</button></div><div class="modal-body"><input id="reNombre" class="inp" oninput="mostrarAutoRepa(this.value,'re')"><div id="autoListRepaEdit" class="auto-list"></div><div class="grid2" style="margin-top:8px"><input id="reTel" class="inp"><select id="reTipo" class="sel"><option>Moto</option><option>Bici</option></select></div><div class="grid2" style="margin-top:8px"><div><div class="lab">MANDADO</div><input id="reMan" type="number" class="inp"></div><div><div class="lab">TRANSPORTE</div><input id="reTrans" type="number" class="inp"></div></div></div><div class="modal-foot"><button class="btn-cancel" onclick="cerrarRepaEdit()">Cancelar</button><button class="btn-save" onclick="guardarRepaEdit()">Guardar</button></div></div></div>
+<div id="modalRepaEdit" class="modal-bg" onclick="if(event.target===this) cerrarRepaEdit()"><div class="modal"><div class="modal-head"><b>EDITAR REPARTIDOR</b><button class="btn" onclick="cerrarRepaEdit()">✕</button></div><div class="modal-body"><input id="reNombre" class="inp" oninput="mostrarAutoRepa(this.value,'re')"><div id="autoListRepaEdit" class="auto-list"></div><div class="grid2" style="margin-top:8px"><input id="reTel" class="inp"><select id="reTipo" class="sel"><option>Moto</option><option>Bici</option></select></div><div class="grid2" style="margin-top:8px"><input id="reMan" type="number" class="inp"><input id="reTrans" type="number" class="inp"></div></div><div class="modal-foot"><button class="btn-cancel" onclick="cerrarRepaEdit()">Cancelar</button><button class="btn-save" onclick="guardarRepaEdit()">Guardar</button></div></div></div>
 <div id="modalRepaDel" class="modal-bg" onclick="if(event.target===this) cerrarRepaDel()"><div class="modal" style="max-width:380px"><div class="modal-head"><b>ELIMINAR REPARTIDOR</b></div><div class="modal-body" style="text-align:center"><div id="delRepaTxt">¿Eliminar?</div></div><div class="modal-foot" style="justify-content:center"><button class="btn-del-g" onclick="cerrarRepaDel()">NO</button><button class="btn-del-r" onclick="confirmarRepaDel()">SÍ</button></div></div></div>
 
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig); const db=firebase.database();
 let tarifasGlobal={mandado:5,transporte:10}; db.ref('kigoTarifas').once('value').then(s=>{ if(s.exists()) tarifasGlobal=s.val(); });
-let todos=[], subcat='todos', editKey=null, delKey=null; let clientesDB={}, cliEditKey=null, cliDelKey=null, cliDelNombre=null; let repasDB={}, repaEditKey=null, repaDelKey=null, repaDelNombre=null;
+let todos=[], subcat='todos', editKey=null, delKey=null; let clientesDB={}, cliEditKey=null, cliDelKey=null, cliDelNombre=null; let repasDB={}, repaEditKey=null, repaDelKey=null, repaDelNombre=null; let gastosDB={}, calDate=new Date();
 
 function getTS(p){ if(p.fecha && typeof p.fecha==='string'){ let txt=p.fecha.split(' ')[0].trim(); if(txt.includes('/')){ let parts=txt.split('/'); if(parts.length===3){ let m=parseInt(parts[0]), d=parseInt(parts[1]), y=parseInt(parts[2]); if(y<100) y+=2000; let f=new Date(y,m-1,d,12,0,0); if(!isNaN(f)) return f.getTime(); } } } if(p.ts) return Number(p.ts) < 1e12? Number(p.ts)*1000 : Number(p.ts); if(p.timestamp){ let t=Number(p.timestamp); return t<1e12? t*1000 : t; } if(p.iso){ let d=new Date(p.iso+'T12:00:00'); if(!isNaN(d)) return d.getTime(); } return 0; }
 function fFecha(ts){ let d=new Date(ts); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
@@ -165,130 +175,20 @@ function esSemana(ts){ let hoy=new Date(); let ini=new Date(hoy); ini.setDate(ho
 function esMes(ts){ let d=new Date(ts), h=new Date(); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); }
 function getFeeRepa(nombre,tipoServ){ if(!nombre) return (tipoServ||'').toLowerCase().includes('trans')? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5); let r=Object.values(repasDB).find(x=> x.nombre?.toLowerCase()===nombre.toLowerCase()); if(!r) return (tipoServ||'').toLowerCase().includes('trans')? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5); if((tipoServ||'').toLowerCase().includes('trans')) return r.tarifaTransporte? parseInt(r.tarifaTransporte) : (tarifasGlobal.transporte||10); return r.tarifaMandado? parseInt(r.tarifaMandado) : (tarifasGlobal.mandado||5); }
 
-window.setCat=function(cat){ document.getElementById('view-historial').style.display=cat==='historial'?'block':'none'; document.getElementById('view-finanzas').style.display=cat==='finanzas'?'block':'none'; document.getElementById('view-clientes').style.display=cat==='clientes'?'block':'none'; document.getElementById('view-repas').style.display=cat==='repas'?'block':'none'; document.querySelectorAll('.cat-bar-bottom button').forEach(b=>b.classList.remove('active')); document.getElementById('btnCatHistorial').classList.toggle('active',cat==='historial'); document.getElementById('btnCatFinanzas').classList.toggle('active',cat==='finanzas'); document.getElementById('btnCatClientes').classList.toggle('active',cat==='clientes'); document.getElementById('btnCatRepas').classList.toggle('active',cat==='repas'); if(cat==='finanzas') renderFinanzas(); if(cat==='repas') renderRepas(); }
+window.setCat=function(cat){ document.getElementById('view-historial').style.display=cat==='historial'?'block':'none'; document.getElementById('view-finanzas').style.display=cat==='finanzas'?'block':'none'; document.getElementById('view-valoracion').style.display=cat==='valoracion'?'block':'none'; document.getElementById('view-clientes').style.display=cat==='clientes'?'block':'none'; document.getElementById('view-repas').style.display=cat==='repas'?'block':'none'; document.querySelectorAll('.cat-bar-bottom button').forEach(b=>b.classList.remove('active')); document.getElementById('btnCatHistorial').classList.toggle('active',cat==='historial'); document.getElementById('btnCatFinanzas').classList.toggle('active',cat==='finanzas'); document.getElementById('btnCatValoracion').classList.toggle('active',cat==='valoracion'); document.getElementById('btnCatClientes').classList.toggle('active',cat==='clientes'); document.getElementById('btnCatRepas').classList.toggle('active',cat==='repas'); if(cat==='finanzas') renderFinanzas(); if(cat==='repas') renderRepas(); if(cat==='valoracion') renderValoracion(); }
 window.setFinSub=function(s,btn){ document.querySelectorAll('#view-finanzas.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('fin-resumen').style.display=s==='resumen'?'block':'none'; document.getElementById('fin-semana').style.display=s==='semana'?'block':'none'; document.getElementById('fin-mes').style.display=s==='mes'?'block':'none'; document.getElementById('fin-graf').style.display=s==='graf'?'block':'none'; renderFinanzas(); }
+window.setValSub=function(s,btn){ document.querySelectorAll('#view-valoracion.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('val-gastos').style.display=s==='gastos'?'block':'none'; document.getElementById('val-mes').style.display=s==='mes'?'block':'none'; document.getElementById('val-cal').style.display=s==='cal'?'block':'none'; renderValoracion(); }
 window.setCliSub=function(s,btn){ document.querySelectorAll('#view-clientes.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('cli-lista').style.display=s==='lista'?'block':'none'; document.getElementById('cli-agregar').style.display=s==='agregar'?'block':'none'; document.getElementById('cli-ranking').style.display=s==='ranking'?'block':'none'; renderClientes(); }
 window.setRepaSub=function(s,btn){ document.querySelectorAll('#view-repas.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('repa-lista').style.display=s==='lista'?'block':'none'; document.getElementById('repa-agregar').style.display=s==='agregar'?'block':'none'; document.getElementById('repa-deudas').style.display=s==='deudas'?'block':'none'; renderRepas(); }
 
-db.ref('ventasKigo').on('value', snap=>{ let val=snap.val()||{}; let lista=Object.entries(val).map(([k,v])=>({...v,_key:k,_ts:getTS(v)})).filter(p=>p._ts>0); lista.sort((a,b)=>a._ts-b._ts); lista.forEach((p,i)=> p.numeroOrden=i+1); todos=lista.slice().reverse(); aplicar(); renderClientes(); renderRepas(); renderFinanzas(); actualizarSelectRepas(); });
+db.ref('ventasKigo').on('value', snap=>{ let val=snap.val()||{}; let lista=Object.entries(val).map(([k,v])=>({...v,_key:k,_ts:getTS(v)})).filter(p=>p._ts>0); lista.sort((a,b)=>a._ts-b._ts); lista.forEach((p,i)=> p.numeroOrden=i+1); todos=lista.slice().reverse(); aplicar(); renderClientes(); renderRepas(); renderFinanzas(); renderValoracion(); actualizarSelectRepas(); });
 db.ref('clientesKigo').on('value', snap=>{ clientesDB=snap.val()||{}; renderClientes(); });
-db.ref('repartidoresKigo').on('value', snap=>{ repasDB=snap.val()||{}; renderRepas(); actualizarSelectRepas(); });
+db.ref('repartidoresKigo').on('value', snap=>{ repasDB=snap.val()||{}; renderRepas(); actualizarSelectRepas(); renderFinanzas(); });
+db.ref('gastosKigo').on('value', snap=>{ gastosDB=snap.val()||{}; renderValoracion(); });
 
 window.setSubcat=function(t,btn){ subcat=t; document.querySelectorAll('#view-historial.subcats button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); aplicar(); }
 window.limpiar=function(){ document.getElementById('filtroMes').value=''; document.getElementById('filtroFecha').value=''; document.getElementById('filtroQ').value=''; subcat='todos'; aplicar(); }
 window.aplicar=function(){ let mes=document.getElementById('filtroMes').value; let fecha=document.getElementById('filtroFecha').value; let q=(document.getElementById('filtroQ').value||'').toLowerCase(); let lista=todos.filter(p=>{ if(subcat==='hoy'&&!esHoy(p._ts)) return false; if(subcat==='ayer'&&!esAyer(p._ts)) return false; if(subcat==='semana'&&!esSemana(p._ts)) return false; if(subcat==='mes'&&!esMes(p._ts)) return false; if(mes&&isoM(p._ts)!==mes) return false; if(fecha&&isoF(p._ts)!==fecha) return false; if(q){ let c=(p.cliente||'').toLowerCase(); let r=(p.repa||'').toLowerCase(); if(!c.includes(q)&&!r.includes(q)) return false; } return true; }); render(lista); }
-
-function render(lista){
-  let tb=document.getElementById('tbody'); if(!lista.length){ tb.innerHTML=`<tr><td colspan="11" style="text-align:center;padding:20px">Sin pedidos</td></tr>`; sTotal.innerText=0; sIng.innerText='$0'; sPag.innerText=0; sDebe.innerText='$0'; return; }
-  let ing=0,pag=0,debe=0; lista.forEach(p=>{ let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, p.tipoServicio||p.tipo||''); if(p.pagado){ ing+=fee; pag++; } else { debe+=fee; } });
-  sTotal.innerText=lista.length; sIng.innerText='$'+ing.toLocaleString(); sPag.innerText=pag; sDebe.innerText='$'+debe.toLocaleString();
-  tb.innerHTML=''; lista.forEach(p=>{ let tot=parseInt(p.valor||0)||0; let tipoTxt=p.tipoServicio||p.tipo||'Mandado'; let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, tipoTxt); let tr=document.createElement('tr'); tr.innerHTML=`<td><span class="num">#${p.numeroOrden}</span></td><td><b>${fFecha(p._ts)}</b></td><td><b>${(p.cliente||'').slice(0,22)}</b></td><td>${tipoTxt}</td><td>${p.tipoCliente||'Normal'}</td><td>${p.repa||p.repartidor||''}</td><td><b style="color:#10b981">$${tot}</b></td><td><b style="color:#ef4444">$${fee}</b></td><td><button class="pill ${p.pagado?'pill-si':'pill-no'}" onclick="togglePago('${p._key}')">${p.pagado?'✅ PAGADO':'❌ NO'}</button></td><td><button class="btn btn-b" onclick="abrirEditar('${p._key}')">EDITAR</button></td><td><button class="btn btn-r" onclick="abrirEliminar('${p._key}')">ELIMINAR</button></td>`; tb.appendChild(tr); });
-}
+function render(lista){ let tb=document.getElementById('tbody'); if(!lista.length){ tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:20px">Sin pedidos</td></tr>`; sTotal.innerText=0; sIng.innerText='$0'; sPag.innerText=0; sDebe.innerText='$0'; return; } let ing=0,pag=0,debe=0; lista.forEach(p=>{ let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, p.tipoServicio||p.tipo||''); if(p.pagado){ ing+=fee; pag++; } else { debe+=fee; } }); sTotal.innerText=lista.length; sIng.innerText='$'+ing.toLocaleString(); sPag.innerText=pag; sDebe.innerText='$'+debe.toLocaleString(); tb.innerHTML=''; lista.forEach(p=>{ let tot=parseInt(p.valor||0)||0; let tipoTxt=p.tipoServicio||p.tipo||'Mandado'; let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, tipoTxt); let tr=document.createElement('tr'); tr.innerHTML=`<td><span class="num">#${p.numeroOrden}</span></td><td><b>${fFecha(p._ts)}</b></td><td><b style="font-size:9px">${(p.cliente||'').slice(0,18)}</b></td><td>${tipoTxt}</td><td>${p.repa||''}</td><td><b style="color:#10b981">$${tot}</b></td><td><b style="color:#ef4444">$${fee}</b></td><td><button class="pill ${p.pagado?'pill-si':'pill-no'}" onclick="togglePago('${p._key}')">${p.pagado?'✅':'❌'}</button></td><td><button class="btn btn-b" onclick="abrirEditar('${p._key}')">EDIT</button></td><td><button class="btn btn-r" onclick="abrirEliminar('${p._key}')">DEL</button></td>`; tb.appendChild(tr); }); }
 window.togglePago=function(k){ let p=todos.find(x=>x._key===k); if(!p) return; db.ref('ventasKigo/'+k).update({pagado:!p.pagado}); }
-
-function getListaClientesUnicos(){ let map={}; todos.forEach(p=>{ let n=(p.cliente||'').trim(); if(n) map[n.toLowerCase()]={nombre:n}; }); Object.values(clientesDB).forEach(c=>{ if(c.nombre) map[c.nombre.toLowerCase()]={nombre:c.nombre}; }); return Object.values(map); }
-function getListaRepasUnicos(){ let map={}; todos.forEach(p=>{ let n=(p.repa||p.repartidor||'').trim(); if(n) map[n.toLowerCase()]={nombre:n}; }); Object.values(repasDB).forEach(r=>{ if(r.nombre) map[r.nombre.toLowerCase()]={nombre:r.nombre}; }); return Object.values(map); }
-window.mostrarAuto=function(txt,origen){ let idList = origen==='ce'? 'autoListCe' : 'autoList'; let list=document.getElementById(idList); if(!txt||txt.length<1){ list.classList.remove('show'); return; } let uni=getListaClientesUnicos().filter(c=>c.nombre.toLowerCase().includes(txt.toLowerCase())).slice(0,6); if(!uni.length){ list.classList.remove('show'); return; } list.innerHTML=uni.map(c=>`<div class="auto-item" onclick="seleccionarCli('${c.nombre.replace(/'/g,"\\'")}','${origen}')"><span>${c.nombre}</span></div>`).join(''); list.classList.add('show'); }
-window.mostrarAutoRepa=function(txt,origen){ let idList = origen==='e'? 'autoListRepa' : 'autoListRepaEdit'; let list=document.getElementById(idList); if(!txt||txt.length<1){ list.classList.remove('show'); return; } let uni=getListaRepasUnicos().filter(c=>c.nombre.toLowerCase().includes(txt.toLowerCase())).slice(0,6); if(!uni.length){ list.classList.remove('show'); return; } list.innerHTML=uni.map(c=>`<div class="auto-item" onclick="seleccionarRepa('${c.nombre.replace(/'/g,"\\'")}','${origen}')"><span>${c.nombre}</span></div>`).join(''); list.classList.add('show'); }
-window.seleccionarCli=function(nombre,origen){ if(origen==='ce'){ document.getElementById('ceNombre').value=nombre; document.getElementById('autoListCe').classList.remove('show'); } else { document.getElementById('eCliente').value=nombre; document.getElementById('autoList').classList.remove('show'); } }
-window.seleccionarRepa=function(nombre,origen){ if(origen==='re'){ document.getElementById('reNombre').value=nombre; document.getElementById('autoListRepaEdit').classList.remove('show'); } else { document.getElementById('eRepa').value=nombre; document.getElementById('autoListRepa').classList.remove('show'); let fee=getFeeRepa(nombre, document.getElementById('eServicio').value); document.getElementById('eFee').value=fee; } }
-window.abrirEditar=function(k){ let p=todos.find(x=>x._key===k); if(!p) return; editKey=k; document.getElementById('editNum').innerText='#'+p.numeroOrden; document.getElementById('eServicio').value=p.tipoServicio||p.tipo||'Moto Mandado'; document.getElementById('eCliente').value=p.cliente||''; document.getElementById('eValor').value=p.valor||0; document.getElementById('eFee').value=p.feeKigo||getFeeRepa(p.repa||'', p.tipoServicio||''); document.getElementById('eRepa').value=p.repa||p.repartidor||''; document.getElementById('eFecha').value=isoF(p._ts); document.getElementById('ePagado').value=p.pagado?'true':'false'; document.getElementById('modalEditar').classList.add('show'); }
-window.cerrarEditar=function(){ document.getElementById('modalEditar').classList.remove('show'); editKey=null; }
-window.guardarEdicion=function(){ if(!editKey) return; let serv=document.getElementById('eServicio').value, cli=document.getElementById('eCliente').value.trim(), val=parseInt(document.getElementById('eValor').value)||0, fee=parseInt(document.getElementById('eFee').value), repa=document.getElementById('eRepa').value.trim(), fechaIn=document.getElementById('eFecha').value, pag=document.getElementById('ePagado').value==='true'; let tsFecha=fechaIn? new Date(fechaIn+'T12:00:00').getTime():null; let update={tipoServicio:serv,tipo:serv,cliente:cli,valor:val,feeKigo:fee,repa:repa,repartidor:repa,pagado:pag}; if(tsFecha){ update.ts=tsFecha; update.iso=fechaIn; } db.ref('ventasKigo/'+editKey).update(update); cerrarEditar(); }
-window.abrirEliminar=function(k){ delKey=k; document.getElementById('delTxt').innerText='¿Eliminar pedido?'; document.getElementById('modalEliminar').classList.add('show'); }
-window.cerrarEliminar=function(){ document.getElementById('modalEliminar').classList.remove('show'); delKey=null; }
-window.confirmarEliminar=function(){ if(!delKey) return; db.ref('ventasKigo/'+delKey).remove(); cerrarEliminar(); }
-window.renderClientes=function(){ let busca=(document.getElementById('buscaCli').value||'').toLowerCase(); let conteo={}; todos.forEach(p=>{ let n=(p.cliente||'').trim(); if(!n) return; let k=n.toLowerCase(); conteo[k]=conteo[k]||{nombre:n,count:0}; conteo[k].count++; }); let lista=Object.entries(clientesDB).map(([k,v])=>({...v,_key:k,_count:conteo[v.nombre?.toLowerCase()]?.count||0})); Object.values(conteo).forEach(c=>{ if(!Object.values(clientesDB).some(x=>x.nombre?.toLowerCase()===c.nombre.toLowerCase())) lista.push({nombre:c.nombre,_count:c.count,_key:null}); }); if(busca) lista=lista.filter(c=>c.nombre.toLowerCase().includes(busca)); lista.sort((a,b)=>b._count-a._count); document.getElementById('totalCliTxt').innerText=lista.length+' CLIENTES'; document.getElementById('listaCliWrap').innerHTML=lista.map(c=>`<div class="cli-card"><div><b>${c.nombre}</b><div style="font-size:7px">${c._count} pedidos</div></div><div style="display:flex;gap:6px"><button class="btn btn-b" onclick="abrirCliEdit('${c._key||''}','${c.nombre.replace(/'/g,"\\'")}')">EDITAR</button><button class="btn btn-r" onclick="abrirCliDel('${c._key||''}','${c.nombre.replace(/'/g,"\\'")}')">ELIMINAR</button></div></div>`).join(''); document.getElementById('rankingWrap').innerHTML=lista.slice(0,20).map((c,i)=>`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee"><span>${i+1}. ${c.nombre}</span><span style="background:#0a0a0a;color:#fff;padding:2px 8px;border-radius:999px;font-size:8px">${c._count}</span></div>`).join(''); }
-window.agregarCliente=function(){ let n=document.getElementById('newCliNombre').value.trim(); if(!n) return alert('Nombre'); db.ref('clientesKigo').push({nombre:n, telefono:document.getElementById('newCliTel').value, tipo:document.getElementById('newCliTipo').value}); document.getElementById('newCliNombre').value=''; setCliSub('lista', document.getElementById('cliBtnList')); }
-window.abrirCliEdit=function(k,n){ cliEditKey=k; document.getElementById('ceNombre').value=n; if(k&&clientesDB[k]) document.getElementById('ceTel').value=clientesDB[k].telefono||''; document.getElementById('modalCliEdit').classList.add('show'); }
-window.cerrarCliEdit=function(){ document.getElementById('modalCliEdit').classList.remove('show'); cliEditKey=null; }
-window.guardarCliEdit=function(){ let n=document.getElementById('ceNombre').value.trim(); if(!n) return; if(cliEditKey) db.ref('clientesKigo/'+cliEditKey).update({nombre:n, telefono:document.getElementById('ceTel').value}); else db.ref('clientesKigo').push({nombre:n}); cerrarCliEdit(); }
-window.abrirCliDel=function(k,n){ cliDelKey=k; cliDelNombre=n; document.getElementById('delCliTxt').innerText='¿Eliminar '+n+'?'; document.getElementById('modalCliDel').classList.add('show'); }
-window.cerrarCliDel=function(){ document.getElementById('modalCliDel').classList.remove('show'); cliDelKey=null; }
-window.confirmarCliDel=function(){ if(cliDelKey) db.ref('clientesKigo/'+cliDelKey).remove().then(()=> cerrarCliDel()); else cerrarCliDel(); }
-
-function actualizarSelectRepas(){ let sel=document.getElementById('filtroRepaDebe'); if(!sel) return; let actual=sel.value; let lista=getListaRepasUnicos().map(r=>r.nombre).sort(); sel.innerHTML='<option value="">TODOS LOS REPARTIDORES</option>'+lista.map(n=>`<option value="${n}" ${actual===n?'selected':''}>${n}</option>`).join(''); }
-
-window.renderRepas=function(){
-  let busca=(document.getElementById('buscaRepa').value||'').toLowerCase();
-  let stats={}; todos.forEach(p=>{ let n=(p.repa||p.repartidor||'').trim(); if(!n) return; let k=n.toLowerCase(); if(!stats[k]) stats[k]={nombre:n,count:0,pag:0,debe:0,ingPag:0,ingDebe:0}; let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(n, p.tipoServicio||p.tipo||''); stats[k].count++; if(p.pagado){ stats[k].pag++; stats[k].ingPag+=fee; } else { stats[k].debe++; stats[k].ingDebe+=fee; } });
-  let lista=Object.entries(repasDB).map(([k,v])=>({...v,_key:k,_s:stats[v.nombre?.toLowerCase()]||{count:0,pag:0,debe:0,ingPag:0,ingDebe:0}}));
-  Object.values(stats).forEach(s=>{ if(!Object.values(repasDB).some(r=> r.nombre?.toLowerCase()===s.nombre.toLowerCase())) lista.push({nombre:s.nombre,tarifaMandado:tarifasGlobal.mandado,tarifaTransporte:tarifasGlobal.transporte,_key:null,_s:s}); });
-  if(busca) lista=lista.filter(r=> r.nombre.toLowerCase().includes(busca)); lista.sort((a,b)=> b._s.count - a._s.count);
-  document.getElementById('totalRepaTxt').innerText=lista.length+' REPARTIDORES';
-  document.getElementById('listaRepaWrap').innerHTML=lista.map(r=>`<div class="cli-card"><div style="flex:1"><div style="font-weight:900;font-size:11px">${r.nombre} <span style="font-size:7px;background:#f3f4f6;padding:2px 6px;border-radius:999px">${r.tipo||'Moto'}</span></div><div style="font-size:7px;color:#6b7280">Tarifas: Mandado $${r.tarifaMandado||5} | Transporte $${r.tarifaTransporte||10}</div><div style="font-size:7px;margin-top:4px"><span style="background:#0a0a0a;color:#fff;padding:2px 6px;border-radius:999px">${r._s.count} pedidos</span> <span style="background:#dcfce7;padding:2px 6px;border-radius:999px">${r._s.pag} pagados $${r._s.ingPag}</span> <span style="background:#fee2e2;padding:2px 6px;border-radius:999px">${r._s.debe} deben $${r._s.ingDebe}</span></div></div><div style="display:flex;gap:4px;flex-direction:column"><button class="btn btn-b" onclick="abrirRepaEdit('${r._key||''}','${r.nombre.replace(/'/g,"\\'")}')">EDITAR TARIFA</button><button class="btn btn-r" onclick="abrirRepaDel('${r._key||''}','${r.nombre.replace(/'/g,"\\'")}')">ELIMINAR</button><button class="btn" onclick="pagarTodoRepa('${r.nombre.replace(/'/g,"\\'")}')">PAGAR TODO</button></div></div>`).join('');
-  let deudas=lista.filter(r=> r._s.ingDebe>0).sort((a,b)=> b._s.ingDebe - a._s.ingDebe);
-  document.getElementById('deudasWrap').innerHTML='<div class="fin-card"><div style="font-weight:900;font-size:11px;margin-bottom:8px">💰 RANKING DEUDAS - QUIEN MÁS DEBE</div>'+(deudas.map((r,i)=>`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #f3f4f6"><span style="font-size:9px;font-weight:900">${i+1}. ${r.nombre} - ${r._s.debe} pedidos</span><span style="background:#ef4444;color:#fff;padding:3px 8px;border-radius:999px;font-size:8px;font-weight:900">$${r._s.ingDebe}</span></div>`).join('') || 'Al día ✅')+'</div>';
-}
-window.agregarRepa=function(){ let n=document.getElementById('newRepaNombre').value.trim(); if(!n) return alert('Nombre'); let man=parseInt(document.getElementById('newRepaMan').value)||5; let trans=parseInt(document.getElementById('newRepaTrans').value)||10; db.ref('repartidoresKigo').push({nombre:n, telefono:document.getElementById('newRepaTel').value, tipo:document.getElementById('newRepaTipo').value, tarifaMandado:man, tarifaTransporte:trans}); document.getElementById('newRepaNombre').value=''; setRepaSub('lista', document.getElementById('repaBtnList')); }
-window.abrirRepaEdit=function(k,n){ if(k&&repasDB[k]){ repaEditKey=k; let r=repasDB[k]; document.getElementById('reNombre').value=r.nombre; document.getElementById('reTel').value=r.telefono||''; document.getElementById('reTipo').value=r.tipo||'Moto'; document.getElementById('reMan').value=r.tarifaMandado||5; document.getElementById('reTrans').value=r.tarifaTransporte||10; } else { repaEditKey='new_'+n; document.getElementById('reNombre').value=n; document.getElementById('reMan').value=5; document.getElementById('reTrans').value=10; } document.getElementById('modalRepaEdit').classList.add('show'); }
-window.cerrarRepaEdit=function(){ document.getElementById('modalRepaEdit').classList.remove('show'); repaEditKey=null; }
-window.guardarRepaEdit=function(){ let n=document.getElementById('reNombre').value.trim(); let man=parseInt(document.getElementById('reMan').value)||5; let trans=parseInt(document.getElementById('reTrans').value)||10; if(!n) return; let data={nombre:n, telefono:document.getElementById('reTel').value, tipo:document.getElementById('reTipo').value, tarifaMandado:man, tarifaTransporte:trans}; if(repaEditKey &&!repaEditKey.startsWith('new_')) db.ref('repartidoresKigo/'+repaEditKey).update(data); else db.ref('repartidoresKigo').push(data); cerrarRepaEdit(); }
-window.abrirRepaDel=function(k,n){ repaDelKey=k; repaDelNombre=n; document.getElementById('delRepaTxt').innerText='¿Eliminar repartidor '+n+'?'; document.getElementById('modalRepaDel').classList.add('show'); }
-window.cerrarRepaDel=function(){ document.getElementById('modalRepaDel').classList.remove('show'); repaDelKey=null; }
-window.confirmarRepaDel=function(){ if(repaDelKey) db.ref('repartidoresKigo/'+repaDelKey).remove().then(()=> cerrarRepaDel()); else cerrarRepaDel(); }
-window.pagarTodoRepa=function(nombre){ if(!confirm('¿Marcar todos los de '+nombre+' como PAGADOS?')) return; let updates={}; todos.forEach(p=>{ if((p.repa||p.repartidor||'').toLowerCase()===nombre.toLowerCase() &&!p.pagado) updates['ventasKigo/'+p._key+'/pagado']=true; }); if(Object.keys(updates).length) db.ref().update(updates); }
-
-window.renderFinanzas=function(){
-  if(!todos.length) return;
-  let dias=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-  let porDia={0:0,1:0,2:0,3:0,4:0,5:0,6:0}, porDiaIng={0:0,1:0,2:0,3:0,4:0,5:0,6:0};
-  let porMes={}, ingPorMes={}, totalIng=0, totalCobrar=0, totalIngFilt=0, totalCobrarFilt=0;
-  let countMan=0, ingMan=0, countTrans=0, ingTrans=0, countCompra=0, ingCompra=0;
-  let filtroRepa=(document.getElementById('filtroRepaDebe')?.value||'').toLowerCase();
-
-  let ahora=new Date(), mesActual=ahora.getFullYear()+'-'+String(ahora.getMonth()+1).padStart(2,'0');
-  let mesAntDate=new Date(ahora); mesAntDate.setMonth(mesAntDate.getMonth()-1);
-  let mesAnt=mesAntDate.getFullYear()+'-'+String(mesAntDate.getMonth()+1).padStart(2,'0');
-
-  todos.forEach(p=>{
-    let repaNombre=(p.repa||p.repartidor||'').toLowerCase();
-    if(filtroRepa && repaNombre!==filtroRepa) {} // solo filtra debe
-    let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, p.tipoServicio||p.tipo||'');
-    let d=new Date(p._ts); let dia=d.getDay(); let mesKey=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-    let esFilt =!filtroRepa || repaNombre===filtroRepa;
-    if(p.pagado){
-      totalIng+=fee; if(esFilt) totalIngFilt+=fee;
-      porDiaIng[dia]+=fee; ingPorMes[mesKey]=(ingPorMes[mesKey]||0)+fee;
-      let tipo=(p.tipoServicio||p.tipo||'').toLowerCase();
-      if(tipo.includes('trans')){ ingTrans+=fee; countTrans++; } else if(tipo.includes('compra')){ ingCompra+=fee; countCompra++; } else { ingMan+=fee; countMan++; }
-    } else {
-      totalCobrar+=fee; if(esFilt) totalCobrarFilt+=fee;
-    }
-    porDia[dia]++; porMes[mesKey]=(porMes[mesKey]||0)+1;
-  });
-
-  if(filtroRepa){
-    document.getElementById('fTotal').innerText=todos.filter(p=> (p.repa||p.repartidor||'').toLowerCase()===filtroRepa).length;
-    document.getElementById('fIng').innerText='$'+totalIngFilt.toLocaleString();
-    document.getElementById('fCobrar').innerText='$'+totalCobrarFilt.toLocaleString();
-    document.getElementById('fDebeDetalle').innerText='📌 '+filtroRepa.toUpperCase()+' TE DEBE: $'+totalCobrarFilt.toLocaleString()+' ('+todos.filter(p=> (p.repa||p.repartidor||'').toLowerCase()===filtroRepa &&!p.pagado).length+' pedidos sin pagar)';
-  } else {
-    document.getElementById('fTotal').innerText=todos.length;
-    document.getElementById('fIng').innerText='$'+totalIng.toLocaleString();
-    document.getElementById('fCobrar').innerText='$'+totalCobrar.toLocaleString();
-    document.getElementById('fDebeDetalle').innerText='Mostrando todos - Total por cobrar: $'+totalCobrar.toLocaleString();
-  }
-
-  document.getElementById('fTotalSub').innerText=(porMes[mesActual]||0)+' este mes';
-  document.getElementById('fProm').innerText='$'+(todos.length? Math.round((totalIng+totalCobrar)/todos.length):0);
-  document.getElementById('fMan').innerText='$'+ingMan.toLocaleString(); document.getElementById('fManCount').innerText=countMan+' pedidos';
-  document.getElementById('fTrans').innerText='$'+ingTrans.toLocaleString(); document.getElementById('fTransCount').innerText=countTrans+' pedidos';
-  document.getElementById('fCompra').innerText='$'+ingCompra.toLocaleString(); document.getElementById('fCompraCount').innerText=countCompra+' pedidos';
-  let maxDia=Object.keys(porDia).reduce((a,b)=> porDia[a]>porDia[b]?a:b,0);
-  document.getElementById('fMejorDia').innerText=dias[maxDia]; document.getElementById('fMejorDiaSub').innerText=porDia[maxDia]+' pedidos, $'+(porDiaIng[maxDia]||0);
-  document.getElementById('fEsteMes').innerText='$'+(ingPorMes[mesActual]||0); document.getElementById('fAntMes').innerText='$'+(ingPorMes[mesAnt]||0);
-  let vari=ingPorMes[mesAnt]? Math.round(((ingPorMes[mesActual]||0)-(ingPorMes[mesAnt]||0))/ingPorMes[mesAnt]*100):0; let vEl=document.getElementById('fVari'); vEl.innerText=(vari>=0?'+':'')+vari+'%'; vEl.style.background=vari>=0?'#dcfce7':'#fee2e2';
-
-  let maxP=Math.max(...Object.values(porDia),1);
-  document.getElementById('finSemanaWrap').innerHTML=dias.map((n,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:30px;font-size:8px;font-weight:900">${n}</span><div style="flex:1;height:18px;background:#f3f4f6;border-radius:999px;overflow:hidden"><div style="height:100%;width:${(porDia[i]/maxP*100)}%;background:#0a0a0a;border-radius:999px"></div></div><span style="font-size:8px;font-weight:900">${porDia[i]} - $${porDiaIng[i]||0}</span></div>`).join('');
-  let meses=Object.keys(porMes).sort().slice(-8); let maxM=Math.max(...meses.map(m=>porMes[m]),1);
-  document.getElementById('finMesWrap').innerHTML=meses.map(m=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:55px;font-size:8px;font-weight:900">${m}</span><div style="flex:1;height:18px;background:#f3f4f6;border-radius:999px;overflow:hidden"><div style="height:100%;width:${(porMes[m]/maxM*100)}%;background:#10b981;border-radius:999px"></div></div><span style="font-size:8px;font-weight:900">${porMes[m]} pedidos - $${ingPorMes[m]||0}</span></div>`).join('');
-  try{
-    let c1=document.getElementById('canvasMes'); let ctx1=c1.getContext('2d'); ctx1.clearRect(0,0,400,180); let vals=meses.map(m=>ingPorMes[m]||0); let maxV=Math.max(...vals,1); ctx1.strokeStyle='#0a0a0a'; ctx1.lineWidth=2; ctx1.beginPath(); vals.forEach((v,i)=>{ let x=20+i*(360/Math.max(vals.length-1,1)); let y=150 - (v/maxV*120); if(i===0) ctx1.moveTo(x,y); else ctx1.lineTo(x,y); }); ctx1.stroke(); vals.forEach((v,i)=>{ let x=20+i*(360/Math.max(vals.length-1,1)); let y=150 - (v/maxV*120); ctx1.fillStyle='#0a0a0a'; ctx1.beginPath(); ctx1.arc(x,y,4,0,Math.PI*2); ctx1.fill(); ctx1.fillStyle='#6b7280'; ctx1.font='7px Inter'; ctx1.fillText('$'+v,x-10,y-8); });
-    let c2=document.getElementById('canvasSem'); let ctx2=c2.getContext('2d'); ctx2.clearRect(0,0,400,180); let maxD=Math.max(...Object.values(porDiaIng),1); dias.forEach((n,i)=>{ let x=20+i*50; let h=(porDiaIng[i]||0)/maxD*120; ctx2.fillStyle='#0a0a0a'; ctx2.fillRect(x,150-h,30,h); ctx2.fillStyle='#6b7280'; ctx2.font='7px Inter'; ctx2.fillText(n,x+2,165); });
-  }catch(e){}
-}
-</script>
-</body>
-</html>  
+  
