@@ -17,6 +17,7 @@ body{background:#F2F2F2}
 .top-info b{font-size:11px;font-weight:900;display:block}
 .top-info span{font-size:8px;color:#888;font-weight:600}
 .chip{background:var(--black);color:#fff;padding:4px 8px;border-radius:999px;font-size:8px;font-weight:800;display:flex;gap:3px;align-items:center}
+.btn-cerrar{padding:6px 10px;border-radius:999px;background:#111;color:#fff;border:none;font-size:8px;font-weight:900;cursor:pointer}
 #mapaBox{display:none;background:#fff;border-bottom:1px solid #eee;padding:8px}
 #map{width:100%;height:150px;border-radius:12px}
 .map-info{display:flex;justify-content:space-between;margin-top:6px;background:#111;color:#fff;border-radius:8px;padding:7px 10px;font-size:10px;font-weight:800}
@@ -51,7 +52,7 @@ body{background:#F2F2F2}
 </head>
 <body>
 <div class="app">
-  <div class="top"><div class="top-left"><div class="logo">K</div><div class="top-info"><b id="fecha">HOY</b><span id="subFecha">Dolores Hidalgo</span></div></div><div class="chip" id="clima"><i class="material-icons" style="font-size:11px">wb_sunny</i> --°</div></div>
+  <div class="top"><div class="top-left"><div class="logo">K</div><div class="top-info"><b id="fecha">HOY</b><span id="subFecha">Dolores Hidalgo</span></div></div><div style="display:flex;gap:6px;align-items:center"><div class="chip" id="clima"><i class="material-icons" style="font-size:11px">wb_sunny</i> --°</div><button class="btn-cerrar" onclick="cerrarSesion()">CERRAR SESIÓN</button></div></div>
 
   <div id="mapaBox"><div id="map"></div><div class="map-info"><span id="kmTxt">— km</span><span id="priceTxt">$0 MXN</span></div></div>
 
@@ -67,28 +68,25 @@ body{background:#F2F2F2}
       <button id="sComprar" class="sub-btn" onclick="setSub('comprar')"><i class="material-icons" style="font-size:13px">shopping_bag</i> COMPRAR</button>
     </div>
 
-    <!-- ALIADOS RECOGER -->
     <div id="formAR" class="card">
       <div class="field"><div class="field-label">Nombre aliado</div><div class="input-wrap"><input id="inAliado" class="input-rappi" placeholder="Escribe aliado"><button class="clear-x" onclick="clearI('inAliado')"><i class="material-icons">close</i></button><div id="sugAliados" class="suggestions"></div></div></div>
-      <div id="aliadoDir" style="display:none;font-size:9px;color:#666;background:#fff;padding:5px 7px;border-radius:7px;border:1px dashed #FF3A2A;margin-bottom:6px"></div>
+      <div id="aliadoDir" style="display:none;font-size:9px;color:#111;background:#fff;padding:8px 9px;border-radius:8px;border:1.5px dashed #FF3A2A;margin-bottom:6px;line-height:1.3"></div>
       <div class="field"><div class="field-label">¿Dónde entregar? (Google Maps)</div><div class="input-wrap"><input id="inEntrega" class="input-rappi" placeholder="Dirección entrega"><button class="clear-x" onclick="clearI('inEntrega')"><i class="material-icons">close</i></button></div></div>
       <div class="field"><div class="field-label">Teléfono entrega</div><div class="input-wrap"><input id="inTel" class="input-rappi" type="tel" placeholder="418..."><button class="clear-x" onclick="clearI('inTel')"><i class="material-icons">close</i></button></div></div>
       <div class="field"><div class="field-label">Tiempo recoger</div><div class="input-wrap"><input id="inTiempo" class="input-rappi" placeholder="5 min, enseguida"><button class="clear-x" onclick="clearI('inTiempo')"><i class="material-icons">close</i></button></div></div>
       <div class="field"><div class="field-label">Repartidor</div><select id="selRepaAR" class="select-rappi"></select></div>
     </div>
 
-    <!-- ALIADOS COMPRAR - NUEVA LOGICA -->
     <div id="formAC" class="card" style="display:none">
       <div class="field"><div class="field-label">Producto que se va a comprar</div><div class="input-wrap"><input id="inProdAC" class="input-rappi" placeholder="Ej: 1kg manzana"><button class="clear-x" onclick="clearI('inProdAC')"><i class="material-icons">close</i></button></div></div>
       <div class="field"><div class="field-label">¿Dónde se va a comprar? Nombre tienda</div><div class="input-wrap"><input id="inDondeAC" class="input-rappi" placeholder="Ej: Frutería centro"><button class="clear-x" onclick="clearI('inDondeAC')"><i class="material-icons">close</i></button></div></div>
       <div class="field"><div class="field-label">Dirección donde comprar (Google Maps)</div><div class="input-wrap"><input id="inDirComprarAC" class="input-rappi" placeholder="Dirección tienda"><button class="clear-x" onclick="clearI('inDirComprarAC')"><i class="material-icons">close</i></button></div></div>
       <div class="field"><div class="field-label">Nombre aliado al que se le va a entregar</div><div class="input-wrap"><input id="inAliadoEntregaAC" class="input-rappi" placeholder="Toca para elegir aliado"><button class="clear-x" onclick="clearI('inAliadoEntregaAC')"><i class="material-icons">close</i></button><div id="sugAliadoEntregaAC" class="suggestions"></div></div></div>
-      <div id="aliadoEntregaDirAC" style="display:none;font-size:9px;color:#666;background:#fff;padding:5px 7px;border-radius:7px;border:1px dashed #111;margin-bottom:6px"></div>
+      <div id="aliadoEntregaDirAC" style="display:none;font-size:9px;color:#111;background:#fff;padding:8px 9px;border-radius:8px;border:1.5px dashed #111;margin-bottom:6px;line-height:1.3"></div>
       <div class="field"><div class="field-label">¿En qué tiempo se va a comprar?</div><div class="input-wrap"><input id="inTiempoAC" class="input-rappi" placeholder="10 min, 20 min"><button class="clear-x" onclick="clearI('inTiempoAC')"><i class="material-icons">close</i></button></div></div>
       <div class="field"><div class="field-label">Repartidor</div><select id="selRepaAC" class="select-rappi"></select></div>
     </div>
 
-    <!-- CLIENTES NUEVOS RECOGER -->
     <div id="formNR" class="card" style="display:none">
       <div class="field"><div class="field-label">Nombre del cliente</div><div class="input-wrap"><input id="inNomNR" class="input-rappi" placeholder="Nombre cliente"><button class="clear-x" onclick="clearI('inNomNR')"><i class="material-icons">close</i></button></div></div>
       <div class="field"><div class="field-label">Teléfono cliente</div><div class="input-wrap"><input id="inTelCliNR" class="input-rappi" placeholder="418..."><button class="clear-x" onclick="clearI('inTelCliNR')"><i class="material-icons">close</i></button></div></div>
@@ -100,7 +98,6 @@ body{background:#F2F2F2}
       <div class="field"><div class="field-label">Repartidor</div><select id="selRepaNR" class="select-rappi"></select></div>
     </div>
 
-    <!-- CLIENTES NUEVOS COMPRAR -->
     <div id="formNC" class="card" style="display:none">
       <div class="field"><div class="field-label">Producto que se va a comprar</div><div class="input-wrap"><input id="inProdNC" class="input-rappi" placeholder="Producto"><button class="clear-x" onclick="clearI('inProdNC')"><i class="material-icons">close</i></button></div></div>
       <div class="field"><div class="field-label">¿Dónde se va a comprar? Nombre tienda</div><div class="input-wrap"><input id="inDondeNC" class="input-rappi" placeholder="Nombre tienda"><button class="clear-x" onclick="clearI('inDondeNC')"><i class="material-icons">close</i></button></div></div>
@@ -127,8 +124,10 @@ const firebaseConfig = {apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authD
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
-let tipo='aliados', sub='recoger', clientes=[], repas=[], map, ds, dr;
+let tipo='aliados', sub='recoger', clientes=[], clientesKeys={}, repas=[], map, ds, dr;
 let posOrigen=null, posDestino=null, posCompra=null;
+
+function cerrarSesion(){ if(confirm('¿Cerrar sesión?')) alert('Sesión cerrada - aquí conectamos login'); }
 
 function setTipo(t){
   tipo=t;
@@ -150,9 +149,10 @@ function mostrarForm(){
 }
 function clearI(id){
   document.getElementById(id).value='';
-  if(id==='inAliado') posOrigen=null;
-  if(id==='inAliadoEntregaAC') posDestino=null;
-  if(id.includes('Entrega')||id.includes('Dir')){ if(tipo==='aliados' && sub==='recoger' && id==='inEntrega') posDestino=null; }
+  if(id==='inAliado'){ posOrigen=null; document.getElementById('aliadoDir').style.display='none'; }
+  if(id==='inAliadoEntregaAC'){ posDestino=null; document.getElementById('aliadoEntregaDirAC').style.display='none'; }
+  if(id==='inEntrega') posDestino=null;
+  if(id.includes('Dir')) resetCot();
   resetCot();
 }
 function resetCot(){
@@ -160,24 +160,31 @@ function resetCot(){
   document.getElementById('btnVerde').classList.remove('show');
 }
 
-db.ref('kigo_clientes').on('value', s=>{clientes=Object.values(s.val()||{});});
-db.ref('kigoRepasFull').on('value', s=>{
-  const v=s.val()||{}; repas=Object.keys(v);
-  const html='<option value="">-- Repartidor --</option>'+repas.map(r=>`<option value="${r}">${r}</option>`).join('')+'<option value="__todos__">TODOS</option>';
+// MISMA BASE DE CLIENTES DEL HISTORIAL
+db.ref('clientesKigo').on('value', s=>{
+  const val=s.val()||{};
+  clientes=Object.values(val);
+  clientesKeys=val;
+});
+
+db.ref('repartidoresKigo').on('value', s=>{
+  const v=s.val()||{};
+  const lista=Object.values(v).map(r=>r.nombre).filter(Boolean);
+  repas=lista.length? lista : Object.keys(v);
+  const html='<option value="">-- Repartidor --</option>'+repas.map(r=>`<option value="'+r+'">'+r+'</option>').join('')+'<option value="__todos__">TODOS</option>';
   document.querySelectorAll('.select-rappi').forEach(el=>el.innerHTML=html);
 });
 
-// SUGERENCIAS ALIADOS
 function attachSug(inputId, sugId, onSelect){
   const inp=document.getElementById(inputId), sug=document.getElementById(sugId);
   if(!inp||!sug) return;
   const render=(f='')=>{
     sug.innerHTML='';
-    let lista=clientes.filter(x=>x.nombre.toLowerCase().includes(f.toLowerCase())).slice(0,8);
+    let lista=clientes.filter(x=> (x.nombre||'').toLowerCase().includes(f.toLowerCase())).slice(0,8);
     if(!lista.length){sug.innerHTML='<div style="padding:8px;text-align:center;font-size:9px;color:#888">Sin aliados</div>'; sug.classList.add('show'); return;}
     lista.forEach(cl=>{
       const d=document.createElement('div'); d.className='sug';
-      d.innerHTML=`<i class="material-icons" style="font-size:15px;color:#FF3A2A">store</i><div><div style="font-weight:800;font-size:10px">${cl.nombre}</div><div style="font-size:8px;color:#888">${(cl.direccion||'').substring(0,45)}</div></div>`;
+      d.innerHTML=`<i class="material-icons" style="font-size:15px;color:#FF3A2A">store</i><div><div style="font-weight:800;font-size:10px">${cl.nombre}</div><div style="font-size:8px;color:#888">${(cl.direccion||'No especificada').substring(0,45)} • ${cl.telefono||''}</div></div>`;
       d.onclick=()=>{inp.value=cl.nombre; sug.classList.remove('show'); onSelect(cl);};
       sug.appendChild(d);
     });
@@ -188,12 +195,23 @@ function attachSug(inputId, sugId, onSelect){
 }
 
 attachSug('inAliado','sugAliados', cl=>{
-  document.getElementById('aliadoDir').style.display='block'; document.getElementById('aliadoDir').innerText='📍 '+cl.direccion;
-  posOrigen={lat:cl.lat,lng:cl.lng}; intentarCot();
+  let dirTxt=cl.direccion && cl.direccion.trim()? cl.direccion : 'No especificada';
+  let telTxt=cl.telefono && cl.telefono.trim()? ' • Tel: '+cl.telefono : '';
+  document.getElementById('aliadoDir').style.display='block';
+  document.getElementById('aliadoDir').innerHTML='📍 <b>'+cl.nombre+'</b><br>'+dirTxt+telTxt;
+  // Si tiene lat/lng lo usa para ruta, si no, no
+  if(cl.lat && cl.lng){ posOrigen={lat:parseFloat(cl.lat),lng:parseFloat(cl.lng)}; }
+  else { posOrigen=null; }
+  intentarCot();
 });
+
 attachSug('inAliadoEntregaAC','sugAliadoEntregaAC', cl=>{
-  document.getElementById('aliadoEntregaDirAC').style.display='block'; document.getElementById('aliadoEntregaDirAC').innerText='📍 '+cl.direccion+' (Entrega a aliado)';
-  posDestino={lat:cl.lat,lng:cl.lng}; intentarCot();
+  let dirTxt=cl.direccion && cl.direccion.trim()? cl.direccion : 'No especificada';
+  let telTxt=cl.telefono && cl.telefono.trim()? ' • Tel: '+cl.telefono : '';
+  document.getElementById('aliadoEntregaDirAC').style.display='block';
+  document.getElementById('aliadoEntregaDirAC').innerHTML='📍 <b>'+cl.nombre+'</b><br>'+dirTxt+telTxt+' (Entrega a aliado)';
+  if(cl.lat && cl.lng){ posDestino={lat:parseFloat(cl.lat),lng:parseFloat(cl.lng)}; }
+  intentarCot();
 });
 
 function initGoogle(){
@@ -249,6 +267,7 @@ document.getElementById('btnVerde').onclick=()=>{
     if(repa==='__todos__') repas.forEach(r=>db.ref('kigoPedidosLive').push({...live, repaAsignado:r})); else db.ref('kigoPedidosLive').push(live);
     alert('✅ Pedido enviado a repa y a seguimiento'); resetCot();
     document.querySelectorAll('.input-rappi').forEach(i=>i.value=''); posOrigen=null; posDestino=null; posCompra=null;
+    document.getElementById('aliadoDir').style.display='none'; document.getElementById('aliadoEntregaDirAC').style.display='none';
   });
 };
 document.addEventListener('click', e=>{ if(!e.target.closest('.input-wrap')) document.querySelectorAll('.suggestions').forEach(s=>s.classList.remove('show')); });
