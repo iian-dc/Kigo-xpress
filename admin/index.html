@@ -100,17 +100,6 @@
 .btn-hist-gris{background:#e5e7eb!important;color:#9ca3af!important;border-color:#e5e7eb!important;cursor:not-allowed!important}
 .btn-hist-verde{background:#16a34a!important;color:#fff!important;border-color:#16a34a!important}
 .btn-editar-blanco{background:#fff!important;color:#111!important;border:1.5px solid #111!important}
-#seguimientoTabs .pedido-tab{border-width:1.5px!important;font-weight:900!important}
-#seguimientoTabs .pedido-tab[data-f='todos']{background:#fff!important;color:#111!important;border-color:#111!important}
-#seguimientoTabs .pedido-tab[data-f='todos'].active{background:#111!important;color:#fff!important}
-#seguimientoTabs .pedido-tab[data-f='a_recoger']{background:#fff!important;color:#d97706!important;border-color:#fcd34d!important}
-#seguimientoTabs .pedido-tab[data-f='a_recoger'].active{background:#fef3c7!important;color:#92400e!important;box-shadow:0 0 10px rgba(252,211,77,.8)!important}
-#seguimientoTabs .pedido-tab[data-f='recogido']{background:#fff!important;color:#7c3aed!important;border-color:#c4b5fd!important}
-#seguimientoTabs .pedido-tab[data-f='recogido'].active{background:#ede9fe!important;color:#5b21b6!important;box-shadow:0 0 10px rgba(196,181,253,.8)!important}
-#seguimientoTabs .pedido-tab[data-f='a_entregar']{background:#fff!important;color:#db2777!important;border-color:#f9a8d4!important}
-#seguimientoTabs .pedido-tab[data-f='a_entregar'].active{background:#fce7f3!important;color:#9d174d!important;box-shadow:0 0 10px rgba(249,168,212,.8)!important}
-#seguimientoTabs .pedido-tab[data-f='finalizado']{background:#fff!important;color:#16a34a!important;border-color:#86efac!important}
-#seguimientoTabs .pedido-tab[data-f='finalizado'].active{background:#dcfce7!important;color:#166534!important;box-shadow:0 0 10px rgba(134,239,172,.8)!important}
 .pedido-card-blanca.neon-a_recoger{background:#fef3c7!important;border-color:#fcd34d!important;box-shadow:0 0 12px rgba(252,211,77,.6)!important}
 .pedido-card-blanca.neon-recogido{background:#ede9fe!important;border-color:#c4b5fd!important;box-shadow:0 0 12px rgba(196,181,253,.6)!important}
 .pedido-card-blanca.neon-a_entregar{background:#fce7f3!important;border-color:#f9a8d4!important;box-shadow:0 0 12px rgba(249,168,212,.6)!important}
@@ -284,12 +273,10 @@
 </div>
 </div>
 </div>
-
 <div style="margin-top:12px;background:#111;border-radius:14px;padding:10px;border:1px solid #222">
-<div style="font-size:10px;font-weight:900;color:#fff;display:flex;align-items:center;gap:6px"><i class="material-icons" style="font-size:14px">two_wheeler</i> ASIGNAR REPARTIDOR (ENLACE)</div>
+<div style="font-size:10px;font-weight:900;color:#fff;display:flex;align-items:center;gap:6px"><i class="material-icons" style="font-size:14px">two_wheeler</i> ASIGNAR REPARTIDOR (POR NOMBRE)</div>
 <select id="selectRepartidorEnlace" class="select-repa"><option value="">Cargando repartidores...</option></select>
 </div>
-
 <button id="whatsappButton" class="btn-whatsapp"><i class="material-icons" style="font-size:18px">chat</i> Compartir cotización al cliente</button>
 <button id="whatsappRepartidorButton" class="btn-repartidor"><i class="material-icons" style="font-size:18px">two_wheeler</i> Compartir con repartidor</button>
 <button id="confirmarServicioMapaButton" class="btn-confirmar"><i class="material-icons" style="font-size:20px">check_circle</i> Confirmar servicio</button>
@@ -301,125 +288,28 @@
 <button id="btnNavClientes" class="bottom-btn" onclick="openClientes()"><i class="material-icons">group</i>Clientes <span id="contadorClientesVerde" style="font-size:8px;background:#dcfce7;color:#166534;padding:2px 6px;border-radius:999px;margin-left:2px">0 clientes</span></button>
 </div>
 <div id="loginModal" class="modal"><div class="login-box"><div class="login-head"><div style="display:flex;gap:10px;align-items:center"><img id="logoLoginImg" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3" style="width:28px;height:28px;border-radius:50%;object-fit:cover"><div><div id="platformNameLogin" style="font-weight:900;font-size:13px">KIGO XPRESS</div><div style="font-size:10px;color:#777">Panel administrador</div></div></div><button class="iconBtn" onclick="closeLogin()"><i class="material-icons">close</i></button></div><div class="login-body"><div class="input-wrapper"><i class="material-icons" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:#888">person</i><input id="loginUser" class="login-input" placeholder="Usuario"></div><div class="input-wrapper"><i class="material-icons" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:#888">lock</i><input id="loginPass" class="login-input" type="password" placeholder="Contraseña"></div><button onclick="doLogin()" style="padding:12px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><i class="material-icons">login</i> Ingresar</button></div></div></div>
-<div id="adminModal" class="modal">
-<div class="admin-panel-box">
-<div class="admin-panel-head"><div style="display:flex;gap:10px;align-items:center"><img id="logoAdminHead" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3" style="width:28px;height:28px;border-radius:50%;object-fit:cover"><div><div id="platformNameAdmin" style="font-weight:900;font-size:13px">Panel KIGO XPRESS</div><div style="font-size:10px;color:#777">Administrar marca y tarifas</div></div></div><button class="iconBtn" onclick="closeAdmin()"><i class="material-icons">close</i></button></div>
-<div class="adminTabs">
-<button id="tabMod" class="adminTab active" onclick="switchAdminTab('mod')"><i class="material-icons" style="font-size:14px;vertical-align:middle">brush</i> Modificar</button>
-<button id="tabAjustes" class="adminTab" onclick="switchAdminTab('ajustes')"><i class="material-icons" style="font-size:14px;vertical-align:middle">tune</i> Ajustes</button>
-<button id="tabSoporte" class="adminTab" onclick="switchAdminTab('soporte')"><i class="material-icons" style="font-size:14px;vertical-align:middle">help</i> Soporte</button>
-<button class="adminTab" onclick="logout()" style="margin-left:auto;color:#E53935;border-color:#fecaca;background:#fff1f1"><i class="material-icons" style="font-size:14px;vertical-align:middle">logout</i> Salir</button>
-</div>
-<div class="adminContent">
-<div id="panelMod">
-<div class="adminCard"><div style="font-weight:900;font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="material-icons" style="font-size:18px">image</i> Logos y marca</div>
-<div class="mod-label">Nombre plataforma</div><input id="inputPlatformName" class="mod-input" placeholder="Ej: KIGO XPRESS">
-<div class="mod-label">Color principal</div><div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input id="inputPrimaryColor" type="color" value="#E53935" style="width:44px;height:36px;border-radius:10px;border:1px solid #ddd"><div class="color-dot" style="background:#E53935" onclick="setColor('#E53935')"></div><div class="color-dot" style="background:#111" onclick="setColor('#111111')"></div><div class="color-dot" style="background:#16a34a" onclick="setColor('#16a34a')"></div><div class="color-dot" style="background:#2563eb" onclick="setColor('#2563eb')"></div></div>
-<div class="mod-row"><img id="previewMapa" class="mod-preview"><div style="flex:1"><div class="mod-label" style="margin:0 0 4px">Logo en mapa</div><input id="inputLogoMapa" type="file" accept="image/*"></div></div>
-<div class="mod-row"><img id="previewLogin" class="mod-preview"><div style="flex:1"><div class="mod-label" style="margin:0 0 4px">Logo login y admin</div><input id="inputLogoLogin" type="file" accept="image/*"></div></div>
-<div class="mod-row"><img id="previewPWA" class="mod-preview"><div style="flex:1"><div class="mod-label" style="margin:0 0 4px">Icono PWA</div><input id="inputPWAIcon" type="file" accept="image/*"></div></div>
-<button onclick="guardarModificaciones()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:800;cursor:pointer;margin-top:12px">Guardar marca</button>
-</div>
-<div class="adminCard"><div style="font-weight:900;font-size:13px;margin-bottom:8px"><i class="material-icons" style="font-size:18px;vertical-align:middle">attach_money</i> Tarifas de lluvia y distancia</div>
-<div class="tarifa-grid">
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#60a5fa">Azul (leve)</div><input id="tarifaAzul" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#22c55e">Verde</div><input id="tarifaVerde" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#eab308">Amarillo</div><input id="tarifaAmarillo" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#ef4444">Rojo</div><input id="tarifaRojo" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#a855f7">Morado</div><input id="tarifaMorado" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Base hasta 2km</div><input id="tarifaBase" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Centro-Centro</div><input id="tarifaCentroCentro" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Radio centro (m)</div><input id="tarifaRadioCentro" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Metros por extra</div><input id="tarifaMetros" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Monto extra</div><input id="tarifaExtraMonto" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Lejos del centro</div><input id="tarifaLejosCentro" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Muy lejos m</div><input id="tarifaMuyLejosMetros" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">Muy lejos extra</div><input id="tarifaMuyLejos" class="mod-input" type="number" style="margin:6px 0 0"></div>
-<div class="tarifa-item"><div style="font-size:10px;font-weight:800">SOP</div><input id="tarifaSOP" class="mod-input" type="number" style="margin:6px 0 0"></div>
-</div>
-<div id="infoCobroTexto" style="margin-top:10px;font-size:10px;color:#666;background:#f9fafb;padding:8px;border-radius:8px;border:1px solid #eee"></div>
-<button onclick="guardarTarifas()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;cursor:pointer;margin-top:12px">Guardar tarifas</button>
-</div>
-</div>
-<div id="panelAjustes" style="display:none"><div class="adminCard"><div style="font-weight:900;font-size:13px">Ajustes generales</div><div style="font-size:11px;color:#666;margin-top:6px">Base enlazada: historial-kigo-xpress</div></div></div>
-<div id="panelSoporte" style="display:none"><div class="adminCard"><div style="font-weight:900;font-size:13px;margin-bottom:10px">Estado del sistema</div><div style="display:flex;align-items:center;justify-content:space-between;padding:8px;border:1px solid #eee;border-radius:10px;margin-bottom:8px"><div style="display:flex;align-items:center"><span id="dotFirebase" class="status-dot status-warn"></span><span style="font-size:12px;font-weight:700">Firebase</span></div><div style="display:flex;align-items:center;gap:8px"><span id="txtFirebase" style="font-size:11px;color:#666">Verificando...</span><span id="badgeFirebase" class="pedido-status st-camino">--</span></div></div><button onclick="verificarSistema()" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff;font-weight:800;cursor:pointer">Verificar conexión</button></div></div>
-</div>
-</div>
-</div>
-<div id="seguimientoPanel" class="modal" style="align-items:flex-end;padding:0">
-<div class="pedidos-panel-box">
-<div style="padding:12px 16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;background:#111;color:#fff;border-radius:22px 22px 0 0">
-<div style="display:flex;align-items:center;gap:8px"><i class="material-icons">local_shipping</i><span style="font-weight:900;font-size:14px">SEGUIMIENTO DE PEDIDOS</span></div>
-<button class="iconBtn" onclick="closeSeguimiento()" style="background:#333;color:#fff;border-color:#333"><i class="material-icons">close</i></button>
-</div>
+
+<div id="adminModal" class="modal"><div class="admin-panel-box"><div class="admin-panel-head"><div style="display:flex;gap:10px;align-items:center"><img id="logoAdminHead" src="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/icon-images%2Fanonymous-ba983199-acce-404e-b058-c75e9633b325.jpeg?alt=media&token=a58284c1-111c-4874-b60f-35380cf5fbe3" style="width:28px;height:28px;border-radius:50%;object-fit:cover"><div><div id="platformNameAdmin" style="font-weight:900;font-size:13px">Panel KIGO XPRESS</div><div style="font-size:10px;color:#777">Base: historial-kigo-xpress</div></div></div><button class="iconBtn" onclick="closeAdmin()"><i class="material-icons">close</i></button></div><div class="adminTabs"><button id="tabMod" class="adminTab active" onclick="switchAdminTab('mod')">Modificar</button><button id="tabAjustes" class="adminTab" onclick="switchAdminTab('ajustes')">Ajustes</button><button id="tabSoporte" class="adminTab" onclick="switchAdminTab('soporte')">Soporte</button><button class="adminTab" onclick="logout()" style="margin-left:auto;color:#E53935;background:#fff1f1">Salir</button></div><div class="adminContent"><div id="panelMod"><div class="adminCard"><div class="mod-label">Nombre plataforma</div><input id="inputPlatformName" class="mod-input"><div class="mod-label">Color principal</div><input id="inputPrimaryColor" type="color" value="#E53935"><div class="mod-row"><img id="previewMapa" class="mod-preview"><div style="flex:1"><div class="mod-label">Logo mapa</div><input id="inputLogoMapa" type="file" accept="image/*"></div></div><div class="mod-row"><img id="previewLogin" class="mod-preview"><div style="flex:1"><div class="mod-label">Logo login</div><input id="inputLogoLogin" type="file" accept="image/*"></div></div><div class="mod-row"><img id="previewPWA" class="mod-preview"><div style="flex:1"><div class="mod-label">Icono PWA</div><input id="inputPWAIcon" type="file" accept="image/*"></div></div><button onclick="guardarModificaciones()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:800;margin-top:12px">Guardar marca</button></div><div class="adminCard"><div class="tarifa-grid"><div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#60a5fa">Azul</div><input id="tarifaAzul" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#22c55e">Verde</div><input id="tarifaVerde" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#eab308">Amarillo</div><input id="tarifaAmarillo" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#ef4444">Rojo</div><input id="tarifaRojo" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800;color:#a855f7">Morado</div><input id="tarifaMorado" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Base</div><input id="tarifaBase" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Centro-Centro</div><input id="tarifaCentroCentro" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Radio centro</div><input id="tarifaRadioCentro" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Metros extra</div><input id="tarifaMetros" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Monto extra</div><input id="tarifaExtraMonto" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Lejos centro</div><input id="tarifaLejosCentro" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Muy lejos m</div><input id="tarifaMuyLejosMetros" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">Muy lejos extra</div><input id="tarifaMuyLejos" class="mod-input" type="number"></div><div class="tarifa-item"><div style="font-size:10px;font-weight:800">SOP</div><input id="tarifaSOP" class="mod-input" type="number"></div></div><div id="infoCobroTexto" style="margin-top:10px;font-size:10px;color:#666;background:#f9fafb;padding:8px;border-radius:8px"></div><button onclick="guardarTarifas()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;margin-top:12px">Guardar tarifas</button></div></div><div id="panelAjustes" style="display:none"><div class="adminCard"><div style="font-weight:900">Ajustes</div><div style="font-size:11px;color:#666;margin-top:6px">Base enlazada: historial-kigo-xpress-default-rtdb.firebaseio.com</div></div></div><div id="panelSoporte" style="display:none"><div class="adminCard"><div style="font-weight:900;margin-bottom:10px">Estado</div><div style="display:flex;align-items:center;justify-content:space-between;padding:8px;border:1px solid #eee;border-radius:10px;margin-bottom:8px"><div><span id="dotFirebase" class="status-dot status-warn"></span><span style="font-size:12px;font-weight:700">Firebase</span></div><span id="txtFirebase" style="font-size:11px;color:#666">Verificando...</span></div><button onclick="verificarSistema()" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff;font-weight:800">Verificar</button></div></div></div></div></div>
+
+<div id="seguimientoPanel" class="modal" style="align-items:flex-end;padding:0"><div class="pedidos-panel-box"><div style="padding:12px 16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;background:#111;color:#fff;border-radius:22px 22px 0 0"><div style="display:flex;align-items:center;gap:8px"><i class="material-icons">local_shipping</i><span style="font-weight:900;font-size:14px">SEGUIMIENTO</span></div><button class="iconBtn" onclick="closeSeguimiento()" style="background:#333;color:#fff;border-color:#333"><i class="material-icons">close</i></button></div>
 <div id="seguimientoTabs" class="pedidos-tabs">
 <button class="pedido-tab active" data-f="todos" onclick="filtrarSeguimiento(this,'todos')">TODOS</button>
-<button class="pedido-tab" data-f="a_recoger" onclick="filtrarSeguimiento(this,'a_recoger')">A RECOGER</button>
+<button class="pedido-tab" data-f="pendiente" onclick="filtrarSeguimiento(this,'pendiente')">PENDIENTE</button>
+<button class="pedido-tab" data-f="aceptado" onclick="filtrarSeguimiento(this,'aceptado')">ACEPTADO</button>
+<button class="pedido-tab" data-f="en_camino_recoger" onclick="filtrarSeguimiento(this,'en_camino_recoger')">EN CAMINO A RECOGER</button>
 <button class="pedido-tab" data-f="recogido" onclick="filtrarSeguimiento(this,'recogido')">RECOGIDO</button>
-<button class="pedido-tab" data-f="a_entregar" onclick="filtrarSeguimiento(this,'a_entregar')">A ENTREGAR</button>
+<button class="pedido-tab" data-f="en_camino_entregar" onclick="filtrarSeguimiento(this,'en_camino_entregar')">VOY A ENTREGAR</button>
 <button class="pedido-tab" data-f="finalizado" onclick="filtrarSeguimiento(this,'finalizado')">FINALIZADOS</button>
 </div>
-<div id="listaSeguimientoContainer" style="padding:12px;overflow-y:auto;flex:1;background:#fcfcfd"></div>
-</div>
-</div>
-<div id="modalEditarPedido">
-<div class="modalEditBox">
-<div class="modalEditHead"><span>✏️ EDITAR PEDIDO</span><button class="iconBtn" onclick="cerrarModalEditar()" style="background:#333;color:#fff;border-color:#333;width:28px;height:28px"><i class="material-icons" style="font-size:16px">close</i></button></div>
-<div class="modalEditBody">
-<div id="editSectionTipo" style="background:#f3f4f6;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:800;color:#111;margin-bottom:4px">TIPO: -</div>
-<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px">
-<div style="font-size:10px;font-weight:900;color:#166534;margin-bottom:6px">📦 DATOS DE RECOGIDA</div>
-<div class="mod-label" style="margin-top:0">Nombre del aliado / Tienda donde recoger</div><div class="input-wrapper"><input id="editModalRecoger" class="mod-input"><div class="input-clear" onclick="document.getElementById('editModalRecoger').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-<div class="mod-label">Dirección del aliado / Dirección de recogida</div><div class="input-wrapper"><input id="editModalDireccionAliado" class="mod-input" placeholder="Calle, colonia, referencia..."><div class="input-clear" onclick="document.getElementById('editModalDireccionAliado').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-<div class="mod-label" id="labelResumen" style="display:none">Productos / Resumen del pedido</div><div class="input-wrapper" id="wrapResumen" style="display:none"><input id="editModalResumen" class="mod-input" placeholder="Ej: 1kg manzana, documentos, pedido..."><div class="input-clear" onclick="document.getElementById('editModalResumen').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-</div>
-<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:10px;margin-top:8px">
-<div style="font-size:10px;font-weight:900;color:#991b1b;margin-bottom:6px">🏠 DATOS DE ENTREGA</div>
-<div class="mod-label" style="margin-top:0">Dirección de entrega (cliente final)</div><div class="input-wrapper"><input id="editModalEntregar" class="mod-input" placeholder="Colonia, calle, número, referencia..."><div class="input-clear" onclick="document.getElementById('editModalEntregar').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-<div class="mod-label">Teléfono de entrega</div><div class="input-wrapper"><input id="editModalTelefono" class="mod-input" type="tel" placeholder="418..."><div class="input-clear" onclick="document.getElementById('editModalTelefono').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-</div>
-<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px;margin-top:8px">
-<div style="font-size:10px;font-weight:900;color:#92400e;margin-bottom:6px">💰 COSTO Y TIEMPO DE RECOGIDA</div>
-<div class="mod-label" style="margin-top:0">Precio del servicio (ej: $35 MXN)</div><div class="input-wrapper"><input id="editModalPrecio" class="mod-input" placeholder="$35 MXN"><div class="input-clear" onclick="document.getElementById('editModalPrecio').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-<div class="mod-label">Distancia (ej: 2.5 km)</div><div class="input-wrapper"><input id="editModalDist" class="mod-input" placeholder="2.5 km"><div class="input-clear" onclick="document.getElementById('editModalDist').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-<div class="mod-label">Tiempo en que se debe recoger</div><div class="input-wrapper"><input id="editModalTiempo" class="mod-input" placeholder="Ej: 20 min, 1 hora, enseguida..."><div class="input-clear" onclick="document.getElementById('editModalTiempo').value=''"><i class="material-icons" style="font-size:14px">close</i></div></div>
-<div class="mod-label">Estado del pedido</div><select id="editModalEstado" class="mod-input" style="padding-right:12px"><option value="a_recoger">A Recoger (amarillo neón)</option><option value="recogido">Recogido (morado neón)</option><option value="a_entregar">A Entregar (rosa neón)</option><option value="finalizado">Finalizado (verde neón)</option></select>
-</div>
-<div style="display:flex;gap:8px;margin-top:12px"><button onclick="guardarEdicionModal()" style="flex:1;padding:12px;border:none;border-radius:10px;background:#16a34a;color:#fff;font-weight:900;font-size:12px;cursor:pointer">Guardar cambios</button><button onclick="cerrarModalEditar()" style="flex:1;padding:12px;border:1.5px solid #ddd;border-radius:10px;background:#fff;font-weight:800;font-size:12px;cursor:pointer">Cancelar</button></div>
-<button id="btnEliminarModal" style="width:100%;margin-top:8px;padding:10px;border:1.5px solid #fecaca;background:#fff1f1;color:#E53935;border-radius:10px;font-weight:800;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="material-icons" style="font-size:16px">delete</i> Eliminar pedido</button>
-</div>
-</div>
-</div>
-<div id="clientesPanel" class="modal" style="align-items:flex-end;padding:0">
-<div class="pedidos-panel-box">
-<div style="padding:12px 16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:22px 22px 0 0">
-<div style="display:flex;align-items:center;gap:8px"><i class="material-icons" style="color:#16a34a">group</i><span style="font-weight:900;font-size:14px">CLIENTES</span></div>
-<button class="iconBtn" onclick="closeClientes()"><i class="material-icons">close</i></button>
-</div>
-<div class="pedidos-tabs">
-<button id="tabListadoAliados" class="pedido-tab active" style="background:#111;color:#fff" onclick="switchClientesTab('listado')">Listado</button>
-<button id="tabAgregarCliente" class="pedido-tab" onclick="switchClientesTab('agregar')">Agregar aliado</button>
-</div>
-<div style="padding:12px;overflow-y:auto;flex:1;background:#fcfcfd">
-<div id="clientesListadoView"><div id="listaClientesBottomContainer"></div></div>
-<div id="clientesAgregarView" style="display:none">
-<div class="adminCard">
-<div class="form-label">Nombre del aliado</div><input id="clienteNombreNew" class="cliente-input" placeholder="Ej: Tienda La Esperanza">
-<div class="form-label">Teléfono</div><input id="clienteTelefonoNew" class="cliente-input" placeholder="418..." type="tel">
-<div class="form-label">Ubicación</div>
-<div class="searchWrap"><input id="clienteUbicacionNew" class="cliente-input" style="margin-bottom:0" placeholder="Calle, colonia..."><button class="iconBtnSmall" onclick="buscarUbicacionClienteNew()"><i class="material-icons">search</i></button></div>
-<div id="clienteConfirmTextNew" style="font-size:11px;color:#16a34a;font-weight:800;margin-top:8px;display:none"></div>
-<div id="clienteMiniMapNew" class="miniMap"></div>
-<button onclick="guardarClienteNew()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px"><i class="material-icons">save</i> Guardar aliado</button>
-</div>
-</div>
-</div>
-</div>
-</div>
+<div id="listaSeguimientoContainer" style="padding:12px;overflow-y:auto;flex:1;background:#fcfcfd"></div></div></div>
+
+<div id="modalEditarPedido"><div class="modalEditBox"><div class="modalEditHead"><span>EDITAR PEDIDO</span><button class="iconBtn" onclick="cerrarModalEditar()" style="background:#333;color:#fff;border-color:#333;width:28px;height:28px"><i class="material-icons" style="font-size:16px">close</i></button></div><div class="modalEditBody"><div id="editSectionTipo" style="background:#f3f4f6;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:800;margin-bottom:4px">TIPO: -</div><div class="mod-label">Recoger en</div><input id="editModalRecoger" class="mod-input"><div class="mod-label">Dirección aliado</div><input id="editModalDireccionAliado" class="mod-input"><div class="mod-label" id="labelResumen">Resumen</div><input id="editModalResumen" class="mod-input"><div class="mod-label">Entregar en</div><input id="editModalEntregar" class="mod-input"><div class="mod-label">Teléfono</div><input id="editModalTelefono" class="mod-input"><div class="mod-label">Precio</div><input id="editModalPrecio" class="mod-input"><div class="mod-label">Distancia</div><input id="editModalDist" class="mod-input"><div class="mod-label">Tiempo</div><input id="editModalTiempo" class="mod-input"><div class="mod-label">Estado</div><select id="editModalEstado" class="mod-input"><option value="pendiente">📥 PENDIENTE</option><option value="aceptado">✅ ACEPTADO</option><option value="en_camino_recoger">🛵 EN CAMINO A RECOGER</option><option value="recogido">📦 RECOGIDO</option><option value="en_camino_entregar">🚚 VOY A ENTREGAR</option><option value="finalizado">✅ FINALIZADO</option></select><div style="display:flex;gap:8px;margin-top:12px"><button onclick="guardarEdicionModal()" style="flex:1;padding:12px;border:none;border-radius:10px;background:#16a34a;color:#fff;font-weight:900;font-size:12px">Guardar</button><button onclick="cerrarModalEditar()" style="flex:1;padding:12px;border:1.5px solid #ddd;border-radius:10px;background:#fff;font-weight:800">Cancelar</button></div><button id="btnEliminarModal" style="width:100%;margin-top:8px;padding:10px;border:1.5px solid #fecaca;background:#fff1f1;color:#E53935;border-radius:10px;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;gap:6px"><i class="material-icons" style="font-size:16px">delete</i> Eliminar</button></div></div></div>
+
+<div id="clientesPanel" class="modal" style="align-items:flex-end;padding:0"><div class="pedidos-panel-box"><div style="padding:12px 16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:22px 22px 0 0"><div style="display:flex;align-items:center;gap:8px"><i class="material-icons" style="color:#16a34a">group</i><span style="font-weight:900;font-size:14px">CLIENTES</span></div><button class="iconBtn" onclick="closeClientes()"><i class="material-icons">close</i></button></div><div class="pedidos-tabs"><button id="tabListadoAliados" class="pedido-tab active" style="background:#111;color:#fff" onclick="switchClientesTab('listado')">Listado</button><button id="tabAgregarCliente" class="pedido-tab" onclick="switchClientesTab('agregar')">Agregar aliado</button></div><div style="padding:12px;overflow-y:auto;flex:1;background:#fcfcfd"><div id="clientesListadoView"><div id="listaClientesBottomContainer"></div></div><div id="clientesAgregarView" style="display:none"><div class="adminCard"><div class="form-label">Nombre</div><input id="clienteNombreNew" class="cliente-input"><div class="form-label">Teléfono</div><input id="clienteTelefonoNew" class="cliente-input"><div class="form-label">Ubicación</div><div class="searchWrap"><input id="clienteUbicacionNew" class="cliente-input" style="margin-bottom:0"><button class="iconBtnSmall" onclick="buscarUbicacionClienteNew()"><i class="material-icons">search</i></button></div><div id="clienteConfirmTextNew" style="font-size:11px;color:#16a34a;font-weight:800;margin-top:8px;display:none"></div><div id="clienteMiniMapNew" class="miniMap"></div><button onclick="guardarClienteNew()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;margin-top:12px">Guardar aliado</button></div></div></div></div></div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script>
-// CONFIG UNICA - HISTORIAL KIGO XPRESS - TODO ENLAZADO AQUI
 const firebaseConfig = {apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
@@ -469,10 +359,9 @@ function resetPrecios(){document.getElementById('distance').innerText='— km';d
 function actualizarPrecioManual(){const val = document.getElementById('precioManualComprar').value; if(val && parseInt(val)>0){document.getElementById('price').innerText='$'+val+' MXN'; ultimoPrecio='$'+val+' MXN'; document.getElementById("whatsappButton").classList.add("show"); document.getElementById("whatsappRepartidorButton").classList.add("show"); document.getElementById("confirmarServicioMapaButton").classList.add("show");} else {document.getElementById('price').innerText='POR COTIZAR';}guardarEstadoLocal();}
 function actualizarPrecioManualNuevo(){const val = document.getElementById('precioManualNuevoComprar').value; if(val && parseInt(val)>0){document.getElementById('price').innerText='$'+val+' MXN'; ultimoPrecio='$'+val+' MXN'; document.getElementById("whatsappButton").classList.add("show"); document.getElementById("whatsappRepartidorButton").classList.add("show"); document.getElementById("confirmarServicioMapaButton").classList.add("show");} else {document.getElementById('price').innerText='POR COTIZAR';}guardarEstadoLocal();}
 
-// ENLACE REPAS
 function cargarRepasParaEnlace(){
   const sel=document.getElementById('selectRepartidorEnlace');
-  const render=()=>{ if(!listaRepasEnlace.length){sel.innerHTML='<option value="">Sin repartidores (crea en panel repa)</option>'; return;} sel.innerHTML='<option value="">-- Selecciona repartidor por nombre --</option>'+listaRepasEnlace.map(r=>`<option value="${r}">${r}</option>`).join('')+'<option value="__todos__">TODOS</option>'; };
+  const render=()=>{ if(!listaRepasEnlace.length){sel.innerHTML='<option value="">Sin repartidores</option>'; return;} sel.innerHTML='<option value="">-- Selecciona repartidor --</option>'+listaRepasEnlace.map(r=>`<option value="${r}">${r}</option>`).join('')+'<option value="__todos__">TODOS</option>'; };
   db.ref('kigoRepasFull').on('value', s=>{ const v=s.val()||{}; listaRepasEnlace=Object.keys(v); if(!listaRepasEnlace.length){ db.ref('kigoRepas').once('value').then(s2=>{ listaRepasEnlace=Object.keys(s2.val()||{}); if(!listaRepasEnlace.length){ db.ref('kigoUsuarios').once('value').then(s3=>{ listaRepasEnlace=Object.keys(s3.val()||{}); render(); }); } else render(); }); } else render(); });
 }
 function escucharPedidosLiveRepa(){
@@ -480,19 +369,20 @@ function escucharPedidosLiveRepa(){
     const data=snap.val()||{};
     Object.entries(data).forEach(([kLive, pLive])=>{
       if(!pLive.adminKey) return;
-      let nuevoEstado='a_recoger';
-      if(pLive.subEtapa==='pendiente' || pLive.subEtapa==='voy_en_camino') nuevoEstado='a_recoger';
+      let nuevoEstado='pendiente';
+      if(pLive.subEtapa==='pendiente') nuevoEstado='pendiente';
+      else if(pLive.subEtapa==='aceptado') nuevoEstado='aceptado';
+      else if(pLive.subEtapa==='voy_en_camino') nuevoEstado='en_camino_recoger';
       else if(pLive.subEtapa==='recogido') nuevoEstado='recogido';
-      else if(pLive.subEtapa==='voy_entregar') nuevoEstado='a_entregar';
+      else if(pLive.subEtapa==='voy_entregar') nuevoEstado='en_camino_entregar';
       else if(pLive.subEtapa==='entregado' || pLive.etapa==='finalizado') nuevoEstado='finalizado';
       const pedidoAdmin = pedidosGuardados.find(p=>p.fbKey===pLive.adminKey);
       if(pedidoAdmin && pedidoAdmin.estado!==nuevoEstado){
-        db.ref('kigo_pedidos/'+pLive.adminKey).update({estado:nuevoEstado, ['historial/'+nuevoEstado]:Date.now(), repaAsignado:pLive.repaAsignado, repaEstado:pLive.subEtapa});
+        db.ref('kigo_pedidos/'+pLive.adminKey).update({estado:nuevoEstado, ['historial/'+nuevoEstado]:Date.now(), repaAsignado:pLive.repaAsignado, repaEstado:pLive.subEtapa, liveKey:kLive});
       }
     });
   });
 }
-
 function initGoogleMaps(){
   map=new google.maps.Map(document.getElementById("map"),{center:CENTRO,zoom:14,disableDefaultUI:true});
   geocoder=new google.maps.Geocoder();
@@ -520,7 +410,8 @@ function initGoogleMaps(){
   checarClimaGeneral();
   document.querySelectorAll('.colonia-input').forEach(inp=>{inp.addEventListener('input', guardarEstadoLocal);});
 }
- function mostrarAliadosEnPickup(filtro=""){const c=document.getElementById("pickupSuggestions"); c.innerHTML="";let lista=clientesGuardados;if(filtro) lista=clientesGuardados.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()) || x.direccion.toLowerCase().includes(filtro.toLowerCase()));if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">Sin aliados</div>'; c.classList.add("show"); return;}const header=document.createElement("div"); header.className="client-header"; header.innerText="TUS ALIADOS GUARDADOS"; c.appendChild(header);const orden=[...lista].sort((a,b)=>a.nombre.localeCompare(b.nombre)).slice(0,20);orden.forEach(cl=>{const el=document.createElement("div"); el.className="suggestion";el.innerHTML=`<div><i class="material-icons" style="font-size:18px">store</i></div><div><div style="font-weight:800;font-size:13px">${cl.nombre}</div><div style="font-size:10px;color:#777">${cl.direccion.substring(0,70)}</div></div>`;el.onclick=()=>{pickupLat=cl.lat; pickupLng=cl.lng; pickupName=cl.nombre; aliadoDireccionTexto=cl.direccion; recogerEnNombre=cl.nombre+" - "+cl.direccion; document.getElementById("pickupInput").value=cl.nombre;document.getElementById("aliadoDireccionInfo").style.display="block";document.getElementById("aliadoDireccionInfo").innerText="📍 "+cl.direccion+" (BD)";c.classList.remove("show");if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:{lat:cl.lat,lng:cl.lng},map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#16a34a",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter({lat:cl.lat,lng:cl.lng}); map.setZoom(15);if(destinationLat){intentarTrazarRutaAuto();}guardarEstadoLocal();};c.appendChild(el);});c.classList.add("show");}
+ <script>
+function mostrarAliadosEnPickup(filtro=""){const c=document.getElementById("pickupSuggestions"); c.innerHTML="";let lista=clientesGuardados;if(filtro) lista=clientesGuardados.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()) || x.direccion.toLowerCase().includes(filtro.toLowerCase()));if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">Sin aliados</div>'; c.classList.add("show"); return;}const header=document.createElement("div"); header.className="client-header"; header.innerText="TUS ALIADOS GUARDADOS"; c.appendChild(header);const orden=[...lista].sort((a,b)=>a.nombre.localeCompare(b.nombre)).slice(0,20);orden.forEach(cl=>{const el=document.createElement("div"); el.className="suggestion";el.innerHTML=`<div><i class="material-icons" style="font-size:18px">store</i></div><div><div style="font-weight:800;font-size:13px">${cl.nombre}</div><div style="font-size:10px;color:#777">${cl.direccion.substring(0,70)}</div></div>`;el.onclick=()=>{pickupLat=cl.lat; pickupLng=cl.lng; pickupName=cl.nombre; aliadoDireccionTexto=cl.direccion; recogerEnNombre=cl.nombre+" - "+cl.direccion; document.getElementById("pickupInput").value=cl.nombre;document.getElementById("aliadoDireccionInfo").style.display="block";document.getElementById("aliadoDireccionInfo").innerText="📍 "+cl.direccion+" (BD)";c.classList.remove("show");if(pickupMarker) pickupMarker.setMap(null);pickupMarker=new google.maps.Marker({position:{lat:cl.lat,lng:cl.lng},map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#16a34a",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter({lat:cl.lat,lng:cl.lng}); map.setZoom(15);if(destinationLat){intentarTrazarRutaAuto();}guardarEstadoLocal();};c.appendChild(el);});c.classList.add("show");}
 function mostrarAliadosEntregaComprar(filtro=""){const c=document.getElementById("aliadoEntregaSuggestions"); c.innerHTML="";let lista=clientesGuardados;if(filtro) lista=clientesGuardados.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()));if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:12px;color:#888">Sin aliados</div>'; c.classList.add("show"); return;}const header=document.createElement("div"); header.className="client-header"; header.innerText="ALIADOS PARA ENTREGA"; c.appendChild(header);const orden=[...lista].sort((a,b)=>a.nombre.localeCompare(b.nombre)).slice(0,20);orden.forEach(cl=>{const el=document.createElement("div"); el.className="suggestion";el.innerHTML=`<div><i class="material-icons" style="font-size:18px">store</i></div><div><div style="font-weight:800;font-size:13px">${cl.nombre}</div><div style="font-size:10px;color:#777">${cl.direccion.substring(0,70)}</div></div>`;el.onclick=()=>{document.getElementById('wrapDireccionEntrega').style.display='none';document.getElementById('direccionEntregaComprar').value="";destinationLat=cl.lat; destinationLng=cl.lng; destName=cl.nombre; entregarEnNombre=cl.nombre+" - "+cl.direccion;document.getElementById("aliadoEntregaComprar").value=cl.nombre;c.classList.remove("show");if(destinationMarker) destinationMarker.setMap(null);destinationMarker=new google.maps.Marker({position:{lat:cl.lat,lng:cl.lng},map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:"#dc2626",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});map.setCenter({lat:cl.lat,lng:cl.lng}); map.setZoom(16);intentarTrazarRutaAuto();guardarEstadoLocal();};c.appendChild(el);});c.classList.add("show");}
 document.getElementById("pickupInput").addEventListener("focus", function(){ mostrarAliadosEnPickup(this.value.trim()); });
 document.getElementById("pickupInput").addEventListener("input", function(){ mostrarAliadosEnPickup(this.value.trim()); guardarEstadoLocal();});
@@ -544,55 +435,70 @@ function renderSeguimiento(){
   let lista=[...pedidosGuardados];
   if(filtroSeguimientoActual!=='todos') lista=lista.filter(p=>p.estado===filtroSeguimientoActual);
   if(!lista.length){cont.innerHTML=`<div style="text-align:center;padding:30px;color:#888"><i class="material-icons" style="font-size:40px">local_shipping</i><div style="margin-top:10px;font-size:12px">No hay pedidos en ${filtroSeguimientoActual}</div></div>`; return;}
-  lista=lista.sort((a,b)=>a.timestamp - b.timestamp);
+  lista=lista.sort((a,b)=>b.timestamp - a.timestamp);
   cont.innerHTML="";
   lista.forEach((p)=>{
     const codigo = p.fbKey? p.fbKey.substring(p.fbKey.length-6).toUpperCase() : '';
     const fechaHora = p.fecha || new Date(p.timestamp).toLocaleString();
     const tieneTiempo = p.tiempo && p.tiempo.trim()!=='';
     const textoRecoger = tieneTiempo? formatearHoraRecogida(p.timestamp, p.tiempo) : '';
-    const tiempoNeon = tieneTiempo? `<span style="background:#fef08a;color:#713f12;border:1.5px solid #facc15;padding:3px 8px;border-radius:999px;font-size:9px;font-weight:900;display:inline-flex;align-items:center;gap:3px;margin-left:8px;box-shadow:0 0 8px rgba(250,204,21,.5)"><i class="material-icons" style="font-size:12px">schedule</i> ${textoRecoger}</span>` : '';
-    let statusClass='st-camino', neonCard='neon-a_recoger', estadoTexto = p.estado.toUpperCase().replace('_',' ');
-    if(p.estado==='en_camino'){statusClass='st-camino'; neonCard='neon-en_camino'; estadoTexto='A RECOGER';}
-    if(p.estado==='a_recoger'){statusClass='st-camino'; neonCard='neon-a_recoger'; estadoTexto='A RECOGER';}
-    if(p.estado==='recogido'){statusClass='st-recogido'; neonCard='neon-recogido';}
-    if(p.estado==='a_entregar'){statusClass='st-entregar'; neonCard='neon-a_entregar';}
-    if(p.estado==='finalizado'){statusClass='st-finalizado'; neonCard='neon-finalizado';}
+    const tiempoNeon = tieneTiempo? `<span style="background:#fef08a;color:#713f12;border:1.5px solid #facc15;padding:3px 8px;border-radius:999px;font-size:9px;font-weight:900;display:inline-flex;align-items:center;gap:3px;margin-left:8px"><i class="material-icons" style="font-size:12px">schedule</i> ${textoRecoger}</span>` : '';
+    let statusClass='st-camino', neonCard='', estadoTexto='';
+    if(p.estado==='pendiente'){statusClass='st-camino'; neonCard='neon-a_recoger'; estadoTexto='📥 PENDIENTE';}
+    if(p.estado==='aceptado'){statusClass='st-camino'; neonCard='neon-a_recoger'; estadoTexto='✅ ACEPTADO';}
+    if(p.estado==='en_camino_recoger' || p.estado==='a_recoger'){statusClass='st-camino'; neonCard='neon-a_recoger'; estadoTexto='🛵 EN CAMINO A RECOGER';}
+    if(p.estado==='recogido'){statusClass='st-recogido'; neonCard='neon-recogido'; estadoTexto='📦 RECOGIDO';}
+    if(p.estado==='en_camino_entregar' || p.estado==='a_entregar'){statusClass='st-entregar'; neonCard='neon-a_entregar'; estadoTexto='🚚 VOY A ENTREGAR';}
+    if(p.estado==='finalizado'){statusClass='st-finalizado'; neonCard='neon-finalizado'; estadoTexto='✅ FINALIZADO';}
     const esFinalizado = p.estado==='finalizado';
     const btnHistClass = esFinalizado? 'btn-hist-verde' : 'btn-hist-gris';
     const btnHistDisabled = esFinalizado? '' : 'disabled';
     const nombreAliado = p.recogerEn? p.recogerEn.split(' - ')[0] : (p.tipo||'');
     const direccionAliado = p.direccionAliado || (p.recogerEn && p.recogerEn.includes(' - ')? p.recogerEn.split(' - ').slice(1).join(' - ') : '') || '';
-    const repaTag = p.repaAsignado? `<span style="background:#111;color:#fff;padding:2px 6px;border-radius:6px;font-size:8px;margin-left:6px">REPA: ${p.repaAsignado} ${p.repaEstado? '- '+p.repaEstado:''}</span>` : '';
+    const repaTag = p.repaAsignado? `<span style="background:#111;color:#fff;padding:2px 6px;border-radius:6px;font-size:8px;margin-left:6px">REPA: ${p.repaAsignado} ${p.repaEstado? '- '+p.repaEstado:''}</span>` : '<span style="background:#eee;color:#666;padding:2px 6px;border-radius:6px;font-size:8px;margin-left:6px">SIN ASIGNAR</span>';
     const div=document.createElement('div'); div.className='pedido-card-blanca '+neonCard;
     div.innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div><div style="font-size:14px;font-weight:900;color:#111;letter-spacing:0.5px">#${codigo} ${repaTag}</div><div style="font-size:9px;color:#111;margin-top:2px;display:flex;align-items:center;flex-wrap:wrap">Creado: ${fechaHora} ${tiempoNeon}</div></div>
+        <div><div style="font-size:14px;font-weight:900;color:#111">#${codigo} ${repaTag}</div><div style="font-size:9px;color:#111;margin-top:2px;display:flex;flex-wrap:wrap">Creado: ${fechaHora} ${tiempoNeon}</div></div>
         <div style="text-align:right"><span class="pedido-status ${statusClass}" style="font-size:8px;padding:3px 7px">${estadoTexto}</span></div>
       </div>
-      <div style="margin-top:8px;border-radius:10px;padding:8px;border:1px solid rgba(0,0,0,.08);background:transparent">
-        <div style="font-size:9px;font-weight:900;color:#16a34a">📦 RECOGER EN:</div>
-        <div style="font-size:11px;color:#111;font-weight:800;margin-top:1px">${nombreAliado}</div>
-        ${direccionAliado?`<div style="font-size:9px;color:#555;margin-top:2px">📍 ${direccionAliado}</div>`:''}
-        <div style="margin-top:8px;font-size:9px;font-weight:900;color:#dc2626">🏠 ENTREGAR EN:</div>
-        <div style="font-size:10px;color:#111;font-weight:700;margin-top:1px">${p.entregarEn||''}</div>
+      <div style="margin-top:8px;border-radius:10px;padding:8px;border:1px solid rgba(0,0,0,.08)">
+        <div style="font-size:9px;font-weight:900;color:#16a34a">📦 RECOGER EN:</div><div style="font-size:11px;font-weight:800">${nombreAliado}</div>${direccionAliado?`<div style="font-size:9px;color:#555">📍 ${direccionAliado}</div>`:''}
+        <div style="margin-top:8px;font-size:9px;font-weight:900;color:#dc2626">🏠 ENTREGAR EN:</div><div style="font-size:10px;font-weight:700">${p.entregarEn||''}</div>
         ${p.telefono?`<div style="font-size:9px;color:#555;margin-top:4px">📞 ${p.telefono}</div>`:''}
-        ${p.resumen && p.resumen!==p.entregarEn && p.resumen!==p.recogerEn?`<div style="font-size:9px;color:#666;margin-top:4px">📝 ${p.resumen}</div>`:''}
       </div>
       <div class="valor-verde-neon"><i class="material-icons" style="font-size:16px">payments</i> ${p.precio} • ${p.distancia||''}</div>
       <div style="display:flex;gap:5px;margin-top:8px">
         <button onclick="abrirModalEditar('${p.fbKey}')" class="btn-editar-blanco" style="flex:1;padding:7px;border-radius:8px;font-size:10px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><i class="material-icons" style="font-size:12px">edit</i> Editar</button>
-        <button onclick="verHistorialModal('${p.fbKey}')" ${btnHistDisabled} class="${btnHistClass}" style="flex:1;padding:7px;border-radius:8px;border:1px solid #ddd;font-size:10px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><i class="material-icons" style="font-size:12px">history</i> Historial ${esFinalizado?'✅':''}</button>
+        <button onclick="registrarEnHistorial('${p.fbKey}')" ${btnHistDisabled} class="${btnHistClass}" style="flex:1;padding:7px;border-radius:8px;border:1px solid #ddd;font-size:10px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><i class="material-icons" style="font-size:12px">history</i> Historial</button>
       </div>
-      <div id="histBox_${p.fbKey}" class="edit-box" style="background:#f0fdf4;border-color:#bbf7d0"><div style="font-size:12px;font-weight:900;color:#166534">✅ HISTORIAL</div><div style="font-size:11px;margin-top:8px;background:#fff;padding:8px;border-radius:8px;border:1px solid #dcfce7">📅 <b>Creado:</b> ${p.fecha||new Date(p.timestamp).toLocaleString()} ${p.historial?.finalizado?`<div style="color:#16a34a;font-weight:800">🏁 Finalizado: ${new Date(p.historial.finalizado).toLocaleString()}</div>`:''}</div><button onclick="document.getElementById('histBox_${p.fbKey}').classList.remove('show')" style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:10px;font-weight:800">Cerrar</button></div>`;
+      <div id="histBox_${p.fbKey}" class="edit-box" style="background:#f0fdf4;border-color:#bbf7d0">
+        <div style="font-size:12px;font-weight:900;color:#166534">✅ GUARDADO EN HISTORIAL</div>
+        <div style="font-size:11px;margin-top:8px;background:#fff;padding:8px;border-radius:8px;border:1px solid #dcfce7">📅 Creado: ${p.fecha||''}<br>👤 Repa: ${p.repaAsignado||'--'}<br>💰 ${p.precio||''}<br>${p.historial?.finalizado?`🏁 Finalizado: ${new Date(p.historial.finalizado).toLocaleString()}`:''}</div>
+        <button onclick="document.getElementById('histBox_${p.fbKey}').classList.remove('show')" style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:10px;font-weight:800">Cerrar</button>
+      </div>`;
     cont.appendChild(div);
   });
+}
+function registrarEnHistorial(fbKey){
+  const p=pedidosGuardados.find(x=>x.fbKey===fbKey); if(!p) return;
+  if(p.estado!=='finalizado'){alert("⏳ Solo se puede mandar a historial cuando está FINALIZADO"); return;}
+  if(!p.repaAsignado){alert("⚠️ Sin repartidor asignado"); return;}
+  if(!confirm(`¿Registrar pedido #${fbKey.substring(fbKey.length-6).toUpperCase()} en historial de ${p.repaAsignado}?`)) return;
+  const historialData = {...p, finalizadoEn: Date.now(), fechaFinalizado: new Date().toLocaleString(), repaQueEntrego: p.repaAsignado, costoNumerico: parseInt((p.precio||'').replace(/[^0-9]/g,''))||0, timestampHistorial: Date.now()};
+  db.ref('kigoHistorialGeneral').push(historialData);
+  db.ref('kigoHistorialRepas/'+p.repaAsignado).push(historialData);
+  db.ref('ventasKigo/'+p.repaAsignado).push({fecha: new Date().toISOString().split('T')[0], cliente: p.recogerEn?.split(' - ')[0]||'Cliente', entrega: p.entregarEn||'', costo: historialData.costoNumerico, timestamp: Date.now(), adminKey: fbKey});
+  db.ref('historialKigo/'+p.repaAsignado).push(historialData);
+  if(p.liveKey) db.ref('kigoPedidosLive/'+p.liveKey).remove();
+  db.ref('kigo_pedidos/'+fbKey).update({archivado:true, historialEnviado:true, ['historial/archivado']:Date.now()});
+  const box=document.getElementById('histBox_'+fbKey); if(box) box.classList.add('show');
+  alert(`✅ Archivado en historial de ${p.repaAsignado}`);
 }
 function abrirModalEditar(fbKey){
   const p=pedidosGuardados.find(x=>x.fbKey===fbKey); if(!p) return;
   pedidoEditandoKey=fbKey;
-  const esCompra = p.tipo && p.tipo.toLowerCase().includes('comprar');
-  document.getElementById('editSectionTipo').innerText = `TIPO: ${p.tipo || 'RECOGER'} ${esCompra?'🛒':'📦'}`;
+  document.getElementById('editSectionTipo').innerText = `TIPO: ${p.tipo || 'RECOGER'}`;
   const nombreAliado = p.recogerEn? p.recogerEn.split(' - ')[0] : '';
   const direccionAliado = p.direccionAliado || (p.recogerEn && p.recogerEn.includes(' - ')? p.recogerEn.split(' - ').slice(1).join(' - ') : '');
   document.getElementById('editModalRecoger').value = nombreAliado;
@@ -603,12 +509,9 @@ function abrirModalEditar(fbKey){
   document.getElementById('editModalPrecio').value = p.precio || '';
   document.getElementById('editModalDist').value = p.distancia || '';
   document.getElementById('editModalTiempo').value = p.tiempo || '';
-  document.getElementById('editModalEstado').value = p.estado || 'a_recoger';
-  document.getElementById('wrapResumen').style.display='block';
-  document.getElementById('labelResumen').style.display='block';
-  document.getElementById('labelResumen').innerText = esCompra?'Productos a comprar / Qué se va a recoger':'Descripción del pedido / Qué se recoge';
+  document.getElementById('editModalEstado').value = p.estado || 'pendiente';
   document.getElementById('modalEditarPedido').classList.add('show');
-  document.getElementById('btnEliminarModal').onclick=()=>{if(confirm("¿Eliminar este servicio?")){ if(p.liveKey) db.ref('kigoPedidosLive/'+p.liveKey).remove(); db.ref('kigo_pedidos/'+fbKey).remove().then(()=>{cerrarModalEditar();});}};
+  document.getElementById('btnEliminarModal').onclick=()=>{if(confirm("¿Eliminar?")){ if(p.liveKey) db.ref('kigoPedidosLive/'+p.liveKey).remove(); db.ref('kigo_pedidos/'+fbKey).remove().then(()=>{cerrarModalEditar();});}};
 }
 function cerrarModalEditar(){document.getElementById('modalEditarPedido').classList.remove('show'); pedidoEditandoKey=null;}
 function guardarEdicionModal(){
@@ -627,22 +530,15 @@ function guardarEdicionModal(){
   updates[`historial/${estado}`]=Date.now();
   const pOld = pedidosGuardados.find(x=>x.fbKey===pedidoEditandoKey);
   db.ref('kigo_pedidos/'+pedidoEditandoKey).update(updates).then(()=>{
-    if(pOld && pOld.liveKey){
-      db.ref('kigoPedidosLive/'+pOld.liveKey).update({dirRecogida: recogerEn, entrega: entregarEn, telefonoRecogida: telefono, costoSugerido: parseInt(precio.replace(/[^0-9]/g,''))||0, cliente: nombre});
-    }
-    alert("Pedido actualizado ✅"); cerrarModalEditar();
+    if(pOld && pOld.liveKey){ db.ref('kigoPedidosLive/'+pOld.liveKey).update({dirRecogida: recogerEn, entrega: entregarEn, telefonoRecogida: telefono, costoSugerido: parseInt(precio.replace(/[^0-9]/g,''))||0, cliente: nombre}); }
+    alert("Actualizado ✅"); cerrarModalEditar();
   });
-}
-function verHistorialModal(fbKey){
-  const p=pedidosGuardados.find(x=>x.fbKey===fbKey); if(!p) return;
-  if(p.estado!=='finalizado'){alert("⏳ El historial solo se activa cuando está FINALIZADO."); return;}
-  const box=document.getElementById('histBox_'+fbKey); if(box){box.classList.toggle('show');}
 }
 function guardarPedidoFirebase(tipo, resumen, precio, distancia, mensajeCompleto, tiempo, estadoInicial, recogerEn, entregarEn, telefono){
   const partes = (recogerEn||'').split(' - '); const dirAli = partes.length>1? partes.slice(1).join(' - ') : aliadoDireccionTexto||'';
   const repaSel = document.getElementById('selectRepartidorEnlace').value;
-  if(!repaSel){ alert("⚠️ Selecciona un repartidor arriba para enlazar"); return Promise.reject(); }
-  const pedido={tipo, resumen, precio, distancia, mensaje: mensajeCompleto, estado: estadoInicial||'a_recoger', tiempo: tiempo||"", timestamp: Date.now(), fecha: new Date().toLocaleString(), recogerEn: recogerEn||tipo, direccionAliado: dirAli, entregarEn: entregarEn||resumen, telefono: telefono||"", historial:{creado: Date.now(), a_recoger: Date.now()}, confirmadoEn: Date.now(), repaAsignado: repaSel==='__todos__'?'':repaSel, repaEstado:'pendiente'};
+  if(!repaSel){ alert("⚠️ Selecciona un repartidor arriba"); return Promise.reject(); }
+  const pedido={tipo, resumen, precio, distancia, mensaje: mensajeCompleto, estado: estadoInicial||'pendiente', tiempo: tiempo||"", timestamp: Date.now(), fecha: new Date().toLocaleString(), recogerEn: recogerEn||tipo, direccionAliado: dirAli, entregarEn: entregarEn||resumen, telefono: telefono||"", historial:{creado: Date.now(), pendiente: Date.now()}, confirmadoEn: Date.now(), repaAsignado: repaSel==='__todos__'?'':repaSel, repaEstado:'pendiente'};
   return db.ref('kigo_pedidos').push(pedido).then(snapAdmin=>{
     const adminKey = snapAdmin.key;
     const precioNum = parseInt((precio||'').replace(/[^0-9]/g,''))||0;
@@ -650,15 +546,7 @@ function guardarPedidoFirebase(tipo, resumen, precio, distancia, mensajeCompleto
     const lng1 = pickupLng || compraLng || nuevoRecogidaLng || compraNuevoLng || CENTRO.lng;
     const lat2 = destinationLat || nuevoEntregaLat || nuevoEntregaComprarLat || CENTRO.lat;
     const lng2 = destinationLng || nuevoEntregaLng || nuevoEntregaComprarLng || CENTRO.lng;
-    const livePayload = {
-      cliente: recogerEn.split(' - ')[0]||'Cliente', nombreCliente: recogerEn.split(' - ')[0]||'Cliente',
-      dirRecogida: recogerEn, direccionRecogida: recogerEn, entrega: entregarEn, direccionEntrega: entregarEn,
-      telefono: telefono||'', telefonoRecogida: telefono||'', telefonoEntrega: telefono||'',
-      lat1: lat1, lng1: lng1, lat2: lat2, lng2: lng2, costoSugerido: precioNum, costo: precioNum,
-      repaAsignado: repaSel==='__todos__'? (listaRepasEnlace[0]||'') : repaSel, etapa: 'en_espera', subEtapa:'pendiente', activo:false,
-      ts: Date.now(), creado: Date.now(), hora: new Date().toLocaleTimeString(), tiempoRecogida: tiempo||'',
-      adminKey: adminKey, tipo: tipo, resumen: resumen
-    };
+    const livePayload = {cliente: recogerEn.split(' - ')[0]||'Cliente', dirRecogida: recogerEn, entrega: entregarEn, telefono: telefono||'', telefonoRecogida: telefono||'', telefonoEntrega: telefono||'', lat1, lng1, lat2, lng2, costoSugerido: precioNum, costo: precioNum, repaAsignado: repaSel==='__todos__'? (listaRepasEnlace[0]||'') : repaSel, etapa: 'en_espera', subEtapa:'pendiente', activo:false, ts: Date.now(), adminKey: adminKey, tipo, resumen, tiempoRecogida: tiempo||''};
     if(repaSel==='__todos__'){
       const promises=listaRepasEnlace.map(r=> db.ref('kigoPedidosLive').push({...livePayload, repaAsignado:r}));
       return Promise.all(promises).then(refs=> db.ref('kigo_pedidos/'+adminKey).update({liveKey:refs[0].key}));
@@ -671,8 +559,8 @@ db.ref('kigo_pedidos').on('value', snap=>{
   const val=snap.val(); pedidosGuardados=[];
   if(val){Object.keys(val).forEach(k=>{pedidosGuardados.push({fbKey:k,...val[k]});});}
   const badgeS=document.getElementById('badgeSeguimiento');
-  const seguimiento=pedidosGuardados.filter(p=>p.estado!=='finalizado').length;
-  if(seguimiento>0){badgeS.innerText=seguimiento; badgeS.style.display='inline-flex'; badgeS.classList.add('show-flex');} else {badgeS.style.display='none'; badgeS.classList.remove('show-flex');}
+  const activos=pedidosGuardados.filter(p=>p.estado!=='finalizado' &&!p.archivado).length;
+  if(activos>0){badgeS.innerText=activos; badgeS.style.display='inline-flex';} else {badgeS.style.display='none';}
   if(document.getElementById('seguimientoPanel').style.display==='flex'){renderSeguimiento();}
 });
 function renderListaClientesBottom(){
@@ -728,7 +616,7 @@ document.getElementById("inputLogoLogin").addEventListener("change", function(e)
 document.getElementById("inputPWAIcon").addEventListener("change", function(e){const file=e.target.files[0]; if(!file) return; const reader=new FileReader();reader.onload=function(ev){document.getElementById("previewPWA").src=ev.target.result; configMarca.pwaIcon=ev.target.result; actualizarManifestPWA();};reader.readAsDataURL(file);});
 function guardarModificaciones(){const nombre=document.getElementById("inputPlatformName").value.trim()||"KIGO XPRESS";const color=document.getElementById("inputPrimaryColor").value||"#E53935";configMarca.platformName=nombre; configMarca.primaryColor=color;db.ref("kigo_config").set(configMarca).then(()=>{aplicarConfigMarca(); alert("Marca guardada");});}
 function guardarTarifas(){configTarifas={azul:parseInt(document.getElementById("tarifaAzul").value)||0,verde:parseInt(document.getElementById("tarifaVerde").value)||0,amarillo:parseInt(document.getElementById("tarifaAmarillo").value)||0,rojo:parseInt(document.getElementById("tarifaRojo").value)||0,morado:parseInt(document.getElementById("tarifaMorado").value)||0,base:parseInt(document.getElementById("tarifaBase").value)||35,centroCentro:parseInt(document.getElementById("tarifaCentroCentro").value)||35,radioCentro:parseInt(document.getElementById("tarifaRadioCentro").value)||800,metros:parseInt(document.getElementById("tarifaMetros").value)||650,extraMonto:parseInt(document.getElementById("tarifaExtraMonto").value)||5,lejosCentro:parseInt(document.getElementById("tarifaLejosCentro").value)||5,muyLejosMetros:parseInt(document.getElementById("tarifaMuyLejosMetros").value)||2000,muyLejos:parseInt(document.getElementById("tarifaMuyLejos").value)||10,sop:parseInt(document.getElementById("tarifaSOP").value)||45};db.ref("kigo_tarifas").set(configTarifas).then(()=>{aplicarConfigTarifas(); alert("Tarifas guardadas ✅");});}
-function verificarSistema(){db.ref("kigo_clientes").once("value").then(()=>{document.getElementById("dotFirebase").className="status-dot status-ok";document.getElementById("txtFirebase").innerText="Conectado";document.getElementById("badgeFirebase").innerText="CONECTADO";}).catch(()=>{document.getElementById("dotFirebase").className="status-dot status-bad";});}
+function verificarSistema(){db.ref("kigo_clientes").once("value").then(()=>{document.getElementById("dotFirebase").className="status-dot status-ok";document.getElementById("txtFirebase").innerText="Conectado";}).catch(()=>{document.getElementById("dotFirebase").className="status-dot status-bad";});}
 db.ref("kigo_clientes").on("value", (snap)=>{const val=snap.val(); clientesGuardados=[];if(val){Object.keys(val).forEach(k=>{clientesGuardados.push({fbKey:k,...val[k]});});}renderListaClientesBottom();});
 async function getLluviaColonia(lat,lng){try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=precipitation,weather_code&timezone=America/Mexico_City`); const data=await r.json(); return {precip: data.current.precipitation};}catch(e){ return {precip:0}; }}
 async function checarClimaGeneral(){try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City"); const data=await r.json(); const temp=Math.round(data.current.temperature_2m); document.getElementById("weatherWidget").innerText=`☀️ ${temp}°C`;}catch(e){}}
@@ -806,8 +694,8 @@ document.getElementById("confirmarServicioMapaButton").onclick=()=>{
   const precio = ultimoPrecio || document.getElementById('price').innerText;
   const dist = ultimaDistancia;
   const mensajeCompleto = `${tipo} - ${resumen} - ${precio}`;
-  guardarPedidoFirebase(tipo, resumen, precio, dist, mensajeCompleto, tiempo, 'a_recoger', recogerEn, entregarEn, telefono).then(()=>{
-    alert("✅ Servicio confirmado - Enviado a Repartidor");
+  guardarPedidoFirebase(tipo, resumen, precio, dist, mensajeCompleto, tiempo, 'pendiente', recogerEn, entregarEn, telefono).then(()=>{
+    alert("✅ Pedido PENDIENTE creado - Esperando que repa acepte");
     resetAliadosForm(); resetNuevoForm();
     if(map){map.setCenter(CENTRO); map.setZoom(14);}
     openSeguimiento();
