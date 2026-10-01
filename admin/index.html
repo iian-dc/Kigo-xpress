@@ -124,23 +124,13 @@ const firebaseConfig = {apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authD
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
-let tipo='aliados', sub='recoger', clientes=[], clientesKeys={}, repas=[], map, ds, dr;
+let tipo='aliados', sub='recoger', clientes=[], repas=[], map, ds, dr;
 let posOrigen=null, posDestino=null, posCompra=null;
+let clientesCache1=[], clientesCache2=[], repasCache1=[], repasCache2=[];
 
 function cerrarSesion(){ if(confirm('¿Cerrar sesión?')) alert('Sesión cerrada - aquí conectamos login'); }
-
-function setTipo(t){
-  tipo=t;
-  document.getElementById('btnAliados').classList.toggle('active', t==='aliados');
-  document.getElementById('btnNuevos').classList.toggle('active', t==='nuevos');
-  mostrarForm();
-}
-function setSub(s){
-  sub=s;
-  document.getElementById('sRecoger').classList.toggle('active', s==='recoger');
-  document.getElementById('sComprar').classList.toggle('active', s==='comprar');
-  mostrarForm(); resetCot();
-}
+function setTipo(t){ tipo=t; document.getElementById('btnAliados').classList.toggle('active', t==='aliados'); document.getElementById('btnNuevos').classList.toggle('active', t==='nuevos'); mostrarForm(); }
+function setSub(s){ sub=s; document.getElementById('sRecoger').classList.toggle('active', s==='recoger'); document.getElementById('sComprar').classList.toggle('active', s==='comprar'); mostrarForm(); resetCot(); }
 function mostrarForm(){
   document.getElementById('formAR').style.display = (tipo==='aliados' && sub==='recoger')?'block':'none';
   document.getElementById('formAC').style.display = (tipo==='aliados' && sub==='comprar')?'block':'none';
@@ -152,39 +142,52 @@ function clearI(id){
   if(id==='inAliado'){ posOrigen=null; document.getElementById('aliadoDir').style.display='none'; }
   if(id==='inAliadoEntregaAC'){ posDestino=null; document.getElementById('aliadoEntregaDirAC').style.display='none'; }
   if(id==='inEntrega') posDestino=null;
-  if(id.includes('Dir')) resetCot();
   resetCot();
 }
-function resetCot(){
-  document.getElementById('mapaBox').style.display='none';
-  document.getElementById('btnVerde').classList.remove('show');
+function resetCot(){ document.getElementById('mapaBox').style.display='none'; document.getElementById('btnVerde').classList.remove('show'); }
+
+function unirClientes(){
+  let mapC={};
+  [...clientesCache1,...clientesCache2].forEach(c=>{
+    if(!c.nombre) return;
+    let k=c.nombre.toLowerCase().trim();
+    if(!mapC[k]) mapC[k]=c;
+    else {
+      if((c.direccion||'').length > (mapC[k].direccion||'').length) mapC[k].direccion=c.direccion;
+      if((c.telefono||'').length > (mapC[k].telefono||'').length) mapC[k].telefono=c.telefono;
+      if(c.lat &&!mapC[k].lat) { mapC[k].lat=c.lat; mapC[k].lng=c.lng; }
+    }
+  });
+  clientes=Object.values(mapC);
 }
+db.ref('clientesKigo').on('value', s=>{ clientesCache1=Object.values(s.val()||{}); unirClientes(); });
+db.ref('kigo_clientes').on('value', s=>{ clientesCache2=Object.values(s.val()||{}); unirClientes(); });
 
-// MISMA BASE DE CLIENTES DEL HISTORIAL
-db.ref('clientesKigo').on('value', s=>{
-  const val=s.val()||{};
-  clientes=Object.values(val);
-  clientesKeys=val;
-});
-
+function unirRepas(){
+  let set=new Set([...repasCache1,...repasCache2].filter(Boolean));
+  repas=Array.from(set);
+  const html='<option value="">-- Repartidor --</option>'+repas.map(r=>`<option value="${r}">${r}</option>`).join('')+'<option value="__todos__">TODOS</option>';
+  document.querySelectorAll('.select-rappi').forEach(el=>el.innerHTML=html);
+}
 db.ref('repartidoresKigo').on('value', s=>{
   const v=s.val()||{};
-  const lista=Object.values(v).map(r=>r.nombre).filter(Boolean);
-  repas=lista.length? lista : Object.keys(v);
-  const html='<option value="">-- Repartidor --</option>'+repas.map(r=>`<option value="'+r+'">'+r+'</option>').join('')+'<option value="__todos__">TODOS</option>';
-  document.querySelectorAll('.select-rappi').forEach(el=>el.innerHTML=html);
+  repasCache1=Object.values(v).map(r=> r.nombre || r).filter(Boolean);
+  if(!repasCache1.length) repasCache1=Object.keys(v);
+  unirRepas();
 });
+db.ref('kigoRepasFull').on('value', s=>{ repasCache2=Object.keys(s.val()||{}); unirRepas(); });
 
 function attachSug(inputId, sugId, onSelect){
   const inp=document.getElementById(inputId), sug=document.getElementById(sugId);
   if(!inp||!sug) return;
   const render=(f='')=>{
     sug.innerHTML='';
-    let lista=clientes.filter(x=> (x.nombre||'').toLowerCase().includes(f.toLowerCase())).slice(0,8);
+    let lista=clientes.filter(x=> (x.nombre||'').toLowerCase().includes(f.toLowerCase())).slice(0,10);
     if(!lista.length){sug.innerHTML='<div style="padding:8px;text-align:center;font-size:9px;color:#888">Sin aliados</div>'; sug.classList.add('show'); return;}
     lista.forEach(cl=>{
       const d=document.createElement('div'); d.className='sug';
-      d.innerHTML=`<i class="material-icons" style="font-size:15px;color:#FF3A2A">store</i><div><div style="font-weight:800;font-size:10px">${cl.nombre}</div><div style="font-size:8px;color:#888">${(cl.direccion||'No especificada').substring(0,45)} • ${cl.telefono||''}</div></div>`;
+      let dirShow=cl.direccion && cl.direccion.trim()? cl.direccion.substring(0,45) : 'No especificada';
+      d.innerHTML=`<i class="material-icons" style="font-size:15px;color:#FF3A2A">store</i><div><div style="font-weight:800;font-size:10px">${cl.nombre}</div><div style="font-size:8px;color:#888">${dirShow}${cl.telefono?' • '+cl.telefono:''}</div></div>`;
       d.onclick=()=>{inp.value=cl.nombre; sug.classList.remove('show'); onSelect(cl);};
       sug.appendChild(d);
     });
@@ -193,18 +196,14 @@ function attachSug(inputId, sugId, onSelect){
   inp.addEventListener('focus', e=>render(e.target.value));
   inp.addEventListener('input', e=>render(e.target.value));
 }
-
 attachSug('inAliado','sugAliados', cl=>{
   let dirTxt=cl.direccion && cl.direccion.trim()? cl.direccion : 'No especificada';
   let telTxt=cl.telefono && cl.telefono.trim()? ' • Tel: '+cl.telefono : '';
   document.getElementById('aliadoDir').style.display='block';
   document.getElementById('aliadoDir').innerHTML='📍 <b>'+cl.nombre+'</b><br>'+dirTxt+telTxt;
-  // Si tiene lat/lng lo usa para ruta, si no, no
   if(cl.lat && cl.lng){ posOrigen={lat:parseFloat(cl.lat),lng:parseFloat(cl.lng)}; }
-  else { posOrigen=null; }
   intentarCot();
 });
-
 attachSug('inAliadoEntregaAC','sugAliadoEntregaAC', cl=>{
   let dirTxt=cl.direccion && cl.direccion.trim()? cl.direccion : 'No especificada';
   let telTxt=cl.telefono && cl.telefono.trim()? ' • Tel: '+cl.telefono : '';
@@ -231,9 +230,13 @@ function initGoogle(){
   const ac6=new google.maps.places.Autocomplete(document.getElementById('inDirEntNC'),opts);
   ac6.addListener('place_changed',()=>{const p=ac6.getPlace(); if(!p.geometry) return; posDestino={lat:p.geometry.location.lat(),lng:p.geometry.location.lng()}; document.getElementById('inDirEntNC').value=p.formatted_address; intentarCot();});
   const hoy=new Date(); document.getElementById('fecha').innerText=hoy.toLocaleDateString('es-MX',{weekday:'short', day:'numeric', month:'short'}).toUpperCase();
-  fetch(`https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City`).then(r=>r.json()).then(d=>{document.getElementById('clima').innerHTML=`<i class="material-icons" style="font-size:11px">wb_sunny</i> ${Math.round(d.current.temperature_2m)}°`; document.getElementById('subFecha').innerText=`${Math.round(d.current.temperature_2m)}°C • Dolores Hidalgo`;});
+  fetch(`https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City`).then(r=>r.json()).then(d=>{
+    if(d.current){
+      document.getElementById('clima').innerHTML=`<i class="material-icons" style="font-size:11px">wb_sunny</i> ${Math.round(d.current.temperature_2m)}°`;
+      document.getElementById('subFecha').innerText=`${Math.round(d.current.temperature_2m)}°C • Dolores Hidalgo`;
+    }
+  }).catch(()=>{});
 }
-
 function intentarCot(){
   let origen=posOrigen, destino=posDestino;
   if((tipo==='aliados'&&sub==='comprar')||(tipo==='nuevos'&&sub==='comprar')){ origen=posCompra; destino=posDestino; }
@@ -252,7 +255,6 @@ function intentarCot(){
     btn.classList.add('show');
   });
 }
-
 document.getElementById('btnVerde').onclick=()=>{
   const km=document.getElementById('btnVerde').dataset.km, precioTxt=document.getElementById('btnVerde').dataset.precio, precioNum=document.getElementById('btnVerde').dataset.num;
   let recoger='', entregar='', tel='', tiempo='', repa='';
