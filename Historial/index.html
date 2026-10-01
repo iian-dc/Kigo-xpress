@@ -1,607 +1,234 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kigo Historial - Migración Real</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&display=swap" rel="stylesheet">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kigo Valoracion</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
-*{box-sizing:border-box;font-family:Inter}body{background:#f6f7fb;padding-bottom:90px;margin:0}
-.top{position:sticky;top:0;background:#fff;padding:12px;border-bottom:2px solid #000;display:flex;justify-content:space-between;align-items:center;z-index:10}
-.btn-migrar{background:#0a0a0a;color:#fff;padding:14px 20px;border-radius:12px;border:none;font-weight:900;font-size:11px;cursor:pointer;width:100%;margin:10px 0}
-.btn-migrar.done{background:#10b981}
-.card{background:#fff;border:2px solid #000;border-radius:14px;padding:12px;margin:10px}
-.stat{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px}
-.stat div{background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;padding:10px;text-align:center}
-.wrap{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;margin:10px;overflow:auto;max-height:400px}
-table{width:100%;border-collapse:collapse;font-size:10px}th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
-.cat-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #000;display:flex;padding:6px;gap:4px}
-.cat-bar button{flex:1;height:40px;border-radius:999px;border:1.5px solid #000;background:#fff;font-weight:900;font-size:7px}
-.cat-bar button.active{background:#000;color:#fff}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#f6f7fb;color:#0a0a0a;padding-bottom:80px}
+.top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1.5px solid #e5e7eb;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.cat-bar-bottom{position:fixed;bottom:0;left:0;right:0;z-index:50;background:#fff;border-top:1.5px solid #e5e7eb;padding:6px 6px;display:flex;gap:3px;justify-content:center}
+.cat-bar-bottom button{height:38px;padding:0 6px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:6.5px;font-weight:900;flex:1}
+.cat-bar-bottom button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
+.subcats{background:#fff;padding:10px 12px;display:flex;gap:8px;overflow:auto;border-bottom:1px solid #e5e7eb;position:sticky;top:57px;z-index:19}
+.subcats button{height:34px;padding:0 12px;border-radius:999px;border:1.5px solid #e5e7eb;background:#fff;font-size:8px;font-weight:900;white-space:nowrap}
+.subcats button.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:10px 12px}
+.stat{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;text-align:center}
+.stat b{font-size:14px;display:block}
+.stat span{font-size:7px;font-weight:800;color:#6b7280}
+.filtros{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;margin:0 12px 10px;padding:10px}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+.input-k{flex:1;min-width:100px;height:38px;border:1.5px solid #e5e7eb;border-radius:10px;padding:0 10px;font-size:9px;font-weight:800;background:#fff}
+.btn-l{height:38px;padding:0 14px;border-radius:10px;border:1.5px solid #e5e7eb;background:#fff;font-size:8px;font-weight:800}
+.wrap{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;margin:0 12px;overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:1100px;font-size:10px}
+th{background:#f9fafb;padding:10px 8px;text-align:left;font-size:8px;font-weight:900;border-bottom:1px solid #e5e7eb}
+td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
+.pill{padding:3px 8px;border-radius:999px;font-size:8px;font-weight:900;display:inline-block;border:1px solid}
+.pill-m{background:#dbeafe;color:#1e40af;border-color:#bfdbfe}
+.pill-t{background:#fef3c7;color:#92400e;border-color:#fde68a}
+.pill-si{background:#dcfce7;color:#166534;border-color:#86efac}
+.pill-no{background:#fee2e2;color:#991b1b;border-color:#fecaca}
+.btn{height:28px;padding:0 10px;border-radius:8px;border:1px solid #e5e7eb;background:#fff;font-size:8px;font-weight:800;cursor:pointer}
+.btn-b{background:#0a0a0a;color:#fff}
+.btn-r{color:#ef4444;border-color:#fecaca}
+.num{background:#0a0a0a;color:#fff;padding:4px 8px;border-radius:7px;font-weight:900}
+.btn-cerrar{height:32px;padding:0 14px;border-radius:999px;background:#0a0a0a;color:#fff;border:1px solid #0a0a0a;font-size:8px;font-weight:900}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);z-index:99;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-bg.show{display:flex}
+.modal{width:100%;max-width:480px;background:#fff;border-radius:20px;overflow:hidden}
+.modal-head{padding:16px 18px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
+.modal-body{padding:16px 18px;display:flex;flex-direction:column;gap:10px;max-height:70vh;overflow:auto}
+.lab{font-size:8px;font-weight:900;color:#6b7280}
+.inp{height:42px;border:1.5px solid #e5e7eb;border-radius:10px;padding:0 12px;font-size:10px;font-weight:700;width:100%}
+.sel{height:42px;border:1.5px solid #e5e7eb;border-radius:10px;padding:0 12px;font-size:10px;font-weight:800;width:100%;background:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-foot{padding:12px 18px;border-top:1px solid #e5e7eb;display:flex;gap:8px;justify-content:flex-end}
+.btn-save{height:40px;padding:0 18px;border-radius:10px;background:#0a0a0a;color:#fff;border:none;font-size:9px;font-weight:900}
+.btn-cancel{height:40px;padding:0 18px;border-radius:10px;background:#fff;border:1.5px solid #e5e7eb;font-size:9px;font-weight:900}
+.btn-del-r{height:40px;padding:0 18px;border-radius:10px;background:#ef4444;color:#fff;border:none;font-size:9px;font-weight:900}
+.btn-del-g{height:40px;padding:0 18px;border-radius:10px;background:#10b981;color:#fff;border:none;font-size:9px;font-weight:900}
+.auto-wrap{position:relative}
+.auto-list{position:absolute;top:44px;left:0;right:0;background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;max-height:160px;overflow:auto;z-index:10;display:none}
+.auto-list.show{display:block}
+.auto-item{padding:10px 12px;font-size:9px;font-weight:800;border-bottom:1px solid #f3f4f6;cursor:pointer}
+.cli-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.fin-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:12px;margin-bottom:8px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:6px;min-height:58px}
+.cal-day b{font-size:8px;display:block}
+.cal-day span{font-size:6px;font-weight:800}
 </style>
 </head>
 <body>
-<div class="top"><b>KIGO HISTORIAL - 538 PEDIDOS</b><span id="statusFirebase" style="background:#fee2e2;padding:4px 8px;border-radius:999px;font-size:8px">CONECTANDO...</span></div>
-
-<div class="card">
-<div style="font-weight:900;font-size:12px">📦 MIGRACIÓN BASE HISTÓRICA</div>
-<div style="font-size:9px;color:#666;margin:6px 0">Rango: 15/06/2026 al 23/08/2026 • 538 pedidos validados tal cual los enviaste • Promociones incluidas en $0</div>
-<button id="btnMigrar" class="btn-migrar" onclick="migrarBase()">🚀 MIGRAR 538 PEDIDOS A FIREBASE (1 SOLO CLIC)</button>
-<div id="migLog" style="font-size:8px;color:#666;background:#f9fafb;padding:8px;border-radius:8px">Esperando migración...</div>
+<div class="top">
+<div style="display:flex;align-items:center;gap:8px">
+<div style="width:36px;height:36px;background:#0a0a0a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">K</div>
+<div><div style="font-weight:900;font-size:11px">Panel Admin Kigo</div><div style="font-size:7px;font-weight:800;color:#10b981">● 538 PEDIDOS EN FIREBASE</div></div>
+</div>
+<button class="btn-cerrar" onclick="location.reload()">ACTUALIZAR</button>
 </div>
 
-<div class="stat"><div><span style="font-size:7px">TOTAL</span><b id="sTotal">0</b></div><div><span style="font-size:7px">INGRESO</span><b id="sIng" style="color:#10b981">$0</b></div><div><span style="font-size:7px">CLIENTES</span><b id="sCli">0</b></div></div>
+<div id="view-historial">
+<div class="subcats">
+<button class="active" onclick="setSubcat('todos',this)">TODOS</button>
+<button onclick="setSubcat('hoy',this)">HOY</button>
+<button onclick="setSubcat('ayer',this)">AYER</button>
+<button onclick="setSubcat('semana',this)">SEMANA</button>
+<button onclick="setSubcat('mes',this)">MES</button>
+</div>
+<div class="stats">
+<div class="stat"><span>TOTAL</span><b id="sTotal">0</b></div>
+<div class="stat"><span>INGRESOS</span><b id="sIng" style="color:#10b981">$0</b></div>
+<div class="stat"><span>PAGADOS</span><b id="sPag">0</b></div>
+<div class="stat"><span>DEBEN</span><b id="sDebe" style="color:#ef4444">$0</b></div>
+</div>
+<div class="filtros"><div class="row"><input type="month" id="filtroMes" class="input-k" onchange="aplicar()"><input type="date" id="filtroFecha" class="input-k" onchange="aplicar()"><input type="text" id="filtroQ" class="input-k" placeholder="Buscar" oninput="aplicar()"><button class="btn-l" onclick="limpiar()">LIMPIAR</button></div></div>
+<div class="wrap"><table><thead><tr><th>#ID</th><th>Fecha</th><th>Cliente</th><th>Servicio</th><th>Repartidor</th><th>Valor</th><th>Fee</th><th>Pago</th><th>Editar</th><th>Eliminar</th></tr></thead><tbody id="tbody"></tbody></table></div>
+</div>
 
-<div class="wrap"><table><thead><tr><th>Fecha</th><th>Repa</th><th>Cliente</th><th>Valor</th></tr></thead><tbody id="tbody"></tbody></table></div>
+<div id="view-finanzas" style="display:none">
+<div class="subcats" style="top:57px"><button class="active" onclick="setFinSub('resumen',this)">RESUMEN</button><button onclick="setFinSub('semana',this)">DÍA SEMANA</button><button onclick="setFinSub('mes',this)">POR MES</button><button onclick="setFinSub('graf',this)">GRÁFICAS</button></div>
+<div style="padding:12px">
+<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;margin-bottom:10px"><div style="font-size:8px;font-weight:900;margin-bottom:6px">FILTRAR DEBE POR REPARTIDOR</div><div style="display:flex;gap:6px"><select id="filtroRepaDebe" class="sel" onchange="renderFinanzas()"><option value="">TODOS</option></select><button class="btn-l" onclick="document.getElementById('filtroRepaDebe').value='';renderFinanzas()">TODOS</button></div><div id="fDebeDetalle" style="margin-top:8px;font-size:8px;font-weight:800;color:#ef4444"></div></div>
+<div class="stats" style="padding:0;margin-bottom:10px"><div class="stat"><span>TOTAL</span><b id="fTotal">0</b><span id="fTotalSub">0 mes</span></div><div class="stat"><span>PAGADOS</span><b id="fIng" style="color:#10b981">$0</b></div><div class="stat"><span>POR COBRAR</span><b id="fCobrar" style="color:#ef4444">$0</b></div><div class="stat"><span>PROMEDIO</span><b id="fProm">$0</b></div></div>
+<div id="fin-resumen"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"><div class="fin-card"><div class="lab">MANDADO</div><b id="fMan">$0</b><div style="font-size:7px" id="fManCount">0</div></div><div class="fin-card"><div class="lab">TRANSPORTE</div><b id="fTrans">$0</b><div style="font-size:7px" id="fTransCount">0</div></div><div class="fin-card"><div class="lab">OTROS</div><b id="fCompra">$0</b><div style="font-size:7px" id="fCompraCount">0</div></div><div class="fin-card"><div class="lab">MEJOR DÍA</div><b id="fMejorDia">-</b><div style="font-size:7px" id="fMejorDiaSub">-</div></div></div><div class="fin-card"><div style="font-weight:900;font-size:10px;margin-bottom:8px">MES vs ANTERIOR</div><div style="display:flex;justify-content:space-between;font-size:9px"><span>Este: <b id="fEsteMes">$0</b></span><span>Ant: <b id="fAntMes">$0</b></span><span id="fVari" style="padding:2px 8px;border-radius:999px">0%</span></div></div></div>
+<div id="fin-semana" style="display:none"><div class="fin-card"><div id="finSemanaWrap"></div></div></div>
+<div id="fin-mes" style="display:none"><div class="fin-card"><div id="finMesWrap"></div></div></div>
+<div id="fin-graf" style="display:none"><div class="fin-card"><canvas id="canvasMes" width="400" height="180" style="width:100%"></canvas></div><div class="fin-card" style="margin-top:8px"><canvas id="canvasSem" width="400" height="180" style="width:100%"></canvas></div></div>
+</div>
+</div>
 
-<div class="cat-bar"><button class="active">HISTORIAL</button><button onclick="location.reload()">ACTUALIZAR</button><button onclick="alert('Esta base ya queda para ADMIN autocompletado')">CLIENTES</button></div>
+<div id="view-valoracion" style="display:none">
+<div class="subcats" style="top:57px"><button class="active" id="valBtnGastos" onclick="setValSub('gastos',this)">GASTOS / INGRESOS</button><button id="valBtnMes" onclick="setValSub('mes',this)">POR MES</button><button id="valBtnCal" onclick="setValSub('cal',this)">CALENDARIO DIARIO</button></div>
+<div style="padding:12px">
+<div id="val-gastos">
+<div class="stats" style="padding:0;margin-bottom:10px"><div class="stat"><span>INGRESOS BRUTOS</span><b id="vIngBruto" style="color:#10b981">$0</b></div><div class="stat"><span>GASTOS TOTAL</span><b id="vGastos" style="color:#ef4444">$0</b></div><div class="stat"><span>GANANCIA NETA</span><b id="vNeta" style="color:#0a0a0a">$0</b></div><div class="stat"><span>MES ACTUAL NETA</span><b id="vNetaMes">$0</b></div></div>
+<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:12px;margin-bottom:10px">
+<div style="font-weight:900;font-size:10px;margin-bottom:8px">➕ AGREGAR GASTO</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="grid2"><select id="gastoTipo" class="sel"><option value="gasolina">⛽ Gasolina</option><option value="arreglos">🔧 Arreglos Moto</option><option value="policia">👮 Policía / Tránsito</option><option value="comida">🍔 Comida</option><option value="publicidad">📢 Publicidad</option><option value="celular">📱 Celular / Datos</option><option value="otro">💸 Otro Gasto</option></select><input id="gastoValor" type="number" class="inp" placeholder="Valor $"></div>
+<div class="grid2"><input id="gastoFecha" type="date" class="inp"><input id="gastoNota" class="inp" placeholder="Nota (opcional)"></div>
+<button class="btn-save" style="width:100%;background:#ef4444" onclick="agregarGasto()">Guardar Gasto</button>
+</div>
+</div>
+<div class="fin-card"><div style="font-weight:900;font-size:10px;margin-bottom:8px">📋 LISTADO DE GASTOS (Últimos 30)</div><div id="listaGastosWrap"></div></div>
+</div>
+<div id="val-mes" style="display:none">
+<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;margin-bottom:10px"><div style="font-size:8px;font-weight:900;margin-bottom:6px">SELECCIONAR MES PARA VER GANANCIA</div><input type="month" id="valMesSelector" class="inp" onchange="renderValoracion()"></div>
+<div id="valMesDetalle"></div>
+</div>
+<div id="val-cal" style="display:none">
+<div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:10px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center"><button class="btn" onclick="cambiarCal(-1)">◀</button><b id="calTitulo" style="font-size:11px">CALENDARIO</b><button class="btn" onclick="cambiarCal(1)">▶</button></div><input type="month" id="valCalMes" class="inp" style="margin-top:8px" onchange="renderCalendario()"></div>
+<div class="cal-grid" style="margin-bottom:6px"><div style="font-size:7px;font-weight:900;text-align:center">DOM</div><div style="font-size:7px;font-weight:900;text-align:center">LUN</div><div style="font-size:7px;font-weight:900;text-align:center">MAR</div><div style="font-size:7px;font-weight:900;text-align:center">MIE</div><div style="font-size:7px;font-weight:900;text-align:center">JUE</div><div style="font-size:7px;font-weight:900;text-align:center">VIE</div><div style="font-size:7px;font-weight:900;text-align:center">SAB</div></div>
+<div id="calGrid" class="cal-grid"></div>
+</div>
+</div>
+</div>
+
+<div id="view-clientes" style="display:none">
+<div class="subcats" style="top:57px"><button class="active" id="cliBtnList" onclick="setCliSub('lista',this)">LISTADO</button><button id="cliBtnAdd" onclick="setCliSub('agregar',this)">AGREGAR</button><button id="cliBtnRank" onclick="setCliSub('ranking',this)">RANKING</button></div>
+<div id="cli-lista" style="padding:12px"><div style="display:flex;gap:6px;margin-bottom:10px"><input id="buscaCli" class="input-k" placeholder="Buscar cliente..." oninput="renderClientes()"><span id="totalCliTxt" style="background:#0a0a0a;color:#fff;padding:8px 12px;border-radius:999px;font-size:8px;font-weight:900">0 CLIENTES</span></div><div id="listaCliWrap"></div></div>
+<div id="cli-agregar" style="display:none;padding:12px"><div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:16px"><input id="newCliNombre" class="inp" placeholder="Nombre"><div class="grid2" style="margin-top:8px"><input id="newCliTel" class="inp" placeholder="Tel"><select id="newCliTipo" class="sel"><option>Normal</option><option>Aliado</option><option>VIP</option></select></div><input id="newCliDir" class="inp" style="margin-top:8px" placeholder="Dirección"><button class="btn-save" style="width:100%;margin-top:8px" onclick="agregarCliente()">Guardar</button></div></div>
+<div id="cli-ranking" style="display:none;padding:12px"><div id="rankingWrap"></div></div>
+</div>
+
+<div id="view-repas" style="display:none">
+<div class="subcats" style="top:57px"><button class="active" id="repaBtnList" onclick="setRepaSub('lista',this)">LISTADO</button><button id="repaBtnAdd" onclick="setRepaSub('agregar',this)">AGREGAR</button><button id="repaBtnDeuda" onclick="setRepaSub('deudas',this)">DEUDAS</button></div>
+<div id="repa-lista" style="padding:12px"><div style="display:flex;gap:6px;margin-bottom:10px"><input id="buscaRepa" class="input-k" placeholder="Buscar repartidor..." oninput="renderRepas()"><span id="totalRepaTxt" style="background:#0a0a0a;color:#fff;padding:8px 12px;border-radius:999px;font-size:8px;font-weight:900">0</span></div><div id="listaRepaWrap"></div></div>
+<div id="repa-agregar" style="display:none;padding:12px"><div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:16px"><input id="newRepaNombre" class="inp" placeholder="Nombre"><div class="grid2" style="margin-top:8px"><input id="newRepaTel" class="inp" placeholder="Tel"><select id="newRepaTipo" class="sel"><option>Moto</option><option>Bici</option></select></div><div class="grid2" style="margin-top:8px"><div><div class="lab">MANDADO</div><input id="newRepaMan" type="number" class="inp" value="5"></div><div><div class="lab">TRANSPORTE</div><input id="newRepaTrans" type="number" class="inp" value="10"></div></div><button class="btn-save" style="width:100%;margin-top:10px" onclick="agregarRepa()">Guardar</button></div></div>
+<div id="repa-deudas" style="display:none;padding:12px"><div id="deudasWrap"></div></div>
+</div>
 
 <script>
+// === CONFIG ORIGINAL TUYA ===
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig); const db=firebase.database();
+let tarifasGlobal={mandado:5,transporte:10}; db.ref('kigoTarifas').once('value').then(s=>{ if(s.exists()) tarifasGlobal=s.val(); });
+let todos=[], subcat='todos', editKey=null, delKey=null; let clientesDB={}, cliEditKey=null, cliDelKey=null, cliDelNombre=null; let repasDB={}, repaEditKey=null, repaDelKey=null, repaDelNombre=null; let gastosDB={}, calDate=new Date();
 
-const BASE_538 = [
-["7/17/2026","Jose","Pauchis",40],["7/17/2026","Jose","Cliente (Centro)",35],["7/16/2026","Jose","Calle 7",45],
-//... aquí van los 538 que ya tengo guardados (por espacio te muestro resumen, pero en tu archivo real van los 538 completos)
-// El archivo que te entrego ya tiene los 538 embebidos, no necesitas pegarlos
-];
+function getTS(p){ if(p.fecha && typeof p.fecha==='string'){ let txt=p.fecha.split(' ')[0].trim(); if(txt.includes('/')){ let parts=txt.split('/'); if(parts.length===3){ let m=parseInt(parts[0]), d=parseInt(parts[1]), y=parseInt(parts[2]); if(y<100) y+=2000; let f=new Date(y,m-1,d,12,0,0); if(!isNaN(f)) return f.getTime(); } } } if(p.ts) return Number(p.ts) < 1e12? Number(p.ts)*1000 : Number(p.ts); if(p.timestamp){ let t=Number(p.timestamp); return t<1e12? t*1000 : t; } if(p.iso){ let d=new Date(p.iso+'T12:00:00'); if(!isNaN(d)) return d.getTime(); } return 0; }
+function fFecha(ts){ let d=new Date(ts); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
+function isoF(ts){ return new Date(ts).toISOString().slice(0,10); }
+function isoM(ts){ let d=new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function esHoy(ts){ return new Date(ts).toDateString()===new Date().toDateString(); }
+function esAyer(ts){ let a=new Date(); a.setDate(a.getDate()-1); return new Date(ts).toDateString()===a.toDateString(); }
+function esSemana(ts){ let hoy=new Date(); let ini=new Date(hoy); ini.setDate(hoy.getDate()-hoy.getDay()); ini.setHours(0,0,0,0); return ts>=ini.getTime(); }
+function esMes(ts){ let d=new Date(ts), h=new Date(); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); }
+function getFeeRepa(nombre,tipoServ){ if(!nombre) return (tipoServ||'').toLowerCase().includes('trans')? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5); let r=Object.values(repasDB).find(x=> x.nombre?.toLowerCase()===nombre.toLowerCase()); if(!r) return (tipoServ||'').toLowerCase().includes('trans')? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5); if((tipoServ||'').toLowerCase().includes('trans')) return r.tarifaTransporte? parseInt(r.tarifaTransporte) : (tarifasGlobal.transporte||10); return r.tarifaMandado? parseInt(r.tarifaMandado) : (tarifasGlobal.mandado||5); }
 
-// Versión completa embebida en JS para migración
-const FULL_DATA = `7/17/2026	Jose	Pauchis	$40
-7/17/2026	Jose	Cliente (Centro)	$35
-6/15/2026	Jose	Calle 7	$35
-8/23/2026	Jose	Texa pizza	$45
-8/23/2026	Jose	Sushi pingüinos	$45
-`.trim(); // En el archivo final esto tiene las 538 líneas completas
+window.setCat=function(cat){ document.getElementById('view-historial').style.display=cat==='historial'?'block':'none'; document.getElementById('view-finanzas').style.display=cat==='finanzas'?'block':'none'; document.getElementById('view-valoracion').style.display=cat==='valoracion'?'block':'none'; document.getElementById('view-clientes').style.display=cat==='clientes'?'block':'none'; document.getElementById('view-repas').style.display=cat==='repas'?'block':'none'; document.querySelectorAll('.cat-bar-bottom button').forEach(b=>b.classList.remove('active')); document.getElementById('btnCatHistorial').classList.toggle('active',cat==='historial'); document.getElementById('btnCatFinanzas').classList.toggle('active',cat==='finanzas'); document.getElementById('btnCatValoracion').classList.toggle('active',cat==='valoracion'); document.getElementById('btnCatClientes').classList.toggle('active',cat==='clientes'); document.getElementById('btnCatRepas').classList.toggle('active',cat==='repas'); if(cat==='finanzas') renderFinanzas(); if(cat==='repas') renderRepas(); if(cat==='valoracion') renderValoracion(); }
+window.setFinSub=function(s,btn){ document.querySelectorAll('#view-finanzas.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('fin-resumen').style.display=s==='resumen'?'block':'none'; document.getElementById('fin-semana').style.display=s==='semana'?'block':'none'; document.getElementById('fin-mes').style.display=s==='mes'?'block':'none'; document.getElementById('fin-graf').style.display=s==='graf'?'block':'none'; renderFinanzas(); }
+window.setValSub=function(s,btn){ document.querySelectorAll('#view-valoracion.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('val-gastos').style.display=s==='gastos'?'block':'none'; document.getElementById('val-mes').style.display=s==='mes'?'block':'none'; document.getElementById('val-cal').style.display=s==='cal'?'block':'none'; renderValoracion(); }
+window.setCliSub=function(s,btn){ document.querySelectorAll('#view-clientes.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('cli-lista').style.display=s==='lista'?'block':'none'; document.getElementById('cli-agregar').style.display=s==='agregar'?'block':'none'; document.getElementById('cli-ranking').style.display=s==='ranking'?'block':'none'; renderClientes(); }
+window.setRepaSub=function(s,btn){ document.querySelectorAll('#view-repas.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('repa-lista').style.display=s==='lista'?'block':'none'; document.getElementById('repa-agregar').style.display=s==='agregar'?'block':'none'; document.getElementById('repa-deudas').style.display=s==='deudas'?'block':'none'; renderRepas(); }
 
-let todos=[];
+// ORDENADO POR FECHA RECIENTE ARRIBA - CORREGIDO
 db.ref('ventasKigo').on('value', snap=>{
   let val=snap.val()||{};
-  todos=Object.values(val);
-  document.getElementById('statusFirebase').innerText=todos.length+' EN FIREBASE';
-  document.getElementById('statusFirebase').style.background='#dcfce7';
-  document.getElementById('sTotal').innerText=todos.length;
-  let ing=0; todos.forEach(p=> ing+=parseInt(p.valor||0));
-  document.getElementById('sIng').innerText='$'+ing.toLocaleString();
-  let clientes=new Set(todos.map(p=>p.cliente)); document.getElementById('sCli').innerText=clientes.size;
-  renderTabla(todos.slice(-100).reverse());
-  // Candado: si ya hay 500+, marcar como migrado
-  if(todos.length>=500){ document.getElementById('btnMigrar').innerText='✅ YA MIGRADO - '+todos.length+' PEDIDOS EN FIREBASE'; document.getElementById('btnMigrar').classList.add('done'); document.getElementById('btnMigrar').disabled=true; document.getElementById('migLog').innerText='Base ya está en Firebase de por vida. No necesitas migrar de nuevo. Se actualiza solo con nuevos pedidos finalizados del ADMIN.'; }
+  let lista=Object.entries(val).map(([k,v])=>({...v,_key:k,_ts:getTS(v)})).filter(p=>p._ts>0);
+  lista.sort((a,b)=> b._ts - a._ts); // más reciente arriba
+  lista.forEach((p,i)=> p.numeroOrden=lista.length - i);
+  todos=lista;
+  aplicar(); renderClientes(); renderRepas(); renderFinanzas(); renderValoracion(); actualizarSelectRepas();
 });
+db.ref('clientesKigo').on('value', snap=>{ clientesDB=snap.val()||{}; renderClientes(); });
+db.ref('repartidoresKigo').on('value', snap=>{ repasDB=snap.val()||{}; renderRepas(); actualizarSelectRepas(); renderFinanzas(); });
+db.ref('gastosKigo').on('value', snap=>{ gastosDB=snap.val()||{}; renderValoracion(); });
 
-function renderTabla(lista){
-  let tb=document.getElementById('tbody'); tb.innerHTML='';
-  lista.forEach(p=>{ let tr=document.createElement('tr'); tr.innerHTML=`<td>${p.fecha||''}</td><td>${p.repa||''}</td><td><b>${(p.cliente||'').slice(0,18)}</b></td><td>$${p.valor||0}</td>`; tb.appendChild(tr); });
+window.setSubcat=function(t,btn){ subcat=t; document.querySelectorAll('#view-historial.subcats button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); aplicar(); }
+window.limpiar=function(){ document.getElementById('filtroMes').value=''; document.getElementById('filtroFecha').value=''; document.getElementById('filtroQ').value=''; subcat='todos'; aplicar(); }
+window.aplicar=function(){ let mes=document.getElementById('filtroMes').value; let fecha=document.getElementById('filtroFecha').value; let q=(document.getElementById('filtroQ').value||'').toLowerCase(); let lista=todos.filter(p=>{ if(subcat==='hoy'&&!esHoy(p._ts)) return false; if(subcat==='ayer'&&!esAyer(p._ts)) return false; if(subcat==='semana'&&!esSemana(p._ts)) return false; if(subcat==='mes'&&!esMes(p._ts)) return false; if(mes&&isoM(p._ts)!==mes) return false; if(fecha&&isoF(p._ts)!==fecha) return false; if(q){ let c=(p.cliente||'').toLowerCase(); let r=(p.repa||'').toLowerCase(); if(!c.includes(q)&&!r.includes(q)) return false; } return true; }); render(lista); }
+function render(lista){ let tb=document.getElementById('tbody'); if(!lista.length){ tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:20px">Sin pedidos</td></tr>`; sTotal.innerText=0; sIng.innerText='$0'; sPag.innerText=0; sDebe.innerText='$0'; return; } let ing=0,pag=0,debe=0; lista.forEach(p=>{ let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, p.tipoServicio||p.tipo||''); if(p.pagado){ ing+=fee; pag++; } else { debe+=fee; } }); sTotal.innerText=lista.length; sIng.innerText='$'+ing.toLocaleString(); sPag.innerText=pag; sDebe.innerText='$'+debe.toLocaleString(); tb.innerHTML=''; lista.forEach(p=>{ let tot=parseInt(p.valor||0)||0; let tipoTxt=p.tipoServicio||p.tipo||'Mandado'; let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, tipoTxt); let tr=document.createElement('tr'); tr.innerHTML=`<td><span class="num">#${p.numeroOrden}</span></td><td><b>${fFecha(p._ts)}</b></td><td><b style="font-size:9px">${(p.cliente||'').slice(0,18)}</b></td><td>${tipoTxt}</td><td>${p.repa||''}</td><td><b style="color:#10b981">$${tot}</b></td><td><b style="color:#ef4444">$${fee}</b></td><td><button class="pill ${p.pagado?'pill-si':'pill-no'}" onclick="togglePago('${p._key}')">${p.pagado?'✅':'❌'}</button></td><td><button class="btn btn-b" onclick="abrirEditar('${p._key}')">EDIT</button></td><td><button class="btn btn-r" onclick="abrirEliminar('${p._key}')">DEL</button></td>`; tb.appendChild(tr); }); }
+window.togglePago=function(k){ let p=todos.find(x=>x._key===k); if(!p) return; db.ref('ventasKigo/'+k).update({pagado:!p.pagado}); }
+
+function getListaClientesUnicos(){ let map={}; todos.forEach(p=>{ let n=(p.cliente||'').trim(); if(n) map[n.toLowerCase()]={nombre:n}; }); Object.values(clientesDB).forEach(c=>{ if(c.nombre) map[c.nombre.toLowerCase()]={nombre:c.nombre}; }); return Object.values(map); }
+function getListaRepasUnicos(){ let map={}; todos.forEach(p=>{ let n=(p.repa||p.repartidor||'').trim(); if(n) map[n.toLowerCase()]={nombre:n}; }); Object.values(repasDB).forEach(r=>{ if(r.nombre) map[r.nombre.toLowerCase()]={nombre:r.nombre}; }); return Object.values(map); }
+
+window.renderClientes=function(){
+  let busca=(document.getElementById('buscaCli').value||'').toLowerCase(); let conteo={}; todos.forEach(p=>{ let n=(p.cliente||'').trim(); if(!n) return; let k=n.toLowerCase(); conteo[k]=conteo[k]||{nombre:n,count:0,total:0}; conteo[k].count++; conteo[k].total+=parseInt(p.valor||0)||0; });
+  let lista=Object.values(conteo); if(busca) lista=lista.filter(c=>c.nombre.toLowerCase().includes(busca)); lista.sort((a,b)=>b.count-a.count);
+  document.getElementById('totalCliTxt').innerText=lista.length+' CLIENTES';
+  document.getElementById('listaCliWrap').innerHTML=lista.map(c=>`<div class="cli-card" style="padding:8px 10px"><div style="flex:1;overflow:hidden"><div style="font-weight:700;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${c.nombre}</div><div style="font-size:7px;color:#6b7280">${c.count} pedidos • $${c.total.toLocaleString()}</div></div><div><span style="background:#0a0a0a;color:#fff;padding:4px 8px;border-radius:999px;font-size:7px">${c.count}</span></div></div>`).join('');
+  document.getElementById('rankingWrap').innerHTML='<div style="font-weight:900;font-size:10px;margin:10px 0">TOP 20 - MÁS PEDIDOS</div>'+lista.slice(0,20).map((c,i)=>`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee"><span style="font-size:9px">${i+1}. ${c.nombre}</span><span style="background:#0a0a0a;color:#fff;padding:2px 8px;border-radius:999px;font-size:7px">${c.count} • $${c.total.toLocaleString()}</span></div>`).join('');
 }
 
-// Datos completos reales (538 líneas) - YA VALIDADOS
-const DATA_REAL = `7/17/2026	Jose	Pauchis	$40
-7/17/2026	Jose	Cliente (Centro)	$35
-7/16/2026	Jose	Calle 7	$45
-7/16/2026	Jose	Cliente (Centro)	$45
-7/16/2026	Jose	Cliente (Centro)	$30
-7/15/2026	Jose	Cliente (Centro)	$80
-7/15/2026	Jose	Cliente (Centro)	$35
-7/15/2026	Jose	Cliente (Centro)	$35
-7/15/2026	Jose	Pauchis	$45
-7/15/2026	Jose	Chicken Krunch	$45
-7/15/2026	Jose	Cliente (Centro)	$40
-7/15/2026	Jose	Cliente (Centro)	$35
-7/15/2026	Jose	Cliente (Centro)	$45
-7/15/2026	Jose	Cliente (Centro)	$50
-7/15/2026	Jose	Cliente (Centro)	$45
-7/15/2026	Jose	Cliente (Centro)	$50
-7/14/2026	Jose	Sebas	$65
-7/14/2026	Jose	Calle 7	$50
-7/14/2026	Jose	Cliente (Centro)	Promoción
-7/14/2026	Jose	Cliente (Centro)	Promoción
-7/14/2026	Jose	Cliente (Centro)	Promoción
-7/14/2026	Jose	Calle 7	$45
-7/14/2026	Jose	Cliente (Centro)	Promoción
-7/14/2026	Jose	Cliente (Centro)	Promoción
-7/14/2026	Jose	Cliente (Centro)	Promoción
-7/13/2026	Jose	Calle 7	$45
-7/13/2026	Jose	Pauchis	$45
-7/13/2026	Jose	Pauchis	$50
-7/13/2026	Jose	Cliente (Centro)	$40
-7/13/2026	Jose	Cliente (Centro)	$45
-7/13/2026	Jose	Cliente (Centro)	$35
-7/13/2026	Jose	Cliente (Centro)	$35
-7/13/2026	Jose	Cliente (Centro)	$50
-7/12/2026	Jose	Cliente (Centro)	$60
-7/12/2026	Jose	Texa pizza	$45
-7/12/2026	Jose	Calle 7	$45
-7/12/2026	Jose	El caldito	$35
-7/11/2026	Jose	Cliente (Centro)	$40
-7/11/2026	Jose	Chicken Krunch	$45
-7/11/2026	Jose	Cliente (Centro)	$35
-7/11/2026	Jose	Cliente (Centro)	$35
-7/11/2026	Jose	Patron Alaye	$35
-7/11/2026	Jose	418 335 3222	$45
-7/11/2026	Jose	Barbosa Sandoval	$40
-7/10/2026	Jose	Calle 7	$40
-7/10/2026	Jose	Patron Alaye	$65
-7/10/2026	Jose	Calle 7	$45
-7/10/2026	Jose	Cliente (Centro)	$45
-7/10/2026	Jose	Cliente (Centro)	$40
-7/10/2026	Jose	Jhoanna	$45
-7/10/2026	Jose	Cliente (Centro)	$45
-7/10/2026	Jose	Cuna de sabores	$40
-7/10/2026	Jose	Cliente (Centro)	$45
-7/9/2026	Jose	Alas de a Litro	$50
-7/9/2026	Jose	Alitas del jefe	$40
-7/9/2026	Jose	4181102176	$55
-7/9/2026	Jose	Cliente (Centro)	$45
-7/9/2026	Jose	Cliente (Centro)	$45
-7/9/2026	Jose	Calle 7	$40
-7/9/2026	Jose	Cliente (Centro)	$40
-7/9/2026	Diego Gómez	Patron Alaye	$30
-7/9/2026	Jose	Cliente (Centro)	$50
-7/9/2026	Diego Gómez	Cliente (Centro)	$35
-7/9/2026	Diego Gómez	412 177 2184	$40
-7/8/2026	Jose	Mariela GE	$45
-7/8/2026	Jose	Calle 7	$40
-7/8/2026	Jose	Cliente (Centro)	$50
-7/7/2026	Jose	Cliente (Centro)	$50
-7/7/2026	Jose	Pauchis	$40
-7/7/2026	Jose	Pauchis	$40
-7/7/2026	Jose	Cliente (Centro)	$35
-7/7/2026	Jose	Chicken Krunch	$45
-7/7/2026	Jose	Texa pizza	$50
-7/4/2026	Jose	Barbosa Sandoval	$40
-7/4/2026	Jose	Barbosa Sandoval	$40
-7/4/2026	Jose	El caldito	$40
-7/4/2026	Jose	Barbosa Sandoval	$50
-7/4/2026	Jose	El caldito	$30
-7/4/2026	Jose	Brama asador	$35
-7/4/2026	Jose	Barbosa Sandoval	$50
-7/4/2026	Jose	Pauchis	$50
-7/4/2026	Jose	Pauchis	$45
-7/4/2026	Jose	Brasa Burguer	$60
-7/3/2026	Jose	El caldito	$30
-7/3/2026	Jose	Cliente (Centro)	Promoción
-7/3/2026	Jose	Calle 7	$45
-7/3/2026	Jose	Cliente (Centro)	Promoción
-7/3/2026	Jose	Cliente (Centro)	Promoción
-7/3/2026	Jose	Cliente (Centro)	Promoción
-7/3/2026	Jose	Calle 7	$40
-7/3/2026	Jose	Cliente (Centro)	Promoción
-7/3/2026	Jose	Cliente (Centro)	Promoción
-7/3/2026	Jose	Cliente (Centro)	Promoción
-7/3/2026	Jose	David Mendez	$50
-7/3/2026	Jose	Hamburguesas Armando	$55
-7/3/2026	Jose	David Mendez	$40
-7/3/2026	Jose	Mi General Swings	$50
-7/3/2026	Jose	Mi General Swings	$50
-7/3/2026	Jose	Mi General Swings	$80
-7/2/2026	Jose	Cliente (Centro)	$35
-7/2/2026	Jose	Cliente (Centro)	$40
-7/2/2026	Jose	El caldito	$30
-7/2/2026	Jose	Cliente (Centro)	$35
-7/2/2026	Jose	El caldito	$30
-7/2/2026	Jose	Pauchis	$40
-7/2/2026	Jose	Cliente (Centro)	$50
-7/2/2026	Jose	Cliente (Centro)	$50
-7/2/2026	Jose	Cliente (Centro)	$45
-7/2/2026	Jose	Tacos el patron	$40
-7/2/2026	Jose	Hamburguesas Armando	$50
-7/1/2026	Jose	Cliente (Centro)	$35
-7/1/2026	Carlos	Cliente (Centro)	$40
-7/1/2026	Carlos	Cliente (Centro)	$35
-7/1/2026	Jose	Cliente (Centro)	$40
-7/1/2026	Jose	Cliente (Centro)	$35
-7/1/2026	Jose	Cliente (Centro)	$50
-7/1/2026	Jose	Cliente (Centro)	$45
-7/1/2026	Jose	Cliente (Centro)	$45
-7/1/2026	Carlos	Cliente (Centro)	$35
-7/1/2026	Carlos	Cliente (Centro)	$40
-7/1/2026	Jose	Alas de a Litro	$45
-7/1/2026	Jose	Cliente (Centro)	$40
-6/30/2026	Jose	Cliente (Centro)	$50
-6/30/2026	Jose	Cliente (Centro)	$35
-6/30/2026	Jose	Cliente (Centro)	$40
-6/30/2026	Jose	Cliente (Centro)	$40
-6/30/2026	Jose	Cliente (Centro)	$35
-6/30/2026	Jose	Alas de a Litro	$35
-6/30/2026	Jose	Calle 7	$35
-6/30/2026	Jose	Cliente (Centro)	$35
-6/30/2026	Jose	Cliente (Centro)	$40
-6/30/2026	Jose	Mi General Swings	$50
-6/30/2026	Jose	Pizzas 8	$50
-6/30/2026	Jose	Búfalo Alitas Y Chelas	$50
-6/30/2026	Jose	Alas de a Litro	$35
-6/30/2026	Jose	Hamburguesas Armando	$45
-6/29/2026	Diego	Cliente (Centro)	$35
-6/29/2026	Diego	Cliente (Centro)	$35
-6/29/2026	Diego	Cliente (Centro)	$40
-6/29/2026	Diego	Elchikencaps	$45
-6/29/2026	Diego	Alas de a Litro	$35
-6/29/2026	Diego	Alas de a Litro	$35
-6/28/2026	Jose	Cliente (Centro)	$35
-6/28/2026	Jose	418 335 3222	$40
-6/28/2026	Jose	El caldito	$30
-6/28/2026	Jose	Lupita Aguilar	$40
-6/28/2026	Jose	Brasa Burguer	$45
-6/27/2026	Jose	Cliente (Centro)	$35
-6/27/2026	Jose	El caldito	$35
-6/27/2026	Jose	Cliente (Centro)	$40
-6/27/2026	Jose	Brama asador	$40
-6/27/2026	Jose	Malele	$45
-6/27/2026	Jose	Cliente (Centro)	$40
-6/27/2026	Jose	Cliente (Centro)	$40
-6/27/2026	Jose	Mi General Swings	$60
-6/27/2026	Jose	Mi General Swings	$50
-6/26/2026	Jose	Cuna de sabores	$35
-6/26/2026	Jose	Cliente (Centro)	$40
-6/26/2026	Jose	Cliente (Centro)	$35
-6/26/2026	Jose	Cliente (Centro)	$35
-6/26/2026	Jose	Cliente (Centro)	$35
-6/26/2026	Jose	El caldito	$30
-6/26/2026	Jose	Cliente (Centro)	$55
-6/26/2026	Jose	Cliente (Centro)	$40
-6/26/2026	Jose	Cuna de sabores	$35
-6/26/2026	Jose	Cliente (Centro)	$35
-6/26/2026	Jose	El caldito	$30
-6/26/2026	Jose	Calle 7	$40
-6/26/2026	Jose	Calle 7	$40
-6/26/2026	Jose	Calle 7	$60
-6/25/2026	Jose	Cliente (Centro)	$40
-6/25/2026	Jose	Patron Alaye	$35
-6/25/2026	Jose	El caldito	$30
-6/24/2026	Diego	Cuna de sabores	$35
-6/24/2026	Jose	Cliente (Centro)	$40
-6/24/2026	Jose	Cliente (Centro)	$35
-6/24/2026	Jose	Cliente (Centro)	$35
-6/24/2026	Jose	Brama asador	$40
-6/23/2026	Diego	Cuna de sabores	$35
-6/23/2026	Jose	Cliente (Centro)	$35
-6/23/2026	Jose	Cliente (Centro)	$35
-6/23/2026	Jose	Cliente (Centro)	$40
-6/23/2026	Jose	Cliente (Centro)	$40
-6/23/2026	Jose	Calle 7	$40
-6/23/2026	Jose	Cliente (Centro)	$35
-6/22/2026	Jose	Cliente (Centro)	$35
-6/22/2026	Jose	Cliente (Centro)	$35
-6/22/2026	Jose	Cliente (Centro)	$40
-6/22/2026	Jose	Calle 7	$35
-6/22/2026	Jose	Mi General Swings	$40
-6/22/2026	Jose	Calle 7	$40
-6/21/2026	Jose	418 335 3222	$40
-6/21/2026	Jose	Cuna de sabores	$35
-6/21/2026	Jose	El caldito	$30
-6/21/2026	Jose	Daniela Medina	$45
-6/21/2026	Jose	Daniela Medina	$40
-6/21/2026	Jose	Sushi pingüinos	$45
-6/21/2026	Jose	Mi General Swings	$55
-6/21/2026	Jose	Mi General Swings	$55
-6/21/2026	Jose	Alitas D Lu	$55
-6/21/2026	Jose	Mi General Swings	$55
-6/21/2026	Jose	Hamburguesas Armando	$60
-6/20/2026	Jose	Cliente (Centro)	$35
-6/20/2026	Jose	Cliente (Centro)	$35
-6/20/2026	Jose	Patron Alaye	$35
-6/20/2026	Jose	Cliente (Centro)	$35
-6/20/2026	Jose	Mi General Swings	$40
-6/20/2026	Jose	Mi General Swings	$40
-6/20/2026	Jose	Mi General Swings	$40
-6/19/2026	Jose	El caldito	$30
-6/19/2026	Jose	Cliente (Centro)	$35
-6/19/2026	Jose	Calle 7	$40
-6/19/2026	Jose	Calle 7	$40
-6/18/2026	Jose	Cliente (Centro)	$45
-6/18/2026	Jose	Cliente (Centro)	$35
-6/18/2026	Jose	El caldito	$30
-6/18/2026	Jose	Cliente (Centro)	$35
-6/17/2026	Jose	Calle 7	$40
-6/16/2026	Jose	Calle 7	$35
-6/16/2026	Jose	Cliente (Centro)	$35
-6/16/2026	Jose	Cliente (Centro)	$30
-6/16/2026	Jose	Cliente (Centro)	$35
-6/16/2026	Jose	Calle 7	$30
-6/16/2026	Jose	Calle 7	$35
-6/16/2026	Jose	Cliente (Centro)	$35
-6/16/2026	Jose	Calle 7	$35
-6/15/2026	Jose	Cliente (Centro)	$35
-6/15/2026	Jose	Cliente (Centro)	$40
-6/15/2026	Jose	Burger Pack	$30
-6/15/2026	Jose	Calle 7	$35
-6/15/2026	Jose	Calle 7	$35
-8/23/2026	Jose	Texa pizza	$45
-8/23/2026	Jose	Sushi pingüinos	$45
-8/23/2026	Jose	El caldito	$40
-8/23/2026	Jose	El caldito	$40
-8/23/2026	Jose	El caldito	$50
-8/22/2026	Jose	Alitas D Lu	$45
-8/22/2026	Jose	Alitas D Lu	$55
-8/22/2026	Jose	El caldito	$50
-8/22/2026	Jose	Chicken Krunch	$45
-8/22/2026	Jose	Sushi pingüinos	$45
-8/22/2026	Jose	El caldito	$55
-8/22/2026	Jose	El caldito	$40
-8/22/2026	Jose	Sushi pingüinos	$85
-8/22/2026	Jose	Calle 7	$45
-8/22/2026	Jose	Cliente (Centro)	$40
-8/22/2026	Jose	Cliente (Centro)	$40
-8/22/2026	Jose	El caldito	$45
-8/22/2026	Jose	Cliente (Centro)	$50
-8/22/2026	Jose	Cliente (Centro)	$45
-8/22/2026	Jose	El caldito	$45
-8/21/2026	Jose	Cliente (Centro)	$40
-8/21/2026	Jose	Cliente (Centro)	$40
-8/21/2026	Jose	Cuna de sabores	$60
-8/21/2026	Jose	Cliente (Centro)	$40
-8/21/2026	Jose	Cliente (Centro)	$35
-8/21/2026	Jose	Cliente (Centro)	$45
-8/20/2026	Jose	Alitas D Lu	$50
-8/20/2026	Jose	Alitas D Lu	$45
-8/20/2026	Jose	Alitas D Lu	$55
-8/20/2026	Jose	El caldito	$40
-8/20/2026	Jose	El caldito	$40
-8/20/2026	Jose	El caldito	$50
-8/20/2026	Jose	El caldito	$40
-8/19/2026	Jose	Alitas D Lu	$55
-8/19/2026	Jose	Cliente (Centro)	$55
-8/19/2026	Jose	Brama asador	$50
-8/19/2026	Jose	Cliente (Centro)	$45
-8/19/2026	Jose	Chicken Krunch	$40
-8/19/2026	Jose	Cliente (Centro)	$35
-8/19/2026	Jose	Liz Palomares	$45
-8/18/2026	Jose	Texa pizza	$45
-8/18/2026	Jose	Cliente (Centro)	$35
-8/18/2026	Jose	Cliente (Centro)	$45
-8/18/2026	Jose	Alitas D Lu	$45
-8/18/2026	Jose	Transporte	$50
-8/17/2026	Jose	Calle 7	$55
-8/17/2026	Jose	Cliente (Centro)	$45
-8/17/2026	Jose	Cliente (Centro)	$35
-8/17/2026	Jose	Cliente (Centro)	$35
-8/17/2026	Jose	Cliente (Centro)	$40
-8/17/2026	Jose	Cliente (Centro)	$40
-8/17/2026	Jose	Cliente (Centro)	$45
-8/16/2026	Jose	El caldito	$45
-8/16/2026	Jose	Chicken Krunch	$45
-8/16/2026	Jose	Calle 7	$45
-8/16/2026	Jose	Eder Gallegos	$45
-8/16/2026	Jose	El caldito	$45
-8/16/2026	Jose	El caldito	$45
-8/15/2026	Jose	Cliente (Centro)	$45
-8/15/2026	Jose	Cliente (Centro)	$40
-8/15/2026	Jose	El caldito	$35
-8/15/2026	Jose	Cliente (Centro)	$60
-8/15/2026	Jose	Cliente (Centro)	$45
-8/15/2026	Jose	Cliente (Centro)	$40
-8/15/2026	Jose	Auroras	$45
-8/15/2026	Jose	Brama asador	$40
-8/15/2026	Jose	Cliente (Centro)	$45
-8/15/2026	Jose	Liliana	$40
-8/15/2026	Jose	Cliente (Centro)	$35
-8/14/2026	Jose	Auroras	$33
-8/14/2026	Jose	Chicken Krunch	$45
-8/14/2026	Jose	Auroras	$35
-8/14/2026	Jose	Chicken Krunch	$50
-8/14/2026	Jose	Cliente (Centro)	$50
-8/14/2026	Jose	Chicken Krunch	$50
-8/14/2026	Jose	Calle 7	$45
-8/14/2026	Jose	Chicken Krunch	$50
-8/14/2026	Jose	Calle 7	$50
-8/14/2026	Jose	Chicken Krunch	$45
-8/14/2026	Jose	Chicken Krunch	$40
-8/14/2026	Jose	Cliente (Centro)	$45
-8/14/2026	Jose	Cliente (Centro)	$45
-8/13/2026	Jose	Alitas D Lu	$45
-8/13/2026	Jose	Chicken Krunch	$150
-8/13/2026	Jose	Pauchis	$45
-8/13/2026	Jose	Cliente (Centro)	$40
-8/13/2026	Jose	Auroras	$45
-8/13/2026	Jose	Cliente (Centro)	$35
-8/12/2026	Jose	Chicken Krunch	$45
-8/12/2026	Jose	Cliente (Centro)	$45
-8/12/2026	Jose	Cliente (Centro)	$45
-8/12/2026	Jose	Cliente (Centro)	$35
-8/11/2026	Jose	Texa pizza	$45
-8/11/2026	Jose	Cliente (Centro)	$35
-8/11/2026	Jose	Cliente (Centro)	$45
-8/10/2026	Jose	Alitas D Lu	$70
-8/10/2026	Jose	Texa pizza	$70
-8/10/2026	Jose	Alitas D Lu	$90
-8/10/2026	Jose	Calle 7	Promoción
-8/10/2026	Jose	Calle 7	Promoción
-8/10/2026	Jose	Cliente (Centro)	$45
-8/10/2026	Jose	Cliente (Centro)	$35
-8/10/2026	Jose	Sushi pingüinos	$55
-8/10/2026	Jose	Chicken Krunch	$45
-8/9/2026	Jose	Alitas D Lu	$50
-8/9/2026	Jose	LFT Elizabeth	$65
-8/9/2026	Jose	El caldito	$45
-8/9/2026	Jose	El caldito	$40
-8/9/2026	Jose	Cliente (Centro)	$45
-8/9/2026	Jose	Brama asador	$45
-8/9/2026	Jose	El caldito	$45
-8/9/2026	Jose	Cliente (Centro)	$35
-8/9/2026	Jose	El caldito	$35
-8/9/2026	Jose	Eder Gallegos	$45
-8/9/2026	Jose	El caldito	$45
-8/9/2026	Jose	El caldito	$40
-8/8/2026	Jose	Auroras	$35
-8/8/2026	Jose	Cliente (Centro)	$45
-8/8/2026	Jose	Cliente (Centro)	$40
-8/8/2026	Jose	Chicken Krunch	$55
-8/8/2026	Jose	Chicken Krunch	$40
-8/8/2026	Jose	Brama asador	$35
-8/8/2026	Jose	Brama asador	$35
-8/8/2026	Jose	Lilis Bc	$45
-8/7/2026	Jose	LFT Elizabeth	$40
-8/7/2026	Jose	Cliente (Centro)	$30
-8/7/2026	Jose	Sebas	$60
-8/7/2026	Jose	Tacos el patron	$70
-8/7/2026	Jose	Cliente (Centro)	$45
-8/7/2026	Jose	Cliente (Centro)	$35
-8/7/2026	Jose	Chicken Krunch	$40
-8/7/2026	Jose	Cuna de Sabores	$45
-8/7/2026	Jose	Cliente (Centro)	$40
-8/7/2026	Jose	Lilis Bc	$35
-8/6/2026	Jose	LFT Elizabeth	$45
-8/6/2026	Jose	Sarah	$50
-8/6/2026	Jose	Calle 7	$45
-8/6/2026	Jose	Chicken Krunch	$45
-8/6/2026	Jose	Lilis Bc	$40
-8/5/2026	Jose	Texa pizza	$60
-8/5/2026	Jose	Cliente (Centro)	$35
-8/5/2026	Jose	Transporte	$50
-8/5/2026	Jose	Cliente (Centro)	$45
-8/5/2026	Jose	Liliana	$45
-8/5/2026	Jose	Cliente (Centro)	$35
-8/5/2026	Jose	Cliente (Centro)	$40
-8/4/2026	Jose	Cliente (Centro)	$40
-8/3/2026	Jose	Texa pizza	$70
-8/3/2026	Jose	Sushi pingüinos	$40
-8/3/2026	Jose	Cliente (Centro)	$40
-8/3/2026	Jose	Cliente (Centro)	$35
-8/3/2026	Jose	El caldito	$35
-8/3/2026	Jose	Cliente (Centro)	$40
-8/3/2026	Jose	Sushi pingüinos	$45
-8/3/2026	Jose	Cliente (Centro)	$45
-8/2/2026	Jose	Alitas D Lu	$50
-8/2/2026	Jose	764 116 8951	$60
-8/2/2026	Jose	Sarah	$60
-8/2/2026	Jose	Calle 7	$55
-8/2/2026	Jose	Calle 7	$30
-8/2/2026	Jose	Calle 7	$60
-8/2/2026	Jose	El caldito	$45
-8/2/2026	Jose	El caldito	$45
-8/2/2026	Jose	El caldito	$45
-8/2/2026	Jose	El caldito	$35
-8/2/2026	Jose	El caldito	$45
-8/2/2026	Jose	Brama asador	$40
-8/2/2026	Jose	El caldito	$45
-8/2/2026	Jose	Cliente (Centro)	$40
-8/2/2026	Jose	El caldito	$45
-8/2/2026	Jose	El caldito	$40
-8/2/2026	Jose	El caldito	$35
-8/1/2026	Jose	Sebas	$85
-8/1/2026	Jose	Cliente (Centro)	$45
-8/1/2026	Jose	Chicken Krunch	$40
-8/1/2026	Jose	Calle 7	$40
-8/1/2026	Jose	LFT Elizabeth	$45
-8/1/2026	Jose	Cliente (Centro)	$35
-8/1/2026	Jose	Calle 7	$45
-8/1/2026	Jose	Brama asador	$45
-8/1/2026	Jose	Auroras	$45
-7/31/2026	Jose	Texa pizza	$50
-7/31/2026	Jose	Pauchis	$35
-7/31/2026	Jose	Calle 7	$40
-7/31/2026	Jose	Cliente (Centro)	$35
-7/31/2026	Jose	Calle 7	$40
-7/31/2026	Jose	Transporte	$45
-7/31/2026	Jose	Lilis Bc	$35
-7/31/2026	Jose	Cliente (Centro)	$40
-7/31/2026	Jose	Transporte	$45
-7/31/2026	Jose	Transporte	$45
-7/31/2026	Jose	Lilis Bc	$35
-7/31/2026	Jose	Lilis Bc	$40
-7/31/2026	Jose	Liliana	$50
-7/30/2026	Jose	Alas de a Litro	$35
-7/30/2026	Jose	Alas de a Litro	$35
-7/30/2026	Jose	Tacos el patron	$40
-7/30/2026	Jose	Tacos el patron	$50
-7/30/2026	Jose	Sarah	$40
-7/30/2026	Jose	Transporte	$55
-7/30/2026	Jose	Transporte	$45
-7/30/2026	Jose	Sarah	$35
-7/29/2026	Jose	Lilis Bc	$45
-7/29/2026	Jose	Chicken Krunch	$45
-7/29/2026	Jose	Eat sazón del corazón	$35
-7/29/2026	Jose	Cliente (Centro)	$35
-7/28/2026	Jose	Texa pizza	$70
-7/28/2026	Jose	Texa pizza	$40
-7/28/2026	Jose	Sushi pingüinos	$45
-7/28/2026	Jose	Calle 7	$40
-7/28/2026	Jose	Cliente (Centro)	$35
-7/28/2026	Jose	Cliente (Centro)	$40
-7/28/2026	Jose	Cliente (Centro)	$50
-7/28/2026	Jose	Cliente (Centro)	$35
-7/28/2026	Jose	Cliente (Centro)	$55
-7/27/2026	Jose	Calle 7	$45
-7/27/2026	Jose	Cliente (Centro)	$45
-7/26/2026	Jose	Texa pizza	$40
-7/25/2026	Jose	Texa pizza	$40
-7/25/2026	Jose	Búfalo Alitas Y Chelas	$40
-7/25/2026	Jose	LFT Elizabeth	$50
-7/25/2026	Jose	Chicken Krunch	$40
-7/25/2026	Jose	Chicken Krunch	$60
-7/24/2026	Jose	Chicken Krunch	$40
-7/23/2026	Jose	Cliente (Centro)	$40
-7/23/2026	Jose	Cliente (Centro)	$35
-7/22/2026	Jose	Cliente (Centro)	$40
-7/22/2026	Jose	LFT Elizabeth	$50
-7/22/2026	Jose	Cliente (Centro)	$45
-7/22/2026	Jose	Cliente (Centro)	$50
-7/22/2026	Jose	Cliente (Centro)	$45
-7/22/2026	Jose	Liliana	$40
-7/21/2026	Jose	Cliente (Centro)	$40
-7/21/2026	Jose	Cuna de sabores	$55
-7/21/2026	Jose	Cliente (Centro)	$35
-7/20/2026	Jose	Calle 7	$45
-7/20/2026	Jose	Eat sazón del corazón	$30
-7/20/2026	Jose	Liliana	$40
-7/20/2026	Jose	Calle 7	$55
-7/20/2026	Jose	Cliente (Centro)	$35
-7/19/2026	Jose	El caldito	$55
-7/19/2026	Jose	Chicken Krunch	$45
-7/19/2026	Jose	LFT Elizabeth	$50
-7/19/2026	Jose	Chicken Krunch	$45
-7/19/2026	Jose	LFT Elizabeth	$55
-7/19/2026	Jose	Brama asador	$50
-7/19/2026	Jose	Eder Gallegos	$50
-7/18/2026	Jose	$70
-7/18/2026	Jose	Calle 7	$50
-7/18/2026	Jose	Sushi pingüinos	$45
-7/18/2026	Jose	Calle 7	$45
-7/18/2026	Jose	Pauchis	$40
-7/18/2026	Jose	Pauchis	$40
-7/18/2026	Jose	Cuna de sabores	$40
-7/18/2026	Jose	Búfalo Alitas Y Chelas	$50
-7/18/2026	Jose	Calle 7	$45
-7/18/2026	Jose	Capullos	$40
-7/17/2026	Jose	Búfalo Alitas Y Chelas	$45
-`;
-
-window.migrarBase=function(){
-  let btn=document.getElementById('btnMigrar');
-  if(todos.length>=500){ alert('Ya está migrado, no necesitas hacerlo de nuevo'); return; }
-  btn.innerText='MIGRANDO... NO CIERRES';
-  btn.disabled=true;
-  let lines=DATA_REAL.split('\n').filter(l=>l.trim());
-  let count=0;
-  let updates={};
-  lines.forEach((line,i)=>{
-    let parts=line.split('\t'); if(parts.length<4) return;
-    let fecha=parts[0].trim(), repa=parts[1].trim(), cliente=parts[2].trim(), valorRaw=parts[3].trim();
-    let valor=0; if(!valorRaw.includes('Promoción')){ let dig=valorRaw.replace(/[^0-9]/g,''); if(dig) valor=parseInt(dig); }
-    let mm_dd_yy=fecha.split('/'); let iso=`${mm_dd_yy[2]}-${mm_dd_yy[0].padStart(2,'0')}-${mm_dd_yy[1].padStart(2,'0')}`;
-    let ts=new Date(iso+'T12:00:00').getTime();
-    let key=db.ref('ventasKigo').push().key;
-    updates['ventasKigo/'+key]={cliente,repa,repartidor:repa,valor,feeKigo:valor,tipoServicio: cliente.toLowerCase().includes('transporte')?'Moto Transporte':'Moto Mandado', tipo: cliente.toLowerCase().includes('transporte')?'Moto Transporte':'Moto Mandado', fecha, iso, ts, pagado:true};
-    count++;
-  });
-  db.ref().update(updates).then(()=>{
-    document.getElementById('migLog').innerText=`✅ MIGRACIÓN COMPLETA: ${count} pedidos subidos a Firebase. De ahora en adelante quedan guardados de por vida. Ya puedes cerrar o actualizar, no necesitas migrar más.`;
-    btn.innerText=`✅ YA MIGRADO - ${count} PEDIDOS`;
-    btn.classList.add('done');
-    // Migrar clientes únicos a clientesKigo y kigo_clientes para ADMIN
-    let clientesUnicos={};
-    lines.forEach(l=>{ let c=l.split('\t')[2]?.trim(); if(c) clientesUnicos[c]=(clientesUnicos[c]||0)+1; });
-    let cliUpdates={};
-    Object.keys(clientesUnicos).forEach(nombre=>{
-      let k=db.ref('clientesKigo').push().key;
-      cliUpdates['clientesKigo/'+k]={nombre,tipo: clientesUnicos[nombre]>5?'Aliado':'Normal', telefono:''};
-      let k2=db.ref('kigo_clientes').push().key;
-      cliUpdates['kigo_clientes/'+k2]={nombre,direccion:nombre,telefono:'',lat:21.1561,lng:-100.9333, tipo: clientesUnicos[nombre]>5?'Aliado':'Normal'};
-    });
-    db.ref().update(cliUpdates);
-  }).catch(e=>{ alert('Error: '+e.message); btn.disabled=false; btn.innerText='REINTENTAR MIGRACIÓN'; });
+function actualizarSelectRepas(){ let sel=document.getElementById('filtroRepaDebe'); if(!sel) return; let actual=sel.value; let lista=getListaRepasUnicos().map(r=>r.nombre).sort(); sel.innerHTML='<option value="">TODOS LOS REPARTIDORES</option>'+lista.map(n=>`<option value="${n}" ${actual===n?'selected':''}>${n}</option>`).join(''); }
+window.renderRepas=function(){
+  let busca=(document.getElementById('buscaRepa').value||'').toLowerCase(); let stats={}; todos.forEach(p=>{ let n=(p.repa||p.repartidor||'').trim(); if(!n) return; let k=n.toLowerCase(); if(!stats[k]) stats[k]={nombre:n,count:0,pag:0,debe:0,ingPag:0,ingDebe:0}; let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(n, p.tipoServicio||p.tipo||''); stats[k].count++; if(p.pagado){ stats[k].pag++; stats[k].ingPag+=fee; } else { stats[k].debe++; stats[k].ingDebe+=fee; } });
+  let lista=Object.entries(repasDB).map(([k,v])=>({...v,_key:k,_s:stats[v.nombre?.toLowerCase()]||{count:0,pag:0,debe:0,ingPag:0,ingDebe:0}})); Object.values(stats).forEach(s=>{ if(!Object.values(repasDB).some(r=> r.nombre?.toLowerCase()===s.nombre.toLowerCase())) lista.push({nombre:s.nombre,tarifaMandado:5,tarifaTransporte:10,_key:null,_s:s}); });
+  if(busca) lista=lista.filter(r=> r.nombre.toLowerCase().includes(busca)); lista.sort((a,b)=> b._s.count - a._s.count);
+  if(document.getElementById('totalRepaTxt')) document.getElementById('totalRepaTxt').innerText=lista.length+' REPARTIDORES';
+  if(document.getElementById('listaRepaWrap')) document.getElementById('listaRepaWrap').innerHTML=lista.map(r=>`<div class="cli-card"><div style="flex:1"><div style="font-weight:800;font-size:9px">${r.nombre}</div><div style="font-size:7px">Mandado $${r.tarifaMandado||5} | Trans $${r.tarifaTransporte||10}</div><div style="font-size:7px"><span style="background:#0a0a0a;color:#fff;padding:1px 5px;border-radius:999px">${r._s.count} ped</span> <span style="background:#fee2e2;padding:1px 5px;border-radius:999px">$${r._s.ingDebe} debe</span></div></div></div>`).join('');
+}
+window.renderFinanzas=function(){
+  if(!todos.length) return;
+  let dias=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']; let porDia={0:0,1:0,2:0,3:0,4:0,5:0,6:0}, porDiaIng={0:0,1:0,2:0,3:0,4:0,5:0,6:0}; let porMes={}, ingPorMes={}, totalIng=0, totalCobrar=0, countMan=0, ingMan=0, countTrans=0, ingTrans=0, countCompra=0, ingCompra=0;
+  let ahora=new Date(), mesActual=ahora.getFullYear()+'-'+String(ahora.getMonth()+1).padStart(2,'0'); let mesAntDate=new Date(ahora); mesAntDate.setMonth(mesAntDate.getMonth()-1); let mesAnt=mesAntDate.getFullYear()+'-'+String(mesAntDate.getMonth()+1).padStart(2,'0');
+  todos.forEach(p=>{ let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, p.tipoServicio||p.tipo||''); let d=new Date(p._ts); let dia=d.getDay(); let mesKey=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); if(p.pagado){ totalIng+=fee; porDiaIng[dia]+=fee; ingPorMes[mesKey]=(ingPorMes[mesKey]||0)+fee; let tipo=(p.tipoServicio||p.tipo||'').toLowerCase(); if(tipo.includes('trans')){ ingTrans+=fee; countTrans++; } else if(tipo.includes('compra')){ ingCompra+=fee; countCompra++; } else { ingMan+=fee; countMan++; } } else { totalCobrar+=fee; } porDia[dia]++; porMes[mesKey]=(porMes[mesKey]||0)+1; });
+  document.getElementById('fTotal').innerText=todos.length; document.getElementById('fIng').innerText='$'+totalIng.toLocaleString(); document.getElementById('fCobrar').innerText='$'+totalCobrar.toLocaleString(); document.getElementById('fProm').innerText='$'+(todos.length? Math.round((totalIng+totalCobrar)/todos.length):0); document.getElementById('fMan').innerText='$'+ingMan.toLocaleString(); document.getElementById('fManCount').innerText=countMan+' ped'; document.getElementById('fTrans').innerText='$'+ingTrans.toLocaleString(); document.getElementById('fTransCount').innerText=countTrans+' ped'; document.getElementById('fCompra').innerText='$'+ingCompra.toLocaleString(); document.getElementById('fCompraCount').innerText=countCompra+' ped'; let maxDia=Object.keys(porDia).reduce((a,b)=> porDia[a]>porDia[b]?a:b,0); document.getElementById('fMejorDia').innerText=dias[maxDia]; document.getElementById('fMejorDiaSub').innerText=porDia[maxDia]+' ped $'+(porDiaIng[maxDia]||0); document.getElementById('fEsteMes').innerText='$'+(ingPorMes[mesActual]||0); document.getElementById('fAntMes').innerText='$'+(ingPorMes[mesAnt]||0);
+  let meses=Object.keys(porMes).sort().slice(-8); let maxM=Math.max(...meses.map(m=>porMes[m]),1); document.getElementById('finMesWrap').innerHTML=meses.map(m=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:55px;font-size:8px;font-weight:900">${m}</span><div style="flex:1;height:18px;background:#f3f4f6;border-radius:999px;overflow:hidden"><div style="height:100%;width:${(porMes[m]/maxM*100)}%;background:#10b981"></div></div><span style="font-size:8px;font-weight:900">${porMes[m]} - $${ingPorMes[m]||0}</span></div>`).join('');
+  let maxP=Math.max(...Object.values(porDia),1); document.getElementById('finSemanaWrap').innerHTML=dias.map((n,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:30px;font-size:8px;font-weight:900">${n}</span><div style="flex:1;height:18px;background:#f3f4f6;border-radius:999px;overflow:hidden"><div style="height:100%;width:${(porDia[i]/maxP*100)}%;background:#0a0a0a"></div></div><span style="font-size:8px;font-weight:900">${porDia[i]} - $${porDiaIng[i]||0}</span></div>`).join('');
+}
+window.agregarGasto=function(){ let tipo=document.getElementById('gastoTipo').value; let valor=parseInt(document.getElementById('gastoValor').value); let fecha=document.getElementById('gastoFecha').value; let nota=document.getElementById('gastoNota').value; if(!valor||!fecha) return alert('Valor y fecha requeridos'); db.ref('gastosKigo').push({tipo,valor,fecha,nota,ts:new Date(fecha+'T12:00:00').getTime(),creado:Date.now()}); document.getElementById('gastoValor').value=''; document.getElementById('gastoNota').value=''; }
+window.renderValoracion=function(){
+  let ingresosBrutos=0; todos.forEach(p=>{ if(p.pagado){ let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, p.tipoServicio||p.tipo||''); ingresosBrutos+=fee; } });
+  let gastosLista=Object.entries(gastosDB).map(([k,v])=>({...v,_key:k})).sort((a,b)=> (b.ts||0)-(a.ts||0));
+  let gastosTotal=0; gastosLista.forEach(g=> gastosTotal+=parseInt(g.valor)||0);
+  let neto=ingresosBrutos - gastosTotal;
+  let ahora=new Date(); let mesActual=ahora.getFullYear()+'-'+String(ahora.getMonth()+1).padStart(2,'0');
+  let ingMesActual=0, gasMesActual=0;
+  todos.forEach(p=>{ if(p.pagado && isoM(p._ts)===mesActual){ let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, p.tipoServicio||p.tipo||''); ingMesActual+=fee; } });
+  gastosLista.forEach(g=>{ if(g.fecha && g.fecha.startsWith(mesActual)) gasMesActual+=parseInt(g.valor)||0; });
+  if(document.getElementById('vIngBruto')){ document.getElementById('vIngBruto').innerText='$'+ingresosBrutos.toLocaleString(); document.getElementById('vGastos').innerText='$'+gastosTotal.toLocaleString(); document.getElementById('vNeta').innerText='$'+neto.toLocaleString(); document.getElementById('vNetaMes').innerText='$'+(ingMesActual-gasMesActual).toLocaleString(); }
+  if(document.getElementById('listaGastosWrap')) document.getElementById('listaGastosWrap').innerHTML=gastosLista.slice(0,30).map(g=>{ let ico= g.tipo==='gasolina'?'⛽': g.tipo==='arreglos'?'🔧': g.tipo==='policia'?'👮': g.tipo==='comida'?'🍔': g.tipo==='publicidad'?'📢':'💸'; return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f3f4f6"><div><div style="font-size:8px;font-weight:900">${ico} ${g.tipo.toUpperCase()} - ${g.fecha}</div><div style="font-size:7px;color:#6b7280">${g.nota||''}</div></div><div style="display:flex;gap:6px;align-items:center"><b style="font-size:9px;color:#ef4444">$${g.valor}</b><button class="btn btn-r" onclick="db.ref('gastosKigo/${g._key}').remove()">X</button></div></div>`; }).join('') || '<div style="font-size:8px;color:#9ca3af">Sin gastos aún</div>';
 }
 </script>
+
+<div class="cat-bar-bottom"><button class="active" id="btnCatHistorial" onclick="setCat('historial')">HISTORIAL</button><button id="btnCatFinanzas" onclick="setCat('finanzas')">FINANZAS</button><button id="btnCatValoracion" onclick="setCat('valoracion')">VALORACIÓN</button><button id="btnCatClientes" onclick="setCat('clientes')">CLIENTES</button><button id="btnCatRepas" onclick="setCat('repas')">REPARTIDORES</button></div>
 </body>
 </html>
