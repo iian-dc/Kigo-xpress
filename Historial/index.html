@@ -62,7 +62,7 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 <div class="top">
 <div style="display:flex;align-items:center;gap:8px">
 <div style="width:36px;height:36px;background:#0a0a0a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">K</div>
-<div><div style="font-weight:900;font-size:11px">Panel Admin Kigo</div><div style="font-size:7px;font-weight:800;color:#10b981">● 538 PEDIDOS EN FIREBASE</div></div>
+<div><div style="font-weight:900;font-size:11px">Panel Admin Kigo</div><div style="font-size:7px;font-weight:800;color:#10b981">● 538 PEDIDOS - EDITAR ILIMITADO OK</div></div>
 </div>
 <button class="btn-cerrar" onclick="cerrarSesion()">CERRAR SESIÓN</button>
 </div>
@@ -140,10 +140,7 @@ td{padding:10px 8px;border-bottom:1px solid #f3f4f6}
 
 <div id="modalEditar" class="modal-bg" onclick="if(event.target===this) cerrarEditar()"><div class="modal"><div class="modal-head"><b>EDITAR <span id="editNum"></span></b><button class="btn" onclick="cerrarEditar()">✕</button></div><div class="modal-body"><input id="eCliente" class="inp" placeholder="Cliente"><div class="grid2"><input id="eValor" type="number" class="inp" placeholder="Valor"><input id="eFee" type="number" class="inp" placeholder="Fee"></div><input id="eRepa" class="inp" placeholder="Repartidor"><div class="grid2"><input id="eFecha" type="date" class="inp"><select id="ePagado" class="sel"><option value="true">PAGADO</option><option value="false">NO PAGADO</option></select></div><select id="eServicio" class="sel"><option>Moto Mandado</option><option>Moto Transporte</option><option>Compra</option></select></div><div class="modal-foot"><button class="btn-cancel" onclick="cerrarEditar()">Cancelar</button><button class="btn-save" onclick="guardarEdicion()">Guardar</button></div></div></div>
 <div id="modalEliminar" class="modal-bg" onclick="if(event.target===this) cerrarEliminar()"><div class="modal" style="max-width:380px"><div class="modal-head"><b>ELIMINAR</b></div><div class="modal-body" style="text-align:center"><div id="delTxt">¿Eliminar?</div></div><div class="modal-foot" style="justify-content:center"><button class="btn-del-g" onclick="cerrarEliminar()">NO</button><button class="btn-del-r" onclick="confirmarEliminar()">SÍ</button></div></div></div>
-
-<!-- NUEVOS MODALES EDITAR CLIENTE / REPARTIDOR -->
 <div id="modalEditarCli" class="modal-bg" onclick="if(event.target===this) cerrarEditarCli()"><div class="modal"><div class="modal-head"><b>EDITAR CLIENTE</b><button class="btn" onclick="cerrarEditarCli()">✕</button></div><div class="modal-body"><input id="editCliNombre" class="inp" placeholder="Nombre del cliente"><input id="editCliTel" class="inp" placeholder="Teléfono"><input id="editCliDir" class="inp" placeholder="Dirección completa"><select id="editCliTipo" class="sel"><option>Normal</option><option>Aliado</option><option>VIP</option></select></div><div class="modal-foot"><button class="btn-cancel" onclick="cerrarEditarCli()">Cancelar</button><button class="btn-save" onclick="guardarEdicionCli()">Guardar Cambios</button></div></div></div>
-
 <div id="modalEditarRepa" class="modal-bg" onclick="if(event.target===this) cerrarEditarRepa()"><div class="modal"><div class="modal-head"><b>EDITAR REPARTIDOR</b><button class="btn" onclick="cerrarEditarRepa()">✕</button></div><div class="modal-body"><input id="editRepaNombre" class="inp" placeholder="Nombre"><div class="grid2"><input id="editRepaTel" class="inp" placeholder="Tel"><select id="editRepaTipo" class="sel"><option>Moto</option><option>Bici</option></select></div><div class="grid2"><div><div class="lab">TARIFA MOTO MANDADO</div><input id="editRepaMan" type="number" class="inp"></div><div><div class="lab">TARIFA MOTO TRANSPORTE</div><input id="editRepaTrans" type="number" class="inp"></div></div></div><div class="modal-foot"><button class="btn-cancel" onclick="cerrarEditarRepa()">Cancelar</button><button class="btn-save" onclick="guardarEdicionRepa()">Guardar Cambios</button></div></div></div>
 
 <div class="cat-bar-bottom"><button class="active" id="btnCatHistorial" onclick="setCat('historial')">HISTORIAL</button><button id="btnCatFinanzas" onclick="setCat('finanzas')">FINANZAS</button><button id="btnCatValoracion" onclick="setCat('valoracion')">VALORACIÓN</button><button id="btnCatClientes" onclick="setCat('clientes')">CLIENTES</button><button id="btnCatRepas" onclick="setCat('repas')">REPARTIDORES</button></div>
@@ -166,8 +163,7 @@ function esSemana(ts){ let hoy=new Date(); let ini=new Date(hoy); ini.setDate(ho
 function esMes(ts){ let d=new Date(ts), h=new Date(); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); }
 function getFeeRepa(nombre,tipoServ){ if(!nombre) return (tipoServ||'').toLowerCase().includes('trans')? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5); let r=Object.values(repasDB).find(x=> x.nombre?.toLowerCase()===nombre.toLowerCase()); if(!r) return (tipoServ||'').toLowerCase().includes('trans')? (tarifasGlobal.transporte||10) : (tarifasGlobal.mandado||5); if((tipoServ||'').toLowerCase().includes('trans')) return r.tarifaTransporte? parseInt(r.tarifaTransporte) : (tarifasGlobal.transporte||10); return r.tarifaMandado? parseInt(r.tarifaMandado) : (tarifasGlobal.mandado||5); }
 
-window.cerrarSesion=function(){ if(confirm('¿Cerrar sesión?')){ alert('Sesión cerrada - aquí va tu login'); } }
-
+window.cerrarSesion=function(){ if(confirm('¿Cerrar sesión?')){ alert('Sesión cerrada'); } }
 window.setCat=function(cat){ document.getElementById('view-historial').style.display=cat==='historial'?'block':'none'; document.getElementById('view-finanzas').style.display=cat==='finanzas'?'block':'none'; document.getElementById('view-valoracion').style.display=cat==='valoracion'?'block':'none'; document.getElementById('view-clientes').style.display=cat==='clientes'?'block':'none'; document.getElementById('view-repas').style.display=cat==='repas'?'block':'none'; document.querySelectorAll('.cat-bar-bottom button').forEach(b=>b.classList.remove('active')); document.getElementById('btnCatHistorial').classList.toggle('active',cat==='historial'); document.getElementById('btnCatFinanzas').classList.toggle('active',cat==='finanzas'); document.getElementById('btnCatValoracion').classList.toggle('active',cat==='valoracion'); document.getElementById('btnCatClientes').classList.toggle('active',cat==='clientes'); document.getElementById('btnCatRepas').classList.toggle('active',cat==='repas'); if(cat==='finanzas') renderFinanzas(); if(cat==='repas') renderRepas(); if(cat==='valoracion') renderValoracion(); if(cat==='clientes') renderClientes(); }
 window.setFinSub=function(s,btn){ document.querySelectorAll('#view-finanzas.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('fin-resumen').style.display=s==='resumen'?'block':'none'; document.getElementById('fin-semana').style.display=s==='semana'?'block':'none'; document.getElementById('fin-mes').style.display=s==='mes'?'block':'none'; document.getElementById('fin-graf').style.display=s==='graf'?'block':'none'; renderFinanzas(); }
 window.setValSub=function(s,btn){ document.querySelectorAll('#view-valoracion.subcats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('val-gastos').style.display=s==='gastos'?'block':'none'; document.getElementById('val-mes').style.display=s==='mes'?'block':'none'; document.getElementById('val-cal').style.display=s==='cal'?'block':'none'; if(s==='cal') renderCalendario(); if(s==='mes') renderValoracion(); }
@@ -192,7 +188,6 @@ window.aplicar=function(){ let mes=document.getElementById('filtroMes').value; l
 function render(lista){ let tb=document.getElementById('tbody'); if(!lista.length){ tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:20px">Sin pedidos</td></tr>`; document.getElementById('sTotal').innerText=0; document.getElementById('sIng').innerText='$0'; document.getElementById('sPag').innerText=0; document.getElementById('sDebe').innerText='$0'; return; } let ing=0,pag=0,debe=0; lista.forEach(p=>{ let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, p.tipoServicio||p.tipo||''); if(p.pagado){ ing+=fee; pag++; } else { debe+=fee; } }); document.getElementById('sTotal').innerText=lista.length; document.getElementById('sIng').innerText='$'+ing.toLocaleString(); document.getElementById('sPag').innerText=pag; document.getElementById('sDebe').innerText='$'+debe.toLocaleString(); tb.innerHTML=''; lista.forEach(p=>{ let tot=parseInt(p.valor||0)||0; let tipoTxt=p.tipoServicio||p.tipo||'Mandado'; let fee=p.feeKigo? parseInt(p.feeKigo) : getFeeRepa(p.repa||p.repartidor, tipoTxt); let tr=document.createElement('tr'); tr.innerHTML=`<td><span class="num">#${p.numeroOrden}</span></td><td><b>${fFecha(p._ts)}</b></td><td><b style="font-size:9px">${(p.cliente||'').slice(0,18)}</b></td><td>${tipoTxt}</td><td>${p.repa||''}</td><td><b style="color:#10b981">$${tot}</b></td><td><b style="color:#ef4444">$${fee}</b></td><td><button class="pill ${p.pagado?'pill-si':'pill-no'}" onclick="togglePago('${p._key}')">${p.pagado?'✅':'❌'}</button></td><td><button class="btn btn-b" onclick="abrirEditar('${p._key}')">EDIT</button></td><td><button class="btn btn-r" onclick="abrirEliminar('${p._key}')">DEL</button></td>`; tb.appendChild(tr); }); }
 window.togglePago=function(k){ let p=todos.find(x=>x._key===k); if(!p) return; db.ref('ventasKigo/'+k).update({pagado:!p.pagado}); }
 
-// CLIENTES CON EDITAR
 window.renderClientes=function(){
   let busca=(document.getElementById('buscaCli').value||'').toLowerCase();
   let conteo={}; todos.forEach(p=>{ let n=(p.cliente||'').trim(); if(!n) return; let k=n.toLowerCase(); if(!conteo[k]) conteo[k]={nombre:n,count:0,total:0}; conteo[k].count++; conteo[k].total+=parseInt(p.valor||p.feeKigo||0)||0; });
@@ -204,7 +199,7 @@ window.renderClientes=function(){
       let entry=clientesConKey.find(x=> x.nombre?.toLowerCase()===c.nombre.toLowerCase());
       let key=entry? entry._key : null;
       let infoTel=entry?.telefono?` • Tel: ${entry.telefono}`:''; let infoDir=entry?.direccion?` • ${entry.direccion.slice(0,20)}`:'';
-      return `<div class="cli-card"><div style="flex:1"><div style="font-weight:800;font-size:9px">${c.nombre}</div><div style="font-size:7px;color:#6b7280">${c.count} pedidos • $${c.total.toLocaleString()}${infoTel}${infoDir}</div></div><div style="display:flex;gap:4px;align-items:center"><span style="background:#0a0a0a;color:#fff;padding:4px 8px;border-radius:999px;font-size:7px">${c.count}</span>${key?`<button class="btn btn-b" onclick="abrirEditarCli('${key}')">EDITAR</button>`: `<span style="font-size:6px;color:#9ca3af">SIN REGISTRO</span>`}</div></div>`;
+      return `<div class="cli-card"><div style="flex:1"><div style="font-weight:800;font-size:9px">${c.nombre}</div><div style="font-size:7px;color:#6b7280">${c.count} pedidos • $${c.total.toLocaleString()}${infoTel}${infoDir}</div></div><div style="display:flex;gap:4px;align-items:center"><span style="background:#0a0a0a;color:#fff;padding:4px 8px;border-radius:999px;font-size:7px">${c.count}</span>${key?`<button class="btn btn-b" onclick="abrirEditarCli('${key}')">EDITAR</button>`:`<span style="font-size:6px;color:#9ca3af">SIN REGISTRO</span>`}</div></div>`;
     }).join('');
   }
   if(document.getElementById('rankingWrap')){
@@ -219,11 +214,27 @@ window.agregarCliente=function(){
   let tel=document.getElementById('newCliTel').value.trim(); let tipo=document.getElementById('newCliTipo').value; let dir=document.getElementById('newCliDir').value.trim();
   db.ref('clientesKigo').push({nombre:n, telefono:tel, tipo:tipo, direccion:dir}).then(()=>{ alert('Cliente guardado ✅'); document.getElementById('newCliNombre').value=''; document.getElementById('newCliTel').value=''; document.getElementById('newCliDir').value=''; setCliSub('lista', document.getElementById('cliBtnList')); });
 }
+// CORREGIDO - EDITAR ILIMITADO Y PROPAGACION A TODO EL HISTORIAL
 window.abrirEditarCli=function(key){ editCliKey=key; let c=clientesDB[key]; if(!c) return; document.getElementById('editCliNombre').value=c.nombre||''; document.getElementById('editCliTel').value=c.telefono||''; document.getElementById('editCliDir').value=c.direccion||''; document.getElementById('editCliTipo').value=c.tipo||'Normal'; document.getElementById('modalEditarCli').classList.add('show'); }
 window.cerrarEditarCli=function(){ document.getElementById('modalEditarCli').classList.remove('show'); editCliKey=null; }
-window.guardarEdicionCli=function(){ if(!editCliKey) return; let n=document.getElementById('editCliNombre').value.trim(); if(!n) return alert('Nombre requerido'); let tel=document.getElementById('editCliTel').value.trim(); let dir=document.getElementById('editCliDir').value.trim(); let tipo=document.getElementById('editCliTipo').value; db.ref('clientesKigo/'+editCliKey).update({nombre:n, telefono:tel, direccion:dir, tipo:tipo}).then(()=>{ alert('Cliente actualizado ✅ - Ya aparece en ADMIN'); cerrarEditarCli(); }); }
+window.guardarEdicionCli=function(){
+  if(!editCliKey) return;
+  let nuevoNombre=document.getElementById('editCliNombre').value.trim(); if(!nuevoNombre) return alert('Nombre requerido');
+  let tel=document.getElementById('editCliTel').value.trim();
+  let dir=document.getElementById('editCliDir').value.trim();
+  let tipo=document.getElementById('editCliTipo').value;
+  let viejoNombre=(clientesDB[editCliKey]?.nombre||'').trim();
+  db.ref('clientesKigo/'+editCliKey).update({nombre:nuevoNombre, telefono:tel, direccion:dir, tipo:tipo}).then(()=>{
+    if(viejoNombre && viejoNombre.toLowerCase()!==nuevoNombre.toLowerCase()){
+      if(!confirm(`¿Cambiar TODOS los pedidos de "${viejoNombre}" a "${nuevoNombre}" en historial, finanzas y ranking?`)){ cerrarEditarCli(); return; }
+      let updates={}; let count=0;
+      todos.forEach(p=>{ if((p.cliente||'').trim().toLowerCase()===viejoNombre.toLowerCase()){ updates['ventasKigo/'+p._key+'/cliente']=nuevoNombre; count++; } });
+      if(count>0){ db.ref().update(updates).then(()=>{ alert(`✅ Actualizado: ${count} pedidos de "${viejoNombre}" ahora son "${nuevoNombre}" en todo el sistema. Puedes editarlo de nuevo cuantas veces quieras.`); cerrarEditarCli(); }); }
+      else { alert('Cliente actualizado ✅'); cerrarEditarCli(); }
+    } else { alert('Cliente actualizado ✅'); cerrarEditarCli(); }
+  });
+}
 
-// REPARTIDORES CON EDITAR
 function actualizarSelectRepas(){ let sel=document.getElementById('filtroRepaDebe'); if(!sel) return; let actual=sel.value; let lista=[...new Set(todos.map(p=>(p.repa||p.repartidor||'').trim()).filter(Boolean))].sort(); sel.innerHTML='<option value="">TODOS LOS REPARTIDORES</option>'+lista.map(n=>`<option value="${n}" ${actual===n?'selected':''}>${n}</option>`).join(''); }
 window.renderRepas=function(){
   let busca=(document.getElementById('buscaRepa')?.value||'').toLowerCase();
