@@ -3,190 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>KIGO XPRESS - Admin Rappi Style</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<title>KIGO - Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-:root{
-  --rappi-orange:#FF3A2A;
-  --rappi-black:#0F0F0F;
-  --rappi-gray:#F5F5F5;
-  --rappi-white:#FFFFFF;
-  --rappi-green:#00C851;
-}
+:root{--orange:#FF3A2A;--black:#111;--gray:#F5F5F5}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui}
 body{background:#F2F2F2}
-.app{max-width:480px;margin:0 auto;background:#fff;min-height:100vh;display:flex;flex-direction:column;position:relative;box-shadow:0 0 30px rgba(0,0,0,.08)}
-/* TOP SOPORTE ESTILO RAPPI */
-.top-support{
-  background:var(--rappi-white);
-  padding:12px 16px 10px;
-  display:flex;justify-content:space-between;align-items:center;
-  border-bottom:1px solid #eee;
-  position:sticky;top:0;z-index:100;
-}
-.top-left{display:flex;align-items:center;gap:10px}
-.logo-rappi{width:38px;height:38px;border-radius:12px;background:var(--rappi-orange);display:grid;place-items:center;color:#fff;font-weight:900;font-size:18px}
-.top-info{display:flex;flex-direction:column}
-.top-info b{font-size:13px;font-weight:900;letter-spacing:-0.3px}
-.top-info span{font-size:10px;color:#888;font-weight:600}
-.top-right{display:flex;align-items:center;gap:8px}
-.weather-chip{background:var(--rappi-black);color:#fff;padding:6px 10px;border-radius:999px;font-size:10px;font-weight:800;display:flex;align-items:center;gap:4px}
-.btn-logout{width:34px;height:34px;border-radius:50%;border:1.5px solid #eee;background:#fff;display:grid;place-items:center;cursor:pointer}
+.app{max-width:460px;margin:0 auto;background:#fff;min-height:100vh;box-shadow:0 0 20px rgba(0,0,0,.06);display:flex;flex-direction:column}
 
-/* MAPA MINI RAPPI */
-#map{width:100%;height:34vh;border-bottom:1px solid #eee}
+/* TOP SOPORTE */
+.top{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;background:#fff;position:sticky;top:0;z-index:50}
+.top-left{display:flex;align-items:center;gap:8px}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:900;font-size:16px}
+.top-info b{font-size:12px;font-weight:900;display:block}
+.top-info span{font-size:9px;color:#888;font-weight:600}
+.top-right{display:flex;gap:6px;align-items:center}
+.chip{background:var(--black);color:#fff;padding:5px 9px;border-radius:999px;font-size:9px;font-weight:800;display:flex;gap:4px;align-items:center}
+.icon-mini{width:32px;height:32px;border-radius:50%;border:1px solid #eee;background:#fff;display:grid;place-items:center;cursor:pointer}
 
-/* PANEL FORMULARIO */
-.panel{padding:16px 14px 90px;background:#fff;border-radius:28px 28px 0 0;margin-top:-16px;z-index:10;position:relative}
-.section-title{font-size:11px;font-weight:900;color:#999;letter-spacing:1px;margin:16px 0 10px;display:flex;align-items:center;gap:6px}
+/* CATEGORIAS PEDIDOS / SEGUIMIENTO */
+.tabs-main{display:flex;gap:8px;padding:10px 14px;background:#fff;border-bottom:1px solid #eee}
+.tab-main{flex:1;padding:10px;border-radius:10px;border:1.5px solid #eee;background:var(--gray);font-weight:900;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;color:#777}
+.tab-main.active{background:var(--black);color:#fff;border-color:var(--black)}
 
-/* BOTONES ALIADOS / CLIENTES NUEVOS ESTILO RAPPI */
-.tipo-rappi{display:flex;gap:10px;margin-bottom:14px}
-.btn-rappi{flex:1;padding:14px;border-radius:14px;border:none;font-weight:900;font-size:11px;letter-spacing:0.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:.15s;box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.btn-rappi.aliados{background:var(--rappi-orange);color:#fff}
-.btn-rappi.aliados.active{box-shadow:0 6px 18px rgba(255,58,42,.35);transform:translateY(-1px)}
-.btn-rappi.nuevos{background:var(--rappi-black);color:#fff}
-.btn-rappi.nuevos.active{box-shadow:0 6px 18px rgba(0,0,0,.25);transform:translateY(-1px)}
+/* PANEL */
+.panel{padding:12px 12px 90px}
+.label-mini{font-size:8px;font-weight:900;color:#999;letter-spacing:.8px;margin:12px 0 6px 2px;text-transform:uppercase;display:flex;gap:4px;align-items:center}
 
-/* SUBCATEGORIAS RECOGER / COMPRAR */
-.sub-rappi{display:flex;gap:8px;margin-bottom:16px;background:var(--rappi-gray);padding:6px;border-radius:14px}
-.sub-btn-rappi{flex:1;padding:11px;border-radius:10px;border:none;background:transparent;font-weight:800;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;color:#888}
-.sub-btn-rappi.active{background:#fff;color:var(--rappi-black);box-shadow:0 2px 8px rgba(0,0,0,.12);font-weight:900}
+/* BOTONES ALIADOS / NUEVOS MAS PEQUEÑOS */
+.tipo{display:flex;gap:8px}
+.btn-tipo{flex:1;padding:9px;border-radius:10px;border:none;font-weight:900;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-tipo.aliados{background:var(--orange);color:#fff}
+.btn-tipo.nuevos{background:var(--black);color:#fff}
+.btn-tipo.active{box-shadow:0 4px 10px rgba(0,0,0,.18)}
 
-/* INPUTS RAPPI CON X */
-.form-card{background:var(--rappi-gray);border-radius:18px;padding:12px;border:1px solid #efefef}
-.input-group{position:relative;margin-bottom:10px}
-.input-label{font-size:9px;font-weight:800;color:#666;margin:0 0 5px 4px;letter-spacing:0.5px;text-transform:uppercase}
-.input-rappi{
-  width:100%;padding:14px 42px 14px 14px;border-radius:12px;border:1.5px solid #fff;
-  background:#fff;font-size:13px;font-weight:600;outline:none;transition:.15s;
-  box-shadow:0 1px 4px rgba(0,0,0,.04)
-}
-.input-rappi:focus{border-color:var(--rappi-orange);box-shadow:0 0 0 3px rgba(255,58,42,.12)}
+/* SUB RECOGER / COMPRAR PEQUEÑOS */
+.sub{display:flex;gap:6px;background:var(--gray);padding:4px;border-radius:12px}
+.sub-btn{flex:1;padding:8px;border-radius:8px;border:none;background:transparent;font-weight:800;font-size:9px;color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
+.sub-btn.active{background:#fff;color:var(--black);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+
+/* FORMULARIO COMPACTO + X CENTRADA PERFECTO */
+.card{background:var(--gray);border-radius:14px;padding:10px;border:1px solid #efefef;margin-top:10px}
+.field{margin-bottom:8px}
+.field-label{font-size:8px;font-weight:800;color:#666;margin-bottom:4px;margin-left:2px;text-transform:uppercase}
+.input-wrap{position:relative;width:100%}
+.input-rappi{width:100%;padding:10px 36px 10px 10px;border-radius:9px;border:1.5px solid #fff;background:#fff;font-size:12px;font-weight:600;outline:none}
+.input-rappi:focus{border-color:var(--orange)}
 .clear-x{
-  position:absolute;right:8px;top:50%;transform:translateY(-50%);
-  width:28px;height:28px;border-radius:50%;background:#eee;border:none;
-  display:grid;place-items:center;cursor:pointer;color:#888
+  position:absolute;
+  right:6px;
+  top:50%;
+  transform:translateY(-50%);
+  width:22px;height:22px;border-radius:50%;background:#e9e9e9;border:none;
+  display:grid;place-items:center;cursor:pointer;color:#666
 }
-.clear-x:hover{background:#ddd}
-.suggestions{position:absolute;left:0;right:0;top:100%;margin-top:6px;background:#fff;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.18);z-index:50;max-height:220px;overflow-y:auto;display:none;border:1px solid #eee}
+.clear-x i{font-size:14px!important;line-height:1}
+.suggestions{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);z-index:30;max-height:180px;overflow-y:auto;display:none;border:1px solid #eee}
 .suggestions.show{display:block}
-.sug-item{padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;gap:10px;align-items:center;cursor:pointer}
-.sug-item:hover{background:#fff5f4}
+.sug{padding:9px 10px;border-bottom:1px solid #f5f5f5;display:flex;gap:8px;cursor:pointer}
+.select-rappi{width:100%;padding:10px 10px;border-radius:9px;border:1.5px solid var(--black);background:var(--black);color:#fff;font-weight:800;font-size:11px;outline:none}
 
-/* REPARTIDOR SELECT RAPPI */
-.select-rappi{
-  width:100%;padding:14px 14px;border-radius:12px;border:1.5px solid var(--rappi-black);
-  background:var(--rappi-black);color:#fff;font-weight:800;font-size:12px;outline:none
-}
-
-/* BOTONES ACCION */
-.btn-confirm-rappi{
-  width:100%;padding:16px;border:none;border-radius:14px;background:var(--rappi-orange);
-  color:#fff;font-weight:900;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-  margin-top:14px;box-shadow:0 8px 20px rgba(255,58,42,.3)
-}
-.btn-whatsapp-rappi{
-  width:100%;padding:14px;border:1.5px solid #25D366;border-radius:14px;background:#fff;color:#25D366;
-  font-weight:800;font-size:11px;margin-top:10px;cursor:pointer;display:none;align-items:center;justify-content:center;gap:8px
-}
-.btn-whatsapp-rappi.show{display:flex}
-
-/* NAV BOTTOM RAPPI */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:10px 0 18px;z-index:200;border-radius:20px 20px 0 0}
-.bottom-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:800;color:#aaa;cursor:pointer;padding:4px 16px;border-radius:12px}
-.bottom-item.active{color:var(--rappi-orange);background:#fff1f0}
+.btn-confirm{width:100%;padding:12px;border:none;border-radius:10px;background:var(--orange);color:#fff;font-weight:900;font-size:11px;margin-top:12px;cursor:pointer;display:flex;justify-content:center;gap:6px;box-shadow:0 6px 14px rgba(255,58,42,.3)}
+.info-bar{display:flex;justify-content:space-between;background:#111;color:#fff;border-radius:9px;padding:8px 10px;font-size:10px;font-weight:800;margin-top:10px}
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- TOP SOPORTE -->
-  <div class="top-support">
+  <div class="top">
     <div class="top-left">
-      <div class="logo-rappi">K</div>
-      <div class="top-info">
-        <b id="fechaHoy">HOY</b>
-        <span id="subFecha">Dolores Hidalgo</span>
-      </div>
+      <div class="logo">K</div>
+      <div class="top-info"><b id="fecha">HOY</b><span id="subFecha">Dolores Hidalgo</span></div>
     </div>
     <div class="top-right">
-      <div class="weather-chip" id="weatherChip"><i class="material-icons" style="font-size:14px">wb_sunny</i> --°</div>
-      <button class="btn-logout" onclick="logout()"><i class="material-icons" style="font-size:18px">logout</i></button>
+      <div class="chip" id="clima"><i class="material-icons" style="font-size:12px">wb_sunny</i> --°</div>
+      <button class="icon-mini" onclick="alert('Salir')"><i class="material-icons" style="font-size:16px">logout</i></button>
     </div>
   </div>
 
-  <div id="map"></div>
-
-  <div class="panel">
-    <!-- BOTONES PRINCIPALES -->
-    <div class="section-title"><i class="material-icons" style="font-size:14px">category</i> TIPO DE CLIENTE</div>
-    <div class="tipo-rappi">
-      <button id="btnAliados" class="btn-rappi aliados active" onclick="setTipo('aliados')"><i class="material-icons" style="font-size:18px">store</i> ALIADOS</button>
-      <button id="btnNuevos" class="btn-rappi nuevos" onclick="setTipo('nuevos')"><i class="material-icons" style="font-size:18px">person_add</i> CLIENTES NUEVOS</button>
-    </div>
-
-    <!-- SUBCATEGORIAS -->
-    <div class="section-title"><i class="material-icons" style="font-size:14px">local_mall</i> SERVICIO</div>
-    <div class="sub-rappi">
-      <button id="subRecoger" class="sub-btn-rappi active" onclick="setSub('recoger')"><i class="material-icons" style="font-size:16px">inventory_2</i> RECOGER</button>
-      <button id="subComprar" class="sub-btn-rappi" onclick="setSub('comprar')"><i class="material-icons" style="font-size:16px">shopping_bag</i> COMPRAR</button>
-    </div>
-
-    <!-- FORMULARIO ALIADOS RECOGER -->
-    <div id="formAliadosRecoger" class="form-card">
-      <div class="input-group">
-        <div class="input-label">Nombre del aliado</div>
-        <input id="inputAliado" class="input-rappi" placeholder="Toca para ver aliados guardados">
-        <button class="clear-x" onclick="clearInput('inputAliado')"><i class="material-icons" style="font-size:16px">close</i></button>
-        <div id="sugAliados" class="suggestions"></div>
-      </div>
-
-      <div id="aliadoInfo" style="background:#fff;padding:8px 10px;border-radius:10px;font-size:11px;color:#666;border:1px dashed #FF3A2A;display:none;margin-bottom:10px"></div>
-
-      <div class="input-group">
-        <div class="input-label">¿Dónde entregar?</div>
-        <input id="inputEntrega" class="input-rappi" placeholder="Colonia, calle, referencia">
-        <button class="clear-x" onclick="clearInput('inputEntrega')"><i class="material-icons" style="font-size:16px">close</i></button>
-      </div>
-
-      <div class="input-group">
-        <div class="input-label">Teléfono de entrega</div>
-        <input id="inputTelefono" class="input-rappi" type="tel" placeholder="418 123 4567">
-        <button class="clear-x" onclick="clearInput('inputTelefono')"><i class="material-icons" style="font-size:16px">close</i></button>
-      </div>
-
-      <div class="input-group">
-        <div class="input-label"><i class="material-icons" style="font-size:12px;vertical-align:middle">schedule</i> Tiempo de recoger</div>
-        <input id="inputTiempo" class="input-rappi" placeholder="5 min, 10 min, enseguida...">
-        <button class="clear-x" onclick="clearInput('inputTiempo')"><i class="material-icons" style="font-size:16px">close</i></button>
-      </div>
-
-      <div class="input-group">
-        <div class="input-label"><i class="material-icons" style="font-size:12px;vertical-align:middle">two_wheeler</i> Repartidor asignado</div>
-        <select id="selectRepa" class="select-rappi"><option>Cargando repartidores...</option></select>
-      </div>
-    </div>
-
-    <!-- FORMULARIO COMPRAR (OCULTO POR DEFECTO) -->
-    <div id="formComprar" class="form-card" style="display:none">
-      <div class="input-group"><div class="input-label">Productos a comprar</div><input id="inputProductos" class="input-rappi" placeholder="Ej: 1kg manzana, leche..."><button class="clear-x" onclick="clearInput('inputProductos')"><i class="material-icons" style="font-size:16px">close</i></button></div>
-      <div class="input-group"><div class="input-label">¿Dónde comprar?</div><input id="inputDondeComprar" class="input-rappi" placeholder="Tienda, mercado..."><button class="clear-x" onclick="clearInput('inputDondeComprar')"><i class="material-icons" style="font-size:16px">close</i></button></div>
-      <div class="input-group"><div class="input-label">¿Dónde entregar?</div><input id="inputEntregaComprar" class="input-rappi" placeholder="Dirección entrega"><button class="clear-x" onclick="clearInput('inputEntregaComprar')"><i class="material-icons" style="font-size:16px">close</i></button></div>
-      <div class="input-group"><div class="input-label">Teléfono</div><input id="inputTelefonoComprar" class="input-rappi" placeholder="418..."><button class="clear-x" onclick="clearInput('inputTelefonoComprar')"><i class="material-icons" style="font-size:16px">close</i></button></div>
-      <div class="input-group"><div class="input-label">Repartidor asignado</div><select id="selectRepaComprar" class="select-rappi"><option>Cargando...</option></select></div>
-    </div>
-
-    <div style="margin-top:12px;background:#111;color:#fff;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;font-size:11px;font-weight:800"><span id="distanciaTxt">— km</span><span id="precioTxt">POR COTIZAR</span></div>
-
-    <button id="btnConfirmar" class="btn-confirm-rappi"><i class="material-icons">check_circle</i> CONFIRMAR SERVICIO</button>
-    <button id="btnWhats" class="btn-whatsapp-rappi"><i class="material-icons">chat</i> Compartir cotización</button>
+  <!-- SOLO 2 CATEGORIAS COMO PEDISTE -->
+  <div class="tabs-main">
+    <button id="tabPedidos" class="tab-main active" onclick="setMain('pedidos')"><i class="material-icons" style="font-size:14px">receipt_long</i> PEDIDOS</button>
+    <button id="tabSeguimiento" class="tab-main" onclick="setMain('seguimiento')"><i class="material-icons" style="font-size:14px">local_shipping</i> SEGUIMIENTO</button>
   </div>
 
-  <div class="bottom-nav">
-    <div class="bottom-item active"><i class="material-icons">receipt_long</i>Pedidos</div>
-    <div class="bottom-item"><i class="material-icons">local_shipping</i>Seguimiento</div>
-    <div class="bottom-item"><i class="material-icons">group</i>Clientes</div>
+  <div class="panel" id="panelPedidos">
+    <div class="label-mini"><i class="material-icons" style="font-size:12px">category</i> TIPO CLIENTE</div>
+    <div class="tipo">
+      <button id="btnAliados" class="btn-tipo aliados active" onclick="setTipo('aliados')"><i class="material-icons" style="font-size:14px">store</i> ALIADOS</button>
+      <button id="btnNuevos" class="btn-tipo nuevos" onclick="setTipo('nuevos')"><i class="material-icons" style="font-size:14px">person_add</i> CLIENTES NUEVOS</button>
+    </div>
+
+    <div class="label-mini"><i class="material-icons" style="font-size:12px">local_mall</i> SERVICIO</div>
+    <div class="sub">
+      <button id="sRecoger" class="sub-btn active" onclick="setSub('recoger')"><i class="material-icons" style="font-size:14px">inventory_2</i> RECOGER</button>
+      <button id="sComprar" class="sub-btn" onclick="setSub('comprar')"><i class="material-icons" style="font-size:14px">shopping_bag</i> COMPRAR</button>
+    </div>
+
+    <!-- FORM ALIADOS RECOGER COMPACTO -->
+    <div id="formRecoger" class="card">
+      <div class="field">
+        <div class="field-label">Nombre del aliado</div>
+        <div class="input-wrap">
+          <input id="inAliado" class="input-rappi" placeholder="Toca para ver aliados">
+          <button class="clear-x" onclick="clearI('inAliado')"><i class="material-icons">close</i></button>
+          <div id="sugAliados" class="suggestions"></div>
+        </div>
+      </div>
+      <div id="aliadoDir" style="font-size:10px;color:#666;background:#fff;padding:6px 8px;border-radius:8px;border:1px dashed #FF3A2A;display:none;margin-bottom:8px"></div>
+
+      <div class="field">
+        <div class="field-label">¿Dónde entregar?</div>
+        <div class="input-wrap">
+          <input id="inEntrega" class="input-rappi" placeholder="Colonia, calle...">
+          <button class="clear-x" onclick="clearI('inEntrega')"><i class="material-icons">close</i></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Teléfono de entrega</div>
+        <div class="input-wrap">
+          <input id="inTel" class="input-rappi" type="tel" placeholder="418...">
+          <button class="clear-x" onclick="clearI('inTel')"><i class="material-icons">close</i></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Tiempo de recoger</div>
+        <div class="input-wrap">
+          <input id="inTiempo" class="input-rappi" placeholder="5 min, enseguida...">
+          <button class="clear-x" onclick="clearI('inTiempo')"><i class="material-icons">close</i></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Repartidor asignado</div>
+        <select id="selRepa" class="select-rappi"><option>Cargando...</option></select>
+      </div>
+    </div>
+
+    <div class="info-bar"><span id="txtDist">— km</span><span id="txtPrecio">POR COTIZAR</span></div>
+    <button id="btnConfirm" class="btn-confirm"><i class="material-icons" style="font-size:16px">check_circle</i> CONFIRMAR SERVICIO</button>
+  </div>
+
+  <div class="panel" id="panelSeguimiento" style="display:none">
+    <div style="text-align:center;padding:30px;color:#999"><i class="material-icons" style="font-size:32px">local_shipping</i><div style="font-size:11px;font-weight:800;margin-top:6px">AQUÍ IRA EL SEGUIMIENTO</div></div>
   </div>
 </div>
 
@@ -197,88 +158,53 @@ const firebaseConfig = {apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authD
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
-let tipoActual='aliados', subActual='recoger';
-let clientesDB=[], repasDB=[];
-let pickupPos=null, deliveryPos=null;
-
-function setTipo(t){tipoActual=t; document.getElementById('btnAliados').classList.toggle('active', t==='aliados'); document.getElementById('btnNuevos').classList.toggle('active', t==='nuevos');}
-function setSub(s){
-  subActual=s;
-  document.getElementById('subRecoger').classList.toggle('active', s==='recoger');
-  document.getElementById('subComprar').classList.toggle('active', s==='comprar');
-  document.getElementById('formAliadosRecoger').style.display = s==='recoger'? 'block' : 'none';
-  document.getElementById('formComprar').style.display = s==='comprar'? 'block' : 'none';
+function setMain(m){
+  document.getElementById('tabPedidos').classList.toggle('active', m==='pedidos');
+  document.getElementById('tabSeguimiento').classList.toggle('active', m==='seguimiento');
+  document.getElementById('panelPedidos').style.display = m==='pedidos'?'block':'none';
+  document.getElementById('panelSeguimiento').style.display = m==='seguimiento'?'block':'none';
 }
-function clearInput(id){document.getElementById(id).value=''; if(id==='inputAliado'){document.getElementById('aliadoInfo').style.display='none'; pickupPos=null;}}
+let tipo='aliados', sub='recoger';
+function setTipo(t){tipo=t; document.getElementById('btnAliados').classList.toggle('active', t==='aliados'); document.getElementById('btnNuevos').classList.toggle('active', t==='nuevos');}
+function setSub(s){sub=s; document.getElementById('sRecoger').classList.toggle('active', s==='recoger'); document.getElementById('sComprar').classList.toggle('active', s==='comprar');}
+function clearI(id){document.getElementById(id).value=''; if(id==='inAliado') document.getElementById('aliadoDir').style.display='none';}
 
-function initFecha(){
-  const hoy=new Date();
-  const opts={weekday:'long', day:'numeric', month:'short'};
-  document.getElementById('fechaHoy').innerText= hoy.toLocaleDateString('es-MX', opts).toUpperCase();
-  document.getElementById('subFecha').innerText= `Dolores Hidalgo • ${hoy.getFullYear()}`;
-  fetch(`https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City`).then(r=>r.json()).then(d=>{document.getElementById('weatherChip').innerHTML=`<i class="material-icons" style="font-size:14px">wb_sunny</i> ${Math.round(d.current.temperature_2m)}°C`;});
-}
-
-// ALIADOS AUTOCOMPLETE RAPPI STYLE
-function renderAliados(filtro=''){
+let clientes=[];
+db.ref('kigo_clientes').on('value', s=>{clientes=Object.values(s.val()||{});});
+db.ref('kigoRepasFull').on('value', s=>{
+  const v=s.val()||{}; const keys=Object.keys(v);
+  const sel=document.getElementById('selRepa');
+  sel.innerHTML='<option value="">-- Selecciona repartidor --</option>'+keys.map(k=>`<option value="${k}">${k}</option>`).join('')+'<option value="__todos__">TODOS</option>';
+});
+function renderAliados(f=''){
   const c=document.getElementById('sugAliados'); c.innerHTML='';
-  let lista=clientesDB;
-  if(filtro) lista=lista.filter(x=>x.nombre.toLowerCase().includes(filtro.toLowerCase()));
-  if(!lista.length){c.innerHTML='<div style="padding:12px;text-align:center;font-size:11px;color:#888">Sin aliados</div>'; c.classList.add('show'); return;}
-  lista.slice(0,10).forEach(cl=>{
-    const div=document.createElement('div'); div.className='sug-item';
-    div.innerHTML=`<div style="width:32px;height:32px;border-radius:50%;background:#fff1f0;display:grid;place-items:center"><i class="material-icons" style="font-size:18px;color:#FF3A2A">store</i></div><div><div style="font-weight:800;font-size:12px">${cl.nombre}</div><div style="font-size:10px;color:#888">${(cl.direccion||'').substring(0,60)}</div></div>`;
-    div.onclick=()=>{
-      document.getElementById('inputAliado').value=cl.nombre;
-      document.getElementById('aliadoInfo').style.display='block';
-      document.getElementById('aliadoInfo').innerText='📍 '+cl.direccion;
-      pickupPos={lat:cl.lat,lng:cl.lng};
-      c.classList.remove('show');
-    };
-    c.appendChild(div);
+  let lista=clientes.filter(x=>x.nombre.toLowerCase().includes(f.toLowerCase())).slice(0,8);
+  if(!lista.length){c.innerHTML='<div style="padding:10px;text-align:center;font-size:10px;color:#888">Sin aliados</div>'; c.classList.add('show'); return;}
+  lista.forEach(cl=>{
+    const d=document.createElement('div'); d.className='sug';
+    d.innerHTML=`<i class="material-icons" style="font-size:16px;color:#FF3A2A">store</i><div><div style="font-weight:800;font-size:11px">${cl.nombre}</div><div style="font-size:9px;color:#888">${(cl.direccion||'').substring(0,50)}</div></div>`;
+    d.onclick=()=>{document.getElementById('inAliado').value=cl.nombre; document.getElementById('aliadoDir').style.display='block'; document.getElementById('aliadoDir').innerText='📍 '+cl.direccion; c.classList.remove('show');};
+    c.appendChild(d);
   });
   c.classList.add('show');
 }
-document.getElementById('inputAliado').addEventListener('focus', e=>renderAliados(e.target.value));
-document.getElementById('inputAliado').addEventListener('input', e=>renderAliados(e.target.value));
-document.addEventListener('click', e=>{ if(!e.target.closest('.input-group')) document.getElementById('sugAliados').classList.remove('show'); });
+document.getElementById('inAliado').addEventListener('focus', e=>renderAliados(e.target.value));
+document.getElementById('inAliado').addEventListener('input', e=>renderAliados(e.target.value));
+document.addEventListener('click', e=>{ if(!e.target.closest('.input-wrap')) document.getElementById('sugAliados').classList.remove('show'); });
 
-// CARGAR DB
-db.ref('kigo_clientes').on('value', s=>{ const v=s.val()||{}; clientesDB=Object.values(v); });
-db.ref('kigoRepasFull').on('value', s=>{
-  const v=s.val()||{}; repasDB=Object.keys(v);
-  const html='<option value="">-- Selecciona repartidor por nombre --</option>'+repasDB.map(r=>`<option value="${r}">${r}</option>`).join('')+'<option value="__todos__">ENVIAR A TODOS</option>';
-  document.getElementById('selectRepa').innerHTML=html;
-  document.getElementById('selectRepaComprar').innerHTML=html;
-});
+// fecha y clima
+const hoy=new Date(); document.getElementById('fecha').innerText=hoy.toLocaleDateString('es-MX',{weekday:'short', day:'numeric', month:'short'}).toUpperCase();
+fetch(`https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City`).then(r=>r.json()).then(d=>{document.getElementById('clima').innerHTML=`<i class="material-icons" style="font-size:12px">wb_sunny</i> ${Math.round(d.current.temperature_2m)}°`; document.getElementById('subFecha').innerText=`${Math.round(d.current.temperature_2m)}°C • Dolores Hidalgo`;});
 
-// MAPA
-let map;
-function initMap(){ map=new google.maps.Map(document.getElementById('map'),{center:{lat:21.1561,lng:-100.9333},zoom:14,disableDefaultUI:true,styles:[{featureType:"poi",stylers:[{visibility:"off"}]}]}); initFecha(); }
-function logout(){ alert('Sesión cerrada'); }
-
-document.getElementById('btnConfirmar').onclick=()=>{
-  const aliado=document.getElementById('inputAliado').value;
-  const entrega=document.getElementById('inputEntrega').value;
-  const tel=document.getElementById('inputTelefono').value;
-  const tiempo=document.getElementById('inputTiempo').value;
-  const repa=document.getElementById('selectRepa').value;
-  if(!aliado||!entrega){alert('Completa aliado y entrega'); return;}
-  if(!repa){alert('Selecciona repartidor'); return;}
-  const pedido={
-    tipo: `Aliado - Recoger: ${aliado}`,
-    recogerEn: aliado, entregarEn: entrega, telefono: tel, tiempo: tiempo,
-    estado:'pendiente', timestamp:Date.now(), fecha:new Date().toLocaleString(),
-    repaAsignado: repa, historial:{pendiente:Date.now()}
-  };
-  db.ref('kigo_pedidos').push(pedido).then(snap=>{
-    const live={cliente:aliado, dirRecogida:aliado, entrega:entrega, telefono:tel, repaAsignado: repa==='__todos__'? repasDB[0] : repa, subEtapa:'pendiente', adminKey:snap.key, ts:Date.now()};
-    if(repa==='__todos__'){ repasDB.forEach(r=>db.ref('kigoPedidosLive').push({...live, repaAsignado:r})); } else { db.ref('kigoPedidosLive').push(live); }
-    alert('✅ Pedido enviado a repartidor');
-    clearInput('inputAliado'); clearInput('inputEntrega'); clearInput('inputTelefono'); clearInput('inputTiempo');
+document.getElementById('btnConfirm').onclick=()=>{
+  const aliado=document.getElementById('inAliado').value, entrega=document.getElementById('inEntrega').value, tel=document.getElementById('inTel').value, tiempo=document.getElementById('inTiempo').value, repa=document.getElementById('selRepa').value;
+  if(!aliado||!entrega) return alert('Completa aliado y entrega');
+  if(!repa) return alert('Selecciona repartidor');
+  db.ref('kigo_pedidos').push({recogerEn:aliado, entregarEn:entrega, telefono:tel, tiempo, estado:'pendiente', repaAsignado:repa, fecha:new Date().toLocaleString(), timestamp:Date.now()}).then(snap=>{
+    db.ref('kigoPedidosLive').push({cliente:aliado, dirRecogida:aliado, entrega, telefono, repaAsignado:repa, subEtapa:'pendiente', adminKey:snap.key, ts:Date.now()});
+    alert('✅ Pedido enviado'); clearI('inAliado'); clearI('inEntrega'); clearI('inTel'); clearI('inTiempo');
   });
 };
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTV1sm6McEIkv-cheaVFCD_svp_a--6wg&callback=initMap"></script>
 </body>
 </html>
