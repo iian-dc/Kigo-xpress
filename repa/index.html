@@ -20,9 +20,10 @@ body{background:#f8f9fb;color:#0a0a0a;padding-bottom:80px}
 .precio-neon{color:#10b981;font-weight:800;font-size:16px;background:#dcfce7;border:1.5px solid #86efac;padding:4px 12px;border-radius:12px;display:flex;align-items:center;gap:4px}
 .estado-badge{font-size:7px;font-weight:800;padding:3px 8px;border-radius:20px;border:1px solid #fed7aa;background:#fffbeb;color:#f97316}
 .hora-neon{color:#10b981;font-weight:800;font-size:8px;background:#dcfce7;border:1.5px solid #86efac;padding:3px 8px;border-radius:12px;display:inline-block;margin-left:4px}
-.bloque-recoger{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:10px;margin:8px 10px}
-.bloque-entregar{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:10px;margin:8px 10px}
-.btn-ruta{display:inline-flex;height:34px;padding:0 12px;border-radius:10px;border:none;background:#0a0a0a;color:#fff;font-size:8px;font-weight:800;align-items:center;justify-content:center;margin-top:8px}
+.bloque-recoger{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:10px;margin:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bloque-entregar{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:10px;margin:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bloque-info{flex:1;min-width:0}
+.btn-ruta{height:40px;min-width:70px;padding:0 14px;border-radius:10px;border:none;background:#0a0a0a;color:#fff;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .btn-ruta.red{background:#ef4444}
 .btn-accion{flex:1;height:42px;border-radius:12px;border:1.5px solid var(--border);background:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
 .btn-accion.primary{background:#0a0a0a;color:#fff}
@@ -42,11 +43,12 @@ body{background:#f8f9fb;color:#0a0a0a;padding-bottom:80px}
 .sub-repa{display:flex;gap:6px;padding:10px;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:53px;z-index:10}
 .sub-repa button{flex:1;height:36px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:8px;font-weight:800}
 .sub-repa button.active{background:#0a0a0a;color:#fff}
+.icon{width:12px;height:12px;display:inline-block;vertical-align:middle}
 </style>
 </head>
 <body>
 <audio id="alarmAudio" preload="auto"><source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg"></audio>
-<div class="top-repa"><div style="display:flex;align-items:center;gap:8px"><div class="logo-repa" id="logoRepa">K</div><div><div id="nombreRepaTxt" style="font-weight:800;font-size:11px">Repartidor</div><div style="font-size:7px;font-weight:800" id="statusTxt">● EN LINEA</div></div></div><button class="btn-salir" onclick="cerrarSesion()">SALIR</button></div>
+<div class="top-repa"><div style="display:flex;align-items:center;gap:8px"><div class="logo-repa" id="logoRepa">K</div><div><div id="nombreRepaTxt" style="font-weight:800;font-size:11px">Repartidor</div><div style="font-size:7px;font-weight:800" id="statusTxt">EN LINEA</div></div></div><button class="btn-salir" onclick="cerrarSesion()">SALIR</button></div>
 
 <div id="view-pedidos-repa">
 <div class="sub-repa">
@@ -76,12 +78,12 @@ body{background:#f8f9fb;color:#0a0a0a;padding-bottom:80px}
 
 <div id="view-ajustes-repa" style="display:none;padding:10px">
 <div style="display:flex;gap:6px;margin-bottom:10px"><button id="tabDatos" class="tab-aj active" onclick="showTabAj('datos')">MIS DATOS</button><button id="tabModif" class="tab-aj" onclick="showTabAj('modif')">MODIFICACIONES</button></div>
-<div id="aj-datos"><div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div><div style="font-size:10px;font-weight:800">Sonido y Notificaciones</div><div style="font-size:7px;color:#6b7280" id="txtEstadoSonido">Desactivado</div></div><div id="switchWrap" style="width:50px;height:28px;background:#e5e7eb;border-radius:20px;position:relative;cursor:pointer;transition:.2s" onclick="toggleSonido()"><div id="switchBolita" style="width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div></div></div><button onclick="probarSonido()" style="width:100%;height:40px;background:#0a0a0a;color:#fff;border:none;border-radius:10px;margin-top:8px;font-weight:800;font-size:9px">🔊 PROBAR SONIDO 6 SEG</button><div style="margin-top:14px;border-top:1px solid #f3f4f6;padding-top:12px"><div style="font-size:9px;font-weight:800;margin-bottom:8px">💰 MIS TARIFAS (ADMIN)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:10px;text-align:center"><div style="font-size:7px;font-weight:800;color:#166534">MOTO MANDADO</div><div id="txtPrecioMandado" style="font-size:16px;font-weight:800;color:#10b981;background:#dcfce7;border:1px solid #86efac;padding:4px;border-radius:8px;margin-top:4px">$5</div></div><div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:10px;padding:10px;text-align:center"><div style="font-size:7px;font-weight:800;color:#991b1b">MOTO TRANSPORTE</div><div id="txtPrecioTrans" style="font-size:16px;font-weight:800;color:#ef4444;background:#fee2e2;border:1px solid #fecaca;padding:4px;border-radius:8px;margin-top:4px">$10</div></div></div></div></div></div>
-<div id="aj-modif" style="display:none"><div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div id="previewFoto" style="width:80px;height:80px;background:#f3f4f6;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-weight:800">K</div><input type="file" id="inputFoto" accept="image/*" style="display:none" onchange="cambiarFoto(event)"><button onclick="document.getElementById('inputFoto').click()" style="height:36px;padding:0 14px;border-radius:10px;border:1px solid var(--border);background:#fff;font-weight:800;font-size:8px">SUBIR FOTO</button><div style="margin-top:14px;text-align:left"><div style="font-size:9px;font-weight:800">Nombre visible</div><input id="ajNombreVisible" class="input-kigo"></div><button onclick="guardarModif()" style="width:100%;height:42px;background:#10b981;color:#fff;border:none;border-radius:10px;margin-top:12px;font-weight:800;font-size:9px">ACTUALIZAR</button></div><div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-top:10px"><div style="font-size:10px;font-weight:800;margin-bottom:8px">🔐 CAMBIAR USUARIO Y CONTRASEÑA LOGIN</div><div style="text-align:left;margin-bottom:8px"><div style="font-size:8px;font-weight:800;color:#6b7280">USUARIO ACTUAL: <span id="txtUserActual" style="color:#0a0a0a"></span></div></div><div style="text-align:left"><div style="font-size:8px;font-weight:800">Nuevo usuario</div><input id="nuevoUsuario" class="input-kigo" placeholder="Ej: Jose2"></div><div style="text-align:left;margin-top:8px"><div style="font-size:8px;font-weight:800">Nueva contraseña</div><input id="nuevaPass" type="password" class="input-kigo" placeholder="Nueva contraseña"></div><button onclick="guardarLoginRepa()" style="width:100%;height:42px;background:#0a0a0a;color:#fff;border:none;border-radius:10px;margin-top:12px;font-weight:800;font-size:9px">GUARDAR USUARIO Y CONTRASEÑA</button></div></div></div>
+<div id="aj-datos"><div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div><div style="font-size:10px;font-weight:800">Sonido y Notificaciones</div><div style="font-size:7px;color:#6b7280" id="txtEstadoSonido">Desactivado</div></div><div id="switchWrap" style="width:50px;height:28px;background:#e5e7eb;border-radius:20px;position:relative;cursor:pointer;transition:.2s" onclick="toggleSonido()"><div id="switchBolita" style="width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div></div></div><button onclick="probarSonido()" style="width:100%;height:40px;background:#0a0a0a;color:#fff;border:none;border-radius:10px;margin-top:8px;font-weight:800;font-size:9px">PROBAR SONIDO 6 SEG</button><div style="margin-top:14px;border-top:1px solid #f3f4f6;padding-top:12px"><div style="font-size:9px;font-weight:800;margin-bottom:8px">MIS TARIFAS (ADMIN)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:10px;text-align:center"><div style="font-size:7px;font-weight:800;color:#166534">MOTO MANDADO</div><div id="txtPrecioMandado" style="font-size:16px;font-weight:800;color:#10b981;background:#dcfce7;border:1px solid #86efac;padding:4px;border-radius:8px;margin-top:4px">$5</div></div><div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:10px;padding:10px;text-align:center"><div style="font-size:7px;font-weight:800;color:#991b1b">MOTO TRANSPORTE</div><div id="txtPrecioTrans" style="font-size:16px;font-weight:800;color:#ef4444;background:#fee2e2;border:1px solid #fecaca;padding:4px;border-radius:8px;margin-top:4px">$10</div></div></div></div></div></div>
+<div id="aj-modif" style="display:none"><div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div id="previewFoto" style="width:80px;height:80px;background:#f3f4f6;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-weight:800">K</div><input type="file" id="inputFoto" accept="image/*" style="display:none" onchange="cambiarFoto(event)"><button onclick="document.getElementById('inputFoto').click()" style="height:36px;padding:0 14px;border-radius:10px;border:1px solid var(--border);background:#fff;font-weight:800;font-size:8px">SUBIR FOTO</button><div style="margin-top:14px;text-align:left"><div style="font-size:9px;font-weight:800">Nombre visible</div><input id="ajNombreVisible" class="input-kigo"></div><button onclick="guardarModif()" style="width:100%;height:42px;background:#10b981;color:#fff;border:none;border-radius:10px;margin-top:12px;font-weight:800;font-size:9px">ACTUALIZAR</button></div><div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-top:10px"><div style="font-size:10px;font-weight:800;margin-bottom:8px">CAMBIAR USUARIO Y CONTRASEÑA LOGIN</div><div style="text-align:left;margin-bottom:8px"><div style="font-size:8px;font-weight:800;color:#6b7280">USUARIO ACTUAL: <span id="txtUserActual" style="color:#0a0a0a"></span></div></div><div style="text-align:left"><div style="font-size:8px;font-weight:800">Nuevo usuario</div><input id="nuevoUsuario" class="input-kigo" placeholder="Ej: Jose2"></div><div style="text-align:left;margin-top:8px"><div style="font-size:8px;font-weight:800">Nueva contraseña</div><input id="nuevaPass" type="password" class="input-kigo" placeholder="Nueva contraseña"></div><button onclick="guardarLoginRepa()" style="width:100%;height:42px;background:#0a0a0a;color:#fff;border:none;border-radius:10px;margin-top:12px;font-weight:800;font-size:9px">GUARDAR USUARIO Y CONTRASEÑA</button></div></div></div>
 
 <div class="bottom-repa"><button id="btnPedidos" class="active" onclick="showRepaView('pedidos')">PEDIDOS</button><button id="btnHist" onclick="showRepaView('historial')">HISTORIAL</button><button id="btnAjustes" onclick="showRepaView('ajustes')">AJUSTES</button></div>
-<div class="overlay" id="overlayNoti"><div class="modal" style="border:2px solid #ef4444"><div style="width:70px;height:70px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:32px">🔔</div><div style="font-weight:800;font-size:16px;color:#ef4444">¡NUEVO PEDIDO!</div><div id="notiTexto" style="font-size:10px;color:#6b7280;margin-top:6px"></div><button onclick="cerrarNoti()" style="width:100%;height:48px;margin-top:14px;background:#ef4444;color:#fff;border:none;border-radius:12px;font-weight:800">VER EN ESPERA</button></div></div>
-<div class="overlay" id="overlayEntregado"><div class="modal"><div style="width:50px;height:50px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">✓</div><div style="font-weight:800">Entregado - Esperando confirmación admin</div><button onclick="cerrarEntregado()" style="width:100%;height:40px;margin-top:12px;background:#0a0a0a;color:#fff;border:none;border-radius:10px;font-weight:800">OK</button></div></div>
+<div class="overlay" id="overlayNoti"><div class="modal" style="border:2px solid #ef4444"><div style="width:70px;height:70px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-weight:800;color:#ef4444">!</div><div style="font-weight:800;font-size:16px;color:#ef4444">NUEVO PEDIDO</div><div id="notiTexto" style="font-size:10px;color:#6b7280;margin-top:6px"></div><button onclick="cerrarNoti()" style="width:100%;height:48px;margin-top:14px;background:#ef4444;color:#fff;border:none;border-radius:12px;font-weight:800">VER EN ESPERA</button></div></div>
+<div class="overlay" id="overlayEntregado"><div class="modal"><div style="width:50px;height:50px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">OK</div><div style="font-weight:800">Entregado - Esperando confirmacion admin</div><button onclick="cerrarEntregado()" style="width:100%;height:40px;margin-top:12px;background:#0a0a0a;color:#fff;border:none;border-radius:10px;font-weight:800">OK</button></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -102,21 +104,14 @@ let sonidoActivo = audioUnlocked;
 let tarifasRepaActual = {mandado:5, transporte:10};
 let subRepaActual = 'activo';
 onValue(ref(db,'kigoTarifasRepas/'+currentRepa), s=>{ if(s.exists()) tarifasRepaActual = s.val(); let elM = document.getElementById('txtPrecioMandado'); let elT = document.getElementById('txtPrecioTrans'); if(elM) elM.innerText = '$'+(tarifasRepaActual.mandado||5); if(elT) elT.innerText = '$'+(tarifasRepaActual.transporte||10); });
-function todayISO(){ let d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('./firebase-messaging-sw.js').catch(()=>{}); }
-function actualizarSwitchUI(){ let wrap=document.getElementById('switchWrap'); let bolita=document.getElementById('switchBolita'); let txt=document.getElementById('txtEstadoSonido'); let status=document.getElementById('statusTxt'); if(sonidoActivo){ wrap.style.background='#10b981'; bolita.style.left='25px'; txt.innerText='Activado'; txt.style.color='#10b981'; status.innerText='● SONIDO ACTIVO'; } else { wrap.style.background='#e5e7eb'; bolita.style.left='3px'; txt.innerText='Desactivado'; txt.style.color='#6b7280'; status.innerText='● EN LINEA'; } }
+function actualizarSwitchUI(){ let wrap=document.getElementById('switchWrap'); let bolita=document.getElementById('switchBolita'); let txt=document.getElementById('txtEstadoSonido'); let status=document.getElementById('statusTxt'); if(sonidoActivo){ wrap.style.background='#10b981'; bolita.style.left='25px'; txt.innerText='Activado'; txt.style.color='#10b981'; status.innerText='SONIDO ACTIVO'; } else { wrap.style.background='#e5e7eb'; bolita.style.left='3px'; txt.innerText='Desactivado'; txt.style.color='#6b7280'; status.innerText='EN LINEA'; } }
 setTimeout(actualizarSwitchUI,100);
 window.toggleSonido = async function(){ if(!sonidoActivo){ try{ let audio=document.getElementById('alarmAudio'); audio.volume=1; audio.muted=false; await audio.play(); audio.pause(); audio.currentTime=0; audioUnlocked=true; sonidoActivo=true; localStorage.setItem('kigoSonidoActivo','1'); if('Notification' in window){ await Notification.requestPermission(); } actualizarSwitchUI(); }catch(e){} } else { sonidoActivo=false; audioUnlocked=false; localStorage.setItem('kigoSonidoActivo','0'); let a=document.getElementById('alarmAudio'); a.pause(); a.currentTime=0; actualizarSwitchUI(); } }
 window.probarSonido=function(){ if(!sonidoActivo){ alert('Activa primero'); return; } sonidoNuevoPedido(); }
 function sonidoNuevoPedido(){ if(!sonidoActivo) return; try{ let audio=document.getElementById('alarmAudio'); if(audioUnlocked){ audio.currentTime=0; audio.volume=1; audio.play().catch(()=>{}); setTimeout(()=>{ audio.pause(); audio.currentTime=0; },6000); } }catch(e){} }
 function formatHoraLlegada(ts){ if(!ts) return ''; let d=new Date(ts); if(isNaN(d)) return ''; return d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}); }
-function formatHoraCompleta(p){
-  let ts = p.ts || p.creado || Date.now();
-  let horaPedido = formatHoraLlegada(ts);
-  let recogida = p.horaRecoger || p.horaRecogerTexto || p.tiempoRecogida || '';
-  if(recogida) return `Pedido: ${horaPedido} | Recoger: ${recogida}`;
-  return `Pedido: ${horaPedido}`;
-}
+function formatHoraCompleta(p){ let ts = p.ts || p.creado || Date.now(); let horaPedido = formatHoraLlegada(ts); let recogida = p.horaRecoger || p.horaRecogerTexto || p.tiempoRecogida || ''; if(recogida) return `Pedido: ${horaPedido} | Recoger: ${recogida}`; return `Pedido: ${horaPedido}`; }
 onValue(ref(db,'kigoPedidosLive'), s=>{
  let data=s.val()||{}; let listaRepaKeys=Object.entries(data).filter(([k,v])=>v.repaAsignado===currentRepa).map(([k])=>k);
  if(firstLoad){ prevKeys=new Set(listaRepaKeys); firstLoad=false; pedidosLive=data; renderPedidosRepa(); return; }
@@ -132,8 +127,9 @@ window.showTabAj=function(t){ document.getElementById('aj-datos').style.display=
 
 window.renderPedidosRepa=function(){
  let lista=Object.entries(pedidosLive).map(([k,v])=>({...v,_key:k})).filter(p=>p.repaAsignado===currentRepa).sort((a,b)=>b.ts-a.ts);
+ // FIX: activos excluyen finalizado, espera SOLO etapa en_espera (ya no!activo)
  let activos=lista.filter(p=>p.activo===true && p.etapa!=='en_espera' && p.etapa!=='finalizado');
- let espera=lista.filter(p=>p.etapa==='en_espera' ||!p.activo);
+ let espera=lista.filter(p=>p.etapa==='en_espera');
  activoKey = activos.length? activos[0]._key : null;
  document.getElementById('countActivo').innerText=activos.length;
  document.getElementById('countEspera').innerText=espera.length;
@@ -144,7 +140,7 @@ window.renderPedidosRepa=function(){
   contA.innerHTML=activos.map(p=>{
   let sub=p.subEtapa||'pendiente';
   let estadoTxt = sub==='pendiente'?'ACEPTADO':sub==='voy_en_camino'?'VOY EN CAMINO A RECOGER':sub==='recogido'?'RECOGIDO':sub==='voy_entregar'?'VOY A ENTREGAR':sub==='entregado'?'ENTREGADO - ESPERA ADMIN':p.etapa.toUpperCase();
-  let btnTxt = sub==='pendiente'?'VOY EN CAMINO A RECOGER':sub==='voy_en_camino'?'RECOGIDO':sub==='recogido'?'VOY A ENTREGAR':sub==='voy_entregar'?'ENTREGADO': 'ENTREGADO ✓';
+  let btnTxt = sub==='pendiente'?'VOY EN CAMINO A RECOGER':sub==='voy_en_camino'?'RECOGIDO':sub==='recogido'?'VOY A ENTREGAR':sub==='voy_entregar'?'ENTREGADO': 'ENTREGADO';
   let deshabilitado = sub==='entregado'? 'disabled' : '';
   let nombreCliente = p.cliente || p.nombreCliente || 'Cliente';
   let dirRecogerSolo = p.dirRecogida || p.direccionRecogida || '';
@@ -153,12 +149,11 @@ window.renderPedidosRepa=function(){
   let dirEntrega = p.entrega || '';
   let telEntrega = p.telefonoEntrega || p.telefonoEntregaFinal || p.telEntrega || '';
   let horaInfo = formatHoraCompleta(p);
-  // Boton llamar / mensaje
   let btnLlamarHtml = '';
   if(telEntrega){
-    btnLlamarHtml = `<button class="btn-llamar" onclick="llamarCliente('${telEntrega}')">📞 LLAMAR CLIENTE DE ENTREGA - ${telEntrega}</button>`;
+    btnLlamarHtml = `<button class="btn-llamar" onclick="llamarCliente('${telEntrega}')"><span style="width:16px;height:16px;background:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#ef4444;font-weight:900">C</span> LLAMAR CLIENTE DE ENTREGA - ${telEntrega}</button>`;
   } else {
-    btnLlamarHtml = `<button class="btn-msg" onclick="abrirMensajes('${p._key}')">💬 MENSAJES (BASE)</button>`;
+    btnLlamarHtml = `<button class="btn-msg" onclick="abrirMensajes('${p._key}')">MENSAJES BASE</button>`;
   }
   return `<div class="card-activo">
   <div class="head-activo">
@@ -169,18 +164,22 @@ window.renderPedidosRepa=function(){
     <div class="precio-neon">$${p.costoSugerido||0} <span style="font-size:8px">MXN</span></div>
   </div>
   <div class="bloque-recoger">
-    <div style="font-size:7px;font-weight:800;color:#166534">RECOGER EN</div>
-    <div style="font-size:10px;font-weight:800;margin-top:3px">👤 ${nombreCliente}</div>
-    <div style="font-size:9px;font-weight:600;color:#1f2937;margin-top:4px;background:#fff;padding:6px;border-radius:8px;border:1px solid #bbf7d0">📍 ${dirRecogerSolo}</div>
-    ${telRecoger? `<div style="font-size:8px;font-weight:700;margin-top:6px">📞 ${telRecoger}</div>`:''}
-    <button class="btn-ruta" onclick="abrirRuta(${p.lat1},${p.lng1})">📍 RUTA RECOGER ↗</button>
+    <div class="bloque-info">
+      <div style="font-size:7px;font-weight:800;color:#166534">RECOGER EN</div>
+      <div style="font-size:10px;font-weight:800;margin-top:3px">CLIENTE: ${nombreCliente}</div>
+      <div style="font-size:9px;font-weight:600;color:#1f2937;margin-top:4px;background:#fff;padding:6px;border-radius:8px;border:1px solid #bbf7d0;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">DIR: ${dirRecogerSolo}</div>
+      ${telRecoger? `<div style="font-size:8px;font-weight:700;margin-top:6px">TEL: ${telRecoger}</div>`:''}
+    </div>
+    <button class="btn-ruta" onclick="abrirRuta(${p.lat1},${p.lng1})">RUTA</button>
   </div>
   <div class="bloque-entregar">
-    <div style="font-size:7px;font-weight:800;color:#991b1b">ENTREGAR EN</div>
-    <div style="font-size:10px;font-weight:800;margin-top:3px">${nombreEntrega}</div>
-    <div style="font-size:9px;font-weight:600;color:#1f2937;margin-top:4px;background:#fff;padding:6px;border-radius:8px;border:1px solid #fecaca">📍 ${dirEntrega}</div>
-    ${telEntrega? `<div style="font-size:8px;font-weight:700;margin-top:6px">📞 ${telEntrega}</div>`:''}
-    <button class="btn-ruta red" onclick="abrirRuta(${p.lat2},${p.lng2})">📍 RUTA ENTREGA ↗</button>
+    <div class="bloque-info">
+      <div style="font-size:7px;font-weight:800;color:#991b1b">ENTREGAR EN</div>
+      <div style="font-size:10px;font-weight:800;margin-top:3px">CLIENTE: ${nombreEntrega}</div>
+      <div style="font-size:9px;font-weight:600;color:#1f2937;margin-top:4px;background:#fff;padding:6px;border-radius:8px;border:1px solid #fecaca;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">DIR: ${dirEntrega}</div>
+      ${telEntrega? `<div style="font-size:8px;font-weight:700;margin-top:6px">TEL: ${telEntrega}</div>`:''}
+    </div>
+    <button class="btn-ruta red" onclick="abrirRuta(${p.lat2},${p.lng2})">RUTA</button>
   </div>
   <div style="padding:10px">
     <div style="display:flex;gap:6px"><button class="btn-accion wait" onclick="ponerEspera('${p._key}')">ESPERA</button><button class="btn-accion primary" onclick="accionPrincipal('${p._key}')" ${deshabilitado}>${btnTxt}</button></div>
@@ -197,11 +196,11 @@ window.renderPedidosRepa=function(){
    let ts = p.ts || p.creado || Date.now();
    let horaLlegada = formatHoraLlegada(ts);
    let horaTxt = p.hora || horaLlegada || '';
-   return `<div style="background:#fff;border:1.5px solid #fde68a;border-radius:12px;padding:10px;margin:8px;display:flex;justify-content:space-between;align-items:center"><div style="flex:1"><div style="font-size:8px;font-weight:800;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span style="background:#0a0a0a;color:#fff;padding:3px 8px;border-radius:20px">#${p._key.slice(-4).toUpperCase()}</span> <span style="background:#dcfce7;border:1px solid #86efac;padding:3px 8px;border-radius:10px;color:#166534">$${p.costoSugerido||0} MXN</span> <span style="background:#f3f4f6;border:1px solid #e5e7eb;padding:3px 8px;border-radius:10px">🕒 ${horaTxt}</span></div><div style="font-size:9px;font-weight:800;margin-top:6px">${p.cliente}</div><div style="font-size:8px;color:#374151;margin-top:2px">📍 ${dir.slice(0,50)}</div><div style="font-size:7px;color:#6b7280">-> ${ (p.entrega||'').slice(0,40)}</div></div><button onclick="activarDesdeEspera('${p._key}')" style="height:36px;padding:0 14px;border-radius:10px;background:#10b981;color:#fff;border:none;font-size:8px;font-weight:800;margin-left:8px">ACEPTAR</button></div>`;
+   return `<div style="background:#fff;border:1.5px solid #fde68a;border-radius:12px;padding:10px;margin:8px;display:flex;justify-content:space-between;align-items:center"><div style="flex:1"><div style="font-size:8px;font-weight:800;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span style="background:#0a0a0a;color:#fff;padding:3px 8px;border-radius:20px">#${p._key.slice(-4).toUpperCase()}</span> <span style="background:#dcfce7;border:1px solid #86efac;padding:3px 8px;border-radius:10px;color:#166534">$${p.costoSugerido||0} MXN</span> <span style="background:#f3f4f6;border:1px solid #e5e7eb;padding:3px 8px;border-radius:10px">HORA: ${horaTxt}</span></div><div style="font-size:9px;font-weight:800;margin-top:6px">${p.cliente}</div><div style="font-size:8px;color:#374151;margin-top:2px">DIR: ${dir.slice(0,50)}</div><div style="font-size:7px;color:#6b7280">ENTREGA: ${ (p.entrega||'').slice(0,40)}</div></div><button onclick="activarDesdeEspera('${p._key}')" style="height:36px;padding:0 14px;border-radius:10px;background:#10b981;color:#fff;border:none;font-size:8px;font-weight:800;margin-left:8px">ACEPTAR</button></div>`;
  }).join('');
 }
 window.llamarCliente=function(tel){ if(!tel) return; window.location.href='tel:'+tel.replace(/[^0-9+]/g,''); }
-window.abrirMensajes=function(k){ alert('Base de mensajes para pedido '+k+' - aquí luego conectamos base'); }
+window.abrirMensajes=function(k){ alert('Base de mensajes para pedido '+k); }
 window.abrirRuta=function(lat,lng){ if(lat&&lng) window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,'_blank'); }
 window.ponerEspera=async function(k){ await update(ref(db,'kigoPedidosLive/'+k),{etapa:'en_espera', activo:false, subEtapa:'pendiente'}); }
 window.activarDesdeEspera=async function(k){
@@ -216,7 +215,7 @@ window.accionPrincipal=async function(k){
  else if(p.subEtapa==='voy_en_camino'){ await update(ref(db,'kigoPedidosLive/'+k),{subEtapa:'recogido'}); }
  else if(p.subEtapa==='recogido'){ await update(ref(db,'kigoPedidosLive/'+k),{subEtapa:'voy_entregar'}); }
  else if(p.subEtapa==='voy_entregar'){
-   await update(ref(db,'kigoPedidosLive/'+k),{etapa:'finalizado', subEtapa:'entregado'});
+   await update(ref(db,'kigoPedidosLive/'+k),{etapa:'finalizado', subEtapa:'entregado', activo:false});
    document.getElementById('overlayEntregado').classList.add('show');
  }
 }
@@ -237,7 +236,7 @@ window.renderHistRepa=function(){
  if(!lista.length){ cont.innerHTML='<div style="text-align:center;padding:20px;color:#9ca3af;font-size:9px">Sin resultados</div>'; return; }
  cont.innerHTML=lista.map(v=>`<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #f3f4f6"><div><div style="font-size:7px;color:#6b7280;font-weight:700">${v.iso} • ${v.tipo||'Moto'}</div><div style="font-size:9px;font-weight:800;margin-top:2px">${v.cliente}</div><div style="font-size:6px;margin-top:2px;padding:2px 6px;border-radius:10px;display:inline-block;background:${v.pagado?'#dcfce7;color:#166534':'#fee2e2;color:#991b1b'}">${v.pagado?'PAGADO':'DEBE $'+(v.feeKigo||5)}</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:800;color:#10b981">$${Number(v.valor||0).toLocaleString('es-MX')}</div><div style="font-size:7px;color:#6b7280">Neto $${(Number(v.valor||0)-Number(v.feeKigo||0)).toLocaleString('es-MX')}</div></div></div>`).join('');
   }
-  window.guardarModif=function(){ let nom=document.getElementById('ajNombreVisible').value.trim(); if(nom){ currentNombreVisible=nom; localStorage.setItem('kigoNombreVisible_'+currentRepa, nom); document.getElementById('nombreRepaTxt').innerText=nom; } alert('Actualizado ✅'); }
+  window.guardarModif=function(){ let nom=document.getElementById('ajNombreVisible').value.trim(); if(nom){ currentNombreVisible=nom; localStorage.setItem('kigoNombreVisible_'+currentRepa, nom); document.getElementById('nombreRepaTxt').innerText=nom; } alert('Actualizado'); }
 window.guardarLoginRepa=async function(){
  let nuevoUser = document.getElementById('nuevoUsuario').value.trim();
  let nuevaPass = document.getElementById('nuevaPass').value.trim();
@@ -275,7 +274,7 @@ window.guardarLoginRepa=async function(){
    }
    localStorage.setItem('kigoUser', userFinal);
    if(nuevaPass) localStorage.setItem('kigoPass', nuevaPass);
-   alert('✅ Guardado y enlazado con admin.\nUsuario: '+userFinal+'\nPass: '+(nuevaPass||'(misma)'));
+   alert('Guardado Usuario: '+userFinal);
    currentRepa = userFinal;
    document.getElementById('txtUserActual').innerText=currentRepa;
    document.getElementById('nombreRepaTxt').innerText=currentRepa;
