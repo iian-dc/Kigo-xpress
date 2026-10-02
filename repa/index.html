@@ -88,6 +88,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getDatabase, ref, onValue, update, push, set, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 const app = initializeApp(firebaseConfig); const db = getDatabase(app);
+// JOSE POR DEFECTO SI NO HAY USUARIO
 let currentRepa = new URLSearchParams(window.location.search).get('repa') || localStorage.getItem('kigoUser') || 'Jose';
 let currentFoto = localStorage.getItem('kigoFoto_'+currentRepa) || '';
 let currentNombreVisible = localStorage.getItem('kigoNombreVisible_'+currentRepa) || currentRepa;
@@ -110,7 +111,6 @@ function sonidoNuevoPedido(){ if(!sonidoActivo) return; try{ let audio=document.
 function formatHoraLlegada(ts){ if(!ts) return ''; let d=new Date(ts); if(isNaN(d)) return ''; return d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}); }
 function formatHoraCompleta(p){ let ts = p.ts || p.creado || Date.now(); let horaPedido = formatHoraLlegada(ts); let recogida = p.horaRecoger || p.horaRecogerTexto || p.tiempoRecogida || p.tiempo || ''; if(recogida) return `Pedido: ${horaPedido} | Recoger: ${recogida}`; return `Pedido: ${horaPedido}`; }
 
-// ENLACE CON ADMIN: escuchar pedidos
 onValue(ref(db,'kigoPedidosLive'), s=>{
  let data=s.val()||{}; let listaRepaKeys=Object.entries(data).filter(([k,v])=>v.repaAsignado===currentRepa).map(([k])=>k);
  if(firstLoad){ prevKeys=new Set(listaRepaKeys); firstLoad=false; pedidosLive=data; renderPedidosRepa(); return; }
@@ -152,7 +152,7 @@ window.renderPedidosRepa=function(){
   return `<div class="card-activo">
   <div class="head-activo">
     <div style="flex:1">
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="num-neon">#${p._key.slice(-4).toUpperCase()} - PEDIDO ${p.adminKey? p.adminKey.slice(-4).toUpperCase(): p._key.slice(-4).toUpperCase()}</span><span style="font-size:7px;font-weight:800;color:#6b7280">${horaInfo}</span></div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="num-neon">#${p._key.slice(-4).toUpperCase()}</span><span style="font-size:7px;font-weight:800;color:#6b7280">${horaInfo}</span></div>
       <div style="margin-top:4px"><span class="estado-badge">${estadoTxt}</span></div>
     </div>
     <div class="precio-neon">$${p.costoSugerido||0} <span style="font-size:8px">MXN</span></div>
@@ -219,7 +219,7 @@ window.accionPrincipal=async function(k){
 window.cerrarEntregado=function(){ document.getElementById('overlayEntregado').classList.remove('show'); }
 window.limpiarFiltros=function(){ document.getElementById('filtroTipo').value=''; document.getElementById('filtroFecha').value=''; document.getElementById('filtroMes').value=''; renderHistRepa(); }
 window.renderHistRepa=function(){
- let lista=Object.entries(ventasData).map(([k,v])=>({...v,_key:k})).filter(v=>(v.repa===currentRepa || v.repartidor===currentRepa)).sort((a,b)=>b.ts-a.ts || b.timestamp-a.timestamp);
+ let lista=Object.entries(ventasData).map(([k,v])=>({...v,_key:k})).filter(v=>(v.repa===currentRepa || v.repartidor===currentRepa)).sort((a,b)=> (b.ts||0)-(a.ts||0) || (b.timestamp||0)-(a.timestamp||0));
  let tipo=document.getElementById('filtroTipo')?.value||''; let fecha=document.getElementById('filtroFecha')?.value||''; let mes=document.getElementById('filtroMes')?.value||'';
  if(tipo){ lista=lista.filter(v=>(v.tipo||v.tipoServicio||'').toLowerCase().includes(tipo.toLowerCase())); }
  if(fecha){ lista=lista.filter(v=>v.iso===fecha || v.fecha===fecha); }
