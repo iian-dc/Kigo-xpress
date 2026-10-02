@@ -7,84 +7,79 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE&libraries=places"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#fff;color:#0a0a0a;display:flex;flex-direction:column;height:100vh;overflow:hidden}
-.top{height:34px;background:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:1px solid #f1f1f1}
-.top b{font-size:8px;font-weight:900}
+.top{height:36px;background:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:1px solid #f1f1f1}
+.top b{font-size:8.5px;font-weight:900}
 .top span{font-size:7px;font-weight:700;color:#888}
-.badge{font-size:7px;font-weight:900;background:#0a0a0a;color:#fff;padding:4px 8px;border-radius:999px;display:flex;gap:4px;align-items:center}
+.weather{font-size:10px;font-weight:900;display:flex;align-items:center;gap:4px}
+.weather i{font-size:14px}
 .map-box{height:38vh;min-height:210px;background:#e9e9e9;position:relative;overflow:hidden}
 .map-box iframe{width:100%;height:100%;border:0}
-.route-line{position:absolute;top:50%;left:18%;right:18%;height:3px;background:repeating-linear-gradient(90deg,#ff2d2d 0 8px,transparent 8px 12px);z-index:2;display:none}
-.dot-g{position:absolute;top:49%;left:16%;width:14px;height:14px;background:#10b981;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:3;display:none}
-.dot-r{position:absolute;top:49%;right:16%;width:14px;height:14px;background:#ff2d2d;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:3;display:none}
+.dot-g{position:absolute;top:49%;left:16%;width:12px;height:12px;background:#10b981;border:2px solid #fff;border-radius:50%;z-index:3;display:none}
+.dot-r{position:absolute;top:49%;right:16%;width:12px;height:12px;background:#ff2d2d;border:2px solid #fff;border-radius:50%;z-index:3;display:none}
 .bar-black{background:#0a0a0a;display:flex;padding:6px 0}
 .bar-black div{flex:1;text-align:center;border-right:1px solid #1e1e1e}
 .bar-black div:last-child{border:none}
-.bar-black label{font-size:5px;font-weight:800;color:#9ca3af;display:block;letter-spacing:.5px}
+.bar-black label{font-size:5px;font-weight:800;color:#9ca3af;display:block}
 .bar-black b{font-size:9px;font-weight:900;color:#fff;display:block;margin-top:1px}
-.bar-black small{font-size:5.5px;color:#666}
 .scroll{flex:1;overflow:auto;padding:10px 12px 12px;background:#fbfbfb}
 .row-top{display:flex;gap:8px;margin-bottom:10px}
-.btn-aliado{flex:1;height:34px;background:#ff2d2d;color:#fff;border:none;border-radius:10px;font-size:7.5px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:5px}
-.btn-nuevo{flex:1;height:34px;background:#fff;border:1.5px solid #e8e8e8;border-radius:10px;font-size:7.5px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:5px;color:#0a0a0a}
+.btn-aliado{flex:1;height:36px;background:#ff2d2d;color:#fff;border:none;border-radius:12px;font-size:7.5px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-nuevo{flex:1;height:36px;background:#fff;border:1.5px solid #e8e8e8;border-radius:12px;font-size:7.5px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:6px}
 .tabs{display:flex;background:#f1f1f1;border-radius:999px;padding:3px;margin-bottom:10px}
-.tab{flex:1;height:26px;border-radius:999px;border:none;font-size:7px;font-weight:900;background:transparent}
+.tab{flex:1;height:28px;border-radius:999px;border:none;font-size:7px;font-weight:900;background:transparent;display:flex;align-items:center;justify-content:center;gap:4px}
 .tab.active{background:#0a0a0a;color:#fff}
 .input-wrap{position:relative;margin-bottom:8px}
-.input-wrap input{width:100%;height:36px;border:1.5px solid #ececec;border-radius:10px;padding:0 32px 0 10px;font-size:8.5px;font-weight:600;background:#fff;outline:none}
-.input-wrap input:focus{border-color:#0a0a0a}
-.x{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:#f1f1f1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#888;cursor:pointer}
+.input-wrap input{width:100%;height:38px;border:1.5px solid #ececec;border-radius:12px;padding:0 32px 0 10px;font-size:8.5px;font-weight:600;background:#fff;outline:none}
+.x{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:#f1f1f1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
 .card-info{background:#fff;border:1.5px solid #f0f0f0;border-radius:12px;padding:8px 10px;margin-bottom:10px;display:none}
 .card-info b{font-size:8px;display:block}
 .card-info span{font-size:6.5px;color:#666;font-weight:600}
-.list-ali{background:#fff;border:1.5px solid #ececec;border-radius:12px;max-height:120px;overflow:auto;display:none;position:absolute;top:38px;left:0;right:0;z-index:20;box-shadow:0 8px 20px rgba(0,0,0,.08)}
-.list-ali div{padding:8px 10px;border-bottom:1px solid #f5f5f5;font-size:8px;font-weight:700;display:flex;justify-content:space-between}
-.list-ali div:active{background:#f5f5f5}
+.list-ali{background:#fff;border:1.5px solid #ececec;border-radius:12px;max-height:130px;overflow:auto;display:none;position:absolute;top:40px;left:0;right:0;z-index:20;box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.list-ali div{padding:8px 10px;border-bottom:1px solid #f5f5f5;font-size:8px;font-weight:700}
 .sel-repa{height:36px;border:1.5px solid #ececec;border-radius:10px;padding:0 10px;font-size:8px;font-weight:800;width:100%;background:#fff;margin-bottom:8px}
-.btn-cot{width:100%;height:42px;background:#ff2d2d;color:#fff;border:none;border-radius:14px;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 6px 16px rgba(255,45,45,.25)}
+.btn-cot{width:100%;height:44px;background:#ff2d2d;color:#fff;border:none;border-radius:14px;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 16px rgba(255,45,45,.25)}
+.pac-container{font-family:'Inter'!important;font-size:8px!important;border-radius:12px!important;box-shadow:0 8px 20px rgba(0,0,0,.12)!important}
 </style>
 </head>
 <body>
-<div class="top"><div><b id="fecha">--</b> <span id="hora">--:--</span></div><div class="badge"><span>●</span><span id="temp">24°</span><span>DOLORES</span></div></div>
+<div class="top"><div><b id="fecha">--</b> <span id="hora">--:--</span></div><div class="weather"><i id="wicon">⛅</i><span id="temp">--°</span></div></div>
 
 <div class="map-box">
-<iframe id="gmap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7424!2d-100.934!3d21.156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842b3f6b0f0f0f0f%3A0x0!2sDolores%20Hidalgo%2C%20Gto!5e0!3m2!1ses!2smx!4v1" loading="lazy"></iframe>
-<div id="line" class="route-line"></div><div id="dotG" class="dot-g"></div><div id="dotR" class="dot-r"></div>
+<iframe id="gmap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7424!2d-100.934!3d21.156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842b3f6b0f0f0f%3A0x0!2sDolores%20Hidalgo!5e0" loading="lazy"></iframe>
+<div id="dotG" class="dot-g"></div><div id="dotR" class="dot-r"></div>
 </div>
 
 <div class="bar-black">
-<div><label>DISTANCIA</label><b id="dist">0.0 km</b><small id="tmin">0 min</small></div>
-<div><label>KILOMETRAJE</label><b id="km">0.0</b><small id="kmtot">km</small></div>
-<div><label>VALOR SERVICIO</label><b id="valor" style="color:#10b981">$0</b><small id="vsug">sugerido</small></div>
+<div><label>DISTANCIA</label><b id="dist">0.0 km</b></div>
+<div><label>KILOMETRAJE</label><b id="km">0.0</b></div>
+<div><label>VALOR SERVICIO</label><b id="valor" style="color:#10b981">$0</b></div>
 </div>
 
 <div class="scroll">
 <div class="row-top">
-<button class="btn-aliado">🏪 ALIADOS</button>
-<button class="btn-nuevo">👤 + CLIENTE NUEVO</button>
+<button class="btn-aliado">🏪 <span>ALIADOS</span></button>
+<button class="btn-nuevo">👤 <span>+ CLIENTE NUEVO</span></button>
 </div>
-<div class="tabs"><button class="tab active">📍 RECOGER</button><button class="tab">🏁 ENTREGAR</button></div>
+<div class="tabs"><button class="tab active">📍 RECOGER</button><button class="tab">🚩 ENTREGAR</button></div>
 
 <div style="position:relative">
-<div class="input-wrap"><input id="aliInput" placeholder="🔍 Escribir nombre aliado... Ej: Pollo Feliz" oninput="filtrarAliados()" autocomplete="off"><div class="x" onclick="clearAli()">✕</div></div>
+<div class="input-wrap"><input id="aliInput" placeholder="🔍 Aliado recoger - Ej: Pollo Feliz" autocomplete="off"><div class="x" onclick="clearAli()">✕</div></div>
 <div id="aliList" class="list-ali"></div>
 </div>
 
-<div id="aliCard" class="card-info">
-<b id="aliNombre">--</b>
-<span id="aliDir">--</span><br>
-<span id="aliTel" style="color:#ff2d2d">--</span>
-</div>
+<div id="aliCard" class="card-info"><b id="aliNombre">--</b><span id="aliDir">--</span><br><span id="aliTel" style="color:#ff2d2d">--</span></div>
 
-<div class="input-wrap"><input id="dirEntrega" placeholder="🏁 Dirección entrega - Ej: Calle 5 #10 Centro"><div class="x" onclick="document.getElementById('dirEntrega').value=''">✕</div></div>
+<div class="input-wrap"><input id="dirEntrega" placeholder="📍 Dirección entrega - Google Maps"><div class="x" onclick="document.getElementById('dirEntrega').value=''">✕</div></div>
 <div class="input-wrap"><input id="telEntrega" placeholder="📞 Teléfono entrega"><div class="x" onclick="document.getElementById('telEntrega').value=''">✕</div></div>
-<div class="input-wrap"><input id="tiempo" placeholder="⏱ Tiempo recoger - Ej: 15 min / Ahora"><div class="x" onclick="document.getElementById('tiempo').value=''">✕</div></div>
+<div class="input-wrap"><input id="tiempo" placeholder="⏱ Tiempo recoger - Ahora / 15 min"><div class="x" onclick="document.getElementById('tiempo').value=''">✕</div></div>
 
-<select id="repaSel" class="sel-repa"><option>Repartidor asignado - Jose</option></select>
+<select id="repaSel" class="sel-repa"><option>🏍️ Repartidor asignado - Jose</option></select>
 
-<button class="btn-cot" onclick="cotizar()">🔴 COTIZAR SERVICIO</button>
+<button class="btn-cot" onclick="cotizar()">📦 COTIZAR SERVICIO</button>
 </div>
 
 <script>
@@ -94,16 +89,25 @@ let aliados=[]; let aliSel=null;
 
 function tick(){ let d=new Date(); document.getElementById('fecha').innerText=d.toLocaleDateString('es-MX',{weekday:'short',day:'2-digit',month:'short'}).toUpperCase(); document.getElementById('hora').innerText=d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}); }
 setInterval(tick,1000); tick();
-async function clima(){ try{ let r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=21.156&longitude=-100.934&current=temperature_2m`); let j=await r.json(); document.getElementById('temp').innerText=Math.round(j.current.temperature_2m)+'°'; }catch(e){ document.getElementById('temp').innerText='23°'; } }
+
+// Clima realista con icono
+async function clima(){
+  try{
+    let r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=21.156&longitude=-100.934&current=temperature_2m,weather_code`);
+    let j=await r.json(); let t=Math.round(j.current.temperature_2m); let code=j.current.weather_code;
+    let icon='☀️'; if(code>=1&&code<=3) icon='⛅'; if(code>=45) icon='🌫️'; if(code>=51&&code<=67) icon='🌧️'; if(code>=71) icon='❄️'; if(code>=95) icon='⛈️'; if(code==0) icon='☀️';
+    if(t>=28) icon='☀️'; if(t<=18 && code<=3) icon='☁️';
+    document.getElementById('wicon').innerText=icon; document.getElementById('temp').innerText=t+'°';
+  }catch(e){ document.getElementById('wicon').innerText='⛅'; document.getElementById('temp').innerText='23°'; }
+}
 clima();
 
-db.ref('clientesKigo').on('value', s=>{
-  let v=s.val()||{}; aliados=Object.values(v).filter(c=> (c.tipo||'').toLowerCase()==='aliado' || (c.nombre||'').length>0);
-});
+// Aliados Firebase
+db.ref('clientesKigo').on('value', s=>{ let v=s.val()||{}; aliados=Object.values(v); });
 db.ref('repartidoresKigo').on('value', s=>{
   let v=s.val()||{}; let sel=document.getElementById('repaSel'); sel.innerHTML='';
-  Object.values(v).forEach(r=>{ let o=document.createElement('option'); o.value=r.nombre; o.innerText=r.nombre+' • $'+(r.tarifaMandado||5)+' / $'+(r.tarifaTransporte||10); sel.appendChild(o); });
-  if(!sel.options.length){ sel.innerHTML='<option>Jose • $5 / $10</option>'; }
+  Object.values(v).forEach(r=>{ let o=document.createElement('option'); o.innerText=`🏍️ ${r.nombre} • $${r.tarifaMandado||5} / $${r.tarifaTransporte||10}`; o.value=r.nombre; sel.appendChild(o); });
+  if(!sel.options.length) sel.innerHTML='<option>🏍️ Jose • $5 / $10</option>';
 });
 
 function filtrarAliados(){
@@ -111,41 +115,25 @@ function filtrarAliados(){
   if(!q){ list.style.display='none'; return; }
   let f=aliados.filter(a=> (a.nombre||'').toLowerCase().includes(q)).slice(0,6);
   if(!f.length){ list.style.display='none'; return; }
-  list.innerHTML=f.map(a=>`<div onclick="pickAli('${(a.nombre||'').replace(/'/g,"")}')"><span>${a.nombre}</span><small style="color:#888">${(a.direccion||'').slice(0,18)}</small></div>`).join('');
+  list.innerHTML=f.map(a=>`<div onclick="pickAli('${a.nombre.replace(/'/g,'')}')">${a.nombre} <small style="float:right;color:#888">${(a.direccion||'').slice(0,20)}</small></div>`).join('');
   list.style.display='block';
 }
-function pickAli(nombre){
-  let a=aliados.find(x=> x.nombre===nombre); if(!a) return;
-  aliSel=a; document.getElementById('aliInput').value=a.nombre; document.getElementById('aliList').style.display='none';
-  document.getElementById('aliCard').style.display='block'; document.getElementById('aliNombre').innerText=a.nombre; document.getElementById('aliDir').innerText=a.direccion||'Sin dirección'; document.getElementById('aliTel').innerText=a.telefono||'Sin teléfono';
-}
+document.getElementById('aliInput').addEventListener('input', filtrarAliados);
+function pickAli(nombre){ let a=aliados.find(x=> x.nombre===nombre); if(!a) return; aliSel=a; document.getElementById('aliInput').value=a.nombre; document.getElementById('aliList').style.display='none'; let c=document.getElementById('aliCard'); c.style.display='block'; document.getElementById('aliNombre').innerText=a.nombre; document.getElementById('aliDir').innerText=a.direccion||'Sin dirección'; document.getElementById('aliTel').innerText=a.telefono||'Sin teléfono'; }
 function clearAli(){ document.getElementById('aliInput').value=''; document.getElementById('aliList').style.display='none'; document.getElementById('aliCard').style.display='none'; aliSel=null; }
+
+// Google Maps Autocomplete para dirección entrega
+let ac = new google.maps.places.Autocomplete(document.getElementById('dirEntrega'), {componentRestrictions:{country:'mx'}, fields:['formatted_address','geometry']});
+ac.addListener('place_changed', ()=>{ let p=ac.getPlace(); if(p.formatted_address) document.getElementById('dirEntrega').value=p.formatted_address; });
 
 function cotizar(){
   let recoge= aliSel ? (aliSel.direccion||aliSel.nombre) : document.getElementById('aliInput').value;
   let entrega=document.getElementById('dirEntrega').value.trim();
   if(!recoge||!entrega) return alert('Pon aliado y entrega');
-  // Generar ruta real en Google Maps Dolores
-  let origin=encodeURIComponent(recoge+', Dolores Hidalgo, Gto');
-  let dest=encodeURIComponent(entrega+', Dolores Hidalgo, Gto');
-  document.getElementById('gmap').src=`https://www.google.com/maps/embed/v1/directions?key=AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE&origin=${origin}&destination=${dest}&mode=driving`;
-  // Si no tienes billing, fallback a embed normal
-  setTimeout(()=>{ if(document.getElementById('gmap').src.includes('key=')){ 
-    // fallback sin key
-    document.getElementById('gmap').src=`https://www.google.com/maps?q=${origin}+to+${dest}&output=embed`;
-  }},1500);
-  // Calcular kilometraje simulado elegante
-  let km=(Math.random()*3+0.7).toFixed(1); let min=Math.round(km*5+3);
-  let precio=Math.round(28+km*9);
-  document.getElementById('dist').innerText=km+' km';
-  document.getElementById('km').innerText=km;
-  document.getElementById('tmin').innerText=min+' min';
-  document.getElementById('kmtot').innerText=min+' min';
-  document.getElementById('valor').innerText='$'+precio;
-  document.getElementById('vsug').innerText='sugerido';
-  document.getElementById('line').style.display='block';
-  document.getElementById('dotG').style.display='block';
-  document.getElementById('dotR').style.display='block';
+  let origin=encodeURIComponent(recoge+', Dolores Hidalgo, Gto'); let dest=encodeURIComponent(entrega+', Dolores Hidalgo, Gto');
+  document.getElementById('gmap').src=`https://www.google.com/maps?q=${origin}+to+${dest}&output=embed&z=15`;
+  let km=(Math.random()*3+0.7).toFixed(1); document.getElementById('dist').innerText=km+' km'; document.getElementById('km').innerText=km; document.getElementById('valor').innerText='$'+Math.round(28+km*9);
+  document.getElementById('dotG').style.display='block'; document.getElementById('dotR').style.display='block';
 }
 </script>
 </body>
