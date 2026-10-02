@@ -3,135 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Kigo Admin - Cotizador</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<title>Kigo Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:#f5f5f7;color:#0a0a0a;overflow:hidden;height:100vh;display:flex;flex-direction:column}
-.top-bar{height:44px;background:#fff;border-bottom:1px solid #ececec;display:flex;justify-content:space-between;align-items:center;padding:0 14px;z-index:10}
-.top-left{font-size:9px;font-weight:800;line-height:1.1}
-.top-left b{font-size:11px;display:block}
-.top-right{display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e5e7eb;padding:5px 10px;border-radius:999px}
-.top-right span{font-size:9px;font-weight:900}
-.dot{width:6px;height:6px;background:#10b981;border-radius:50%}
-.map-wrap{flex:1;position:relative;background:#e5e7eb;overflow:hidden}
-#map{width:100%;height:100%;border:none}
-.map-overlay{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:6px;z-index:5}
-.chip{background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px;font-size:7px;font-weight:900;box-shadow:0 2px 10px rgba(0,0,0,.08);display:flex;align-items:center;gap:4px}
-.chip.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
-.pin-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);z-index:4;pointer-events:none}
-.pin-center div{width:28px;height:28px;background:#0a0a0a;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.pin-center div span{transform:rotate(45deg);color:#fff;font-size:14px;font-weight:900}
-.bottom-sheet{background:#fff;border-radius:22px 22px 0 0;margin-top:-18px;z-index:10;box-shadow:0 -8px 30px rgba(0,0,0,.12);padding:14px 14px 18px;display:flex;flex-direction:column;gap:10px}
-.bar-price{display:flex;gap:6px;background:#f9fafb;border:1.5px solid #ececec;border-radius:16px;padding:8px}
-.bar-item{flex:1;text-align:center;border-right:1px solid #ececec}
-.bar-item:last-child{border:none}
-.bar-item label{font-size:6px;font-weight:900;color:#9ca3af;letter-spacing:.5px;display:block;margin-bottom:2px}
-.bar-item b{font-size:12px;font-weight:900;display:block}
-.bar-item small{font-size:7px;font-weight:800;color:#6b7280}
-.input-row{display:flex;gap:8px}
-.input-k{flex:1;height:42px;border:1.5px solid #ececec;border-radius:12px;padding:0 12px;font-size:10px;font-weight:700;background:#fff;outline:none}
-.input-k:focus{border-color:#0a0a0a}
-.btn-main{width:100%;height:46px;background:#0a0a0a;color:#fff;border:none;border-radius:14px;font-size:10px;font-weight:900;letter-spacing:.3px}
-.btn-sec{flex:1;height:38px;background:#fff;border:1.5px solid #ececec;border-radius:12px;font-size:8px;font-weight:800}
-.repa-row{display:flex;gap:6px;overflow:auto;padding-bottom:2px}
-.repa-chip{height:32px;padding:0 12px;border-radius:999px;border:1.5px solid #ececec;background:#fff;font-size:7px;font-weight:900;white-space:nowrap}
-.repa-chip.active{background:#0a0a0a;color:#fff}
+body{background:#0a0a0a;color:#fff;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.top{height:38px;background:#fff;color:#0a0a0a;display:flex;justify-content:space-between;align-items:center;padding:0 12px}
+.top b{font-size:9px;font-weight:900;letter-spacing:.3px}
+.top span{font-size:8px;font-weight:800;color:#6b7280}
+.top-right{background:#0a0a0a;color:#fff;padding:4px 10px;border-radius:999px;font-size:8px;font-weight:900;display:flex;align-items:center;gap:4px}
+.map{flex:1;background:#e5e7eb;position:relative}
+.map iframe{width:100%;height:100%;border:0}
+.bottom-bar{background:#0a0a0a;border-top:1px solid #1f1f1f;padding:8px 10px;display:flex;gap:8px}
+.bottom-item{flex:1;text-align:center}
+.bottom-item label{display:block;font-size:5.5px;font-weight:800;letter-spacing:.6px;color:#9ca3af;margin-bottom:2px}
+.bottom-item b{display:block;font-size:10px;font-weight:900;color:#fff;line-height:1}
+.bottom-item small{display:block;font-size:6px;font-weight:700;color:#6b7280;margin-top:1px}
 </style>
 </head>
 <body>
-<div class="top-bar">
-<div class="top-left"><b id="fechaTxt">-- --</b><span id="horaTxt" style="color:#6b7280">--:-- --</span></div>
-<div class="top-right"><div class="dot"></div><span id="tempTxt">--°C</span><span style="font-size:12px">⛅</span></div>
+<div class="top">
+<div>
+<b id="fecha">LUN 12 MAY</b>
+<span id="hora">--:--</span>
+</div>
+<div class="top-right"><span>●</span><span id="grados">--°</span></div>
 </div>
 
-<div class="map-wrap">
-<iframe id="map" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15000!2d-101.155!3d21.155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2smx!4v1" allowfullscreen loading="lazy"></iframe>
-<div class="map-overlay">
-<div class="chip active">📍 Recoger</div>
-<div class="chip">🏁 Entregar</div>
-<div class="chip" style="margin-left:auto" onclick="centrar()">🎯 Mi ubicación</div>
-</div>
-<div class="pin-center"><div><span>•</span></div></div>
+<div class="map">
+<iframe id="gmap" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3727!2d-101.184!3d21.122!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2smx!4v123" allowfullscreen loading="lazy"></iframe>
 </div>
 
-<div class="bottom-sheet">
-<div class="bar-price">
-<div class="bar-item"><label>DISTANCIA</label><b id="kmTxt">0.0 km</b><small id="tiempoTxt">0 min</small></div>
-<div class="bar-item"><label>PRECIO CLIENTE</label><b id="precioTxt" style="color:#10b981">$0</b><small>Sugerido</small></div>
-<div class="bar-item"><label>KIGO FEE</label><b id="feeTxt">$5</b><small id="repaSelTxt">Jose</small></div>
-</div>
-
-<div class="input-row"><input id="dirRecoge" class="input-k" placeholder="📍 Dirección recoger - Ej: Calle 5 #10"><button class="btn-sec" onclick="usarUbicacion()">Usar GPS</button></div>
-<div class="input-row"><input id="dirEntrega" class="input-k" placeholder="🏁 Dirección entrega - Ej: Col. Centro"><input id="precioCliente" class="input-k" style="max-width:90px" type="number" placeholder="$ Cliente" oninput="calcularFee()"></div>
-
-<div style="font-size:7px;font-weight:900;color:#9ca3af">ASIGNAR REPARTIDOR</div>
-<div class="repa-row" id="repaRow">
-<button class="repa-chip active" onclick="selRepa('Jose',5,10,this)">JOSE • $5 / $10</button>
-</div>
-
-<button class="btn-main" onclick="crearPedido()">CREAR PEDIDO • ENVIAR A REPA</button>
-<div style="display:flex;gap:8px"><button class="btn-sec" onclick="cotizarWhats()">💬 Cotizar WhatsApp</button><button class="btn-sec" onclick="limpiar()">Limpiar</button></div>
+<div class="bottom-bar">
+<div class="bottom-item"><label>DISTANCIA</label><b id="dist">0.0 km</b><small id="tmin">0 min</small></div>
+<div class="bottom-item"><label>KILOMETRAJE</label><b id="km">0.0</b><small>km total</small></div>
+<div class="bottom-item"><label>VALOR SERVICIO</label><b id="valor" style="color:#10b981">$0</b><small>sugerido</small></div>
 </div>
 
 <script>
-const cfg={apiKey:"AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE",authDomain:"historial-kigo-xpress.firebaseapp.com",databaseURL:"https://historial-kigo-xpress-default-rtdb.firebaseio.com",projectId:"historial-kigo-xpress"};
-firebase.initializeApp(cfg); const db=firebase.database();
-let repaActual={nombre:'Jose', mandado:5, transporte:10};
-let kmActual=0;
-
-// Fecha y hora
-function tick(){ let d=new Date(); document.getElementById('fechaTxt').innerText=d.toLocaleDateString('es-MX',{weekday:'short', day:'2-digit', month:'short'}).toUpperCase(); document.getElementById('horaTxt').innerText=d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}); }
+function tick(){ let d=new Date(); document.getElementById('fecha').innerText=d.toLocaleDateString('es-MX',{weekday:'short',day:'2-digit',month:'short'}).toUpperCase(); document.getElementById('hora').innerText=d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}); }
 setInterval(tick,1000); tick();
-
-// Clima real sin API key usando open-meteo
-async function cargarClima(){ try{ let lat=21.094, lon=-101.184; if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(async p=>{ lat=p.coords.latitude; lon=p.coords.longitude; let r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`); let j=await r.json(); document.getElementById('tempTxt').innerText=Math.round(j.current.temperature_2m)+'°C'; document.getElementById('map').src=`https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d5000!2d${lon}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0`; }); } }catch(e){ document.getElementById('tempTxt').innerText='24°C'; } }
-cargarClima();
-
-function centrar(){ cargarClima(); }
-function usarUbicacion(){ if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(p=>{ document.getElementById('dirRecoge').value=p.coords.latitude.toFixed(5)+','+p.coords.longitude.toFixed(5)+' (GPS)'; calcularDistancia(); }); } }
-
-db.ref('repartidoresKigo').on('value', s=>{
-  let val=s.val()||{}; let row=document.getElementById('repaRow'); row.innerHTML='';
-  Object.values(val).forEach(r=>{
-    let b=document.createElement('button'); b.className='repa-chip'+(r.nombre==='Jose'?' active':''); b.innerText=`${r.nombre.toUpperCase()} • $${r.tarifaMandado||5} / $${r.tarifaTransporte||10}`;
-    b.onclick=()=>selRepa(r.nombre, r.tarifaMandado||5, r.tarifaTransporte||10, b);
-    row.appendChild(b);
-  });
-  if(!Object.values(val).length){ row.innerHTML=`<button class="repa-chip active">JOSE • $5 / $10</button>`; }
-});
-
-function selRepa(nombre,man,trans,btn){ repaActual={nombre, mandado:man, transporte:trans}; document.querySelectorAll('.repa-chip').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); document.getElementById('feeTxt').innerText='$'+man; document.getElementById('repaSelTxt').innerText=nombre; calcularFee(); }
-
-function calcularDistancia(){
-  let a=document.getElementById('dirRecoge').value; let b=document.getElementById('dirEntrega').value;
-  if(a&&b){ kmActual=(Math.random()*3+0.8).toFixed(1); document.getElementById('kmTxt').innerText=kmActual+' km'; document.getElementById('tiempoTxt').innerText=Math.round(kmActual*4)+' min'; let sug=Math.round(25+kmActual*8); document.getElementById('precioCliente').value=sug; document.getElementById('precioTxt').innerText='$'+sug; calcularFee(); }
+async function clima(){
+  try{
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(async p=>{
+        let lat=p.coords.latitude, lon=p.coords.longitude;
+        document.getElementById('gmap').src=`https://www.google.com/maps?q=${lat},${lon}&z=16&output=embed`;
+        let r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`);
+        let j=await r.json(); document.getElementById('grados').innerText=Math.round(j.current.temperature_2m)+'°';
+      });
+    }else{ document.getElementById('grados').innerText='24°'; }
+  }catch(e){ document.getElementById('grados').innerText='24°'; }
 }
-document.getElementById('dirRecoge').addEventListener('change',calcularDistancia);
-document.getElementById('dirEntrega').addEventListener('change',calcularDistancia);
-
-function calcularFee(){ let pc=parseInt(document.getElementById('precioCliente').value)||0; document.getElementById('precioTxt').innerText='$'+pc; let fee=repaActual.mandado; document.getElementById('feeTxt').innerText='$'+fee; }
-
-function cotizarWhats(){
-  let recoge=document.getElementById('dirRecoge').value; let entrega=document.getElementById('dirEntrega').value; let precio=document.getElementById('precioCliente').value;
-  if(!recoge||!entrega||!precio) return alert('Falta dirección o precio');
-  let txt=`Hola! Kigo Xpress 🛵\n📍 Recoger: ${recoge}\n🏁 Entregar: ${entrega}\n📏 ${kmActual} km\n💰 Precio: $${precio}\n¿Confirmamos?`;
-  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
-}
-
-function crearPedido(){
-  let recoge=document.getElementById('dirRecoge').value; let entrega=document.getElementById('dirEntrega').value; let precio=parseInt(document.getElementById('precioCliente').value)||0;
-  if(!recoge||!entrega||!precio) return alert('Completa datos');
-  let id=Date.now();
-  let pedido={_key:'ped_'+id, cliente:'Cliente', dirRecogida:recoge, entrega:entrega, costoSugerido:precio, repaAsignado:repaActual.nombre, repa:repaActual.nombre, repartidor:repaActual.nombre, tipoServicio:'Moto Mandado', tipo:'Moto Mandado', valor:precio, feeKigo:repaActual.mandado, pagado:false, etapa:'en_espera', activo:false, subEtapa:'pendiente', ts:id, timestamp:id, iso:new Date().toISOString().slice(0,10), fecha:new Date().toLocaleDateString('es-MX')};
-  db.ref('kigoPedidosLive/ped_'+id).set(pedido);
-  db.ref('kigo_pedidos/ped_'+id).set({estado:'pendiente', repa:repaActual.nombre, cliente:'Cliente', valor:precio});
-  alert('Pedido enviado a '+repaActual.nombre+' en ESPERA');
-  limpiar();
-}
-function limpiar(){ document.getElementById('dirRecoge').value=''; document.getElementById('dirEntrega').value=''; document.getElementById('precioCliente').value=''; document.getElementById('kmTxt').innerText='0.0 km'; document.getElementById('precioTxt').innerText='$0'; }
+clima();
 </script>
 </body>
 </html>
