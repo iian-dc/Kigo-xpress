@@ -19,7 +19,6 @@ body{background:#f8f9fb;color:#0a0a0a;padding-bottom:80px}
 .num-neon{background:#0a0a0a;color:#fff;padding:4px 10px;border-radius:20px;font-size:9px;font-weight:800}
 .precio-neon{color:#10b981;font-weight:800;font-size:16px;background:#dcfce7;border:1.5px solid #86efac;padding:4px 12px;border-radius:12px;display:flex;align-items:center;gap:4px}
 .estado-badge{font-size:7px;font-weight:800;padding:3px 8px;border-radius:20px;border:1px solid #fed7aa;background:#fffbeb;color:#f97316}
-.hora-neon{color:#10b981;font-weight:800;font-size:8px;background:#dcfce7;border:1.5px solid #86efac;padding:3px 8px;border-radius:12px;display:inline-block;margin-left:4px}
 .bloque-recoger{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:10px;margin:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .bloque-entregar{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:10px;margin:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .bloque-info{flex:1;min-width:0}
@@ -43,7 +42,6 @@ body{background:#f8f9fb;color:#0a0a0a;padding-bottom:80px}
 .sub-repa{display:flex;gap:6px;padding:10px;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:53px;z-index:10}
 .sub-repa button{flex:1;height:36px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:8px;font-weight:800}
 .sub-repa button.active{background:#0a0a0a;color:#fff}
-.icon{width:12px;height:12px;display:inline-block;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -104,14 +102,15 @@ let sonidoActivo = audioUnlocked;
 let tarifasRepaActual = {mandado:5, transporte:10};
 let subRepaActual = 'activo';
 onValue(ref(db,'kigoTarifasRepas/'+currentRepa), s=>{ if(s.exists()) tarifasRepaActual = s.val(); let elM = document.getElementById('txtPrecioMandado'); let elT = document.getElementById('txtPrecioTrans'); if(elM) elM.innerText = '$'+(tarifasRepaActual.mandado||5); if(elT) elT.innerText = '$'+(tarifasRepaActual.transporte||10); });
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./firebase-messaging-sw.js').catch(()=>{}); }
 function actualizarSwitchUI(){ let wrap=document.getElementById('switchWrap'); let bolita=document.getElementById('switchBolita'); let txt=document.getElementById('txtEstadoSonido'); let status=document.getElementById('statusTxt'); if(sonidoActivo){ wrap.style.background='#10b981'; bolita.style.left='25px'; txt.innerText='Activado'; txt.style.color='#10b981'; status.innerText='SONIDO ACTIVO'; } else { wrap.style.background='#e5e7eb'; bolita.style.left='3px'; txt.innerText='Desactivado'; txt.style.color='#6b7280'; status.innerText='EN LINEA'; } }
 setTimeout(actualizarSwitchUI,100);
 window.toggleSonido = async function(){ if(!sonidoActivo){ try{ let audio=document.getElementById('alarmAudio'); audio.volume=1; audio.muted=false; await audio.play(); audio.pause(); audio.currentTime=0; audioUnlocked=true; sonidoActivo=true; localStorage.setItem('kigoSonidoActivo','1'); if('Notification' in window){ await Notification.requestPermission(); } actualizarSwitchUI(); }catch(e){} } else { sonidoActivo=false; audioUnlocked=false; localStorage.setItem('kigoSonidoActivo','0'); let a=document.getElementById('alarmAudio'); a.pause(); a.currentTime=0; actualizarSwitchUI(); } }
 window.probarSonido=function(){ if(!sonidoActivo){ alert('Activa primero'); return; } sonidoNuevoPedido(); }
 function sonidoNuevoPedido(){ if(!sonidoActivo) return; try{ let audio=document.getElementById('alarmAudio'); if(audioUnlocked){ audio.currentTime=0; audio.volume=1; audio.play().catch(()=>{}); setTimeout(()=>{ audio.pause(); audio.currentTime=0; },6000); } }catch(e){} }
 function formatHoraLlegada(ts){ if(!ts) return ''; let d=new Date(ts); if(isNaN(d)) return ''; return d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}); }
-function formatHoraCompleta(p){ let ts = p.ts || p.creado || Date.now(); let horaPedido = formatHoraLlegada(ts); let recogida = p.horaRecoger || p.horaRecogerTexto || p.tiempoRecogida || ''; if(recogida) return `Pedido: ${horaPedido} | Recoger: ${recogida}`; return `Pedido: ${horaPedido}`; }
+function formatHoraCompleta(p){ let ts = p.ts || p.creado || Date.now(); let horaPedido = formatHoraLlegada(ts); let recogida = p.horaRecoger || p.horaRecogerTexto || p.tiempoRecogida || p.tiempo || ''; if(recogida) return `Pedido: ${horaPedido} | Recoger: ${recogida}`; return `Pedido: ${horaPedido}`; }
+
+// ENLACE CON ADMIN: escuchar pedidos
 onValue(ref(db,'kigoPedidosLive'), s=>{
  let data=s.val()||{}; let listaRepaKeys=Object.entries(data).filter(([k,v])=>v.repaAsignado===currentRepa).map(([k])=>k);
  if(firstLoad){ prevKeys=new Set(listaRepaKeys); firstLoad=false; pedidosLive=data; renderPedidosRepa(); return; }
@@ -120,6 +119,8 @@ onValue(ref(db,'kigoPedidosLive'), s=>{
  prevKeys=new Set(listaRepaKeys); pedidosLive=data; renderPedidosRepa();
 });
 onValue(ref(db,'ventasKigo'), s=>{ ventasData=s.val()||{}; renderHistRepa(); });
+onValue(ref(db,'kigo_historial'), s=>{ ventasData={...ventasData,...(s.val()||{})}; renderHistRepa(); });
+
 window.setSubRepa=function(t){ subRepaActual=t; document.getElementById('subBtnActivo').classList.toggle('active',t==='activo'); document.getElementById('subBtnEspera').classList.toggle('active',t==='espera'); document.getElementById('contActivo').style.display=t==='activo'?'block':'none'; document.getElementById('contEspera').style.display=t==='espera'?'block':'none'; }
 window.cerrarNoti=function(){ document.getElementById('overlayNoti').classList.remove('show'); let a=document.getElementById('alarmAudio'); a.pause(); a.currentTime=0; showRepaView('pedidos'); setSubRepa('espera'); }
 window.showRepaView=function(v){ document.getElementById('view-pedidos-repa').style.display=v==='pedidos'?'block':'none'; document.getElementById('view-hist-repa').style.display=v==='historial'?'block':'none'; document.getElementById('view-ajustes-repa').style.display=v==='ajustes'?'block':'none'; document.getElementById('btnPedidos').classList.toggle('active',v==='pedidos'); document.getElementById('btnHist').classList.toggle('active',v==='historial'); document.getElementById('btnAjustes').classList.toggle('active',v==='ajustes'); }
@@ -127,7 +128,6 @@ window.showTabAj=function(t){ document.getElementById('aj-datos').style.display=
 
 window.renderPedidosRepa=function(){
  let lista=Object.entries(pedidosLive).map(([k,v])=>({...v,_key:k})).filter(p=>p.repaAsignado===currentRepa).sort((a,b)=>b.ts-a.ts);
- // FIX: activos excluyen finalizado, espera SOLO etapa en_espera (ya no!activo)
  let activos=lista.filter(p=>p.activo===true && p.etapa!=='en_espera' && p.etapa!=='finalizado');
  let espera=lista.filter(p=>p.etapa==='en_espera');
  activoKey = activos.length? activos[0]._key : null;
@@ -142,23 +142,17 @@ window.renderPedidosRepa=function(){
   let estadoTxt = sub==='pendiente'?'ACEPTADO':sub==='voy_en_camino'?'VOY EN CAMINO A RECOGER':sub==='recogido'?'RECOGIDO':sub==='voy_entregar'?'VOY A ENTREGAR':sub==='entregado'?'ENTREGADO - ESPERA ADMIN':p.etapa.toUpperCase();
   let btnTxt = sub==='pendiente'?'VOY EN CAMINO A RECOGER':sub==='voy_en_camino'?'RECOGIDO':sub==='recogido'?'VOY A ENTREGAR':sub==='voy_entregar'?'ENTREGADO': 'ENTREGADO';
   let deshabilitado = sub==='entregado'? 'disabled' : '';
-  let nombreCliente = p.cliente || p.nombreCliente || 'Cliente';
-  let dirRecogerSolo = p.dirRecogida || p.direccionRecogida || '';
+  let nombreCliente = p.cliente || 'Cliente';
+  let dirRecogerSolo = p.dirRecogida || '';
   let telRecoger = p.telefonoRecogida || p.telefono || '';
-  let nombreEntrega = p.nombreEntrega || 'Cliente Entrega';
   let dirEntrega = p.entrega || '';
-  let telEntrega = p.telefonoEntrega || p.telefonoEntregaFinal || p.telEntrega || '';
+  let telEntrega = p.telefonoEntrega || p.telEntrega || p.telefono || '';
   let horaInfo = formatHoraCompleta(p);
-  let btnLlamarHtml = '';
-  if(telEntrega){
-    btnLlamarHtml = `<button class="btn-llamar" onclick="llamarCliente('${telEntrega}')"><span style="width:16px;height:16px;background:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#ef4444;font-weight:900">C</span> LLAMAR CLIENTE DE ENTREGA - ${telEntrega}</button>`;
-  } else {
-    btnLlamarHtml = `<button class="btn-msg" onclick="abrirMensajes('${p._key}')">MENSAJES BASE</button>`;
-  }
+  let btnLlamarHtml = telEntrega? `<button class="btn-llamar" onclick="llamarCliente('${telEntrega}')"><span style="width:16px;height:16px;background:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#ef4444;font-weight:900">C</span> LLAMAR CLIENTE - ${telEntrega}</button>` : `<button class="btn-msg" onclick="abrirMensajes('${p._key}')">MENSAJES BASE</button>`;
   return `<div class="card-activo">
   <div class="head-activo">
     <div style="flex:1">
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="num-neon">#${p._key.slice(-4).toUpperCase()} - PEDIDO ${p.numero||p._key.slice(-4).toUpperCase()}</span><span style="font-size:7px;font-weight:800;color:#6b7280">${horaInfo}</span></div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="num-neon">#${p._key.slice(-4).toUpperCase()} - PEDIDO ${p.adminKey? p.adminKey.slice(-4).toUpperCase(): p._key.slice(-4).toUpperCase()}</span><span style="font-size:7px;font-weight:800;color:#6b7280">${horaInfo}</span></div>
       <div style="margin-top:4px"><span class="estado-badge">${estadoTxt}</span></div>
     </div>
     <div class="precio-neon">$${p.costoSugerido||0} <span style="font-size:8px">MXN</span></div>
@@ -167,7 +161,7 @@ window.renderPedidosRepa=function(){
     <div class="bloque-info">
       <div style="font-size:7px;font-weight:800;color:#166534">RECOGER EN</div>
       <div style="font-size:10px;font-weight:800;margin-top:3px">CLIENTE: ${nombreCliente}</div>
-      <div style="font-size:9px;font-weight:600;color:#1f2937;margin-top:4px;background:#fff;padding:6px;border-radius:8px;border:1px solid #bbf7d0;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">DIR: ${dirRecogerSolo}</div>
+      <div style="font-size:9px;font-weight:600;color:#1f2937;margin-top:4px;background:#fff;padding:6px;border-radius:8px;border:1px solid #bbf7d0">DIR: ${dirRecogerSolo}</div>
       ${telRecoger? `<div style="font-size:8px;font-weight:700;margin-top:6px">TEL: ${telRecoger}</div>`:''}
     </div>
     <button class="btn-ruta" onclick="abrirRuta(${p.lat1},${p.lng1})">RUTA</button>
@@ -175,8 +169,7 @@ window.renderPedidosRepa=function(){
   <div class="bloque-entregar">
     <div class="bloque-info">
       <div style="font-size:7px;font-weight:800;color:#991b1b">ENTREGAR EN</div>
-      <div style="font-size:10px;font-weight:800;margin-top:3px">CLIENTE: ${nombreEntrega}</div>
-      <div style="font-size:9px;font-weight:600;color:#1f2937;margin-top:4px;background:#fff;padding:6px;border-radius:8px;border:1px solid #fecaca;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">DIR: ${dirEntrega}</div>
+      <div style="font-size:9px;font-weight:600;color:#1f2937;margin-top:4px;background:#fff;padding:6px;border-radius:8px;border:1px solid #fecaca">DIR: ${dirEntrega}</div>
       ${telEntrega? `<div style="font-size:8px;font-weight:700;margin-top:6px">TEL: ${telEntrega}</div>`:''}
     </div>
     <button class="btn-ruta red" onclick="abrirRuta(${p.lat2},${p.lng2})">RUTA</button>
@@ -192,51 +185,56 @@ window.renderPedidosRepa=function(){
  let contE=document.getElementById('contEspera');
  if(!espera.length) contE.innerHTML='<div style="text-align:center;padding:10px;color:#9ca3af;font-size:8px">Sin pedidos en espera</div>';
  else contE.innerHTML=espera.map(p=>{
-   let dir=p.dirRecogida||p.direccionRecogida||'';
-   let ts = p.ts || p.creado || Date.now();
-   let horaLlegada = formatHoraLlegada(ts);
-   let horaTxt = p.hora || horaLlegada || '';
+   let dir=p.dirRecogida||''; let ts = p.ts || Date.now(); let horaLlegada = formatHoraLlegada(ts); let horaTxt = p.hora || horaLlegada || '';
    return `<div style="background:#fff;border:1.5px solid #fde68a;border-radius:12px;padding:10px;margin:8px;display:flex;justify-content:space-between;align-items:center"><div style="flex:1"><div style="font-size:8px;font-weight:800;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span style="background:#0a0a0a;color:#fff;padding:3px 8px;border-radius:20px">#${p._key.slice(-4).toUpperCase()}</span> <span style="background:#dcfce7;border:1px solid #86efac;padding:3px 8px;border-radius:10px;color:#166534">$${p.costoSugerido||0} MXN</span> <span style="background:#f3f4f6;border:1px solid #e5e7eb;padding:3px 8px;border-radius:10px">HORA: ${horaTxt}</span></div><div style="font-size:9px;font-weight:800;margin-top:6px">${p.cliente}</div><div style="font-size:8px;color:#374151;margin-top:2px">DIR: ${dir.slice(0,50)}</div><div style="font-size:7px;color:#6b7280">ENTREGA: ${ (p.entrega||'').slice(0,40)}</div></div><button onclick="activarDesdeEspera('${p._key}')" style="height:36px;padding:0 14px;border-radius:10px;background:#10b981;color:#fff;border:none;font-size:8px;font-weight:800;margin-left:8px">ACEPTAR</button></div>`;
  }).join('');
 }
 window.llamarCliente=function(tel){ if(!tel) return; window.location.href='tel:'+tel.replace(/[^0-9+]/g,''); }
 window.abrirMensajes=function(k){ alert('Base de mensajes para pedido '+k); }
 window.abrirRuta=function(lat,lng){ if(lat&&lng) window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,'_blank'); }
-window.ponerEspera=async function(k){ await update(ref(db,'kigoPedidosLive/'+k),{etapa:'en_espera', activo:false, subEtapa:'pendiente'}); }
+window.ponerEspera=async function(k){ await update(ref(db,'kigoPedidosLive/'+k),{etapa:'en_espera', activo:false, subEtapa:'pendiente'}); let live=pedidosLive[k]; if(live?.adminKey) await update(ref(db,'kigo_pedidos/'+live.adminKey),{estado:'pendiente', subEtapa:'pendiente'}); }
 window.activarDesdeEspera=async function(k){
  let lista=Object.entries(pedidosLive).filter(([kk,v])=>v.repaAsignado===currentRepa && v.activo===true);
  for(let [kk] of lista){ await update(ref(db,'kigoPedidosLive/'+kk),{activo:false, etapa:'en_espera'}); }
  await update(ref(db,'kigoPedidosLive/'+k),{etapa:'en_camino', subEtapa:'pendiente', activo:true});
+ let live=pedidosLive[k]; if(live?.adminKey) await update(ref(db,'kigo_pedidos/'+live.adminKey),{estado:'aceptado', subEtapa:'aceptado'});
  setSubRepa('activo');
 }
 window.accionPrincipal=async function(k){
  let p=pedidosLive[k]; if(!p) return;
- if(p.subEtapa==='pendiente'){ await update(ref(db,'kigoPedidosLive/'+k),{subEtapa:'voy_en_camino'}); }
- else if(p.subEtapa==='voy_en_camino'){ await update(ref(db,'kigoPedidosLive/'+k),{subEtapa:'recogido'}); }
- else if(p.subEtapa==='recogido'){ await update(ref(db,'kigoPedidosLive/'+k),{subEtapa:'voy_entregar'}); }
+ let nextSub='', nextEstadoAdmin='';
+ if(p.subEtapa==='pendiente'){ nextSub='voy_en_camino'; nextEstadoAdmin='va a recoger'; }
+ else if(p.subEtapa==='voy_en_camino'){ nextSub='recogido'; nextEstadoAdmin='recogido'; }
+ else if(p.subEtapa==='recogido'){ nextSub='voy_entregar'; nextEstadoAdmin='va a entregar'; }
  else if(p.subEtapa==='voy_entregar'){
+   nextSub='entregado'; nextEstadoAdmin='entregado';
    await update(ref(db,'kigoPedidosLive/'+k),{etapa:'finalizado', subEtapa:'entregado', activo:false});
+   if(p.adminKey) await update(ref(db,'kigo_pedidos/'+p.adminKey),{estado:'entregado', subEtapa:'entregado'});
    document.getElementById('overlayEntregado').classList.add('show');
+   return;
  }
+ await update(ref(db,'kigoPedidosLive/'+k),{subEtapa:nextSub});
+ if(p.adminKey) await update(ref(db,'kigo_pedidos/'+p.adminKey),{estado:nextEstadoAdmin, subEtapa:nextEstadoAdmin});
 }
 window.cerrarEntregado=function(){ document.getElementById('overlayEntregado').classList.remove('show'); }
 window.limpiarFiltros=function(){ document.getElementById('filtroTipo').value=''; document.getElementById('filtroFecha').value=''; document.getElementById('filtroMes').value=''; renderHistRepa(); }
 window.renderHistRepa=function(){
- let lista=Object.entries(ventasData).map(([k,v])=>({...v,_key:k})).filter(v=>v.repa===currentRepa).sort((a,b)=>b.ts-a.ts);
+ let lista=Object.entries(ventasData).map(([k,v])=>({...v,_key:k})).filter(v=>(v.repa===currentRepa || v.repartidor===currentRepa)).sort((a,b)=>b.ts-a.ts || b.timestamp-a.timestamp);
  let tipo=document.getElementById('filtroTipo')?.value||''; let fecha=document.getElementById('filtroFecha')?.value||''; let mes=document.getElementById('filtroMes')?.value||'';
- if(tipo){ lista=lista.filter(v=>(v.tipo||'').toLowerCase().includes(tipo.toLowerCase())); }
- if(fecha){ lista=lista.filter(v=>v.iso===fecha); }
+ if(tipo){ lista=lista.filter(v=>(v.tipo||v.tipoServicio||'').toLowerCase().includes(tipo.toLowerCase())); }
+ if(fecha){ lista=lista.filter(v=>v.iso===fecha || v.fecha===fecha); }
  if(mes){ lista=lista.filter(v=>v.iso && v.iso.startsWith(mes)); }
  document.getElementById('hTotal').innerText=lista.length;
- let ganado=lista.reduce((s,v)=>s+((parseInt(v.valor)||0)-(parseInt(v.feeKigo)||0)),0);
- let debe=lista.filter(v=>!v.pagado).reduce((s,v)=>s+(parseInt(v.feeKigo)||0),0);
+ let ganado=lista.reduce((s,v)=>s+((parseInt(v.valor)||0)-(parseInt(v.feeKigo||v.descuento||0)),0),0);
+ let debe=lista.filter(v=>!v.pagado).reduce((s,v)=>s+(parseInt(v.feeKigo||v.descuento||0)),0);
  document.getElementById('hGanado').innerText='$'+ganado.toLocaleString('es-MX');
  document.getElementById('hDebe').innerText='$'+debe.toLocaleString('es-MX');
  let cont=document.getElementById('listaHistRepa');
  if(!lista.length){ cont.innerHTML='<div style="text-align:center;padding:20px;color:#9ca3af;font-size:9px">Sin resultados</div>'; return; }
- cont.innerHTML=lista.map(v=>`<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #f3f4f6"><div><div style="font-size:7px;color:#6b7280;font-weight:700">${v.iso} • ${v.tipo||'Moto'}</div><div style="font-size:9px;font-weight:800;margin-top:2px">${v.cliente}</div><div style="font-size:6px;margin-top:2px;padding:2px 6px;border-radius:10px;display:inline-block;background:${v.pagado?'#dcfce7;color:#166534':'#fee2e2;color:#991b1b'}">${v.pagado?'PAGADO':'DEBE $'+(v.feeKigo||5)}</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:800;color:#10b981">$${Number(v.valor||0).toLocaleString('es-MX')}</div><div style="font-size:7px;color:#6b7280">Neto $${(Number(v.valor||0)-Number(v.feeKigo||0)).toLocaleString('es-MX')}</div></div></div>`).join('');
+ cont.innerHTML=lista.map(v=>`<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #f3f4f6"><div><div style="font-size:7px;color:#6b7280;font-weight:700">${v.iso||v.fecha} • ${v.tipo||v.tipoServicio||'Moto'}</div><div style="font-size:9px;font-weight:800;margin-top:2px">${v.cliente||v.cliente}</div><div style="font-size:6px;margin-top:2px;padding:2px 6px;border-radius:10px;display:inline-block;background:${v.pagado?'#dcfce7;color:#166534':'#fee2e2;color:#991b1b'}">${v.pagado?'PAGADO':'DEBE $'+(v.feeKigo||v.descuento||5)}</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:800;color:#10b981">$${Number(v.valor||0).toLocaleString('es-MX')}</div><div style="font-size:7px;color:#6b7280">Neto $${(Number(v.valor||0)-Number(v.feeKigo||v.descuento||0)).toLocaleString('es-MX')}</div></div></div>`).join('');
   }
-  window.guardarModif=function(){ let nom=document.getElementById('ajNombreVisible').value.trim(); if(nom){ currentNombreVisible=nom; localStorage.setItem('kigoNombreVisible_'+currentRepa, nom); document.getElementById('nombreRepaTxt').innerText=nom; } alert('Actualizado'); }
+window.cambiarFoto=function(e){ let file=e.target.files[0]; if(!file) return; let reader=new FileReader(); reader.onload=function(ev){ let base=ev.target.result; localStorage.setItem('kigoFoto_'+currentRepa, base); currentFoto=base; document.getElementById('logoRepa').innerHTML=`<img src="${base}">`; document.getElementById('previewFoto').innerHTML=`<img src="${base}" style="width:100%;height:100%;object-fit:cover">`; }; reader.readAsDataURL(file); }
+window.guardarModif=function(){ let nom=document.getElementById('ajNombreVisible').value.trim(); if(nom){ currentNombreVisible=nom; localStorage.setItem('kigoNombreVisible_'+currentRepa, nom); document.getElementById('nombreRepaTxt').innerText=nom; } alert('Actualizado'); }
 window.guardarLoginRepa=async function(){
  let nuevoUser = document.getElementById('nuevoUsuario').value.trim();
  let nuevaPass = document.getElementById('nuevaPass').value.trim();
@@ -283,4 +281,4 @@ window.guardarLoginRepa=async function(){
 window.cerrarSesion=function(){ localStorage.removeItem('kigoUser'); localStorage.removeItem('kigoPass'); localStorage.removeItem('kigoLoginTime'); window.location.href='../login/'; }
 </script>
 </body>
-</html>  
+</html>
