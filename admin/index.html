@@ -215,8 +215,11 @@ function resetForm(){
   document.getElementById('mapaBox').style.display='none'; document.getElementById('actionsBox').classList.remove('show');
   document.querySelectorAll('.select-rappi').forEach(s=>s.selectedIndex=0);
 }
+// FIX JOSE SIEMPRE HABILITADO
 function unirRepas(){
-  repas=[...new Set([...cache1,...cache2].filter(Boolean))];
+  let defaults=["Jose","Mario","Luis","Carlos","Pedro","Juan"];
+  let todos=[...defaults,...cache1,...cache2].filter(Boolean);
+  repas=[...new Set(todos.map(r=>r.trim()))];
   const html='<option value="">-- Repartidor --</option>'+repas.map(r=>`<option value="${r}">${r}</option>`).join('')+'<option value="__todos__">TODOS</option>';
   document.querySelectorAll('.select-rappi').forEach(el=>el.innerHTML=html);
 }
@@ -294,8 +297,8 @@ function confirmarFinal(){
   let precioFinal=parseInt(document.getElementById('mPrecioInput').value)||0;
   const pedido={tipo:tmpPedido.tipoLabel, recogerEn:tmpPedido.recoger, entregarEn:tmpPedido.entregar, telefono:tmpPedido.tel, tiempo:tmpPedido.tiempo, distancia:tmpPedido.km, precio:'$'+precioFinal+' MXN', precioNum:precioFinal, estado:'pendiente', subEtapa:'pendiente', repaAsignado:tmpPedido.repa, timestamp:Date.now(), fecha:new Date().toLocaleDateString('es-MX'), hora:new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}), historial:{pendiente:Date.now()}, lat1:posOrigen?.lat||0, lng1:posOrigen?.lng||0, lat2:posDestino?.lat||0, lng2:posDestino?.lng||0};
   db.ref('kigo_pedidos').push(pedido).then(snap=>{
-    const live={cliente:pedido.recogerEn.substring(0,30), dirRecogida:pedido.recogerEn, entrega:pedido.entregarEn, telefono:pedido.telefono, repaAsignado:pedido.repaAsignado==='__todos__'?repas[0]:pedido.repaAsignado, subEtapa:'pendiente', adminKey:snap.key, ts:Date.now(), lat1:pedido.lat1, lng1:pedido.lng1, lat2:pedido.lat2, lng2:pedido.lng2, costoSugerido:precioFinal};
-    if(pedido.repaAsignado==='__todos__') repas.forEach(r=>db.ref('kigoPedidosLive').push({...live,repaAsignado:r})); else db.ref('kigoPedidosLive').push(live);
+    const live={cliente:pedido.recogerEn.substring(0,30), dirRecogida:pedido.recogerEn, entrega:pedido.entregarEn, telefono:pedido.telefono, telefonoEntrega:pedido.telefono, repaAsignado:pedido.repaAsignado==='__todos__'?repas[0]:pedido.repaAsignado, subEtapa:'pendiente', etapa:'en_espera', activo:false, adminKey:snap.key, ts:Date.now(), lat1:pedido.lat1, lng1:pedido.lng1, lat2:pedido.lat2, lng2:pedido.lng2, costoSugerido:precioFinal, tiempo:pedido.tiempo};
+    if(pedido.repaAsignado==='__todos__') repas.forEach(r=>{ if(r!=='TODOS') db.ref('kigoPedidosLive').push({...live,repaAsignado:r}) }); else db.ref('kigoPedidosLive').push(live);
     cerrarModal(); resetForm(); verTab('seg');
   });
 }
