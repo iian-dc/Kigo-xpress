@@ -36,12 +36,10 @@ body{background:#F2F2F2}
 .field-label{font-size:7px;font-weight:800;color:#666;margin-bottom:3px;margin-left:2px;text-transform:uppercase}
 .input-wrap{position:relative}
 .input-rappi{width:100%;padding:10px 32px 10px 10px;border-radius:10px;border:1.5px solid #fff;background:#fff;font-size:11px;font-weight:600;outline:none}
-.input-rappi:focus{border-color:var(--orange)}
-.clear-x{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:#e9e9e9;border:none;display:grid;place-items:center;cursor:pointer;color:#666}
+.select-rappi{width:100%;padding:10px 10px;border-radius:10px;border:1.5px solid var(--black);background:var(--black);color:#fff;font-weight:800;font-size:10px;outline:none}
 .suggestions{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);z-index:40;max-height:160px;overflow-y:auto;display:none;border:1px solid #eee}
 .suggestions.show{display:block}
 .sug{padding:8px 9px;border-bottom:1px solid #f5f5f5;display:flex;gap:7px;cursor:pointer}
-.select-rappi{width:100%;padding:10px 10px;border-radius:10px;border:1.5px solid var(--black);background:var(--black);color:#fff;font-weight:800;font-size:10px;outline:none}
 .actions{display:none;gap:8px;margin-top:14px}
 .actions.show{display:flex}
 .btn-reset{flex:1;padding:13px;border-radius:12px;border:2px solid #FFE500;background:#fff;color:#111;font-weight:900;font-size:10px;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:5px;box-shadow:0 0 0 3px rgba(255,235,0,.25)}
@@ -49,20 +47,22 @@ body{background:#F2F2F2}
 .bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:460px;background:#fff;border-top:1px solid #eee;display:flex;padding:8px 10px 14px;gap:8px;z-index:100;border-radius:16px 16px 0 0;box-shadow:0 -4px 12px rgba(0,0,0,.06)}
 .btab{flex:1;padding:10px;border-radius:10px;border:1.5px solid #eee;background:#fff;font-weight:900;font-size:9px;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:5px;color:#888}
 .btab.active{background:var(--black);color:#fff;border-color:var(--black)}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;place-items:center;padding:16px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;place-items:center;padding:14px}
 .modal-bg.show{display:grid}
-.modal-card{background:#fff;border-radius:18px;padding:16px;width:100%;max-width:360px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.modal-card b{font-size:12px}
-.input-price{width:100%;padding:12px;border-radius:10px;border:2px solid #111;font-weight:900;font-size:16px;margin-top:8px;text-align:center}
+.modal-card{background:#fff;border-radius:20px;padding:16px;width:100%;max-width:380px;box-shadow:0 12px 35px rgba(0,0,0,.3)}
+.resumen-line{font-size:10px;color:#222;background:#F7F7F7;padding:7px 9px;border-radius:8px;margin-bottom:6px;line-height:1.3}
+.input-price{width:100%;padding:12px;border-radius:10px;border:2px solid #111;font-weight:900;font-size:18px;margin-top:8px;text-align:center}
+.btn-cancel{flex:1;padding:13px;border-radius:12px;border:2px solid #FF3A2A;background:#FF3A2A;color:#fff;font-weight:900;font-size:10px;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:5px;box-shadow:0 0 0 3px rgba(255,58,42,.2)}
 .seg-head{display:flex;gap:6px;overflow-x:auto;padding:8px 0}
 .seg-chip{white-space:nowrap;padding:7px 12px;border-radius:999px;border:1.5px solid #eee;background:#fff;font-size:8px;font-weight:900;cursor:pointer}
 .seg-chip.active{background:var(--black);color:#fff;border-color:var(--black)}
 .pedido-card{background:#fff;border:1px solid #eee;border-radius:14px;padding:10px;margin-bottom:8px}
+.clear-x{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:#e9e9e9;border:none;display:grid;place-items:center;cursor:pointer;color:#666}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="top"><div class="top-left"><div class="logo">K</div><div class="top-info"><b id="fecha">HOY</b><span id="subFecha">Dolores Hidalgo</span></div></div><div style="display:flex;gap:6px;align-items:center"><div class="chip" id="clima"><i class="material-icons" style="font-size:11px">wb_sunny</i> --°</div><button class="btn-cerrar" onclick="cerrarSesion()">CERRAR SESIÓN</button></div></div>
+  <div class="top"><div class="top-left"><div class="logo">K</div><div class="top-info"><b id="fecha">HOY</b><span id="subFecha">Dolores Hidalgo</span></div></div><div style="display:flex;gap:6px;align-items:center"><div class="chip" id="clima">--°</div><button class="btn-cerrar" onclick="cerrarSesion()">CERRAR SESIÓN</button></div></div>
   <div id="mapaBox"><div id="map"></div><div class="map-info"><span id="kmTxt">— km</span><span id="priceTxt">$0 MXN</span></div></div>
 
   <div id="panelPedidos" class="panel">
@@ -78,44 +78,43 @@ body{background:#F2F2F2}
     </div>
 
     <div id="formAR" class="card">
-      <div class="field"><div class="field-label">Nombre aliado</div><div class="input-wrap"><input id="inAliado" class="input-rappi" placeholder="Escribe aliado" oninput="checkReady()"><button class="clear-x" onclick="clearI('inAliado')"><i class="material-icons">close</i></button><div id="sugAliados" class="suggestions"></div></div></div>
+      <div class="field"><div class="field-label">Nombre aliado</div><div class="input-wrap"><input id="inAliado" class="input-rappi" placeholder="Escribe aliado" oninput="checkReady()"><div id="sugAliados" class="suggestions"></div></div></div>
       <div id="aliadoDir" style="display:none;font-size:9px;color:#111;background:#fff;padding:8px 9px;border-radius:8px;border:1.5px dashed #FF3A2A;margin-bottom:6px;line-height:1.4"></div>
-      <div class="field"><div class="field-label">¿Dónde entregar? (Google Maps)</div><div class="input-wrap"><input id="inEntrega" class="input-rappi" placeholder="Dirección entrega" oninput="checkReady()"><button class="clear-x" onclick="clearI('inEntrega')"><i class="material-icons">close</i></button></div></div>
-      <div class="field"><div class="field-label">Teléfono entrega</div><div class="input-wrap"><input id="inTel" class="input-rappi" type="tel" placeholder="418..."></div></div>
-      <div class="field"><div class="field-label">Tiempo recoger</div><div class="input-wrap"><input id="inTiempo" class="input-rappi" placeholder="5 min, enseguida"><button class="clear-x" onclick="clearI('inTiempo')"><i class="material-icons">close</i></button></div></div>
-      <div class="field"><div class="field-label">Repartidor</div><select id="selRepaAR" class="select-rappi"></select></div>
+      <div class="field"><div class="field-label">¿Dónde entregar? (Google Maps)</div><div class="input-wrap"><input id="inEntrega" class="input-rappi" placeholder="Dirección entrega" oninput="checkReady()"></div></div>
+      <div class="field"><div class="field-label">Teléfono entrega</div><div class="input-wrap"><input id="inTel" class="input-rappi" type="tel" placeholder="418..." oninput="checkReady()"></div></div>
+      <div class="field"><div class="field-label">Tiempo recoger</div><div class="input-wrap"><input id="inTiempo" class="input-rappi" placeholder="5 min, enseguida" oninput="checkReady()"></div></div>
+      <div class="field"><div class="field-label">Repartidor</div><select id="selRepaAR" class="select-rappi" onchange="checkReady()"></select></div>
     </div>
 
     <div id="formAC" class="card" style="display:none">
-      <div class="field"><div class="field-label">Producto que se va a comprar</div><div class="input-wrap"><input id="inProdAC" class="input-rappi" placeholder="Ej: 1kg manzana" oninput="checkReady()"><button class="clear-x" onclick="clearI('inProdAC')"><i class="material-icons">close</i></button></div></div>
-      <div class="field"><div class="field-label">Dirección donde comprar (Google Maps)</div><div class="input-wrap"><input id="inDirComprarAC" class="input-rappi" placeholder="Dirección tienda" oninput="checkReady()"><button class="clear-x" onclick="clearI('inDirComprarAC')"><i class="material-icons">close</i></button></div></div>
-      <div class="field"><div class="field-label">Nombre aliado entrega</div><div class="input-wrap"><input id="inAliadoEntregaAC" class="input-rappi" placeholder="Toca para elegir aliado" oninput="checkReady()"><button class="clear-x" onclick="clearI('inAliadoEntregaAC')"><i class="material-icons">close</i></button><div id="sugAliadoEntregaAC" class="suggestions"></div></div></div>
-      <div id="aliadoEntregaDirAC" style="display:none;font-size:9px;color:#111;background:#fff;padding:8px 9px;border-radius:8px;border:1.5px dashed #111;margin-bottom:6px;line-height:1.4"></div>
-      <div class="field"><div class="field-label">Repartidor</div><select id="selRepaAC" class="select-rappi"></select></div>
+      <div class="field"><div class="field-label">Producto que se va a comprar</div><div class="input-wrap"><input id="inProdAC" class="input-rappi" placeholder="Ej: 1kg manzana" oninput="checkReady()"></div></div>
+      <div class="field"><div class="field-label">Dirección donde comprar (Google Maps)</div><div class="input-wrap"><input id="inDirComprarAC" class="input-rappi" placeholder="Dirección tienda" oninput="checkReady()"></div></div>
+      <div class="field"><div class="field-label">Nombre aliado entrega</div><div class="input-wrap"><input id="inAliadoEntregaAC" class="input-rappi" placeholder="Toca para elegir aliado" oninput="checkReady()"><div id="sugAliadoEntregaAC" class="suggestions"></div></div></div>
+      <div id="aliadoEntregaDirAC" style="display:none;font-size:9px;color:#111;background:#fff;padding:8px 9px;border-radius:8px;border:1.5px dashed #111;margin-bottom:6px"></div>
+      <div class="field"><div class="field-label">Repartidor</div><select id="selRepaAC" class="select-rappi" onchange="checkReady()"></select></div>
     </div>
 
     <div id="formNR" class="card" style="display:none">
       <div class="field"><div class="field-label">Nombre del cliente</div><div class="input-wrap"><input id="inNomNR" class="input-rappi" placeholder="Nombre cliente" oninput="checkReady()"></div></div>
       <div class="field"><div class="field-label">Dirección recogida (Maps)</div><div class="input-wrap"><input id="inDirRecNR" class="input-rappi" placeholder="Dirección recogida" oninput="checkReady()"></div></div>
       <div class="field"><div class="field-label">Dirección entrega (Maps)</div><div class="input-wrap"><input id="inDirEntNR" class="input-rappi" placeholder="Dirección entrega" oninput="checkReady()"></div></div>
-      <div class="field"><div class="field-label">Repartidor</div><select id="selRepaNR" class="select-rappi"></select></div>
+      <div class="field"><div class="field-label">Repartidor</div><select id="selRepaNR" class="select-rappi" onchange="checkReady()"></select></div>
     </div>
 
     <div id="formNC" class="card" style="display:none">
       <div class="field"><div class="field-label">Producto</div><div class="input-wrap"><input id="inProdNC" class="input-rappi" placeholder="Producto" oninput="checkReady()"></div></div>
       <div class="field"><div class="field-label">Dirección comprar (Maps)</div><div class="input-wrap"><input id="inDirComprarNC" class="input-rappi" placeholder="Dirección tienda" oninput="checkReady()"></div></div>
       <div class="field"><div class="field-label">Dirección entrega (Maps)</div><div class="input-wrap"><input id="inDirEntNC" class="input-rappi" placeholder="Dirección entrega" oninput="checkReady()"></div></div>
-      <div class="field"><div class="field-label">Repartidor</div><select id="selRepaNC" class="select-rappi"></select></div>
+      <div class="field"><div class="field-label">Repartidor</div><select id="selRepaNC" class="select-rappi" onchange="checkReady()"></select></div>
     </div>
 
     <div id="actionsBox" class="actions">
       <button class="btn-reset" onclick="resetForm()"><i class="material-icons" style="font-size:16px">restart_alt</i> REESTABLECER</button>
-      <button id="btnVerde" class="btn-verde" onclick="abrirModal()"><i class="material-icons" style="font-size:16px">check_circle</i> CONFIRMAR SERVICIO</button>
+      <button id="btnVerde" class="btn-verde" onclick="abrirModal()"><i class="material-icons" style="font-size:16px">check_circle</i> CONFIRMAR PEDIDO</button>
     </div>
   </div>
 
   <div id="panelSeg" class="panel" style="display:none">
-    <div class="label-mini">Seguimiento</div>
     <div class="seg-head">
       <button class="seg-chip active" onclick="filtrarSeg('todos',this)">TODOS</button>
       <button class="seg-chip" onclick="filtrarSeg('aceptado',this)">ACEPTADOS</button>
@@ -128,21 +127,27 @@ body{background:#F2F2F2}
   </div>
 
   <div class="bottom">
-    <button id="bPedidos" class="btab active" onclick="verTab('pedidos')"><i class="material-icons" style="font-size:14px">receipt_long</i> PEDIDOS</button>
-    <button id="bSeg" class="btab" onclick="verTab('seg')"><i class="material-icons" style="font-size:14px">local_shipping</i> SEGUIMIENTO</button>
+    <button id="bPedidos" class="btab active" onclick="verTab('pedidos')">PEDIDOS</button>
+    <button id="bSeg" class="btab" onclick="verTab('seg')">SEGUIMIENTO</button>
   </div>
 </div>
 
 <div id="modalPrecio" class="modal-bg">
   <div class="modal-card">
-    <div style="text-align:center"><i class="material-icons" style="font-size:36px;color:#00C851">local_shipping</i></div>
-    <b id="mTipo" style="display:block;text-align:center;margin-top:6px;font-size:11px"></b>
-    <div id="mKm" style="text-align:center;font-size:10px;color:#666;margin-top:4px"></div>
-    <div class="label-mini" style="margin-top:12px">Precio del servicio (editable)</div>
-    <input id="mPrecioInput" class="input-price" type="number" placeholder="$0 MXN">
+    <div style="text-align:center"><i class="material-icons" style="font-size:34px;color:#00C851">receipt_long</i></div>
+    <b id="mTipo" style="display:block;text-align:center;margin-top:6px;font-size:12px;letter-spacing:.5px"></b>
+    <div style="margin-top:12px">
+      <div id="mRecoger" class="resumen-line"></div>
+      <div id="mEntregar" class="resumen-line"></div>
+      <div id="mTel" class="resumen-line"></div>
+      <div id="mTiempo" class="resumen-line"></div>
+      <div id="mKm" class="resumen-line"></div>
+    </div>
+    <div class="label-mini" style="margin-top:10px">Precio del servicio (editable)</div>
+    <input id="mPrecioInput" class="input-price" type="number">
     <div style="display:flex;gap:8px;margin-top:14px">
-      <button class="btn-reset" style="flex:1" onclick="cerrarModal()"><i class="material-icons" style="font-size:16px">close</i> CANCELAR</button>
-      <button class="btn-verde" style="flex:1" onclick="confirmarFinal()"><i class="material-icons" style="font-size:16px">check</i> CONFIRMAR</button>
+      <button class="btn-cancel" onclick="cerrarModal()"><i class="material-icons" style="font-size:16px">close</i> CANCELAR</button>
+      <button class="btn-verde" onclick="confirmarFinal()"><i class="material-icons" style="font-size:16px">check</i> CONFIRMAR</button>
     </div>
   </div>
 </div>
@@ -155,7 +160,7 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 let tipo='aliados', sub='recoger', clientes=[], repas=[], map, ds, dr, pedidosAll=[], filtroSeg='todos';
 let posOrigen=null, posDestino=null, posCompra=null;
-let tmpPedido=null;
+let tmpPedido=null, cache1=[], cache2=[];
 
 function cerrarSesion(){ if(confirm('¿Cerrar sesión?')) location.reload(); }
 function verTab(t){ document.getElementById('panelPedidos').style.display=t==='pedidos'?'block':'none'; document.getElementById('panelSeg').style.display=t==='seg'?'block':'none'; document.getElementById('bPedidos').classList.toggle('active',t==='pedidos'); document.getElementById('bSeg').classList.toggle('active',t==='seg'); }
@@ -171,11 +176,8 @@ function resetForm(){
   document.querySelectorAll('.input-rappi').forEach(i=>i.value=''); posOrigen=null; posDestino=null; posCompra=null;
   document.getElementById('aliadoDir').style.display='none'; document.getElementById('aliadoEntregaDirAC').style.display='none';
   document.getElementById('mapaBox').style.display='none'; document.getElementById('actionsBox').classList.remove('show');
+  document.querySelectorAll('.select-rappi').forEach(s=>s.selectedIndex=0);
 }
-function clearI(id){ document.getElementById(id).value=''; if(id==='inAliado'){posOrigen=null;document.getElementById('aliadoDir').style.display='none';} if(id==='inAliadoEntregaAC'){posDestino=null;document.getElementById('aliadoEntregaDirAC').style.display='none';} if(id==='inEntrega')posDestino=null; checkReady(); }
-
-// REPARTIDORES UNIFICADOS - FIX 5 REPAS
-let cache1=[], cache2=[];
 function unirRepas(){
   let set=new Set([...cache1,...cache2].filter(Boolean));
   repas=Array.from(set);
@@ -184,18 +186,16 @@ function unirRepas(){
 }
 db.ref('repartidoresKigo').on('value', s=>{
   const v=s.val()||{}; cache1=[];
-  Object.values(v).forEach(r=>{ if(typeof r==='string') cache1.push(r); else if(r&&r.nombre) cache1.push(r.nombre); else if(r&&r.nombreRepa) cache1.push(r.nombreRepa); });
+  Object.values(v).forEach(r=>{ if(typeof r==='string') cache1.push(r); else if(r&&r.nombre) cache1.push(r.nombre); });
   if(!cache1.length) cache1=Object.keys(v);
   unirRepas();
 });
 db.ref('kigoRepasFull').on('value', s=>{ cache2=Object.keys(s.val()||{}); unirRepas(); });
-
 db.ref('clientesKigo').on('value', s=>{ clientes=Object.values(s.val()||{}).filter(c=>c&&c.nombre); });
 
 function formatoInfo(c){
   let d=c.direccion&&c.direccion.trim()? c.direccion : 'No especificada';
   let t=c.telefono&&c.telefono.trim()? c.telefono : 'No especificada';
-  if(d==='No especificada'&&t==='No especificada') return 'No especificada';
   return `<b>${c.nombre}</b><br>📍 ${d}<br>📞 ${t}`;
 }
 function attachSug(iId,sId,cb){
@@ -203,7 +203,7 @@ function attachSug(iId,sId,cb){
   const render=(f='')=>{
     sug.innerHTML=''; let lista=clientes.filter(x=>(x.nombre||'').toLowerCase().includes(f.toLowerCase())).slice(0,12);
     if(!lista.length){sug.innerHTML='<div style="padding:8px;text-align:center;font-size:9px;color:#888">Sin resultados</div>'; sug.classList.add('show'); return;}
-    lista.forEach(cl=>{ const d=document.createElement('div'); d.className='sug'; d.innerHTML=`<i class="material-icons" style="font-size:15px;color:#FF3A2A">store</i><div><div style="font-weight:800;font-size:10px">${cl.nombre}</div><div style="font-size:8px;color:#888">${(cl.direccion||'No especificada').substring(0,40)}</div></div>`; d.onclick=()=>{inp.value=cl.nombre; sug.classList.remove('show'); cb(cl); checkReady();}; sug.appendChild(d); });
+    lista.forEach(cl=>{ const d=document.createElement('div'); d.className='sug'; d.innerHTML=`<div><div style="font-weight:800;font-size:10px">${cl.nombre}</div><div style="font-size:8px;color:#888">${(cl.direccion||'No especificada').substring(0,40)}</div></div>`; d.onclick=()=>{inp.value=cl.nombre; sug.classList.remove('show'); cb(cl); checkReady();}; sug.appendChild(d); });
     sug.classList.add('show');
   };
   inp.addEventListener('focus',e=>render(e.target.value)); inp.addEventListener('input',e=>render(e.target.value));
@@ -213,11 +213,13 @@ attachSug('inAliadoEntregaAC','sugAliadoEntregaAC',cl=>{ document.getElementById
 
 function checkReady(){
   let ok=false;
-  if(tipo==='aliados'&&sub==='recoger'){ ok=document.getElementById('inAliado').value.trim() && document.getElementById('inEntrega').value.trim(); }
-  if(tipo==='aliados'&&sub==='comprar'){ ok=document.getElementById('inProdAC').value.trim() && document.getElementById('inDirComprarAC').value.trim() && document.getElementById('inAliadoEntregaAC').value.trim(); }
-  if(tipo==='nuevos'&&sub==='recoger'){ ok=document.getElementById('inNomNR').value.trim() && document.getElementById('inDirRecNR').value.trim() && document.getElementById('inDirEntNR').value.trim(); }
-  if(tipo==='nuevos'&&sub==='comprar'){ ok=document.getElementById('inProdNC').value.trim() && document.getElementById('inDirComprarNC').value.trim() && document.getElementById('inDirEntNC').value.trim(); }
-  if(ok) document.getElementById('actionsBox').classList.add('show');
+  if(tipo==='aliados'&&sub==='recoger'){
+    ok=document.getElementById('inAliado').value.trim() && document.getElementById('inEntrega').value.trim() && document.getElementById('selRepaAR').value;
+  }
+  if(tipo==='aliados'&&sub==='comprar'){ ok=document.getElementById('inProdAC').value.trim() && document.getElementById('inDirComprarAC').value.trim() && document.getElementById('inAliadoEntregaAC').value.trim() && document.getElementById('selRepaAC').value; }
+  if(tipo==='nuevos'&&sub==='recoger'){ ok=document.getElementById('inNomNR').value.trim() && document.getElementById('inDirRecNR').value.trim() && document.getElementById('inDirEntNR').value.trim() && document.getElementById('selRepaNR').value; }
+  if(tipo==='nuevos'&&sub==='comprar'){ ok=document.getElementById('inProdNC').value.trim() && document.getElementById('inDirComprarNC').value.trim() && document.getElementById('inDirEntNC').value.trim() && document.getElementById('selRepaNC').value; }
+  document.getElementById('actionsBox').classList.toggle('show', ok);
 }
 
 function initGoogle(){
@@ -231,7 +233,7 @@ function initGoogle(){
   const a5=new google.maps.places.Autocomplete(document.getElementById('inDirComprarNC'),opts); a5.addListener('place_changed',()=>{const p=a5.getPlace(); if(!p.geometry) return; posCompra={lat:p.geometry.location.lat(),lng:p.geometry.location.lng()}; document.getElementById('inDirComprarNC').value=p.formatted_address; posOrigen=posCompra; intentarCot();});
   const a6=new google.maps.places.Autocomplete(document.getElementById('inDirEntNC'),opts); a6.addListener('place_changed',()=>{const p=a6.getPlace(); if(!p.geometry) return; posDestino={lat:p.geometry.location.lat(),lng:p.geometry.location.lng()}; document.getElementById('inDirEntNC').value=p.formatted_address; intentarCot();});
   const hoy=new Date(); document.getElementById('fecha').innerText=hoy.toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'}).toUpperCase();
-  fetch(`https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City`).then(r=>r.json()).then(d=>{ if(d.current){ document.getElementById('clima').innerHTML=`<i class="material-icons" style="font-size:11px">wb_sunny</i> ${Math.round(d.current.temperature_2m)}°`; document.getElementById('subFecha').innerText=`${Math.round(d.current.temperature_2m)}°C • Dolores Hidalgo`; }});
+  fetch(`https://api.open-meteo.com/v1/forecast?latitude=21.1561&longitude=-100.9333&current=temperature_2m&timezone=America/Mexico_City`).then(r=>r.json()).then(d=>{ if(d.current){ document.getElementById('clima').innerHTML=Math.round(d.current.temperature_2m)+'°'; document.getElementById('subFecha').innerText=Math.round(d.current.temperature_2m)+'°C • Dolores Hidalgo'; }});
 }
 function intentarCot(){
   let origen=posOrigen, destino=posDestino;
@@ -250,23 +252,25 @@ function intentarCot(){
 }
 function abrirModal(){
   const km=document.getElementById('btnVerde').dataset.km||'— km', precio=document.getElementById('btnVerde').dataset.num||35;
+  let recoger='', entregar='', tel='', tiempo='', repa='';
+  if(tipo==='aliados'&&sub==='recoger'){ recoger=document.getElementById('inAliado').value+' - '+(document.getElementById('aliadoDir').innerText||''); entregar=document.getElementById('inEntrega').value; tel=document.getElementById('inTel').value||'No especificado'; tiempo=document.getElementById('inTiempo').value||'No especificado'; repa=document.getElementById('selRepaAR').value; }
+  if(tipo==='aliados'&&sub==='comprar'){ recoger=document.getElementById('inDondeAC').value+' - '+document.getElementById('inProdAC').value; entregar=document.getElementById('inAliadoEntregaAC').value; tel='—'; tiempo='—'; repa=document.getElementById('selRepaAC').value; }
+  if(tipo==='nuevos'&&sub==='recoger'){ recoger=document.getElementById('inDirRecNR').value; entregar=document.getElementById('inDirEntNR').value; tel='—'; tiempo='—'; repa=document.getElementById('selRepaNR').value; }
+  if(tipo==='nuevos'&&sub==='comprar'){ recoger=document.getElementById('inDondeNC').value+' - '+document.getElementById('inProdNC').value; entregar=document.getElementById('inDirEntNC').value; tel='—'; tiempo='—'; repa=document.getElementById('selRepaNC').value; }
   document.getElementById('mTipo').innerText=(tipo+' - '+sub).toUpperCase();
-  document.getElementById('mKm').innerText=km;
+  document.getElementById('mRecoger').innerText='📍 Recoger en: '+recoger;
+  document.getElementById('mEntregar').innerText='📦 Entregar en: '+entregar;
+  document.getElementById('mTel').innerText='📞 Teléfono: '+tel;
+  document.getElementById('mTiempo').innerText='⏱ Tiempo: '+tiempo+' • Repa: '+repa;
+  document.getElementById('mKm').innerText='🛣️ Distancia: '+km;
   document.getElementById('mPrecioInput').value=precio;
   document.getElementById('modalPrecio').classList.add('show');
-  // armar tmp pedido
-  let recoger='', entregar='', tel='', tiempo='', repa='';
-  if(tipo==='aliados'&&sub==='recoger'){ recoger=document.getElementById('inAliado').value; entregar=document.getElementById('inEntrega').value; tel=document.getElementById('inTel').value; tiempo=document.getElementById('inTiempo').value; repa=document.getElementById('selRepaAR').value; }
-  if(tipo==='aliados'&&sub==='comprar'){ recoger=document.getElementById('inDondeAC').value+' - '+document.getElementById('inProdAC').value; entregar=document.getElementById('inAliadoEntregaAC').value; repa=document.getElementById('selRepaAC').value; }
-  if(tipo==='nuevos'&&sub==='recoger'){ recoger=document.getElementById('inDirRecNR').value; entregar=document.getElementById('inDirEntNR').value; repa=document.getElementById('selRepaNR').value; }
-  if(tipo==='nuevos'&&sub==='comprar'){ recoger=document.getElementById('inDondeNC').value+' - '+document.getElementById('inProdNC').value; entregar=document.getElementById('inDirEntNC').value; repa=document.getElementById('selRepaNC').value; }
-  tmpPedido={recoger,entregar,tel,tiempo,repa,km};
+  tmpPedido={recoger,entregar,tel,tiempo,repa,km, tipoLabel:(tipo+' - '+sub).toUpperCase()};
 }
 function cerrarModal(){ document.getElementById('modalPrecio').classList.remove('show'); }
 function confirmarFinal(){
-  if(!tmpPedido.repa) return alert('Selecciona repartidor');
   let precioFinal=parseInt(document.getElementById('mPrecioInput').value)||0;
-  const pedido={tipo:`${tipo} - ${sub}`, recogerEn:tmpPedido.recoger, entregarEn:tmpPedido.entregar, telefono:tmpPedido.tel, tiempo:tmpPedido.tiempo, distancia:tmpPedido.km, precio:'$'+precioFinal+' MXN', precioNum:precioFinal, estado:'pendiente', subEtapa:'pendiente', repaAsignado:tmpPedido.repa, timestamp:Date.now(), fecha:new Date().toLocaleString(), historial:{pendiente:Date.now()}, lat1:posOrigen?.lat||0, lng1:posOrigen?.lng||0, lat2:posDestino?.lat||0, lng2:posDestino?.lng||0};
+  const pedido={tipo:tmpPedido.tipoLabel, recogerEn:tmpPedido.recoger, entregarEn:tmpPedido.entregar, telefono:tmpPedido.tel, tiempo:tmpPedido.tiempo, distancia:tmpPedido.km, precio:'$'+precioFinal+' MXN', precioNum:precioFinal, estado:'pendiente', subEtapa:'pendiente', repaAsignado:tmpPedido.repa, timestamp:Date.now(), fecha:new Date().toLocaleString(), historial:{pendiente:Date.now()}, lat1:posOrigen?.lat||0, lng1:posOrigen?.lng||0, lat2:posDestino?.lat||0, lng2:posDestino?.lng||0};
   db.ref('kigo_pedidos').push(pedido).then(snap=>{
     const live={cliente:pedido.recogerEn.substring(0,30), dirRecogida:pedido.recogerEn, entrega:pedido.entregarEn, telefono:pedido.telefono, repaAsignado:pedido.repaAsignado==='__todos__'?repas[0]:pedido.repaAsignado, subEtapa:'pendiente', adminKey:snap.key, ts:Date.now(), lat1:pedido.lat1, lng1:pedido.lng1, lat2:pedido.lat2, lng2:pedido.lng2, costoSugerido:precioFinal};
     if(pedido.repaAsignado==='__todos__') repas.forEach(r=>db.ref('kigoPedidosLive').push({...live,repaAsignado:r})); else db.ref('kigoPedidosLive').push(live);
@@ -278,10 +282,9 @@ db.ref('kigo_pedidos').on('value', s=>{
 });
 function filtrarSeg(f,el){ filtroSeg=f; document.querySelectorAll('.seg-chip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); renderSeg(); }
 function renderSeg(){
-  const cont=document.getElementById('listaSeg'); if(!cont) return;
-  let lista=pedidosAll; if(filtroSeg!=='todos') lista=lista.filter(p=> (p.estado||p.subEtapa||'').toLowerCase().includes(filtroSeg));
-  if(!lista.length){ cont.innerHTML='<div style="text-align:center;color:#999;font-size:11px;padding:20px">Sin pedidos en '+filtroSeg.toUpperCase()+'</div>'; return; }
-  cont.innerHTML=lista.map(p=>`<div class="pedido-card"><div style="display:flex;justify-content:space-between"><b style="font-size:11px">${p.tipo||''}</b><span style="font-size:8px;background:#111;color:#fff;padding:3px 8px;border-radius:999px">${(p.estado||p.subEtapa||'pendiente').toUpperCase()}</span></div><div style="font-size:9px;color:#555;margin-top:6px"><b>Recoger:</b> ${p.recogerEn||''}<br><b>Entregar:</b> ${p.entregarEn||''}<br><b>Repa:</b> ${p.repaAsignado||''} • ${p.distancia||''} • ${p.precio||''}</div></div>`).join('');
+  const cont=document.getElementById('listaSeg'); let lista=pedidosAll; if(filtroSeg!=='todos') lista=lista.filter(p=> (p.estado||p.subEtapa||'').toLowerCase().includes(filtroSeg));
+  if(!lista.length){ cont.innerHTML='<div style="text-align:center;color:#999;font-size:11px;padding:20px">Sin pedidos</div>'; return; }
+  cont.innerHTML=lista.map(p=>`<div class="pedido-card"><div style="display:flex;justify-content:space-between"><b style="font-size:10px">${p.tipo||''}</b><span style="font-size:8px;background:#111;color:#fff;padding:3px 8px;border-radius:999px">${(p.estado||p.subEtapa||'').toUpperCase()}</span></div><div style="font-size:9px;color:#444;margin-top:6px"><b>Recoger:</b> ${p.recogerEn||''}<br><b>Entregar:</b> ${p.entregarEn||''}<br><b>Tel:</b> ${p.telefono||'No especificado'}<br><b>Tiempo:</b> ${p.tiempo||'—'} • ${p.distancia||''} • ${p.precio||''}</div></div>`).join('');
 }
 document.addEventListener('click',e=>{ if(!e.target.closest('.input-wrap')) document.querySelectorAll('.suggestions').forEach(s=>s.classList.remove('show')); });
 </script>
