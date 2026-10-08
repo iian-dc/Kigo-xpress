@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kigo Xpress - La solución a tu alcance</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{height:100vh;overflow:hidden;background:#f5f5f5;display:flex;flex-direction:column}
+#map{flex:1.2;position:relative;background:#e8e8e8}
+#map iframe{width:100%;height:100%;border:0}
+.logo-overlay{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:white;padding:8px 22px;border-radius:0 0 20px 20px;z-index:10;
+  box-shadow:0 4px 15px rgba(0,0,0,.15);text-align:center;min-width:280px
+}
+.logo-text{font-family:'Dancing Script',cursive;font-size:38px;font-weight:700;line-height:1}
+.logo-text span.red{color:#e30613}
+.logo-text span.black{color:#000}
+.sublogo{font-size:10px;letter-spacing:2px;color:#000;font-weight:600;margin-top:2px}
+.center-btn{
+  position:absolute;bottom:20px;right:20px;z-index:10;
+  width:56px;height:56px;background:white;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);border:0;cursor:pointer
+}
+.bottom-sheet{
+  background:white;border-radius:24px 24px 0 0;margin-top:-18px;z-index:20;
+  padding:14px 18px 20px;box-shadow:0 -8px 30px rgba(0,0,0,.15);
+  flex:.8;display:flex;flex-direction:column
+}
+.handle{width:48px;height:5px;background:#d1d5db;border-radius:10px;margin:0 auto 16px}
+.input-card{
+  display:flex;align-items:center;gap:12px;
+  border:1.5px solid #e5e7eb;border-radius:22px;
+  padding:14px 16px;margin-bottom:12px;cursor:pointer;
+  background:white
+}
+.icon-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon-circle.red{background:#e30613}
+.icon-circle.green{background:#149414}
+.text-group{flex:1}
+.label{font-size:11px;color:#8b93a5;font-weight:600;letter-spacing:.5px}
+.placeholder{font-size:15px;color:#1f2937;margin-top:2px;font-weight:500}
+.info-row{
+  display:flex;background:#fef2f2;border-radius:16px;
+  padding:14px 16px;margin:6px 0 16px;gap:10px
+}
+.info-col{flex:1;display:flex;align-items:center;gap:10px}
+.divider{width:1px;background:#f3d2d2}
+.btn-continuar{
+  background:#e30613;color:white;border:0;border-radius:50px;
+  padding:16px;font-size:18px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  cursor:pointer;width:100%;box-shadow:0 6px 18px rgba(227,6,19,.35)
+}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end}
+.modal.active{display:flex}
+.modal-content{background:white;width:100%;border-radius:24px 24px 0 0;padding:20px;max-height:80vh}
+.modal input{width:100%;padding:16px;border:2px solid #e5e7eb;border-radius:14px;font-size:16px;margin:12px 0;outline:none}
+.modal input:focus{border-color:#e30613}
+</style>
+</head>
+<body>
+<div id="map">
+  <div class="logo-overlay">
+    <div class="logo-text"><span class="black">Kigo</span> <span class="red">Xpress</span></div>
+    <div class="sublogo">LA SOLUCIÓN A TU ALCANCE</div>
+  </div>
+  <iframe id="gmap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d59624.6!2d-100.95!3d21.155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842b0f0a5d6e5b6b%3A0x0!2sDolores%20Hidalgo%2C%20Gto.!5e0!3m2!1ses!2smx!4v1" allowfullscreen="" loading="lazy"></iframe>
+  <button class="center-btn" onclick="centrarMapa()">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/></svg>
+  </button>
+</div>
+<div class="bottom-sheet">
+  <div class="handle"></div>
+  <div class="input-card" onclick="abrirModal('recogida')">
+    <div class="icon-circle red"><svg viewBox="0 0 24 24" width="28" height="28" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+    <div class="text-group"><div class="label">DIRECCIÓN DE RECOGIDA</div><div class="placeholder" id="txt-recogida">Ingresa la dirección de recogida</div></div><div>❯</div>
+  </div>
+  <div class="input-card" onclick="abrirModal('entrega')">
+    <div class="icon-circle green"><svg viewBox="0 0 24 24" width="28" height="28" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+    <div class="text-group"><div class="label">DIRECCIÓN DE ENTREGA</div><div class="placeholder" id="txt-entrega">Ingresa la dirección de entrega</div></div><div>❯</div>
+  </div>
+  <div class="info-row">
+    <div class="info-col"><div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center">📍</div><div><div class="label">DISTANCIA</div><div id="txt-distancia" style="font-weight:700">—</div></div></div>
+    <div class="divider"></div>
+    <div class="info-col"><div style="width:32px;height:32px;border:2px solid #1f2937;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800">$</div><div><div class="label">PRECIO ESTIMADO</div><div id="txt-precio" style="font-weight:700">—</div></div></div>
+  </div>
+  <button class="btn-continuar" onclick="continuar()">🛵 | Continuar →</button>
+</div>
+<div class="modal" id="modal-recogida" onclick="if(event.target.id==='modal-recogida')this.classList.remove('active')"><div class="modal-content"><h3>¿Dónde recogemos?</h3><input type="text" id="input-recogida" placeholder="Ej: Calle Hidalgo 123, Dolores Hidalgo"><button class="btn-continuar" onclick="guardarDireccion('recogida')">Guardar dirección</button></div></div>
+<div class="modal" id="modal-entrega" onclick="if(event.target.id==='modal-entrega')this.classList.remove('active')"><div class="modal-content"><h3>¿Dónde entregamos?</h3><input type="text" id="input-entrega" placeholder="Ej: Col. del Carmen, Dolores"><button class="btn-continuar" onclick="guardarDireccion('entrega')">Guardar dirección</button></div></div>
+<script>
+let recogida='', entrega='';
+function abrirModal(t){document.getElementById('modal-'+t).classList.add('active')}
+function guardarDireccion(t){
+  let v=document.getElementById('input-'+t).value.trim();
+  if(!v){alert('Escribe una dirección');return;}
+  if(t==='recogida'){recogida=v;document.getElementById('txt-recogida').textContent=v;}
+  else{entrega=v;document.getElementById('txt-entrega').textContent=v;}
+  document.getElementById('modal-'+t).classList.remove('active');
+  if(recogida&&entrega)calcular();
+}
+function calcular(){
+  let d=(Math.random()*5+0.5).toFixed(1);let p=Math.round(d*18+25);
+  document.getElementById('txt-distancia').textContent=d+' km';
+  document.getElementById('txt-precio').textContent='$'+p+' MXN';
+  let q=encodeURIComponent(recogida+' a '+entrega+' Dolores Hidalgo');
+  document.getElementById('gmap').src=`https://www.google.com/maps?q=${q}&z=14&output=embed`;
+}
+function centrarMapa(){document.getElementById('gmap').src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d59624!2d-100.95!3d21.155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842b0f0a5d6e5b6b%3A0x0!2sDolores%20Hidalgo!5e0!3m2!1ses!2smx!4v1"}
+function continuar(){
+  if(!recogida||!entrega){alert('Ingresa recogida y entrega');return;}
+  let m=`Hola Kigo Xpress! Quiero un servicio:%0ARecogida: ${recogida}%0AEntrega: ${entrega}%0ADistancia: ${document.getElementById('txt-distancia').textContent}%0APrecio: ${document.getElementById('txt-precio').textContent}`;
+  window.open(`https://wa.me/524181103030?text=${m}`,'_blank');
+}
+</script>
+</body>
+</html>
