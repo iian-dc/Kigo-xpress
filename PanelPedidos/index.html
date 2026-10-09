@@ -33,7 +33,6 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 .btn-x{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;border:0;background:#f3f4f6;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:10px;font-weight:700;color:#6b7280}
 .btn-x.show{display:flex}
 .suggestions{position:absolute;top:100%;left:0;right:0;background:#fff;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);max-height:140px;overflow-y:auto;z-index:30;display:none;margin-top:3px;border:1px solid #eee}
-/* TARJETITA PEQUEÑA - MISMO TAMAÑO QUE DEMAS TEXTOS */
 .card-aliado{display:none;background:#f9fafb;border:1px solid #eee;border-radius:8px;padding:5px 8px;margin-bottom:5px}
 .card-aliado.show{display:block}
 .card-aliado.row{display:flex;align-items:center;gap:4px;font-size:8px;color:#4b5563;line-height:1.3}
@@ -43,6 +42,18 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 .time-chip.active{background:#e30613;color:#fff;border-color:#e30613}
 .btn-continuar{background:#e30613;color:#fff;border:0;border-radius:50px;padding:11px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;cursor:pointer;margin-top:8px}
 .btn-continuar:disabled{background:#fca5a5}
+
+/* MODAL REPARTIDOR CENTRADO */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-card{background:#fff;border-radius:18px;padding:16px;width:100%;max-width:320px;box-shadow:0 20px 40px rgba(0,0,0,.3);animation:pop.2s ease}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-title{font-size:12px;font-weight:800;text-align:center;margin-bottom:12px;color:#111}
+.select-repa{width:100%;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;font-size:12px;font-weight:600;outline:none;background:#fff;height:40px;margin-bottom:14px}
+.modal-btns{display:flex;gap:8px}
+.btn-cancel{flex:1;background:#fee2e2;color:#e30613;border:1.5px solid #fecaca;border-radius:10px;padding:10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-send{flex:1;background:#00c853;color:#fff;border:0;border-radius:10px;padding:10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+
 .form-box{display:none}.form-box.active{display:block}
 .pac-container{z-index:9999!important}
 </style>
@@ -51,6 +62,20 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 
 <div id="map">
   <button class="center-btn" id="btnCenter" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></button>
+</div>
+
+<!-- TARJETA REPARTIDOR EN MEDIO -->
+<div class="modal-overlay" id="modalRepartidor">
+  <div class="modal-card">
+    <div class="modal-title">Seleccionar Repartidor</div>
+    <select id="selectRepartidor" class="select-repa">
+      <option value="">Cargando repartidores...</option>
+    </select>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="btnCancelarEnvio"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg> Cancelar</button>
+      <button class="btn-send" id="btnEnviarPedido"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Enviar</button>
+    </div>
+  </div>
 </div>
 
 <div class="bottom-sheet">
@@ -78,12 +103,10 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
       <button class="btn-x" id="x-aliado" onclick="clearField('inputAliado','x-aliado')">✕</button>
       <div class="suggestions" id="sugAliados"></div>
     </div>
-
     <div class="card-aliado" id="cardAliadoInfo">
       <div class="row"><b>DIR:</b><span id="aliadoDir">—</span></div>
       <div class="row"><b>TEL:</b><span id="aliadoTel">—</span></div>
     </div>
-
     <div class="label">DIRECCIÓN DE ENTREGA</div>
     <div class="input-wrap">
       <input type="text" id="inputEntregaDirecta" class="input-mini" placeholder="Escribe dirección de entrega..." autocomplete="off">
@@ -111,6 +134,12 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
       <input type="text" id="tiempoManual" class="input-mini" placeholder="O escribe: lo antes posible">
       <button class="btn-x" id="x-tiempo" onclick="clearField('tiempoManual','x-tiempo')">✕</button>
     </div>
+    <!-- NUEVO CUADRO DE PRECIO MANUAL -->
+    <div class="label" style="margin-top:6px">PRECIO</div>
+    <div class="input-wrap">
+      <input type="number" id="precioManual" class="input-mini" placeholder="$0">
+      <button class="btn-x" id="x-precio" onclick="clearField('precioManual','x-precio')">✕</button>
+    </div>
   </div>
 
   <div class="form-box" id="form-aliados-comprar"></div>
@@ -132,9 +161,21 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-let aliadosDB = []; let aliadoSeleccionado = null;
+let aliadosDB = []; let aliadoSeleccionado = null; let repartidoresDB = [];
 db.ref('aliados').on('value', snap=>{
   aliadosDB = []; snap.forEach(child=>{ if(child.key==='_init') return; let d=child.val(); d.key=child.key; aliadosDB.push(d); });
+});
+db.ref('repartidores').on('value', snap=>{
+  repartidoresDB = []; const sel=document.getElementById('selectRepartidor');
+  sel.innerHTML=''; let has=false;
+  snap.forEach(child=>{
+    if(child.key==='_init') return; has=true;
+    let d=child.val(); d.key=child.key; repartidoresDB.push(d);
+    const opt=document.createElement('option');
+    opt.value=child.key; opt.textContent=d.nombre||child.key;
+    sel.appendChild(opt);
+  });
+  if(!has){ sel.innerHTML='<option value="">No hay repartidores (crea en Firebase)</option>'; }
 });
 
 let map, directionsService, directionsRenderer, markerRecogida=null, markerEntrega=null, placeRecogida=null, placeEntrega=null, autocompleteEntregaDirecta;
@@ -144,7 +185,6 @@ window.initMap = function(){
   map=new google.maps.Map(document.getElementById("map"),{center:dolores,zoom:14,disableDefaultUI:true});
   directionsService=new google.maps.DirectionsService();
   directionsRenderer=new google.maps.DirectionsRenderer({map:map,suppressMarkers:true,polylineOptions:{strokeColor:"#e30613",strokeWeight:4,strokeOpacity:0.9}});
-
   const opts={componentRestrictions:{country:"mx"},fields:["formatted_address","geometry","name"]};
   autocompleteEntregaDirecta=new google.maps.places.Autocomplete(document.getElementById("inputEntregaDirecta"),opts);
   autocompleteEntregaDirecta.addListener("place_changed",()=>{
@@ -154,21 +194,11 @@ window.initMap = function(){
       document.getElementById('x-entrega').classList.add('show');
       const pos=p.geometry.location;
       if(markerEntrega) markerEntrega.setMap(null);
-      // ICONO PIN VERDE PEQUEÑO
-      markerEntrega=new google.maps.Marker({
-        position:pos,
-        map:map,
-        icon:{
-          url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-          scaledSize:new google.maps.Size(32,32),
-          anchor:new google.maps.Point(16,32)
-        }
-      });
+      markerEntrega=new google.maps.Marker({position:pos,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",scaledSize:new google.maps.Size(32,32),anchor:new google.maps.Point(16,32)}});
       if(placeRecogida){ calcularRuta(); } else { map.setCenter(pos); map.setZoom(15); }
     }
   });
 }
-
 function calcularRuta(){
   if(!placeRecogida||!placeEntrega) return;
   directionsService.route({origin:placeRecogida.geometry.location,destination:placeEntrega.geometry.location,travelMode:google.maps.TravelMode.DRIVING},(result,status)=>{
@@ -179,6 +209,8 @@ function calcularRuta(){
       const precio=Math.round(km*22+30);
       document.getElementById("txt-distancia").textContent=km+" km • "+leg.duration.text;
       document.getElementById("txt-precio").textContent="$"+precio+" MXN";
+      document.getElementById("precioManual").value=precio;
+      document.getElementById("x-precio").classList.add('show');
       document.getElementById("btnContinuar").disabled=false;
       window._datos={km:km,duracion:leg.duration.text,precio:precio};
       const bounds = new google.maps.LatLngBounds();
@@ -188,7 +220,6 @@ function calcularRuta(){
     }
   });
 }
-
 function clearField(inputId, xId){
   document.getElementById(inputId).value='';
   document.getElementById(xId).classList.remove('show');
@@ -200,16 +231,15 @@ function clearField(inputId, xId){
   }
   if(inputId==='inputEntregaDirecta'){ if(markerEntrega){markerEntrega.setMap(null); placeEntrega=null;} document.getElementById("txt-distancia").textContent="—"; document.getElementById("txt-precio").textContent="—"; }
 }
-
-['inputAliado','inputEntregaDirecta','nombreCliente','celularCliente','tiempoManual'].forEach(id=>{
-  document.getElementById(id).addEventListener('input',()=>{
-    let mapX={inputAliado:'x-aliado',inputEntregaDirecta:'x-entrega',nombreCliente:'x-nombre',celularCliente:'x-cel',tiempoManual:'x-tiempo'};
+['inputAliado','inputEntregaDirecta','nombreCliente','celularCliente','tiempoManual','precioManual'].forEach(id=>{
+  let el=document.getElementById(id); if(!el) return;
+  el.addEventListener('input',()=>{
+    let mapX={inputAliado:'x-aliado',inputEntregaDirecta:'x-entrega',nombreCliente:'x-nombre',celularCliente:'x-cel',tiempoManual:'x-tiempo',precioManual:'x-precio'};
     let xid=mapX[id];
     if(document.getElementById(id).value.length>0) document.getElementById(xid).classList.add('show'); else document.getElementById(xid).classList.remove('show');
     if(id==='inputAliado') filtrarAliados();
   });
 });
-
 function filtrarAliados(){
   const q=document.getElementById('inputAliado').value.toLowerCase().trim();
   const sug=document.getElementById('sugAliados');
@@ -227,26 +257,14 @@ function seleccionarAliado(key){
   document.getElementById('inputAliado').value=aliado.nombre;
   document.getElementById('sugAliados').style.display='none';
   document.getElementById('x-aliado').classList.add('show');
-
   document.getElementById('aliadoDir').textContent = aliado.direccion || 'Sin dirección';
   document.getElementById('aliadoTel').textContent = aliado.telefono || 'Sin teléfono';
   document.getElementById('cardAliadoInfo').classList.add('show');
-
   if(aliado.lat && aliado.lng){
     const pos=new google.maps.LatLng(parseFloat(aliado.lat), parseFloat(aliado.lng));
     placeRecogida={geometry:{location:pos}};
     if(markerRecogida) markerRecogida.setMap(null);
-    // ICONO PIN ROJO PEQUEÑO
-    markerRecogida=new google.maps.Marker({
-      position:pos,
-      map:map,
-      title:aliado.nombre,
-      icon:{
-        url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-        scaledSize:new google.maps.Size(32,32),
-        anchor:new google.maps.Point(16,32)
-      }
-    });
+    markerRecogida=new google.maps.Marker({position:pos,map:map,title:aliado.nombre,icon:{url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",scaledSize:new google.maps.Size(32,32),anchor:new google.maps.Point(16,32)}});
     map.setCenter(pos); map.setZoom(15);
     if(placeEntrega) calcularRuta();
   }
@@ -270,9 +288,44 @@ document.getElementById('btnClientes').onclick=()=>{tipoCliente='nuevos';documen
 document.getElementById('btnRecoger').onclick=()=>{tipoServicio='recoger';document.getElementById('btnRecoger').classList.add('active');document.getElementById('btnComprar').classList.remove('active');actualizarForm();};
 document.getElementById('btnComprar').onclick=()=>{tipoServicio='comprar';document.getElementById('btnComprar').classList.add('active');document.getElementById('btnRecoger').classList.remove('active');actualizarForm();};
 document.getElementById("btnCenter").addEventListener("click",()=>{if(map){map.setCenter({lat:21.157,lng:-100.934});map.setZoom(14);}});
+
+// CONTINUAR -> MOSTRAR TARJETA REPARTIDOR
 document.getElementById("btnContinuar").addEventListener("click",()=>{
-  let pedido={aliado: aliadoSeleccionado?aliadoSeleccionado.nombre:document.getElementById('inputAliado').value,entrega: document.getElementById('inputEntregaDirecta').value,cliente: document.getElementById('nombreCliente').value,celular: document.getElementById('celularCliente').value,tiempo: document.getElementById('tiempoManual').value,precio: window._datos?window._datos.precio:null,distancia: window._datos?window._datos.km:null,status:'pendiente',timestamp:Date.now(),tipo:'aliados-recoger'};
-  db.ref('pedidos').push(pedido).then(()=>{ alert("Pedido guardado"); });
+  if(!aliadoSeleccionado && document.getElementById('inputAliado').value.trim()===''){ alert("Selecciona un aliado"); return; }
+  if(!placeEntrega){ alert("Selecciona dirección de entrega"); return; }
+  document.getElementById("modalRepartidor").classList.add("show");
+});
+document.getElementById("btnCancelarEnvio").addEventListener("click",()=>{
+  document.getElementById("modalRepartidor").classList.remove("show");
+});
+document.getElementById("btnEnviarPedido").addEventListener("click",()=>{
+  const selRepa=document.getElementById("selectRepartidor").value;
+  if(!selRepa){ alert("Selecciona un repartidor"); return; }
+  const repaData=repartidoresDB.find(r=>r.key===selRepa);
+  const precioFinal= document.getElementById("precioManual").value || (window._datos?window._datos.precio:0);
+  let pedido={
+    aliado: aliadoSeleccionado?aliadoSeleccionado.nombre:document.getElementById('inputAliado').value,
+    aliadoDir: aliadoSeleccionado?aliadoSeleccionado.direccion:'',
+    aliadoTel: aliadoSeleccionado?aliadoSeleccionado.telefono:'',
+    aliadoLat: aliadoSeleccionado?aliadoSeleccionado.lat:'',
+    aliadoLng: aliadoSeleccionado?aliadoSeleccionado.lng:'',
+    entrega: document.getElementById('inputEntregaDirecta').value,
+    cliente: document.getElementById('nombreCliente').value,
+    celular: document.getElementById('celularCliente').value,
+    tiempo: document.getElementById('tiempoManual').value,
+    precio: parseInt(precioFinal),
+    distancia: window._datos?window._datos.km:null,
+    duracion: window._datos?window._datos.duracion:null,
+    repartidor: repaData?repaData.nombre:selRepa,
+    repartidorKey: selRepa,
+    status:'asignado',
+    timestamp:Date.now(),
+    tipo:'aliados-recoger'
+  };
+  db.ref('pedidos').push(pedido).then(()=>{
+    document.getElementById("modalRepartidor").classList.remove("show");
+    alert("Pedido enviado a "+pedido.repartidor);
+  });
 });
 </script>
 
