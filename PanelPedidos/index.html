@@ -6,6 +6,9 @@
 <title>Kigo Xpress</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTV1sm6McEIkv-cheaVFCD_svp_a--6wg&libraries=places&callback=initMap" async defer></script>
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:#fff}
@@ -18,16 +21,12 @@ body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background
 .bottom-sheet{background:#fff;border-radius:20px 20px 0 0;margin-top:-14px;z-index:20;padding:10px 14px 16px;box-shadow:0 -6px 24px rgba(0,0,0,.15);overflow-y:auto;max-height:62vh}
 .handle{width:36px;height:4px;background:#d1d5db;border-radius:10px;margin:0 auto 10px}
 .info-row{ display:flex; background:#fff; border:1.5px solid #f3f4f6; border-radius:12px; padding:7px 10px; margin:0 0 10px; gap:8px; align-items:center }
-.info-col{flex:1;display:flex;align-items:center;gap:6px}
-.info-col .label{font-size:8px}
-.value{font-size:11.5px;font-weight:700;color:#1f2937}
-.value.price-neon{color:#00c853; font-weight:800; text-shadow:0 0 8px rgba(0,255,136,0.3)}
+.info-col{flex:1;display:flex;align-items:center;gap:6px}.info-col .label{font-size:8px}
+.value{font-size:11.5px;font-weight:700;color:#1f2937}.value.price-neon{color:#00c853; font-weight:800; text-shadow:0 0 8px rgba(0,255,136,0.3)}
 .divider{width:1px;background:#eee;height:22px}
 .btn-row{display:flex;gap:8px;margin-bottom:8px}
 .btn-tipo{flex:1;border:0;border-radius:12px;padding:10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-.btn-tipo.aliados{background:#e30613;color:#fff}
-.btn-tipo.clientes{background:#111;color:#fff}
-.btn-tipo.inactive{opacity:.35}
+.btn-tipo.aliados{background:#e30613;color:#fff}.btn-tipo.clientes{background:#111;color:#fff}.btn-tipo.inactive{opacity:.35}
 .btn-serv{flex:1;border:1.5px solid #e5e7eb;background:#fff;border-radius:12px;padding:10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
 .btn-serv.active{background:#111;color:#fff;border-color:#111}
 .input-card{display:flex;align-items:center;gap:10px;border:1.5px solid #e5e7eb;border-radius:16px;padding:10px 12px;margin-bottom:8px;cursor:pointer;background:#fff}
@@ -56,7 +55,6 @@ body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background
 
 <div class="bottom-sheet">
   <div class="handle"></div>
-
   <div class="info-row">
     <div class="info-col"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f2937" stroke-width="2"><path d="M7 12a2 2 0 1 0 0 0M17 7a2 2 0 1 0 0 0M9 12l6-5"/></svg><div><div class="label">DISTANCIA</div><div class="value" id="txt-distancia">—</div></div></div>
     <div class="divider"></div>
@@ -73,65 +71,67 @@ body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background
     <button class="btn-serv" id="btnComprar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> COMPRAR</button>
   </div>
 
-  <!-- ALIADOS - RECOGER MODIFICADO -->
   <div class="form-box active" id="form-aliados-recoger">
-    <div style="margin-bottom:6px"><div class="label">SELECCIONAR ALIADO</div></div>
+    <div class="label" style="margin-bottom:4px">SELECCIONAR ALIADO REGISTRADO (Firebase)</div>
     <div style="position:relative;margin-bottom:8px">
       <input type="text" id="inputAliado" placeholder="Escribe nombre del aliado..." autocomplete="off" style="width:100%;border:1.5px solid #e5e7eb;border-radius:16px;padding:11px 36px 11px 12px;font-size:13px;outline:none">
-      <button id="clearAliado" onclick="limpiarAliado()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;border:0;background:#f3f4f6;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:700">✕</button>
-      <div id="sugAliados" style="position:absolute;top:100%;left:0;right:0;background:#fff;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.15);max-height:150px;overflow-y:auto;z-index:30;display:none;margin-top:4px;border:1px solid #eee"></div>
+      <button id="clearAliado" onclick="limpiarAliado()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;border:0;background:#f3f4f6;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:12px">✕</button>
+      <div id="sugAliados" style="position:absolute;top:100%;left:0;right:0;background:#fff;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.15);max-height:180px;overflow-y:auto;z-index:30;display:none;margin-top:4px;border:1px solid #eee"></div>
     </div>
-
-    <div class="input-card" id="card-entrega"><div class="icon-circle green"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/></svg></div><div class="text-group"><div class="label">DIRECCIÓN DE ENTREGA (mapa)</div><div class="placeholder" id="txt-entrega">Ingresa la dirección de entrega</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
-
+    <div class="input-card" id="card-entrega"><div class="icon-circle green"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/></svg></div><div class="text-group"><div class="label">DIRECCIÓN DE ENTREGA (mapa)</div><div class="placeholder" id="txt-entrega">Ingresa la dirección de entrega</div></div></div>
     <input class="input-field" id="nombreCliente" placeholder="Nombre del cliente">
     <input class="input-field" id="celularCliente" type="tel" placeholder="Celular del cliente">
-
     <div class="label" style="margin:8px 0 4px">TIEMPO DE RECOGIDA</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">
-      <button type="button" class="time-chip" data-time="5" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">5 min</button>
-      <button type="button" class="time-chip" data-time="10" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">10 min</button>
-      <button type="button" class="time-chip" data-time="15" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">15 min</button>
-      <button type="button" class="time-chip" data-time="20" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">20 min</button>
-      <button type="button" class="time-chip" data-time="25" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">25 min</button>
+      <button type="button" class="time-chip" data-time="5" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700">5 min</button>
+      <button type="button" class="time-chip" data-time="10" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700">10 min</button>
+      <button type="button" class="time-chip" data-time="15" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700">15 min</button>
+      <button type="button" class="time-chip" data-time="20" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700">20 min</button>
+      <button type="button" class="time-chip" data-time="25" style="border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700">25 min</button>
     </div>
     <input class="input-field" id="tiempoManual" placeholder="O escribe manualmente Ej: lo antes posible">
   </div>
 
-  <div class="form-box" id="form-aliados-comprar">
-    <div class="input-card"><div class="icon-circle red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div><div class="text-group"><div class="label">QUE DESEA COMPRAR (ALIADO)</div><div class="placeholder">Ej: 2kg de tortillas en tienda X</div></div></div>
-    <div class="input-card" id="card-entrega-2"><div class="icon-circle green"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/></svg></div><div class="text-group"><div class="label">ENTREGAR COMPRA EN</div><div class="placeholder" id="txt-entrega-2">Dirección de entrega</div></div></div>
-  </div>
-
-  <div class="form-box" id="form-nuevos-recoger">
-    <div class="input-card"><div class="icon-circle black"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="text-group"><div class="label">NOMBRE CLIENTE NUEVO</div><div class="placeholder">Nombre y teléfono</div></div></div>
-    <div class="input-card" id="card-recogida-3"><div class="icon-circle red"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/></svg></div><div class="text-group"><div class="label">RECOGIDA</div><div class="placeholder">Dirección de recogida</div></div></div>
-    <div class="input-card" id="card-entrega-3"><div class="icon-circle green"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/></svg></div><div class="text-group"><div class="label">ENTREGA</div><div class="placeholder">Dirección de entrega</div></div></div>
-  </div>
-
-  <div class="form-box" id="form-nuevos-comprar">
-    <div class="input-card"><div class="icon-circle black"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div><div class="text-group"><div class="label">CLIENTE NUEVO - QUE COMPRAR</div><div class="placeholder">Lista de compra + dirección tienda</div></div></div>
-    <div class="input-card"><div class="icon-circle green"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/></svg></div><div class="text-group"><div class="label">ENTREGAR EN</div><div class="placeholder">Dirección cliente nuevo</div></div></div>
-  </div>
+  <div class="form-box" id="form-aliados-comprar"><div class="input-card"><div class="icon-circle red">🛒</div><div class="text-group"><div class="label">QUE DESEA COMPRAR (ALIADO)</div><div class="placeholder">Ej: 2kg de tortillas</div></div></div><div class="input-card" id="card-entrega-2"><div class="icon-circle green"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/></svg></div><div class="text-group"><div class="label">ENTREGAR COMPRA EN</div><div class="placeholder">Dirección de entrega</div></div></div></div>
+  <div class="form-box" id="form-nuevos-recoger"><div class="input-card"><div class="icon-circle black">👤</div><div class="text-group"><div class="label">NOMBRE CLIENTE NUEVO</div><div class="placeholder">Nombre y teléfono</div></div></div></div>
+  <div class="form-box" id="form-nuevos-comprar"><div class="input-card"><div class="icon-circle black">🛍️</div><div class="text-group"><div class="label">CLIENTE NUEVO - QUE COMPRAR</div><div class="placeholder">Lista de compra</div></div></div></div>
 
   <button class="btn-continuar" id="btnContinuar" disabled><span>Continuar</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h12M12 5l7 7-7 7"/></svg></button>
 </div>
 
-<div class="modal" id="modal-recogida"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h3 style="font-size:15px">Dirección de recogida</h3><button onclick="cerrarModal('recogida')" style="border:0;background:#f3f4f6;width:28px;height:28px;border-radius:50%">✕</button></div>
-<div class="input-wrapper"><input type="text" id="input-recogida" placeholder="Busca en Google Maps..." oninput="toggleClear('recogida')"><button class="clear-x" id="clear-recogida" onclick="limpiarInput('recogida')">✕</button></div>
-<button class="btn-continuar" onclick="confirmarDireccion('recogida')">Guardar recogida</button></div></div>
-
-<div class="modal" id="modal-entrega"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h3 style="font-size:15px">Dirección de entrega</h3><button onclick="cerrarModal('entrega')" style="border:0;background:#f3f4f6;width:28px;height:28px;border-radius:50%">✕</button></div>
-<div class="input-wrapper"><input type="text" id="input-entrega" placeholder="Busca en Google Maps..." oninput="toggleClear('entrega')"><button class="clear-x" id="clear-entrega" onclick="limpiarInput('entrega')">✕</button></div>
-<button class="btn-continuar" onclick="confirmarDireccion('entrega')">Guardar entrega</button></div></div>
+<div class="modal" id="modal-recogida"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h3 style="font-size:15px">Dirección de recogida</h3><button onclick="cerrarModal('recogida')" style="border:0;background:#f3f4f6;width:28px;height:28px;border-radius:50%">✕</button></div><div class="input-wrapper"><input type="text" id="input-recogida" placeholder="Busca en Google Maps..." oninput="toggleClear('recogida')"><button class="clear-x" id="clear-recogida" onclick="limpiarInput('recogida')">✕</button></div><button class="btn-continuar" onclick="confirmarDireccion('recogida')">Guardar recogida</button></div></div>
+<div class="modal" id="modal-entrega"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h3 style="font-size:15px">Dirección de entrega</h3><button onclick="cerrarModal('entrega')" style="border:0;background:#f3f4f6;width:28px;height:28px;border-radius:50%">✕</button></div><div class="input-wrapper"><input type="text" id="input-entrega" placeholder="Busca en Google Maps..." oninput="toggleClear('entrega')"><button class="clear-x" id="clear-entrega" onclick="limpiarInput('entrega')">✕</button></div><button class="btn-continuar" onclick="confirmarDireccion('entrega')">Guardar entrega</button></div></div>
 
 <script>
+// --- FIREBASE CONFIG TUYA ---
+const firebaseConfig = {
+  apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE",
+  authDomain: "historial-kigo-xpress.firebaseapp.com",
+  databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com",
+  projectId: "historial-kigo-xpress",
+  storageBucket: "historial-kigo-xpress.firebasestorage.app",
+  messagingSenderId: "571399920545",
+  appId: "1:571399920545:web:aa16407753b43cbe2e89e0",
+  measurementId: "G-BXVF06E9SB"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+let aliadosDB = [];
+let aliadoSeleccionado = null;
+
+// Cargar aliados de Firebase
+db.ref('aliados').on('value', (snapshot)=>{
+  aliadosDB = [];
+  snapshot.forEach(child=>{
+    let data = child.val();
+    data.key = child.key;
+    aliadosDB.push(data);
+  });
+  console.log("Aliados cargados:", aliadosDB.length);
+});
+
 let map, directionsService, directionsRenderer, markerRecogida=null, markerEntrega=null, placeRecogida=null, placeEntrega=null, autocompleteRecogida, autocompleteEntrega;
 let tipoCliente='aliados', tipoServicio='recoger';
-
-// ESTO LO CAMBIAMOS DESPUES POR TU FIREBASE - por ahora lista local
-let aliadosDB = ["Cargando desde Firebase..."]; 
-// Cuando me des tu Firebase lo conectamos asi: firebase.firestore().collection('aliados').onSnapshot...
 
 function initMap(){
   const dolores={lat:21.1557,lng:-100.934};
@@ -191,29 +191,41 @@ function calcularRuta(){
   });
 }
 
-// BUSCADOR ALIADOS - con X para borrar
+// BUSCADOR CON FIREBASE
 const inputAliado = document.getElementById('inputAliado');
 const sugBox = document.getElementById('sugAliados');
 const clearAliadoBtn = document.getElementById('clearAliado');
-if(inputAliado){
-  inputAliado.addEventListener('input', ()=>{
-    const q = inputAliado.value.toLowerCase().trim();
-    if(q.length>0){ clearAliadoBtn.style.display='flex'; }else{ clearAliadoBtn.style.display='none'; sugBox.style.display='none'; return; }
-    const filtrados = aliadosDB.filter(a=>a.toLowerCase().includes(q));
-    if(filtrados.length>0){
-      sugBox.innerHTML = filtrados.map(a=>`<div style="padding:10px 12px;font-size:13px;cursor:pointer;border-bottom:1px solid #f5f5f5" onclick="seleccionarAliado('${a}')">${a}</div>`).join('');
-      sugBox.style.display='block';
-    }else{ sugBox.style.display='none'; }
-  });
-}
-function seleccionarAliado(nombre){
-  inputAliado.value=nombre;
+inputAliado.addEventListener('input', ()=>{
+  const q = inputAliado.value.toLowerCase().trim();
+  if(q.length>0){ clearAliadoBtn.style.display='flex'; }else{ clearAliadoBtn.style.display='none'; sugBox.style.display='none'; return; }
+  const filtrados = aliadosDB.filter(a=> (a.nombre||'').toLowerCase().includes(q));
+  if(filtrados.length>0){
+    sugBox.innerHTML = filtrados.map(a=>`<div style="padding:10px 12px;font-size:13px;cursor:pointer;border-bottom:1px solid #f5f5f5" onclick="seleccionarAliado('${a.key}')"><b>${a.nombre}</b><br><small style="color:#888">${a.direccion||''}</small></div>`).join('');
+    sugBox.style.display='block';
+  }else{ sugBox.innerHTML='<div style="padding:10px;color:#888;font-size:12px">No encontrado, se creará como nuevo</div>'; sugBox.style.display='block'; }
+});
+function seleccionarAliado(key){
+  const aliado = aliadosDB.find(a=>a.key===key);
+  if(!aliado) return;
+  aliadoSeleccionado = aliado;
+  inputAliado.value=aliado.nombre;
   sugBox.style.display='none';
   clearAliadoBtn.style.display='flex';
+  // Poner marcador del aliado en mapa
+  if(aliado.lat && aliado.lng){
+    const pos = new google.maps.LatLng(aliado.lat, aliado.lng);
+    placeRecogida = { geometry: { location: pos } };
+    if(markerRecogida) markerRecogida.setMap(null);
+    markerRecogida=new google.maps.Marker({position:pos,map:map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:"#e30613",fillOpacity:1,strokeColor:"#fff",strokeWeight:3}});
+    map.setCenter(pos); map.setZoom(15);
+    if(placeEntrega) calcularRuta();
+  }
 }
 function limpiarAliado(){
-  inputAliado.value=''; clearAliadoBtn.style.display='none'; sugBox.style.display='none'; inputAliado.focus();
+  inputAliado.value=''; aliadoSeleccionado=null; clearAliadoBtn.style.display='none'; sugBox.style.display='none'; inputAliado.focus();
+  if(markerRecogida){ markerRecogida.setMap(null); placeRecogida=null; }
 }
+
 document.querySelectorAll('.time-chip').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('.time-chip').forEach(b=>{b.style.background='#fff';b.style.color='#111';b.style.borderColor='#e5e7eb';});
@@ -231,16 +243,30 @@ document.getElementById('btnAliados').onclick=()=>{tipoCliente='aliados';documen
 document.getElementById('btnClientes').onclick=()=>{tipoCliente='nuevos';document.getElementById('btnClientes').classList.remove('inactive');document.getElementById('btnClientes').classList.add('active');document.getElementById('btnAliados').classList.add('inactive');document.getElementById('btnAliados').classList.remove('active');actualizarForm();};
 document.getElementById('btnRecoger').onclick=()=>{tipoServicio='recoger';document.getElementById('btnRecoger').classList.add('active');document.getElementById('btnComprar').classList.remove('active');actualizarForm();};
 document.getElementById('btnComprar').onclick=()=>{tipoServicio='comprar';document.getElementById('btnComprar').classList.add('active');document.getElementById('btnRecoger').classList.remove('active');actualizarForm();};
-
-document.getElementById('btnEntrega')?.addEventListener('click',()=>abrirModal('entrega'));
-document.getElementById('card-entrega').addEventListener('click',()=>abrirModal('entrega'));
+document.getElementById("card-entrega").addEventListener("click",()=>abrirModal("entrega"));
 
 document.getElementById("btnContinuar").addEventListener("click",()=>{
-  if(!window._datos) { alert('Selecciona dirección de entrega'); return; }
-  let d=window._datos;
+  if(!window._datos && placeRecogida && placeEntrega){ calcularRuta(); }
   let tiempo = document.getElementById('tiempoManual').value || 'No especificado';
-  let mensaje=`Hola Kigo Xpress! Pedido ALIADO RECOGER:%0A*ALIADO:* ${inputAliado.value}%0A*ENTREGA:* ${document.getElementById("txt-entrega").textContent}%0A*CLIENTE:* ${document.getElementById("nombreCliente").value}%0A*CEL:* ${document.getElementById("celularCliente").value}%0A*TIEMPO:* ${tiempo}%0A*DIST:* ${d.km} km%0A*PRECIO:* $${d.precio}`;
-  window.open(`https://wa.me/524181103030?text=${mensaje}`,"_blank");
+  let pedido = {
+    aliado: aliadoSeleccionado ? aliadoSeleccionado.nombre : inputAliado.value,
+    aliadoKey: aliadoSeleccionado ? aliadoSeleccionado.key : null,
+    entrega: document.getElementById("txt-entrega").textContent,
+    cliente: document.getElementById("nombreCliente").value,
+    celular: document.getElementById("celularCliente").value,
+    tiempoRecogida: tiempo,
+    distancia: window._datos ? window._datos.km : null,
+    precio: window._datos ? window._datos.precio : null,
+    tipo: 'aliados-recoger',
+    status: 'pendiente',
+    timestamp: Date.now()
+  };
+  // Guardar en Firebase
+  db.ref('pedidos').push(pedido).then(()=>{
+    alert("Pedido guardado en Firebase!");
+    let mensaje=`Hola Kigo Xpress! Pedido ALIADO RECOGER:%0A*ALIADO:* ${pedido.aliado}%0A*ENTREGA:* ${pedido.entrega}%0A*CLIENTE:* ${pedido.cliente}%0A*CEL:* ${pedido.celular}%0A*TIEMPO:* ${tiempo}%0A*PRECIO:* $${pedido.precio}`;
+    window.open(`https://wa.me/524181103030?text=${mensaje}`,"_blank");
+  });
 });
 </script>
 </body>
