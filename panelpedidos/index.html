@@ -9,11 +9,12 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:#fff}
-#map{height:40vh;width:100%;background:#e5e3df;position:relative;flex-shrink:0}
+body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.map-wrapper{position:relative;width:100%;height:42vh;min-height:300px;flex-shrink:0;background:#e5e3df}
+#map{height:100%;width:100%;background:#e5e3df;position:relative}
 .center-btn{position:absolute;bottom:16px;right:12px;z-index:10;width:42px;height:42px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);border:0;cursor:pointer}
-.btn-logout-map{position:absolute;top:12px;right:12px;z-index:11;background:#e30613;color:#fff;border:0;border-radius:999px;padding:6px 14px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 4px 12px rgba(227,6,19,.3)}
-.bottom-sheet{background:#fff;border-radius:20px 20px 0 0;margin-top:-14px;z-index:20;padding:10px 14px 90px;box-shadow:0 -6px 24px rgba(0,0,0,.15);overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.btn-logout-map{position:absolute;top:12px;right:12px;z-index:9999;background:#e30613;color:#fff;border:2px solid #fff;border-radius:999px;padding:7px 14px;font-size:10px;font-weight:800;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.bottom-sheet{background:#fff;border-radius:20px 20px 0 0;margin-top:-14px;z-index:20;padding:10px 14px 140px;box-shadow:0 -6px 24px rgba(0,0,0,.15);overflow-y:visible;flex:none;min-height:60vh}
 .handle{width:36px;height:4px;background:#d1d5db;border-radius:10px;margin:0 auto 10px}
 .info-row{ display:flex; background:#fff; border:1px solid #f3f4f6; border-radius:10px; padding:5px 8px; margin:0 0 8px; gap:6px; align-items:center }
 .info-col{flex:1;display:flex;align-items:center;gap:5px}
@@ -41,7 +42,7 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 .card-aliado.row span{font-size:8px;font-weight:600;color:#111}
 .time-chip{border:1px solid #e5e7eb;background:#fff;border-radius:16px;padding:4px 9px;font-size:9px;font-weight:700;cursor:pointer}
 .time-chip.active{background:#e30613;color:#fff;border-color:#e30613}
-.btn-continuar{background:#e30613;color:#fff;border:0;border-radius:50px;padding:11px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;cursor:pointer;margin-top:8px;margin-bottom:20px}
+.btn-continuar{background:#e30613;color:#fff;border:0;border-radius:50px;padding:11px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;cursor:pointer;margin-top:8px;margin-bottom:30px}
 .btn-continuar:disabled{background:#fca5a5}
 .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
@@ -58,9 +59,11 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 </style>
 </head>
 <body>
-<div id="map">
+<div class="map-wrapper">
+<div id="map"></div>
 <button class="btn-logout-map" onclick="cerrarSesion()" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Cerrar sesión</button>
-<button class="center-btn" id="btnCenter" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></button></div>
+<button class="center-btn" id="btnCenter" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></button>
+</div>
 <div class="modal-overlay" id="modalRepartidor"><div class="modal-card"><div class="modal-title">Seleccionar Repartidor</div><select id="selectRepartidor" class="select-repa"><option value="">Cargando repartidores...</option></select><div class="modal-btns"><button class="btn-cancel" id="btnCancelarEnvio">✕ Cancelar</button><button class="btn-send" id="btnEnviarPedido">➤ Enviar</button></div></div></div>
 <div class="bottom-sheet">
 <div class="handle"></div>
@@ -74,7 +77,6 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 <button class="btn-serv" id="btnComprar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> COMPRAR</button>
 </div>
 
-<!-- ALIADOS RECOGER - INTACTO -->
 <div class="form-box active" id="form-aliados-recoger">
 <div class="label">ALIADO</div><div class="input-wrap"><input type="text" id="inputAliado" class="input-mini" placeholder="Seleccionar aliado..."><button class="btn-x" id="x-aliado" onclick="clearField('inputAliado','x-aliado')">✕</button><div class="suggestions" id="sugAliados"></div></div>
 <div class="card-aliado" id="cardAliadoInfo"><div class="row"><b>DIR:</b><span id="aliadoDir">—</span></div><div class="row"><b>TEL:</b><span id="aliadoTel">—</span></div></div>
@@ -85,7 +87,6 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 <div class="label" style="margin-top:6px">PRECIO</div><div class="input-wrap"><input type="number" id="precioManual" class="input-mini" placeholder="$0"><button class="btn-x" id="x-precio" onclick="clearField('precioManual','x-precio')">✕</button></div>
 </div>
 
-<!-- ALIADOS COMPRAR - INTACTO -->
 <div class="form-box" id="form-aliados-comprar">
 <div class="label">PRODUCTOS A COMPRAR</div><div class="input-wrap"><input type="text" id="productosComprar" class="input-mini" placeholder="Ej: 2 Hamburguesas, 1 refresco..."><button class="btn-x" id="x-prodComp" onclick="clearField('productosComprar','x-prodComp')">✕</button></div>
 <div class="label">RESTAURANTE / NEGOCIO LOCAL DONDE COMPRAR</div><div class="input-wrap"><input type="text" id="negocioComprar" class="input-mini" placeholder="Escribe donde se va a comprar..."><button class="btn-x" id="x-negocio" onclick="clearField('negocioComprar','x-negocio')">✕</button></div>
@@ -95,7 +96,6 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 <div class="label" style="margin-top:6px">PRECIO</div><div class="input-wrap"><input type="number" id="precioManualComprar" class="input-mini" placeholder="$0"><button class="btn-x" id="x-precioComprar" onclick="clearField('precioManualComprar','x-precioComprar')">✕</button></div>
 </div>
 
-<!-- CLIENTES NUEVOS RECOGER - INTACTO -->
 <div class="form-box" id="form-nuevos-recoger">
 <div class="section-title">DATOS DE RECOGIDA</div>
 <div class="label">NOMBRE CLIENTE (QUIEN ENTREGA)</div><div class="input-wrap"><input type="text" id="nombreRecogidaNuevo" class="input-mini" placeholder="Nombre quien entrega"><button class="btn-x" id="x-nombreRecNuevo" onclick="clearField('nombreRecogidaNuevo','x-nombreRecNuevo')">✕</button></div>
@@ -109,7 +109,6 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 <div class="label" style="margin-top:6px">PRECIO</div><div class="input-wrap"><input type="number" id="precioManualNuevoRecoger" class="input-mini" placeholder="$0"><button class="btn-x" id="x-precioNuevoRec" onclick="clearField('precioManualNuevoRecoger','x-precioNuevoRec')">✕</button></div>
 </div>
 
-<!-- CLIENTES NUEVOS COMPRAR - NUEVO -->
 <div class="form-box" id="form-nuevos-comprar">
 <div class="label">PRODUCTO A COMPRAR</div><div class="input-wrap"><input type="text" id="productoNuevoComprar" class="input-mini" placeholder="Ej: 2 tacos, 1 coca, farmacia..."><button class="btn-x" id="x-prodNuevoComp" onclick="clearField('productoNuevoComprar','x-prodNuevoComp')">✕</button></div>
 <div class="label">RESTAURANTE / NEGOCIO DONDE COMPRAR</div><div class="input-wrap"><input type="text" id="negocioNuevoComprar" class="input-mini" placeholder="Escribe donde comprar..."><button class="btn-x" id="x-negocioNuevoComp" onclick="clearField('negocioNuevoComprar','x-negocioNuevoComp')">✕</button></div>
