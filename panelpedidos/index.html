@@ -56,6 +56,12 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 .form-box{display:none}.form-box.active{display:block}
 .section-title{font-size:10px;font-weight:800;color:#e30613;margin:8px 0 4px;letter-spacing:.3px;display:flex;align-items:center;gap:4px}
 .pac-container{z-index:9999!important}
+/* TARJETA CONFIRMACION CENTRO */
+.toast-confirm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:#111;color:#fff;border-radius:18px;padding:20px 24px;z-index:10000;display:none;flex-direction:column;align-items:center;gap:8px;box-shadow:0 20px 50px rgba(0,0,0,.5);min-width:240px;opacity:0;transition:all.25s ease}
+.toast-confirm.show{display:flex;transform:translate(-50%,-50%) scale(1);opacity:1}
+.toast-confirm.icon-check{width:48px;height:48px;background:#00c853;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.toast-confirm.txt1{font-size:14px;font-weight:800;text-align:center}
+.toast-confirm.txt2{font-size:11px;font-weight:500;color:#cbd5e1;text-align:center}
 </style>
 </head>
 <body>
@@ -65,6 +71,14 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 <button class="center-btn" id="btnCenter" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></button>
 </div>
 <div class="modal-overlay" id="modalRepartidor"><div class="modal-card"><div class="modal-title">Seleccionar Repartidor</div><select id="selectRepartidor" class="select-repa"><option value="">Cargando repartidores...</option></select><div class="modal-btns"><button class="btn-cancel" id="btnCancelarEnvio">✕ Cancelar</button><button class="btn-send" id="btnEnviarPedido">➤ Enviar</button></div></div></div>
+
+<!-- TARJETA CONFIRMACION -->
+<div class="toast-confirm" id="toastConfirm">
+<div class="icon-check"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+<div class="txt1" id="toastTxt1">Pedido enviado</div>
+<div class="txt2" id="toastTxt2">#0 enviado a Jose - $0</div>
+</div>
+
 <div class="bottom-sheet">
 <div class="handle"></div>
 <div class="info-row"><div class="info-col"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1f2937" stroke-width="2"><path d="M7 12a2 2 0 1 0 0 0M17 7a2 2 0 1 0 0 0M9 12l6-5"/></svg><div><div class="label" style="margin:0">DISTANCIA</div><div class="value" id="txt-distancia">—</div></div></div><div class="divider"></div><div class="info-col"><div style="width:12px;height:12px;border:1.5px solid #1f2937;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:6px">$</div><div><div class="label" style="margin:0">PRECIO ESTIMADO</div><div class="value price-neon" id="txt-precio">—</div></div></div></div>
@@ -162,33 +176,30 @@ document.getElementById("btnCenter").addEventListener("click",()=>{if(map){map.s
 document.getElementById("btnContinuar").addEventListener("click",()=>{ if(tipoCliente==='aliados' && tipoServicio==='recoger'){ if(!aliadoSeleccionado && document.getElementById('inputAliado').value.trim()===''){ alert("Selecciona un aliado"); return; } if(!placeEntrega){ alert("Selecciona dirección de entrega"); return; } } else if(tipoCliente==='aliados' && tipoServicio==='comprar'){ if(document.getElementById('productosComprar').value.trim()===''){ alert("Escribe que productos se van a comprar"); return; } if(document.getElementById('negocioComprar').value.trim()===''){ alert("Escribe donde se va a comprar"); return; } if(!aliadoSeleccionadoComprar){ alert("Selecciona el aliado que recibe"); return; } } else if(tipoCliente==='nuevos' && tipoServicio==='recoger'){ if(document.getElementById('nombreRecogidaNuevo').value.trim()==='' || document.getElementById('dirRecogidaNuevo').value.trim()==='' ){ alert("Completa datos de recogida"); return; } if(document.getElementById('nombreEntregaNuevo').value.trim()==='' || document.getElementById('dirEntregaNuevo').value.trim()==='' ){ alert("Completa datos de entrega"); return; } } else if(tipoCliente==='nuevos' && tipoServicio==='comprar'){ if(document.getElementById('productoNuevoComprar').value.trim()===''){ alert("Escribe producto a comprar"); return; } if(document.getElementById('negocioNuevoComprar').value.trim()===''){ alert("Escribe donde comprar"); return; } if(document.getElementById('nombreNuevoComprar').value.trim()==='' || document.getElementById('dirNuevoComprar').value.trim()==='' ){ alert("Completa datos cliente entrega"); return; } } document.getElementById("modalRepartidor").classList.add("show"); });
 document.getElementById("btnCancelarEnvio").addEventListener("click",()=>{ document.getElementById("modalRepartidor").classList.remove("show"); });
 
-// FUNCION PARA NUMERO CONSECUTIVO REAL
 async function obtenerSiguienteNumeroPedido(){
   const refCont = db.ref('contadores/ultimoNumeroPedido');
   let numeroFinal = 1;
-  await refCont.transaction((cur)=>{
-    if(cur===null) return 1;
-    return cur+1;
-  }, (error, committed, snap)=>{
-    if(snap) numeroFinal = snap.val();
-  });
+  await refCont.transaction((cur)=>{ if(cur===null) return 1; return cur+1; }, (error, committed, snap)=>{ if(snap) numeroFinal = snap.val(); });
   const snapFinal = await refCont.once('value');
   return snapFinal.val()||numeroFinal;
+}
+
+function mostrarConfirmacion(numero, nombreRepa, precio){
+  const toast = document.getElementById('toastConfirm');
+  document.getElementById('toastTxt1').textContent = 'Pedido enviado';
+  document.getElementById('toastTxt2').textContent = '#'+numero+' enviado a '+nombreRepa+' - $'+precio;
+  toast.classList.add('show');
+  setTimeout(()=>{ toast.classList.remove('show'); }, 3000);
 }
 
 document.getElementById("btnEnviarPedido").addEventListener("click", async ()=>{
   const selRepa=document.getElementById("selectRepartidor").value; if(!selRepa){ alert("Selecciona un repartidor"); return; }
   const repaData=repartidoresDB.find(r=>r.key===selRepa);
   if(!repaData){ alert("Repartidor no encontrado"); return; }
-
-  // OBTENER NUMERO CONSECUTIVO
   document.getElementById("btnEnviarPedido").textContent = "Asignando #...";
   document.getElementById("btnEnviarPedido").disabled = true;
   const numeroPedido = await obtenerSiguienteNumeroPedido();
-
-  let pedido={};
-  let precioBase=0;
-
+  let pedido={}; let precioBase=0;
   if(tipoCliente==='aliados' && tipoServicio==='recoger'){
     precioBase= parseInt(document.getElementById("precioManual").value) || (window._datos?window._datos.precio:0);
     pedido={ tipo:'aliados-recoger', tipoServicio:'ALIADOS', tipoAccion:'RECOGER', aliado: aliadoSeleccionado?aliadoSeleccionado.nombre:document.getElementById('inputAliado').value, aliadoDir: aliadoSeleccionado?aliadoSeleccionado.direccion:'', aliadoTel: aliadoSeleccionado?aliadoSeleccionado.telefono:'', aliadoLat: aliadoSeleccionado?aliadoSeleccionado.lat:'', aliadoLng: aliadoSeleccionado?aliadoSeleccionado.lng:'', entrega: document.getElementById('inputEntregaDirecta').value, entregaDir: document.getElementById('inputEntregaDirecta').value, entregaLat: placeEntrega?placeEntrega.geometry.location.lat():'', entregaLng: placeEntrega?placeEntrega.geometry.location.lng():'', cliente: document.getElementById('nombreCliente').value, entregaNombre: document.getElementById('nombreCliente').value, celular: document.getElementById('celularCliente').value, entregaCel: document.getElementById('celularCliente').value, tiempo: document.getElementById('tiempoManual').value, precio: precioBase, valorTotal: precioBase, importe: 0, ingresos: precioBase, pagado:false, debe:true, estadoPago:'debe', distancia: window._datos?window._datos.km:null, duracion: window._datos?window._datos.duracion:null, repartidor: repaData.nombre||selRepa, repartidorKey: selRepa, repartidorTel: repaData.telefono||'', status:'asignado', estado:'asignado', timestamp:Date.now(), fechaISO: new Date().toISOString() };
@@ -202,22 +213,19 @@ document.getElementById("btnEnviarPedido").addEventListener("click", async ()=>{
     precioBase= parseInt(document.getElementById("precioManualNuevoComprar").value) || (window._datos?window._datos.precio:0);
     pedido={ tipo:'nuevos-comprar', tipoServicio:'CLIENTES NUEVOS', tipoAccion:'COMPRAR', productos: document.getElementById('productoNuevoComprar').value, negocio: document.getElementById('negocioNuevoComprar').value, negocioLat: placeRecogida?placeRecogida.geometry.location.lat():'', negocioLng: placeRecogida?placeRecogida.geometry.location.lng():'', entregaNombre: document.getElementById('nombreNuevoComprar').value, entregaCel: document.getElementById('celularNuevoComprar').value, entrega: document.getElementById('dirNuevoComprar').value, entregaDir: document.getElementById('dirNuevoComprar').value, entregaLat: placeEntrega?placeEntrega.geometry.location.lat():'', entregaLng: placeEntrega?placeEntrega.geometry.location.lng():'', tiempo: document.getElementById('tiempoManualNuevoComprar').value, precio: precioBase, valorTotal: precioBase, importe: 0, ingresos: precioBase, pagado:false, debe:true, estadoPago:'debe', distancia: window._datos?window._datos.km:null, duracion: window._datos?window._datos.duracion:null, repartidor: repaData.nombre||selRepa, repartidorKey: selRepa, repartidorTel: repaData.telefono||'', status:'asignado', estado:'asignado', timestamp:Date.now(), fechaISO: new Date().toISOString() };
   }
-
-  pedido.numeroPedido = numeroPedido;
-  pedido.numero = numeroPedido;
-
+  pedido.numeroPedido = numeroPedido; pedido.numero = numeroPedido;
   db.ref('pedidos').push(pedido).then((snap)=>{
     const id = snap.key;
     const updates = {};
     updates['pedidos/'+id+'/numeroPedido'] = numeroPedido;
     updates['pedidos_por_repartidor/'+selRepa+'/'+id] = pedido;
     updates['repartidores/'+selRepa+'/pedidos/'+id] = pedido;
-    return db.ref().update(updates);
-  }).then(()=>{
+    return db.ref().update(updates).then(()=>id);
+  }).then((id)=>{
     document.getElementById("modalRepartidor").classList.remove("show");
     document.getElementById("btnEnviarPedido").textContent = "➤ Enviar";
     document.getElementById("btnEnviarPedido").disabled = false;
-    alert("Pedido #"+numeroPedido+" enviado a "+pedido.repartidor+" - $"+pedido.precio);
+    mostrarConfirmacion(numeroPedido, pedido.repartidor, pedido.precio);
     resetAll();
   }).catch(err=>{
     console.error(err);
