@@ -21,11 +21,11 @@ body{background:#f5f6f7;min-height:100vh}
 .btn-q.active{background:#111;color:#fff;border-color:#111}
 .row2{display:flex;gap:6px;margin-top:8px}
 .inp{flex:1;height:34px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 10px;font-size:11px;font-weight:600;outline:0}
-.table-wrap{background:#fff;overflow:auto;margin-top:6px;-webkit-overflow-scrolling:touch}
+.table-wrap{background:#fff;overflow:auto;margin-top:6px}
 table{width:100%;border-collapse:collapse;min-width:760px}
 thead th{position:sticky;top:0;background:#111;color:#fff;font-size:9px;font-weight:800;text-align:left;padding:8px 6px;text-transform:uppercase}
 tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bottom:1px solid #f0f2f4;vertical-align:middle;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.badge-pagado{height:24px;padding:0 9px;border-radius:12px;border:0;font-size:9.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all.2s}
+.badge-pagado{height:24px;padding:0 9px;border-radius:12px;border:0;font-size:9.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
 .pagado{background:#00c853;color:#fff}
 .debe{background:#ff3b30;color:#fff}
 .btn-icon{width:26px;height:26px;border-radius:6px;border:1px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-right:3px}
@@ -76,9 +76,7 @@ tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bott
 
 <div class="table-wrap">
 <table>
-<thead><tr>
-<th>Fecha</th><th># Pedido</th><th>Aliado</th><th>Tipo Servicio</th><th>Repartidor</th><th>Total</th><th>Importe</th><th>Ganancia</th><th>Estado</th><th>Acción</th>
-</tr></thead>
+<thead><tr><th>Fecha</th><th># Pedido</th><th>Aliado</th><th>Tipo Servicio</th><th>Repartidor</th><th>Total</th><th>Importe</th><th>Ganancia</th><th>Estado</th><th>Acción</th></tr></thead>
 <tbody id="tbody"><tr><td colspan="10" class="empty">Cargando historial_pedidos...</td></tr></tbody>
 </table>
 </div>
@@ -165,13 +163,71 @@ function getAliado(p){
   return '-';
 }
 
-// TIEMPO REAL - escucha historial_pedidos
+// ADMIN MANDA - TIEMPO REAL
 dbRT.ref('historial_pedidos').on('value', snap=>{
   let data = snap.val() || {};
   pedidos = Object.keys(data).map(k=> ({id:k,...data[k]}));
   pedidos.sort((a,b)=> getFechaDoc(b) - getFechaDoc(a));
   render();
 });
+
+// FUNCION CLAVE: sincroniza con repartidor
+async function sincronizarRepartidor(id, datosParaRepartidor, repartidorNombre){
+  const rep = (repartidorNombre||'').trim();
+  if(!rep) return;
+  const repKey = rep.replace(/\s+/g,'_');
+
+  // 1. Actualiza en historial_pedidos principal (fuente de verdad)
+  await dbRT.ref('historial_pedidos/'+id).update(datosParaRepartidor);
+
+  // 2. Actualiza en todos los lugares donde el repartidor ve su historial
+  const rutas = [
+    `kigo_pedidos/${id}`,
+    `kigo_historial/${repKey}/${id}`,
+    `historialKigo/${repKey}/${id}`,
+    `repartidoresKigo/${repKey}/historial/${id}`,
+    `historial_por_repartidor/${repKey}/${id}`,
+    `kigoRepasFull/${repKey}/pedidos/${id}`
+  ];
+  rutas.forEach(r=>{
+    dbRT.ref(r).update(datosParaRepartidor).catch(()=>{});
+  });
+
+  // 3. Tambien en Firestore por si el panel del repa lee de firestore
+  dbFS.collection('historial_pedidos').doc(id).update(datosParaRepartidor).catch(()=>{});
+  if(rep) dbFS.collection('historial_por_repartidor').doc(repKey).collection('pedidos').doc(id).update(datosParaRepartidor).catch(()=>{});
+
+  // 4. Actualiza kigoPedidosLive donde adminKey == id
+  let liveSnap = await dbRT.ref('kigoPedidosLive').once('value');
+  let liveData = liveSnap.val()||{};
+  Object.keys(liveData).forEach(k=>{
+    if(liveData[k].adminKey===id || k===id){
+      dbRT.ref('kigoPedidosLive/'+k).update(datosParaRepartidor).catch(()=>{});
+    }
+  });
+}
+
+async function sincronizarEliminacion(id, repartidorNombre){
+  const rep = (repartidorNombre||'').trim().replace(/\s+/g,'_');
+  await dbRT.ref('historial_pedidos/'+id).remove();
+  const rutas = [
+    `kigo_pedidos/${id}`,
+    `kigo_historial/${rep}/${id}`,
+    `historialKigo/${rep}/${id}`,
+    `repartidoresKigo/${rep}/historial/${id}`,
+    `historial_por_repartidor/${rep}/${id}`,
+    `kigoRepasFull/${rep}/pedidos/${id}`
+  ];
+  rutas.forEach(r=>{ dbRT.ref(r).remove().catch(()=>{}); });
+  dbFS.collection('historial_pedidos').doc(id).delete().catch(()=>{});
+  let liveSnap = await dbRT.ref('kigoPedidosLive').once('value');
+  let liveData = liveSnap.val()||{};
+  Object.keys(liveData).forEach(k=>{
+    if(liveData[k].adminKey===id || k===id){
+      dbRT.ref('kigoPedidosLive/'+k).remove().catch(()=>{});
+    }
+  });
+}
 
 function filtrarLista(){
   const qCliente = document.getElementById('fCliente').value.toLowerCase().trim();
@@ -256,9 +312,10 @@ function abrirEdit(id){
   document.getElementById('overlayEdit').classList.add('show');
 }
 function cerrarEdit(){ document.getElementById('overlayEdit').classList.remove('show'); editId=null; }
+
 async function guardarEdit(){
   if(!editId) return;
-  // actualiza en local primero tiempo real
+  let original = pedidos.find(x=>x.id===editId);
   let idx = pedidos.findIndex(x=>x.id===editId);
   if(idx>-1){
     pedidos[idx].cliente = document.getElementById('eCliente').value;
@@ -272,6 +329,7 @@ async function guardarEdit(){
   }
   const upd = {
     cliente: document.getElementById('eCliente').value,
+    aliado: document.getElementById('eCliente').value,
     tipo: document.getElementById('eTipo').value,
     tipoServicio: document.getElementById('eTipo').value,
     repartidor: document.getElementById('eRepartidor').value,
@@ -281,8 +339,8 @@ async function guardarEdit(){
     pagado: document.getElementById('ePagado').value==='true',
     fecha: document.getElementById('eFecha').value
   };
-  await dbRT.ref('historial_pedidos/'+editId).update(upd);
   cerrarEdit();
+  await sincronizarRepartidor(editId, upd, original?.repartidor || upd.repartidor);
 }
 
 function abrirDel(id){
@@ -295,18 +353,14 @@ function cerrarDel(){ document.getElementById('overlayDel').classList.remove('sh
 
 async function confirmarDel(){
   if(!delId) return;
-  // elimina en local tiempo real inmediato
+  let original = pedidos.find(x=>x.id===delId);
   pedidos = pedidos.filter(x=>x.id!==delId);
   render();
-  // elimina en firebase en segundo plano
-  dbRT.ref('historial_pedidos/'+delId).remove();
-  dbFS.collection('historial_pedidos').doc(delId).delete().catch(()=>{});
-  // cambia tarjeta a mensaje
   document.getElementById('delNormal').style.display='none';
   document.getElementById('delOk').style.display='block';
+  await sincronizarEliminacion(delId, original?.repartidor||'');
   setTimeout(()=>{
     cerrarDel();
-    // restaura tarjeta para proxima vez
     setTimeout(()=>{
       document.getElementById('delNormal').style.display='block';
       document.getElementById('delOk').style.display='none';
@@ -317,13 +371,12 @@ async function confirmarDel(){
 async function togglePago(id){
   let idx = pedidos.findIndex(x=>x.id===id);
   if(idx>-1){
-    // cambio inmediato en pantalla
     pedidos[idx].pagado =!pedidos[idx].pagado;
     pedidos[idx].ganancia = pedidos[idx].pagado? Number(pedidos[idx].importe||pedidos[idx].valorTotal||0) : 0;
+    const rep = pedidos[idx].repartidor;
     render();
-    // guarda en firebase en segundo plano
-    dbRT.ref('historial_pedidos/'+id).update({pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia});
-    dbFS.collection('historial_pedidos').doc(id).update({pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia}).catch(()=>{});
+    const upd = {pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia, importe:pedidos[idx].importe};
+    await sincronizarRepartidor(id, upd, rep);
   }
 }
 
