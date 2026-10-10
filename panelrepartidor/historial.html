@@ -129,6 +129,29 @@ let todosPedidos = [];
 let filtroActual = 'todo';
 let fechaFiltro = '';
 let searchFiltro = '';
+let cacheMiTarifa = { mandado: 0, transporte: 0 };
+
+// ACTUALIZADO: LEE TARIFA DIRECTO DE /repartidores
+db.ref('repartidores/'+repartidorKey).on('value', s=>{
+  const v = s.val()||{};
+  cacheMiTarifa.mandado = Number(v.valormotomandado?? v.valorMotoMandado?? 0);
+  cacheMiTarifa.transporte = Number(v.valormototransporte?? v.valorMotoTransporte?? 0);
+  // fallback si la key es con nombre
+  if(cacheMiTarifa.mandado===0){
+    db.ref('repartidores').once('value').then(ss=>{
+      const all = ss.val()||{};
+      const lower = repartidorKey.toLowerCase();
+      Object.values(all).forEach(r=>{
+        if((r.nombre||'').toLowerCase()===lower || (r.usuario||'').toLowerCase()===lower){
+          cacheMiTarifa.mandado = Number(r.valormotomandado?? r.valorMotoMandado?? cacheMiTarifa.mandado);
+          cacheMiTarifa.transporte = Number(r.valormototransporte?? r.valorMotoTransporte?? cacheMiTarifa.transporte);
+        }
+      });
+      render();
+    });
+  }
+  render();
+});
 
 function getFechaDoc(p){
   let f = p.fecha || p.timestamp || p.fechaEntrega || p.createdAt || p.ts;
@@ -150,13 +173,13 @@ function isFechaIgual(ts, fechaStr){ if(!fechaStr) return true; const d=new Date
 
 function normalizarTipo(p){
   let t=(p.tipo||p.tipoServicio||'').toLowerCase();
-  if(t.includes('aliado') && t.includes('comprar')) return {txt:'ALIADOS COMPRAR', cls:'aliados'};
-  if(t.includes('aliado') && t.includes('recoger')) return {txt:'ALIADOS RECOGER', cls:'aliados'};
-  if(t.includes('nuevo') && t.includes('comprar')) return {txt:'NUEVO COMPRAR', cls:'cliente'};
-  if(t.includes('nuevo') && t.includes('recoger')) return {txt:'NUEVO RECOGER', cls:'recoger'};
-  if(t.includes('aliado')) return {txt:'ALIADOS', cls:'aliados'};
-  if(t.includes('cliente')) return {txt:'CLIENTE', cls:'cliente'};
-  return {txt:'RECOGER', cls:'recoger'};
+  if(t.includes('aliado') && t.includes('comprar')) return {txt:'ALIADOS COMPRAR', cls:'aliados', esRecoger:false};
+  if(t.includes('aliado') && t.includes('recoger')) return {txt:'ALIADOS RECOGER', cls:'aliados', esRecoger:true};
+  if(t.includes('nuevo') && t.includes('comprar')) return {txt:'NUEVO COMPRAR', cls:'cliente', esRecoger:false};
+  if(t.includes('nuevo') && t.includes('recoger')) return {txt:'NUEVO RECOGER', cls:'recoger', esRecoger:true};
+  if(t.includes('aliado')) return {txt:'ALIADOS', cls:'aliados', esRecoger:true};
+  if(t.includes('cliente')) return {txt:'CLIENTE', cls:'cliente', esRecoger:false};
+  return {txt:'RECOGER', cls:'recoger', esRecoger:true};
 }
 function getAliadoSolo(p){
   if(p.aliado) return p.aliado;
@@ -164,6 +187,9 @@ function getAliadoSolo(p){
   if(p.recogidaNombre) return p.recogidaNombre;
   if(p.recogerEn) return p.recogerEn.split('(')[0].trim().substring(0,22);
   return 'Aliado';
+}
+function getValorServicioRepa(tipoObj){
+  return tipoObj.esRecoger? cacheMiTarifa.mandado : cacheMiTarifa.transporte;
 }
 
 db.ref('historial_pedidos').on('value', snap=>{
@@ -214,22 +240,19 @@ function render(){
       const fechaObj = getFechaDoc(p);
       const valor = Number(p.valorTotal||p.total||p.precio||p.precioNum||0);
       const pagado = p.pagado === true;
+      const tipo = normalizarTipo(p);
 
-      // CALCULO CORRECTO COMO PEDISTE
-      // importe = lo que me tiene que dar a mi
-      // ganancia = valor - importe
-      let importeBase = Number(p.importe||0);
-      if(importeBase===0 && pagado){
-        // si no tiene importe guardado, calcula 80% como ejemplo, tu tarifa lo ajusta
-        importeBase = Math.round(valor * 0.8);
-      }
-      const importeMostrar = pagado? importeBase : 0;
-      const gananciaMostrar = pagado? (valor - importeMostrar) : 0;
+      // ACTUALIZADO COMO PEDISTE: usa tarifa de /repartidores
+      let valorServicio = getValorServicioRepa(tipo);
+      // si aún no cargó tarifa, usa lo guardado en el pedido como respaldo
+      if(valorServicio===0) valorServicio = Number(p.ganancia || p.importe || 0);
+
+      const gananciaMostrar = valorServicio;
+      const importeMostrar = valor > 0? (valor - valorServicio) : 0;
 
       if(pagado) totalGanancia += gananciaMostrar;
-      else totalDebe += valor;
+      else totalDebe += importeMostrar;
 
-      const tipo = normalizarTipo(p);
       const aliadoTxt = getAliadoSolo(p);
       const fecha = formatFechaSolo(fechaObj);
 
@@ -240,17 +263,17 @@ function render(){
         <div class="col-num">#${String(p.numeroPedido||p.id).slice(0,6)}</div>
         <div class="col-tipo"><span class="badge-tipo ${tipo.cls}">${tipo.txt}</span></div>
         <div class="col-aliado" title="${aliadoTxt}">${aliadoTxt}</div>
-        <div class="col-valor">$${valor}</div>
-        <div class="col-importe">$${importeMostrar}</div>
-        <div class="col-ingresos">$${gananciaMostrar}</div>
+        <div class="col-valor">$${valor.toLocaleString()}</div>
+        <div class="col-importe">$${importeMostrar.toLocaleString()}</div>
+        <div class="col-ingresos">$${gananciaMostrar.toLocaleString()}</div>
         <div class="col-estado"><span class="pill-pagado ${pagado?'pagado':'debe'}">${pagado?'PAGADO':'DEBE'}</span></div>
       `;
       lista.appendChild(div);
     });
   }
   document.getElementById('countPedidosTop').textContent = filtrados.length+' pedidos';
-  document.getElementById('valIngresos').textContent = '$'+totalGanancia;
-  document.getElementById('valDebe').textContent = '$'+totalDebe;
+  document.getElementById('valIngresos').textContent = '$'+totalGanancia.toLocaleString();
+  document.getElementById('valDebe').textContent = '$'+totalDebe.toLocaleString();
 }
 
 document.querySelectorAll('.chip').forEach(ch=>{
