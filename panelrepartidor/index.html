@@ -42,14 +42,10 @@ body{background:#f5f5f7;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .btn-esperar{flex:0.3;background:#e5e7eb;border:0;border-radius:10px;padding:9px;font-size:9px;font-weight:700;cursor:pointer}
 .slider-wrap{flex:1;background:#e30613;border-radius:10px;height:38px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none}
 .slider-text{color:#fff;font-size:10px;font-weight:700;pointer-events:none}
-.slider-thumb{position:absolute;left:3px;top:3px;width:32px;height:32px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2);transition: left.1s}
+.slider-thumb{position:absolute;left:3px;top:3px;width:32px;height:32px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:left.1s}
 .lista-espera{display:flex;flex-direction:column;gap:6px}
-.mini-card{background:#fff;border:1px solid #eee;border-radius:10px;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
-.mini-left{flex:1}
-.mini-title{font-size:9px;font-weight:700;color:#111}
-.mini-sub{font-size:7px;color:#6b7280}
-.mini-price{font-size:10px;font-weight:800;color:#e30613}
 .empty{font-size:9px;color:#9ca3af;text-align:center;padding:20px;background:#fff;border-radius:10px;border:1px dashed #ddd}
+.debug{font-size:7px;color:#999;padding:4px 12px}
 </style>
 </head>
 <body>
@@ -57,7 +53,7 @@ body{background:#f5f5f7;overflow-y:auto;-webkit-overflow-scrolling:touch}
 <div class="left">
 <img id="avatar" class="avatar" src="https://i.pravatar.cc/100?img=12">
 <div>
-<div class="name" id="txtNombre">Carlos Mendez</div>
+<div class="name" id="txtNombre">Repartidor</div>
 <div class="sub">Repartidor <span class="status-dot" id="dot"></span> <button class="status-btn" id="btnOnline" onclick="toggleOnline()">En línea</button></div>
 </div>
 </div>
@@ -66,7 +62,7 @@ body{background:#f5f5f7;overflow-y:auto;-webkit-overflow-scrolling:touch}
 <button class="icon-btn" onclick="cerrarSesion()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
 </div>
 </div>
-
+<div class="debug" id="debug">Conectando a Firebase...</div>
 <div class="map-wrap"><div id="map"></div></div>
 
 <div class="section">
@@ -84,121 +80,138 @@ const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", auth
 firebase.initializeApp(firebaseConfig); const db = firebase.database();
 let map, directionsService, directionsRenderer, markers=[];
 let online = true;
-let repartidorKey = localStorage.getItem('kigo_user') || localStorage.getItem('kigo_last_user') || 'repartidor1';
-let repartidorNombre = localStorage.getItem('kigo_rol') || 'Carlos Mendez';
-document.getElementById('txtNombre').textContent = repartidorNombre;
 
-function cerrarSesion(){ localStorage.clear(); window.location.href='../login/index.html'; }
-function toggleOnline(){ online =!online; const btn=document.getElementById('btnOnline'); const dot=document.getElementById('dot'); if(online){ btn.textContent='En línea'; btn.classList.remove('off'); dot.style.background='#00c853'; } else { btn.textContent='Desconectado'; btn.classList.add('off'); dot.style.background='#9ca3af'; } }
+// RECUPERA REPARTIDOR DEL LOGIN
+let repartidorKey = localStorage.getItem('kigo_user') || localStorage.getItem('kigo_user_keep') || localStorage.getItem('kigo_last_user') || '';
+let repartidorNombre = localStorage.getItem('kigo_rol_keep') || localStorage.getItem('kigo_rol') || repartidorKey || 'Repartidor';
+document.getElementById('txtNombre').textContent = repartidorNombre;
+document.getElementById('debug').textContent = 'Repartidor key: ' + (repartidorKey || 'TODOS') + ' | Leyendo pedidos...';
+
+function cerrarSesion(){ localStorage.removeItem('kigo_user'); localStorage.removeItem('kigo_rol'); localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); window.location.href='../login/index.html'; }
+function toggleOnline(){ online=!online; const btn=document.getElementById('btnOnline'); const dot=document.getElementById('dot'); if(online){ btn.textContent='En línea'; btn.classList.remove('off'); dot.style.background='#00c853'; } else { btn.textContent='Desconectado'; btn.classList.add('off'); dot.style.background='#9ca3af'; } }
 
 window.initMap = function(){
  map=new google.maps.Map(document.getElementById("map"),{center:{lat:21.157,lng:-100.934},zoom:13,disableDefaultUI:true});
  directionsService=new google.maps.DirectionsService();
  directionsRenderer=new google.maps.DirectionsRenderer({map:map,suppressMarkers:true,polylineOptions:{strokeColor:"#e30613",strokeWeight:4}});
 }
-
-function limpiarMarkers(){ markers.forEach(m=>m.setMap(null)); markers=[]; directionsRenderer.setDirections({routes:[]}); }
-
+function limpiarMarkers(){ markers.forEach(m=>m.setMap(null)); markers=[]; if(directionsRenderer) directionsRenderer.setDirections({routes:[]}); }
 function mostrarRuta(o){
+ if(!map) return;
  limpiarMarkers();
- if(o.recogidaLat && o.entregaLat){
-   const orig = new google.maps.LatLng(parseFloat(o.recogidaLat || o.negocioLat || o.aliadoLat), parseFloat(o.recogidaLng || o.negocioLng || o.aliadoLng));
-   const dest = new google.maps.LatLng(parseFloat(o.entregaLat), parseFloat(o.entregaLng));
-   markers.push(new google.maps.Marker({position:orig,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",scaledSize:new google.maps.Size(28,28)}}));
-   markers.push(new google.maps.Marker({position:dest,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",scaledSize:new google.maps.Size(28,28)}}));
-   directionsService.route({origin:orig,destination:dest,travelMode:google.maps.TravelMode.DRIVING},(res,status)=>{ if(status==='OK'){ directionsRenderer.setDirections(res); const b=new google.maps.LatLngBounds(); b.extend(orig); b.extend(dest); map.fitBounds(b); } });
- }
+ const lat1 = o.recogidaLat || o.negocioLat || o.aliadoLat;
+ const lng1 = o.recogidaLng || o.negocioLng || o.aliadoLng;
+ const lat2 = o.entregaLat; const lng2 = o.entregaLng;
+ if(!lat1 ||!lat2) return;
+ const orig = new google.maps.LatLng(parseFloat(lat1), parseFloat(lng1));
+ const dest = new google.maps.LatLng(parseFloat(lat2), parseFloat(lng2));
+ markers.push(new google.maps.Marker({position:orig,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",scaledSize:new google.maps.Size(28,28)}}));
+ markers.push(new google.maps.Marker({position:dest,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",scaledSize:new google.maps.Size(28,28)}}));
+ directionsService.route({origin:orig,destination:dest,travelMode:google.maps.TravelMode.DRIVING},(res,status)=>{ if(status==='OK'){ directionsRenderer.setDirections(res); const b=new google.maps.LatLngBounds(); b.extend(orig); b.extend(dest); map.fitBounds(b); } });
 }
-
 function formatoFecha(ts){ const d=new Date(ts); return d.toLocaleDateString('es-MX',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}); }
 
-let pedidosTodos = {};
-db.ref('pedidos_por_repartidor').child(repartidorKey).on('value', snap=>{
- pedidosTodos = snap.val() || {};
- const lista = Object.entries(pedidosTodos).map(([id,v])=>({id,...v})).sort((a,b)=> (a.timestamp||0)-(b.timestamp||0));
- const activos = lista.filter(p=>p.estado==='activo' || p.status==='activo' || p.tomado);
- const espera = lista.filter(p=>!p.estado || p.status==='asignado');
+let pedidosBuffer = {};
+
+function renderPedidos(){
+ const lista = Object.entries(pedidosBuffer).map(([id,v])=>({idFirebase:id,...v})).sort((a,b)=> (a.timestamp||0)-(b.timestamp||0));
+ const activos = lista.filter(p=>p.estado==='activo');
+ const espera = lista.filter(p=> p.status==='asignado' ||!p.estado);
 
  document.getElementById('countActivos').textContent=activos.length;
  document.getElementById('countEspera').textContent=espera.length;
+ document.getElementById('debug').textContent = `Conectado: ${lista.length} pedidos encontrados para ${repartidorKey||'todos'}`;
 
- // ACTIVOS
  const cA=document.getElementById('contActivos'); cA.innerHTML='';
- if(activos.length===0){ cA.innerHTML='<div class="empty">No tienes pedidos activos</div>'; }
+ if(activos.length===0) cA.innerHTML='<div class="empty">No tienes pedidos activos</div>';
  activos.forEach(p=>{
-   const recogNombre = p.aliado || p.recogidaNombre || p.productos || 'Recoger';
-   const recogDir = p.aliadoDir || p.recogidaDir || p.negocio || 'Dirección recogida';
-   const entrDir = p.entrega || p.entregaNombre || 'Dirección entrega';
-   const cliente = p.cliente || p.entregaNombre || p.recogidaNombre || 'Cliente';
-   const tel = p.celular || p.entregaCel || p.repartidorTel || 'sin especificación';
-   const tiempo = p.tiempo || '15 min';
-   const precio = p.precio || 0;
-   const fecha = p.timestamp? formatoFecha(p.timestamp) : 'Hoy';
    const div=document.createElement('div'); div.className='card-activa';
    div.innerHTML=`
-     <div class="card-top">
-       <div><div class="date">${fecha} - #${p.id.slice(-4)}</div><div class="time-neon">${tiempo}</div></div>
-       <div class="price">$${precio}</div>
-     </div>
+     <div class="card-top"><div><div class="date">${p.timestamp?formatoFecha(p.timestamp):'Hoy'} - #${p.idFirebase.slice(-4)}</div><div class="time-neon">${p.tiempo||'15 min'}</div></div><div class="price">$${p.precio||0}</div></div>
      <div class="tipo">${(p.tipo||'').toUpperCase()}</div>
-     <div class="row"><div class="pin red">📍</div><div><div class="r-title">Recoger: ${recogNombre}</div><div class="r-dir">${recogDir}</div></div></div>
-     <div class="row"><div class="pin green">📍</div><div><div class="r-title">Entregar: ${entrDir}</div><div class="r-dir">${p.entregaNombre? p.entregaDir||'':''}</div><div class="r-contact">${cliente} • ${tel}</div></div></div>
-     <div class="btns">
-       <button class="btn-esperar" onclick="entregarPedido('${p.id}')">Entregado</button>
-       <button class="btn-esperar" onclick="mostrarRuta(pedidosTodos['${p.id}'])" style="flex:0.5">Ver ruta</button>
-     </div>
-   `;
-   cA.appendChild(div);
-   mostrarRuta(p);
+     <div class="row"><div class="pin red">📍</div><div><div class="r-title">Recoger: ${p.aliado||p.recogidaNombre||p.negocio||p.productos||''}</div><div class="r-dir">${p.aliadoDir||p.recogidaDir||p.negocio||''}</div></div></div>
+     <div class="row"><div class="pin green">📍</div><div><div class="r-title">Entregar: ${p.entrega||''}</div><div class="r-contact">${p.cliente||p.entregaNombre||''} • ${p.celular||p.entregaCel||'sin especificación'}</div></div></div>
+     <div class="btns"><button class="btn-esperar" onclick="entregarPedido('${p.idFirebase}')">Entregado</button><button class="btn-esperar" onclick="mostrarRutaPorId('${p.idFirebase}')" style="flex:0.5">Ver ruta</button></div>
+   `; cA.appendChild(div);
  });
 
- // EN ESPERA - orden llegada primero arriba
  const cE=document.getElementById('contEspera'); cE.innerHTML='';
- if(espera.length===0){ cE.innerHTML='<div class="empty">Sin pedidos en espera</div>'; }
+ if(espera.length===0) cE.innerHTML='<div class="empty">Sin pedidos en espera</div>';
  espera.forEach(p=>{
-   const recogNombre = p.aliado || p.recogidaNombre || p.negocio || p.productos || 'Pedido';
-   const tiempo = p.tiempo || '15 min';
-   const precio = p.precio || 0;
-   const fecha = p.timestamp? formatoFecha(p.timestamp) : '';
    const div=document.createElement('div'); div.className='card-activa';
    div.innerHTML=`
-     <div class="card-top">
-       <div><div class="date">${fecha} - #${p.id.slice(-4)}</div><div class="time-neon">${tiempo}</div></div>
-       <div class="price">$${precio}</div>
-     </div>
+     <div class="card-top"><div><div class="date">${p.timestamp?formatoFecha(p.timestamp):''} - #${p.idFirebase.slice(-4)}</div><div class="time-neon">${p.tiempo||'15 min'}</div></div><div class="price">$${p.precio||0}</div></div>
      <div class="tipo">${(p.tipo||'').toUpperCase()}</div>
-     <div class="row"><div class="pin red">📍</div><div><div class="r-title">Recoger: ${p.aliado || p.recogidaNombre || p.negocio || 'Recoger'}</div><div class="r-dir">${p.aliadoDir || p.recogidaDir || p.negocio || ''}</div></div></div>
-     <div class="row"><div class="pin green">📍</div><div><div class="r-title">Entregar: ${p.entrega || ''}</div><div class="r-contact">${p.cliente || p.entregaNombre || ''} • ${p.celular || p.entregaCel || 'sin especificación'}</div></div></div>
+     <div class="row"><div class="pin red">📍</div><div><div class="r-title">Recoger: ${p.aliado||p.recogidaNombre||p.negocio||p.productos||''}</div><div class="r-dir">${p.aliadoDir||p.recogidaDir||p.negocio||''}</div></div></div>
+     <div class="row"><div class="pin green">📍</div><div><div class="r-title">Entregar: ${p.entrega||''}</div><div class="r-contact">${p.cliente||p.entregaNombre||''} • ${p.celular||p.entregaCel||'sin especificación'}</div></div></div>
      <div class="btns">
-       <button class="btn-esperar" onclick="rechazarPedido('${p.id}')">Esperar</button>
-       <div class="slider-wrap" id="slider-${p.id}" ontouchstart="startSlide(event,'${p.id}')" onmousedown="startSlide(event,'${p.id}')">
-         <div class="slider-thumb" id="thumb-${p.id}">➤</div>
-         <div class="slider-text">Desliza para Tomar >>></div>
-       </div>
+       <button class="btn-esperar" onclick="mostrarRutaPorId('${p.idFirebase}')">Esperar</button>
+       <div class="slider-wrap" id="slider-${p.idFirebase}" ontouchstart="startSlide(event,'${p.idFirebase}')" onmousedown="startSlide(event,'${p.idFirebase}')"><div class="slider-thumb" id="thumb-${p.idFirebase}">➤</div><div class="slider-text">Desliza para Tomar >>></div></div>
      </div>
-   `;
-   cE.appendChild(div);
+   `; cE.appendChild(div);
  });
+ if(activos.length>0) mostrarRuta(activos[0]);
+}
+
+function mostrarRutaPorId(id){ const p=pedidosBuffer[id]; if(p) mostrarRuta(p); }
+
+// ESCUCHA 1: pedidos_por_repartidor/{key} si existe
+if(repartidorKey){
+ db.ref('pedidos_por_repartidor').child(repartidorKey).on('value', snap=>{
+   const val=snap.val()||{};
+   // fusiona
+   Object.entries(val).forEach(([k,v])=>{ pedidosBuffer[k]=v; });
+   renderPedidos();
+ });
+}
+
+// ESCUCHA 2: respaldo - lee todos los pedidos_por_repartidor y filtra por tu nombre
+db.ref('pedidos_por_repartidor').on('value', snap=>{
+ if(!repartidorKey){ // si no hay key, muestra todo para organizar
+   const all=snap.val()||{};
+   Object.values(all).forEach(repaPedidos=>{
+     if(typeof repaPedidos==='object'){
+       Object.entries(repaPedidos).forEach(([k,v])=>{ if(k!=='_init') pedidosBuffer[k]=v; });
+     }
+   });
+   renderPedidos();
+ }
+});
+
+// ESCUCHA 3: lee directamente de /pedidos donde tu repartidorKey coincida
+db.ref('pedidos').on('value', snap=>{
+ const all=snap.val()||{};
+ Object.entries(all).forEach(([k,v])=>{
+   if(k==='_init') return;
+   if(!v) return;
+   // si el pedido es para este repartidor o si no hay filtro
+   if(!repartidorKey || v.repartidorKey===repartidorKey || v.repartidor===repartidorNombre){
+     if(!pedidosBuffer[k]) pedidosBuffer[k]=v;
+   }
+ });
+ renderPedidos();
 });
 
 let dragging=null, startX=0;
-function startSlide(e,id){ dragging=id; const t=e.touches?e.touches[0].clientX:e.clientX; startX=t; document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onEnd); document.addEventListener('touchmove',onMove); document.addEventListener('touchend',onEnd); }
-function onMove(e){ if(!dragging) return; const x=e.touches?e.touches[0].clientX:e.clientX; let diff=x-startX; const wrap=document.getElementById('slider-'+dragging); const thumb=document.getElementById('thumb-'+dragging); const max=wrap.offsetWidth-38; let pos=Math.min(Math.max(0,diff),max); thumb.style.left=pos+'px'; if(pos>=max*0.85){ tomarPedido(dragging); onEnd(); } }
+function startSlide(e,id){ dragging=id; const t=e.touches?e.touches[0].clientX:e.clientX; startX=t; document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onEnd); document.addEventListener('touchmove',onMove,{passive:false}); document.addEventListener('touchend',onEnd); }
+function onMove(e){ if(!dragging) return; if(e.cancelable) e.preventDefault(); const x=e.touches?e.touches[0].clientX:e.clientX; let diff=x-startX; const wrap=document.getElementById('slider-'+dragging); const thumb=document.getElementById('thumb-'+dragging); if(!wrap||!thumb) return; const max=wrap.offsetWidth-38; let pos=Math.min(Math.max(0,diff),max); thumb.style.left=pos+'px'; if(pos>=max*0.85){ tomarPedido(dragging); onEnd(); } }
 function onEnd(){ if(dragging){ const th=document.getElementById('thumb-'+dragging); if(th) th.style.left='3px'; } dragging=null; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onEnd); document.removeEventListener('touchmove',onMove); document.removeEventListener('touchend',onEnd); }
 
 function tomarPedido(id){
- const p=pedidosTodos[id]; if(!p) return;
- db.ref('pedidos_por_repartidor').child(repartidorKey).child(id).update({estado:'activo', tomado:Date.now()});
- db.ref('pedidos').child(id).update({status:'en_camino'});
+ const p=pedidosBuffer[id]; if(!p) return;
+ // actualiza en ambas rutas
+ if(repartidorKey) db.ref('pedidos_por_repartidor').child(repartidorKey).child(id).update({estado:'activo', tomado:Date.now()});
+ db.ref('pedidos').child(id).update({status:'en_camino', estado:'activo'});
+ db.ref('pedidos_por_repartidor').child(repartidorKey).child(id).update({status:'en_camino'});
  mostrarRuta(p);
 }
 function entregarPedido(id){
  if(!confirm('¿Marcar como entregado?')) return;
- db.ref('pedidos_por_repartidor').child(repartidorKey).child(id).remove();
+ if(repartidorKey) db.ref('pedidos_por_repartidor').child(repartidorKey).child(id).remove();
  db.ref('pedidos').child(id).update({status:'entregado'});
- limpiarMarkers();
+ delete pedidosBuffer[id];
+ renderPedidos(); limpiarMarkers();
 }
-function rechazarPedido(id){ alert('Pedido en espera'); }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTV1sm6McEIkv-cheaVFCD_svp_a--6wg&libraries=places&callback=initMap" async defer></script>
 </body>
