@@ -17,21 +17,25 @@ body{background:#f5f5f7}
 .sub{font-size:8px;color:#6b7280;font-weight:600;display:flex;align-items:center;gap:6px}
 .status-dot{width:6px;height:6px;border-radius:50%;background:#00c853}
 .status-btn{font-size:7px;font-weight:800;padding:2px 6px;border-radius:10px;border:1px solid #00c853;background:#e8f5e9;color:#00c853;cursor:pointer}
-.right{display:flex;gap:10px}
-.icon-btn{width:28px;height:28px;border-radius:50%;border:1px solid #eee;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.map-wrap{width:100%;height:190px;background:#e5e3df}
+.right{display:flex;gap:8px;align-items:center}
+.icon-btn{width:28px;height:28px;border-radius:50%;border:1px solid #eee;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.icon-btn.loc-green{background:#e8f5e9;border-color:#00c853;color:#00c853}
+.icon-btn.loc-red{background:#fee2e2;border-color:#e30613;color:#e30613}
+.map-wrap{width:100%;height:190px;background:#e5e3df;position:relative}
 #map{width:100%;height:100%}
+.nav-badge{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:#111;color:#fff;font-size:8px;font-weight:700;padding:5px 10px;border-radius:20px;display:none;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .section{padding:10px 12px}
 .sec-title{font-size:11px;font-weight:800;color:#111;margin-bottom:8px;display:flex;justify-content:space-between}
 .badge-count{background:#fee2e2;color:#e30613;font-size:8px;padding:2px 6px;border-radius:10px;font-weight:700}
 .card-activa{background:#fff;border-radius:14px;padding:10px 10px;box-shadow:0 4px 16px rgba(0,0,0,.08);border:1px solid #f0f0f0;margin-bottom:10px}
 .card-mini{background:#fff;border-radius:10px;padding:6px 8px;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid #eee;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:6px}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:6px;flex-wrap:wrap}
 .date{font-size:8px;color:#6b7280;font-weight:600}
 .date-big{font-size:9px;font-weight:700;color:#111}
 .time-neon{background:#fef08a;border:1px solid #fde047;color:#111;font-size:8px;font-weight:800;padding:2px 6px;border-radius:6px;box-shadow:0 0 8px rgba(250,204,21,.6)}
 .time-neon-big{background:#fef08a;border:1px solid #fde047;color:#111;font-size:8px;font-weight:800;padding:3px 7px;border-radius:6px;box-shadow:0 0 8px rgba(250,204,21,.6)}
 .price{font-size:22px;font-weight:800;color:#e30613;line-height:1}
+.price-big{font-size:16px;font-weight:800;color:#e30613;line-height:1}
 .tipo{font-size:7px;font-weight:800;color:#e30613;background:#fee2e2;display:inline-block;padding:2px 6px;border-radius:10px;margin-bottom:8px}
 .row{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;justify-content:space-between}
 .row-left{display:flex;gap:6px;flex:1}
@@ -53,32 +57,116 @@ body{background:#f5f5f7}
 .slider-thumb{position:absolute;left:3px;top:3px;width:32px;height:32px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:left 0.1s}
 .empty{font-size:9px;color:#9ca3af;text-align:center;padding:20px;background:#fff;border-radius:10px;border:1px dashed #ddd}
 .mini-left{font-size:8px;color:#111;font-weight:600}
-.mini-right{font-size:7px;color:#6b7280}
 </style>
 </head>
 <body>
 <div class="top-bar">
 <div class="left"><img id="avatar" class="avatar" src="https://i.pravatar.cc/100?img=5"><div><div class="name" id="txtNombre">repa1</div><div class="sub">Repartidor <span class="status-dot"></span> <button class="status-btn">En línea</button></div></div></div>
-<div class="right"><button class="icon-btn">⚙️</button><button class="icon-btn" onclick="localStorage.clear();location.href='../login/index.html'">⎋</button></div>
+<div class="right">
+<button class="icon-btn loc-red" id="btnLoc" onclick="pedirUbicacion()" title="Ubicación"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>
+<button class="icon-btn">⚙️</button>
+<button class="icon-btn" onclick="localStorage.clear();location.href='../login/index.html'">⎋</button>
 </div>
-<div class="map-wrap"><div id="map"></div></div>
+</div>
+<div class="map-wrap"><div id="map"></div><div class="nav-badge" id="navBadge">Navegando • 1.2 km • 4 min</div></div>
 <div class="section"><div class="sec-title">Pedidos Activos <span class="badge-count" id="countActivos">0</span></div><div id="contActivos"></div></div>
 <div class="section" style="padding-top:0"><div class="sec-title">Pedidos en espera <span class="badge-count" id="countEspera">0</span></div><div id="contEspera"></div></div>
 
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig); const db = firebase.database();
-let map, directionsService, directionsRenderer, markers=[];
+let map, directionsService, directionsRenderer, markers=[], watchId=null, currentPos=null, modoNavegacion=false;
 let repartidorKey = (localStorage.getItem('kigo_user')||'repa1').trim();
 if(!['repa1','repa2'].includes(repartidorKey)) repartidorKey='repa1';
 document.getElementById('txtNombre').textContent = repartidorKey;
+
 window.initMap = function(){ map=new google.maps.Map(document.getElementById("map"),{center:{lat:21.157,lng:-100.934},zoom:13,disableDefaultUI:true}); directionsService=new google.maps.DirectionsService(); directionsRenderer=new google.maps.DirectionsRenderer({map:map,suppressMarkers:true,polylineOptions:{strokeColor:"#e30613",strokeWeight:4}}); }
-function limpiarMarkers(){ markers.forEach(m=>m.setMap(null)); markers=[]; if(directionsRenderer) directionsRenderer.setDirections({routes:[]}); }
-function mostrarRuta(o){ if(!map||!o) return; limpiarMarkers(); const lat1=o.recogidaLat||o.negocioLat||o.aliadoLat; const lng1=o.recogidaLng||o.negocioLng||o.aliadoLng; const lat2=o.entregaLat; const lng2=o.entregaLng; if(!lat1||!lat2) return; const orig=new google.maps.LatLng(parseFloat(lat1),parseFloat(lng1)); const dest=new google.maps.LatLng(parseFloat(lat2),parseFloat(lng2)); markers.push(new google.maps.Marker({position:orig,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",scaledSize:new google.maps.Size(28,28)}})); markers.push(new google.maps.Marker({position:dest,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",scaledSize:new google.maps.Size(28,28)}})); directionsService.route({origin:orig,destination:dest,travelMode:google.maps.TravelMode.DRIVING},(res,status)=>{ if(status==='OK'){ directionsRenderer.setDirections(res); const b=new google.maps.LatLngBounds(); b.extend(orig); b.extend(dest); map.fitBounds(b); } }); }
+function limpiarMarkers(){ markers.forEach(m=>m.setMap(null)); markers=[]; if(directionsRenderer) directionsRenderer.setDirections({routes:[]}); document.getElementById('navBadge').style.display='none'; modoNavegacion=false; }
+
+function mostrarRuta(o, desdeMiUbicacion=false){
+ if(!map||!o) return;
+ limpiarMarkers();
+ let origLat, origLng;
+ if(desdeMiUbicacion && currentPos){
+   origLat = currentPos.lat; origLng = currentPos.lng;
+ } else {
+   origLat = o.recogidaLat||o.negocioLat||o.aliadoLat; origLng = o.recogidaLng||o.negocioLng||o.aliadoLng;
+ }
+ const destLat = o.entregaLat; const destLng = o.entregaLng;
+ // Si es modo navegación hacia recoger, destino es recoger
+ let destFinalLat = desdeMiUbicacion? (o.recogidaLat||o.negocioLat||o.aliadoLat) : destLat;
+ let destFinalLng = desdeMiUbicacion? (o.recogidaLng||o.negocioLng||o.aliadoLng) : destLng;
+ if(desdeMiUbicacion && (!destFinalLat||!destFinalLng)) return;
+ if(!origLat||!origLng||!destFinalLat||!destFinalLng) return;
+
+ const orig = new google.maps.LatLng(parseFloat(origLat), parseFloat(origLng));
+ const dest = new google.maps.LatLng(parseFloat(destFinalLat), parseFloat(destFinalLng));
+
+ // Marcador azul para mi ubicación si estoy navegando
+ if(desdeMiUbicacion){
+   markers.push(new google.maps.Marker({position:orig,map:map,icon:{path:google.maps.SymbolPath.CIRCLE, scale:8, fillColor:"#2563eb", fillOpacity:1, strokeColor:"#fff", strokeWeight:2}}));
+   document.getElementById('navBadge').style.display='block';
+   modoNavegacion=true;
+ } else {
+   markers.push(new google.maps.Marker({position:orig,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",scaledSize:new google.maps.Size(28,28)}}));
+ }
+
+ if(!desdeMiUbicacion){
+   if(destLat && destLng){
+     const destFull = new google.maps.LatLng(parseFloat(destLat), parseFloat(destLng));
+     markers.push(new google.maps.Marker({position:destFull,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",scaledSize:new google.maps.Size(28,28)}}));
+   }
+ } else {
+   markers.push(new google.maps.Marker({position:dest,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",scaledSize:new google.maps.Size(28,28)}}));
+ }
+
+ directionsService.route({origin:orig,destination:dest,travelMode:google.maps.TravelMode.DRIVING},(res,status)=>{
+   if(status==='OK'){
+     directionsRenderer.setDirections(res);
+     const leg = res.routes[0].legs[0];
+     if(modoNavegacion){
+       document.getElementById('navBadge').textContent = `Navegando • ${leg.distance.text} • ${leg.duration.text}`;
+     }
+     const b=new google.maps.LatLngBounds(); b.extend(orig); b.extend(dest); map.fitBounds(b);
+   }
+ });
+}
+
 function formatoHora(ts){ const d=new Date(ts); return d.toLocaleTimeString('es-MX',{hour:'numeric',minute:'2-digit',hour12:true}); }
-function formatoFechaCorta(ts){ const d=new Date(ts); return d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false}); }
+function formatoHoraCorta(ts){ const d=new Date(ts); return d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false}); }
 function calcularRecoger(ts, tiempoStr){ let mins=20; if(tiempoStr){ const m=tiempoStr.match(/(\d+)/); if(m) mins=parseInt(m[1]); } const d=new Date(ts||Date.now()); d.setMinutes(d.getMinutes()+mins); return d.toLocaleTimeString('es-MX',{hour:'numeric',minute:'2-digit',hour12:true}); }
-function abrirMaps(lat,lng){ if(!lat||!lng){ alert('Sin coordenadas'); return; } window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,'_blank'); }
+function abrirMaps(lat,lng){ if(!lat||!lng||lat==='null'){ alert('Sin coordenadas'); return; } window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving&dir_action=navigate`,'_blank'); }
+
+// UBICACION
+function pedirUbicacion(){
+ if(!navigator.geolocation){ alert('Tu navegador no soporta ubicación'); return; }
+ const btn=document.getElementById('btnLoc');
+ btn.innerHTML='...';
+ navigator.geolocation.getCurrentPosition(pos=>{
+   currentPos={lat:pos.coords.latitude,lng:pos.coords.longitude};
+   btn.classList.remove('loc-red'); btn.classList.add('loc-green');
+   btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+   // Guarda en firebase para admin
+   db.ref('repartidores/'+repartidorKey).update({lat:currentPos.lat,lng:currentPos.lng,ultimaUbicacion:Date.now()});
+   // Inicia watch
+   if(watchId) navigator.geolocation.clearWatch(watchId);
+   watchId=navigator.geolocation.watchPosition(p=>{
+     currentPos={lat:p.coords.latitude,lng:p.coords.longitude};
+     db.ref('repartidores/'+repartidorKey).update({lat:currentPos.lat,lng:currentPos.lng,ultimaUbicacion:Date.now()});
+     // Si está en modo navegación, recalcula ruta automáticamente
+     if(modoNavegacion){
+       const activo = Object.values(pedidosBuffer).find(x=>['activo','recogiendo','recogido'].includes(x.estado));
+       if(activo) mostrarRuta(activo, true);
+     }
+   },null,{enableHighAccuracy:true, maximumAge:5000, timeout:10000});
+ }, err=>{
+   btn.classList.remove('loc-green'); btn.classList.add('loc-red');
+   btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+   alert('Activa tu ubicación para navegación tipo Rappi');
+ },{enableHighAccuracy:true});
+}
+// Intenta pedir al cargar una vez
+setTimeout(()=>{ if(localStorage.getItem('kigo_loc_'+repartidorKey)==='1') pedirUbicacion(); },1000);
 
 let pedidosBuffer={};
 function renderPedidos(){
@@ -87,7 +175,8 @@ function renderPedidos(){
  const espera=lista.filter(p=>p.status==='asignado'||!p.estado);
  document.getElementById('countActivos').textContent=activos.length;
  document.getElementById('countEspera').textContent=espera.length;
- if(activos.length>0){ mostrarRuta(activos[0]); } else { limpiarMarkers(); }
+ if(activos.length>0 &&!modoNavegacion){ mostrarRuta(activos[0]); }
+ if(activos.length===0 &&!modoNavegacion){ limpiarMarkers(); }
 
  const cA=document.getElementById('contActivos'); cA.innerHTML='';
  if(activos.length===0) cA.innerHTML='<div class="empty">No tienes pedidos activos</div>';
@@ -114,14 +203,14 @@ function renderPedidos(){
    const div=document.createElement('div'); div.className='card-activa';
    div.innerHTML=`
      <div class="card-top">
-       <div class="date-big">#${p.idFirebase.slice(-4)} • ${p.productos||p.aliado||'Pedido'}</div>
-       <div style="display:flex;gap:4px;align-items:center">
+       <div class="date-big">#${p.idFirebase.slice(-4)}</div>
+       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
          <span class="date">${horaLlegada}</span>
          <span class="time-neon-big">Recoger ${horaRecoger}</span>
+         <span class="price-big">$${p.precio||0}</span>
        </div>
      </div>
      <div class="tipo">${(p.tipo||'ALIADOS • RECOGER').toUpperCase()}</div>
-
      <div class="row">
        <div class="row-left">
          <div class="row-icon" style="background:#fee2e2;color:#e30613"><svg width="8" height="8" viewBox="0 0 24 24" fill="#e30613"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></div>
@@ -133,7 +222,6 @@ function renderPedidos(){
        </div>
        <button class="btn-map blue" onclick="abrirMaps('${latR}','${lngR}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>
      </div>
-
      <div class="row">
        <div class="row-left">
          <div class="row-icon" style="background:#e8f5e9;color:#00c853"><svg width="8" height="8" viewBox="0 0 24 24" fill="#00c853"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></div>
@@ -152,34 +240,23 @@ function renderPedidos(){
 
  const cE=document.getElementById('contEspera'); cE.innerHTML='';
  if(espera.length===0) cE.innerHTML='<div class="empty">Sin pedidos en espera</div>';
-
- // Si hay activo, las de espera se minimizan
  const hayActivo = activos.length>0;
  espera.forEach(p=>{
    const horaLlegada = p.timestamp? formatoHora(p.timestamp) : formatoHora(Date.now());
    const horaRecoger = calcularRecoger(p.timestamp, p.tiempo);
    if(hayActivo){
-     // Tarjeta mini delgada
      const div=document.createElement('div'); div.className='card-mini';
-     div.innerHTML=`<div class="mini-left">#${p.idFirebase.slice(-4)} • ${p.aliado||p.productos||'Pedido'}</div><div style="display:flex;gap:4px;align-items:center"><span class="mini-right">${horaLlegada}</span><span class="time-neon">${horaRecoger}</span></div>`;
+     div.innerHTML=`<div class="mini-left">#${p.idFirebase.slice(-4)} • ${p.aliado||p.productos||'Pedido'}</div><div style="display:flex;gap:4px;align-items:center"><span style="font-size:7px;color:#6b7280">${horaLlegada}</span><span class="time-neon">${horaRecoger}</span></div>`;
      div.onclick=()=>mostrarRutaPorId(p.idFirebase);
      cE.appendChild(div);
    } else {
-     // Tarjeta normal grande cuando no hay activo
      const dirRec = p.aliadoDir||p.recogidaDir||p.negocio||'sin especificación';
      const div=document.createElement('div'); div.className='card-activa';
-     div.innerHTML=`
-       <div class="card-top"><div class="date">${p.timestamp?formatoFechaCorta(p.timestamp):''} - #${p.idFirebase.slice(-4)}</div><div class="time-neon">${p.tiempo||'15 min'}</div><div class="price">$${p.precio||0}</div></div>
-       <div class="tipo">${(p.tipo||'').toUpperCase()}</div>
-       <div class="row"><div class="row-left"><div class="row-icon" style="background:#fee2e2"><svg width="8" height="8" viewBox="0 0 24 24" fill="#e30613"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></div><div><div class="r-title">Recoger: ${p.aliado||p.recogidaNombre||p.negocio||''}</div><div class="r-sub">${dirRec}</div></div></div></div>
-       <div class="row"><div class="row-left"><div class="row-icon" style="background:#e8f5e9"><svg width="8" height="8" viewBox="0 0 24 24" fill="#00c853"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></div><div><div class="r-title">Entregar: ${p.entrega||''}</div><div class="r-sub">${p.cliente||''} • ${p.celular||'sin especificación'}</div></div></div></div>
-       <div class="btns"><button class="btn-esperar" onclick="mostrarRutaPorId('${p.idFirebase}')">Esperar</button><div class="slider-wrap" id="slider-${p.idFirebase}" ontouchstart="startSlide(event,'${p.idFirebase}','tomar')" onmousedown="startSlide(event,'${p.idFirebase}','tomar')"><div class="slider-thumb" id="thumb-${p.idFirebase}">➤</div><div class="slider-text">Desliza para Tomar >>></div></div></div>
-     `; cE.appendChild(div);
+     div.innerHTML=`<div class="card-top"><div class="date">${p.timestamp?formatoHoraCorta(p.timestamp):''} - #${p.idFirebase.slice(-4)}</div><div class="time-neon">${p.tiempo||'15 min'}</div><div class="price">$${p.precio||0}</div></div><div class="tipo">${(p.tipo||'').toUpperCase()}</div><div class="row"><div class="row-left"><div class="row-icon" style="background:#fee2e2"><svg width="8" height="8" viewBox="0 0 24 24" fill="#e30613"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></div><div><div class="r-title">Recoger: ${p.aliado||p.recogidaNombre||p.negocio||''}</div><div class="r-sub">${dirRec}</div></div></div></div><div class="row"><div class="row-left"><div class="row-icon" style="background:#e8f5e9"><svg width="8" height="8" viewBox="0 0 24 24" fill="#00c853"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg></div><div><div class="r-title">Entregar: ${p.entrega||''}</div><div class="r-sub">${p.cliente||''} • ${p.celular||'sin especificación'}</div></div></div></div><div class="btns"><button class="btn-esperar" onclick="mostrarRutaPorId('${p.idFirebase}')">Esperar</button><div class="slider-wrap" id="slider-${p.idFirebase}" ontouchstart="startSlide(event,'${p.idFirebase}','tomar')" onmousedown="startSlide(event,'${p.idFirebase}','tomar')"><div class="slider-thumb" id="thumb-${p.idFirebase}">➤</div><div class="slider-text">Desliza para Tomar >>></div></div></div>`; cE.appendChild(div);
    }
  });
 }
-function mostrarRutaPorId(id){ const p=pedidosBuffer[id]; if(p) mostrarRuta(p); }
-
+function mostrarRutaPorId(id){ const p=pedidosBuffer[id]; if(p) mostrarRuta(p, false); }
 db.ref('pedidos_por_repartidor/'+repartidorKey).on('value', snap=>{ const val=snap.val()||{}; pedidosBuffer={}; Object.entries(val).forEach(([k,v])=>{ if(k!=='_init') pedidosBuffer[k]=v; }); renderPedidos(); });
 db.ref('repartidores/'+repartidorKey+'/pedidos').on('value', snap=>{ const val=snap.val()||{}; Object.entries(val).forEach(([k,v])=>{ if(k!=='_init') pedidosBuffer[k]=v; }); renderPedidos(); });
 
@@ -202,22 +279,49 @@ function pasarAEspera(id){
  limpiarMarkers();
 }
 function voyARecoger(id){
- db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).update({estado:'recogiendo'});
- db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).update({estado:'recogiendo'});
- db.ref('pedidos/'+id).update({estado:'recogiendo'});
+ // Activa modo navegación desde mi ubicación hasta recoger
+ if(!currentPos){
+   pedirUbicacion();
+   setTimeout(()=>{
+     if(currentPos){
+       const p=pedidosBuffer[id];
+       mostrarRuta(p, true);
+       db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).update({estado:'recogiendo'});
+       db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).update({estado:'recogiendo'});
+       db.ref('pedidos/'+id).update({estado:'recogiendo'});
+       localStorage.setItem('kigo_loc_'+repartidorKey,'1');
+     } else {
+       // Si no hay ubicación, sigue igual pero sin navegación viva
+       db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).update({estado:'recogiendo'});
+       db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).update({estado:'recogiendo'});
+       db.ref('pedidos/'+id).update({estado:'recogiendo'});
+     }
+   },800);
+ } else {
+   const p=pedidosBuffer[id];
+   mostrarRuta(p, true);
+   db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).update({estado:'recogiendo'});
+   db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).update({estado:'recogiendo'});
+   db.ref('pedidos/'+id).update({estado:'recogiendo'});
+ }
 }
 function loTengo(id){
+ // Ahora navega hacia entrega
  db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).update({estado:'recogido'});
  db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).update({estado:'recogido'});
  db.ref('pedidos/'+id).update({estado:'recogido'});
+ const p=pedidosBuffer[id];
+ if(currentPos && p){
+   // Ruta desde mi ubicación hasta entrega
+   limpiarMarkers();
+   const orig = new google.maps.LatLng(currentPos.lat, currentPos.lng);
+   const dest = new google.maps.LatLng(parseFloat(p.entregaLat), parseFloat(p.entregaLng));
+   markers.push(new google.maps.Marker({position:orig,map:map,icon:{path:google.maps.SymbolPath.CIRCLE, scale:8, fillColor:"#2563eb", fillOpacity:1, strokeColor:"#fff", strokeWeight:2}}));
+   markers.push(new google.maps.Marker({position:dest,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",scaledSize:new google.maps.Size(28,28)}}));
+   directionsService.route({origin:orig,destination:dest,travelMode:google.maps.TravelMode.DRIVING},(res,status)=>{ if(status==='OK'){ directionsRenderer.setDirections(res); document.getElementById('navBadge').style.display='block'; document.getElementById('navBadge').textContent=`Entregando • ${res.routes[0].legs[0].distance.text} • ${res.routes[0].legs[0].duration.text}`; modoNavegacion=true; }});
+ }
 }
-function yaEntregue(id){
- if(!confirm('¿Confirmas entrega?')) return;
- db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).remove();
- db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).remove();
- db.ref('pedidos/'+id).update({status:'entregado'});
- delete pedidosBuffer[id]; renderPedidos(); limpiarMarkers();
-}
+function yaEntregue(id){ if(!confirm('¿Confirmas entrega?')) return; db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).remove(); db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).remove(); db.ref('pedidos/'+id).update({status:'entregado'}); delete pedidosBuffer[id]; renderPedidos(); limpiarMarkers(); }
 function verDetalles(id){ const p=pedidosBuffer[id]; alert(`Pedido #${id.slice(-4)}\nRecoger: ${p.aliado||''}\nEntregar: ${p.entrega||''}\nCliente: ${p.cliente||''}`); }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTV1sm6McEIkv-cheaVFCD_svp_a--6wg&libraries=places&callback=initMap" async defer></script>
