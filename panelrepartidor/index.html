@@ -1,1 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kigo Xpress - Repartidor</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#f5f5f7;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.top-bar{background:#fff;padding:10px 12px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;position:sticky;top:0;z-index:100}
+.left{display:flex;align-items:center;gap:8px}
+.avatar{width:38px;height:38px;border-radius:50%;background:#ddd;object-fit:cover;border:2px solid #eee}
+.name{font-size:13px;font-weight:700;color:#111;line-height:1.1}
+.sub{font-size:8px;color:#6b7280;font-weight:600;display:flex;align-items:center;gap:6px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#00c853;display:inline-block}
+.status-btn{font-size:7px;font-weight:800;padding:2px 6px;border-radius:10px;border:1px solid #00c853;background:#e8f5e9;color:#00c853;cursor:pointer}
+.status-btn.off{border-color:#9ca3af;background:#f3f4f6;color:#6b7280}
+.right{display:flex;align-items:center;gap:10px}
+.icon-btn{width:28px;height:28px;border-radius:50%;border:1px solid #eee;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.map-wrap{position:relative;width:100%;height:190px;background:#e5e3df;margin:0}
+#map{width:100%;height:100%}
+.section{padding:10px 12px}
+.sec-title{font-size:11px;font-weight:800;color:#111;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.badge-count{background:#fee2e2;color:#e30613;font-size:8px;padding:2px 6px;border-radius:10px;font-weight:700}
+.card-activa{background:#fff;border-radius:14px;padding:8px 10px;box-shadow:0 4px 16px rgba(0,0,0,.08);border:1px solid #f0f0f0;margin-bottom:10px}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.date{font-size:8px;color:#6b7280;font-weight:600}
+.time-neon{background:#fef08a;border:1px solid #fde047;color:#111;font-size:8px;font-weight:800;padding:2px 6px;border-radius:6px;box-shadow:0 0 8px rgba(250,204,21,.6)}
+.price{font-size:22px;font-weight:800;color:#e30613;line-height:1}
+.tipo{font-size:7px;font-weight:800;color:#e30613;background:#fee2e2;display:inline-block;padding:2px 6px;border-radius:10px;margin-bottom:6px;letter-spacing:.3px}
+.row{ display:flex; gap:6px; margin-bottom:5px; align-items:flex-start }
+.pin{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:8px}
+.pin.red{background:#e30613;color:#fff}
+.pin.green{background:#00c853;color:#fff}
+.r-title{font-size:10px;font-weight:700;color:#111}
+.r-dir{font-size:8px;color:#4b5563;font-weight:500;line-height:1.2}
+.r-contact{font-size:8px;color:#6b7280;margin-left:18px;margin-top:2px}
+.btns{display:flex;gap:6px;margin-top:8px}
+.btn-esperar{flex:0.3;background:#e5e7eb;border:0;border-radius:10px;padding:9px;font-size:9px;font-weight:700;cursor:pointer}
+.slider-wrap{flex:1;background:#e30613;border-radius:10px;height:38px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none}
+.slider-text{color:#fff;font-size:10px;font-weight:700;pointer-events:none}
+.slider-thumb{position:absolute;left:3px;top:3px;width:32px;height:32px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2);transition: left.1s}
+.lista-espera{display:flex;flex-direction:column;gap:6px}
+.mini-card{background:#fff;border:1px solid #eee;border-radius:10px;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.mini-left{flex:1}
+.mini-title{font-size:9px;font-weight:700;color:#111}
+.mini-sub{font-size:7px;color:#6b7280}
+.mini-price{font-size:10px;font-weight:800;color:#e30613}
+.empty{font-size:9px;color:#9ca3af;text-align:center;padding:20px;background:#fff;border-radius:10px;border:1px dashed #ddd}
+</style>
+</head>
+<body>
+<div class="top-bar">
+<div class="left">
+<img id="avatar" class="avatar" src="https://i.pravatar.cc/100?img=12">
+<div>
+<div class="name" id="txtNombre">Carlos Mendez</div>
+<div class="sub">Repartidor <span class="status-dot" id="dot"></span> <button class="status-btn" id="btnOnline" onclick="toggleOnline()">En línea</button></div>
+</div>
+</div>
+<div class="right">
+<button class="icon-btn" onclick="alert('Configuración pronto')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0.33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 9 15a1.65 1.65 0 0 0-1.51-1H7a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 12.09 3.5a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 21 9a1.65 1.65 0 0 0-1.51 1H19a2 2 0 0 1 0 4h.09a1.65 1.65 0 0 0 1.31.65z"/></svg></button>
+<button class="icon-btn" onclick="cerrarSesion()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+</div>
+</div>
 
+<div class="map-wrap"><div id="map"></div></div>
+
+<div class="section">
+<div class="sec-title">Pedidos Activos <span class="badge-count" id="countActivos">0</span></div>
+<div id="contActivos"></div>
+</div>
+
+<div class="section" style="padding-top:0">
+<div class="sec-title">Pedidos en espera <span class="badge-count" id="countEspera">0</span></div>
+<div class="lista-espera" id="contEspera"></div>
+</div>
+
+<script>
+const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
+firebase.initializeApp(firebaseConfig); const db = firebase.database();
+let map, directionsService, directionsRenderer, markers=[];
+let online = true;
+let repartidorKey = localStorage.getItem('kigo_user') || localStorage.getItem('kigo_last_user') || 'repartidor1';
+let repartidorNombre = localStorage.getItem('kigo_rol') || 'Carlos Mendez';
+document.getElementById('txtNombre').textContent = repartidorNombre;
+
+function cerrarSesion(){ localStorage.clear(); window.location.href='../login/index.html'; }
+function toggleOnline(){ online =!online; const btn=document.getElementById('btnOnline'); const dot=document.getElementById('dot'); if(online){ btn.textContent='En línea'; btn.classList.remove('off'); dot.style.background='#00c853'; } else { btn.textContent='Desconectado'; btn.classList.add('off'); dot.style.background='#9ca3af'; } }
+
+window.initMap = function(){
+ map=new google.maps.Map(document.getElementById("map"),{center:{lat:21.157,lng:-100.934},zoom:13,disableDefaultUI:true});
+ directionsService=new google.maps.DirectionsService();
+ directionsRenderer=new google.maps.DirectionsRenderer({map:map,suppressMarkers:true,polylineOptions:{strokeColor:"#e30613",strokeWeight:4}});
+}
+
+function limpiarMarkers(){ markers.forEach(m=>m.setMap(null)); markers=[]; directionsRenderer.setDirections({routes:[]}); }
+
+function mostrarRuta(o){
+ limpiarMarkers();
+ if(o.recogidaLat && o.entregaLat){
+   const orig = new google.maps.LatLng(parseFloat(o.recogidaLat || o.negocioLat || o.aliadoLat), parseFloat(o.recogidaLng || o.negocioLng || o.aliadoLng));
+   const dest = new google.maps.LatLng(parseFloat(o.entregaLat), parseFloat(o.entregaLng));
+   markers.push(new google.maps.Marker({position:orig,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",scaledSize:new google.maps.Size(28,28)}}));
+   markers.push(new google.maps.Marker({position:dest,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",scaledSize:new google.maps.Size(28,28)}}));
+   directionsService.route({origin:orig,destination:dest,travelMode:google.maps.TravelMode.DRIVING},(res,status)=>{ if(status==='OK'){ directionsRenderer.setDirections(res); const b=new google.maps.LatLngBounds(); b.extend(orig); b.extend(dest); map.fitBounds(b); } });
+ }
+}
+
+function formatoFecha(ts){ const d=new Date(ts); return d.toLocaleDateString('es-MX',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}); }
+
+let pedidosTodos = {};
+db.ref('pedidos_por_repartidor').child(repartidorKey).on('value', snap=>{
+ pedidosTodos = snap.val() || {};
+ const lista = Object.entries(pedidosTodos).map(([id,v])=>({id,...v})).sort((a,b)=> (a.timestamp||0)-(b.timestamp||0));
+ const activos = lista.filter(p=>p.estado==='activo' || p.status==='activo' || p.tomado);
+ const espera = lista.filter(p=>!p.estado || p.status==='asignado');
+
+ document.getElementById('countActivos').textContent=activos.length;
+ document.getElementById('countEspera').textContent=espera.length;
+
+ // ACTIVOS
+ const cA=document.getElementById('contActivos'); cA.innerHTML='';
+ if(activos.length===0){ cA.innerHTML='<div class="empty">No tienes pedidos activos</div>'; }
+ activos.forEach(p=>{
+   const recogNombre = p.aliado || p.recogidaNombre || p.productos || 'Recoger';
+   const recogDir = p.aliadoDir || p.recogidaDir || p.negocio || 'Dirección recogida';
+   const entrDir = p.entrega || p.entregaNombre || 'Dirección entrega';
+   const cliente = p.cliente || p.entregaNombre || p.recogidaNombre || 'Cliente';
+   const tel = p.celular || p.entregaCel || p.repartidorTel || 'sin especificación';
+   const tiempo = p.tiempo || '15 min';
+   const precio = p.precio || 0;
+   const fecha = p.timestamp? formatoFecha(p.timestamp) : 'Hoy';
+   const div=document.createElement('div'); div.className='card-activa';
+   div.innerHTML=`
+     <div class="card-top">
+       <div><div class="date">${fecha} - #${p.id.slice(-4)}</div><div class="time-neon">${tiempo}</div></div>
+       <div class="price">$${precio}</div>
+     </div>
+     <div class="tipo">${(p.tipo||'').toUpperCase()}</div>
+     <div class="row"><div class="pin red">📍</div><div><div class="r-title">Recoger: ${recogNombre}</div><div class="r-dir">${recogDir}</div></div></div>
+     <div class="row"><div class="pin green">📍</div><div><div class="r-title">Entregar: ${entrDir}</div><div class="r-dir">${p.entregaNombre? p.entregaDir||'':''}</div><div class="r-contact">${cliente} • ${tel}</div></div></div>
+     <div class="btns">
+       <button class="btn-esperar" onclick="entregarPedido('${p.id}')">Entregado</button>
+       <button class="btn-esperar" onclick="mostrarRuta(pedidosTodos['${p.id}'])" style="flex:0.5">Ver ruta</button>
+     </div>
+   `;
+   cA.appendChild(div);
+   mostrarRuta(p);
+ });
+
+ // EN ESPERA - orden llegada primero arriba
+ const cE=document.getElementById('contEspera'); cE.innerHTML='';
+ if(espera.length===0){ cE.innerHTML='<div class="empty">Sin pedidos en espera</div>'; }
+ espera.forEach(p=>{
+   const recogNombre = p.aliado || p.recogidaNombre || p.negocio || p.productos || 'Pedido';
+   const tiempo = p.tiempo || '15 min';
+   const precio = p.precio || 0;
+   const fecha = p.timestamp? formatoFecha(p.timestamp) : '';
+   const div=document.createElement('div'); div.className='card-activa';
+   div.innerHTML=`
+     <div class="card-top">
+       <div><div class="date">${fecha} - #${p.id.slice(-4)}</div><div class="time-neon">${tiempo}</div></div>
+       <div class="price">$${precio}</div>
+     </div>
+     <div class="tipo">${(p.tipo||'').toUpperCase()}</div>
+     <div class="row"><div class="pin red">📍</div><div><div class="r-title">Recoger: ${p.aliado || p.recogidaNombre || p.negocio || 'Recoger'}</div><div class="r-dir">${p.aliadoDir || p.recogidaDir || p.negocio || ''}</div></div></div>
+     <div class="row"><div class="pin green">📍</div><div><div class="r-title">Entregar: ${p.entrega || ''}</div><div class="r-contact">${p.cliente || p.entregaNombre || ''} • ${p.celular || p.entregaCel || 'sin especificación'}</div></div></div>
+     <div class="btns">
+       <button class="btn-esperar" onclick="rechazarPedido('${p.id}')">Esperar</button>
+       <div class="slider-wrap" id="slider-${p.id}" ontouchstart="startSlide(event,'${p.id}')" onmousedown="startSlide(event,'${p.id}')">
+         <div class="slider-thumb" id="thumb-${p.id}">➤</div>
+         <div class="slider-text">Desliza para Tomar >>></div>
+       </div>
+     </div>
+   `;
+   cE.appendChild(div);
+ });
+});
+
+let dragging=null, startX=0;
+function startSlide(e,id){ dragging=id; const t=e.touches?e.touches[0].clientX:e.clientX; startX=t; document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onEnd); document.addEventListener('touchmove',onMove); document.addEventListener('touchend',onEnd); }
+function onMove(e){ if(!dragging) return; const x=e.touches?e.touches[0].clientX:e.clientX; let diff=x-startX; const wrap=document.getElementById('slider-'+dragging); const thumb=document.getElementById('thumb-'+dragging); const max=wrap.offsetWidth-38; let pos=Math.min(Math.max(0,diff),max); thumb.style.left=pos+'px'; if(pos>=max*0.85){ tomarPedido(dragging); onEnd(); } }
+function onEnd(){ if(dragging){ const th=document.getElementById('thumb-'+dragging); if(th) th.style.left='3px'; } dragging=null; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onEnd); document.removeEventListener('touchmove',onMove); document.removeEventListener('touchend',onEnd); }
+
+function tomarPedido(id){
+ const p=pedidosTodos[id]; if(!p) return;
+ db.ref('pedidos_por_repartidor').child(repartidorKey).child(id).update({estado:'activo', tomado:Date.now()});
+ db.ref('pedidos').child(id).update({status:'en_camino'});
+ mostrarRuta(p);
+}
+function entregarPedido(id){
+ if(!confirm('¿Marcar como entregado?')) return;
+ db.ref('pedidos_por_repartidor').child(repartidorKey).child(id).remove();
+ db.ref('pedidos').child(id).update({status:'entregado'});
+ limpiarMarkers();
+}
+function rechazarPedido(id){ alert('Pedido en espera'); }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTV1sm6McEIkv-cheaVFCD_svp_a--6wg&libraries=places&callback=initMap" async defer></script>
+</body>
+</html>
