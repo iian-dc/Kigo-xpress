@@ -1,1 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Seguimientos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#fafafa;min-height:100vh;padding-bottom:20px}
+.header{display:flex;align-items:flex-start;gap:14px;padding:14px 14px 10px;background:#fff;position:sticky;top:0;z-index:10}
+.btn-x{width:36px;height:36px;border-radius:50%;background:#fff;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:2px}
+.titulo{font-size:22px;font-weight:900;color:#0f172a;letter-spacing:-.4px;line-height:1}
+.subtitulo{font-size:12px;font-weight:500;color:#94a3b8;margin-top:4px}
 
+/* FILTROS */
+.filtros{display:flex;gap:8px;padding:10px 12px;overflow:auto}
+.filtros::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:72px;height:58px;background:#f3f4f6;border:1px solid #f1f5f9;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:.15s}
+.tab.active{background:#fff;border-color:#e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.tab-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.tab-txt{font-size:11px;font-weight:800;color:#111;display:flex;align-items:center;gap:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot.blue{background:#0ea5e9}
+.dot.purple{background:#8b5cf6}
+.dot.green{background:#22c55e}
+
+/* CARD */
+.lista{padding:12px;display:flex;flex-direction:column;gap:10px}
+.card{position:relative;background:#fff;border-radius:16px;border:1px solid #f1f5f9;box-shadow:0 4px 12px rgba(0,0,0,.05);padding:12px 12px 12px 14px;overflow:hidden}
+.card:before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:6px;border-radius:0 6px 6px 0;background:#2563eb}
+.card-top{display:flex;align-items:flex-start;gap:10px}
+.icon-moto{width:42px;height:42px;border-radius:50%;background:#f8f9fa;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.info-main{flex:1}
+.pedido{font-size:14px;font-weight:800;color:#0f172a;letter-spacing:-.2px}
+.hora{display:flex;align-items:center;gap:5px;margin-top:4px;font-size:11px;font-weight:600;color:#64748b}
+.badge{height:26px;padding:0 10px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700}
+.badge.recogido{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
+.badge.aceptado{background:#e0f2fe;color:#0284c7;border:1px solid #bae6fd}
+.badge.entregado{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+.badge.todos{background:#f1f5f9;color:#334155}
+.precio{height:26px;padding:0 10px;border-radius:20px;background:#bae6fd;color:#1d4ed8;font-size:12px;font-weight:800;display:flex;align-items:center}
+
+.divider{height:1px;background:#f1f5f9;margin:10px 0}
+
+.card-middle{display:flex;align-items:center;gap:16px;margin-top:2px}
+.meta{display:flex;align-items:center;gap:6px}
+.meta-ico{width:18px;height:18px;border-radius:4px;background:#f8fafc;border:1px solid #f1f5f9;display:flex;align-items:center;justify-content:center}
+.meta-lbl{font-size:9px;color:#94a3b8;font-weight:500;line-height:1}
+.meta-val{font-size:11px;color:#0f172a;font-weight:700;line-height:1.2}
+
+.actions{display:flex;gap:8px;margin-top:12px}
+.btn-editar{flex:1;height:36px;border-radius:20px;border:0;background:#111;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.btn-finalizar{flex:1;height:36px;border-radius:20px;border:1px solid #d1d5db;background:#fff;color:#9ca3af;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.empty{text-align:center;padding:30px 10px;color:#94a3b8;font-size:12px;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="header">
+<button class="btn-x" onclick="location.href='confadmin.html'">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+</button>
+<div>
+<div class="titulo">Seguimientos</div>
+<div class="subtitulo">Control en tiempo real de tus repartidores</div>
+</div>
+</div>
+
+<div class="filtros">
+<div class="tab active" data-f="todos" onclick="setFiltro('todos')">
+<div class="tab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.5" fill="#111"/><circle cx="3.5" cy="12" r="1.5" fill="#111"/><circle cx="3.5" cy="18" r="1.5" fill="#111"/></svg></div>
+<div class="tab-txt">Todos</div>
+</div>
+<div class="tab" data-f="aceptado" onclick="setFiltro('aceptado')">
+<div class="tab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round"><path d="M5 12l5 5l10-10"/></svg></div>
+<div class="tab-txt"><span class="dot blue"></span> Aceptado</div>
+</div>
+<div class="tab" data-f="recogido" onclick="setFiltro('recogido')">
+<div class="tab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg></div>
+<div class="tab-txt"><span class="dot purple"></span> Recogido</div>
+</div>
+<div class="tab" data-f="entregado" onclick="setFiltro('entregado')">
+<div class="tab-icon"><svg width="22" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M2 8h12v8H2z"/><path d="M14 10h4l2 2v4h-6"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/><path d="M2 5h6"/></svg></div>
+<div class="tab-txt"><span class="dot green"></span> Entregado</div>
+</div>
+</div>
+
+<div class="lista" id="lista"></div>
+
+<script>
+const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
+firebase.initializeApp(firebaseConfig);
+const dbRT = firebase.database();
+let pedidosLive = [];
+let filtro = 'todos';
+
+function setFiltro(f){
+  filtro = f;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector(`.tab[data-f="${f}"]`).classList.add('active');
+  render();
+}
+
+function getEstado(p){
+  const e = (p.estado || p.status || '').toLowerCase();
+  if(e.includes('recog')) return 'recogido';
+  if(e.includes('acept')) return 'aceptado';
+  if(e.includes('entreg') || e.includes('finaliz')) return 'entregado';
+  return 'aceptado';
+}
+
+function getHora(p){
+  let f = p.fecha || p.timestamp || p.createdAt || Date.now();
+  let d = new Date(f); if(isNaN(d.getTime())) d = new Date();
+  let h = d.getHours(); let m = d.getMinutes().toString().padStart(2,'0');
+  let ampm = h>=12?'p.m.':'a.m.'; h = h%12||12;
+  return `${h}:${m} ${ampm}`;
+}
+
+function render(){
+  const cont = document.getElementById('lista');
+  let lista = pedidosLive;
+  if(filtro!=='todos') lista = lista.filter(p=>getEstado(p)===filtro);
+  if(lista.length===0){
+    cont.innerHTML = `<div class="empty">No hay pedidos en ${filtro}</div>`;
+    return;
+  }
+  cont.innerHTML = lista.map(p=>{
+    const est = getEstado(p);
+    const num = (p.numeroPedido||p.numero||p.id||'0015').toString().slice(-4);
+    const tipo = p.tipoServicio || p.tipo || 'Moto Mandados';
+    const total = Number(p.valorTotal||p.total||35).toLocaleString('en-US',{minimumFractionDigits:2});
+    const badgeClass = est;
+    const badgeTxt = est.charAt(0).toUpperCase()+est.slice(1);
+    const hora = getHora(p);
+    return `
+    <div class="card">
+      <div class="card-top">
+        <div class="icon-moto">
+          <svg width="26" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M5.5 17.5L9 11l4 2 3-3h2"/><path d="M9 11c0-2 2-4 4-4"/></svg>
+        </div>
+        <div class="info-main">
+          <div class="pedido">Pedido #${num.padStart(4,'0')}</div>
+          <div class="hora">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            ${hora}
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+          <div class="badge ${badgeClass}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#2563eb"><circle cx="12" cy="12" r="10"/><path d="M7 12l3 3 7-7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+            ${badgeTxt}
+          </div>
+          <div style="display:none" class="meta">
+            <div class="meta-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h5"/></svg></div>
+          </div>
+        </div>
+        <div class="precio">$${total}</div>
+      </div>
+      <div class="divider" style="display:none"></div>
+      <div class="card-middle">
+        <div class="meta">
+          <div class="meta-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h6"/></svg></div>
+          <div><div class="meta-lbl">Tipo de servicio</div><div class="meta-val">${tipo}</div></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-editar" onclick="editarPedido('${p.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          Editar
+        </button>
+        <button class="btn-finalizar" onclick="finalizarPedido('${p.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round"><path d="M5 12l5 5l10-10"/></svg>
+          Finalizar
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function editarPedido(id){ location.href = `historial.html?edit=${id}`; }
+function finalizarPedido(id){ 
+  if(confirm('¿Finalizar pedido?')){
+    dbRT.ref('kigoPedidosLive/'+id).update({estado:'entregado', status:'entregado'}).then(()=>{
+      dbRT.ref('historial_pedidos/'+id).update({estado:'entregado', pagado:true});
+    });
+  }
+}
+
+// DATOS REALES
+dbRT.ref('kigoPedidosLive').on('value', snap=>{
+  const data = snap.val()||{};
+  pedidosLive = Object.keys(data).map(k=>({id:k, ...data[k]}));
+  if(pedidosLive.length===0){
+    // fallback historial si no hay live
+    dbRT.ref('historial_pedidos').limitToLast(20).on('value', s=>{
+      const d = s.val()||{};
+      pedidosLive = Object.keys(d).map(k=>({id:k, ...d[k]}));
+      render();
+    });
+  } else {
+    render();
+  }
+});
+
+// DEMO si no hay datos, muestra como tu imagen
+setTimeout(()=>{
+  if(pedidosLive.length===0){
+    pedidosLive = [{id:'demo1', numeroPedido:'0015', valorTotal:35, tipoServicio:'Moto Mandados', estado:'recogido', fecha:Date.now()}];
+    render();
+  }
+},1500);
+</script>
+</body>
+</html>
