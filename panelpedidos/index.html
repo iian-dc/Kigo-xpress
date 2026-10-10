@@ -14,6 +14,7 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 #map{height:100%;width:100%;background:#e5e3df;position:relative}
 .center-btn{position:absolute;bottom:16px;right:12px;z-index:10;width:42px;height:42px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);border:0;cursor:pointer}
 .btn-logout-map{position:absolute;top:12px;right:12px;z-index:9999;background:#e30613;color:#fff;border:2px solid #fff;border-radius:999px;padding:7px 14px;font-size:10px;font-weight:800;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.btn-menu-conf{position:absolute;top:12px;left:12px;z-index:9999;background:#fff;border:0;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25)}
 .bottom-sheet{background:#fff;border-radius:20px 20px 0 0;margin-top:-14px;z-index:20;padding:10px 14px 140px;box-shadow:0 -6px 24px rgba(0,0,0,.15);overflow-y:visible;flex:none;min-height:60vh}
 .handle{width:36px;height:4px;background:#d1d5db;border-radius:10px;margin:0 auto 10px}
 .info-row{ display:flex; background:#fff; border:1px solid #f3f4f6; border-radius:10px; padding:5px 8px; margin:0 0 8px; gap:6px; align-items:center }
@@ -56,7 +57,6 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 .form-box{display:none}.form-box.active{display:block}
 .section-title{font-size:10px;font-weight:800;color:#e30613;margin:8px 0 4px;letter-spacing:.3px;display:flex;align-items:center;gap:4px}
 .pac-container{z-index:9999!important}
-/* TARJETA CONFIRMACION CENTRO */
 .toast-confirm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:#111;color:#fff;border-radius:18px;padding:20px 24px;z-index:10000;display:none;flex-direction:column;align-items:center;gap:8px;box-shadow:0 20px 50px rgba(0,0,0,.5);min-width:240px;opacity:0;transition:all.25s ease}
 .toast-confirm.show{display:flex;transform:translate(-50%,-50%) scale(1);opacity:1}
 .toast-confirm.icon-check{width:48px;height:48px;background:#00c853;border-radius:50%;display:flex;align-items:center;justify-content:center}
@@ -67,18 +67,19 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 <body>
 <div class="map-wrapper">
 <div id="map"></div>
+<!-- ICONO MENU CONFADMIN -->
+<button class="btn-menu-conf" onclick="location.href='../confadmin/index.html'" type="button" title="Configuraciones">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h14M8 12h10M4 18h14"/></svg>
+</button>
 <button class="btn-logout-map" onclick="cerrarSesion()" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Cerrar sesión</button>
 <button class="center-btn" id="btnCenter" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></button>
 </div>
 <div class="modal-overlay" id="modalRepartidor"><div class="modal-card"><div class="modal-title">Seleccionar Repartidor</div><select id="selectRepartidor" class="select-repa"><option value="">Cargando repartidores...</option></select><div class="modal-btns"><button class="btn-cancel" id="btnCancelarEnvio">✕ Cancelar</button><button class="btn-send" id="btnEnviarPedido">➤ Enviar</button></div></div></div>
-
-<!-- TARJETA CONFIRMACION -->
 <div class="toast-confirm" id="toastConfirm">
 <div class="icon-check"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
 <div class="txt1" id="toastTxt1">Pedido enviado</div>
 <div class="txt2" id="toastTxt2">#0 enviado a Jose - $0</div>
 </div>
-
 <div class="bottom-sheet">
 <div class="handle"></div>
 <div class="info-row"><div class="info-col"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1f2937" stroke-width="2"><path d="M7 12a2 2 0 1 0 0 0M17 7a2 2 0 1 0 0 0M9 12l6-5"/></svg><div><div class="label" style="margin:0">DISTANCIA</div><div class="value" id="txt-distancia">—</div></div></div><div class="divider"></div><div class="info-col"><div style="width:12px;height:12px;border:1.5px solid #1f2937;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:6px">$</div><div><div class="label" style="margin:0">PRECIO ESTIMADO</div><div class="value price-neon" id="txt-precio">—</div></div></div></div>
@@ -90,7 +91,6 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 <button class="btn-serv active" id="btnRecoger"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> RECOGER</button>
 <button class="btn-serv" id="btnComprar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> COMPRAR</button>
 </div>
-
 <div class="form-box active" id="form-aliados-recoger">
 <div class="label">ALIADO</div><div class="input-wrap"><input type="text" id="inputAliado" class="input-mini" placeholder="Seleccionar aliado..."><button class="btn-x" id="x-aliado" onclick="clearField('inputAliado','x-aliado')">✕</button><div class="suggestions" id="sugAliados"></div></div>
 <div class="card-aliado" id="cardAliadoInfo"><div class="row"><b>DIR:</b><span id="aliadoDir">—</span></div><div class="row"><b>TEL:</b><span id="aliadoTel">—</span></div></div>
@@ -100,7 +100,6 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 <div class="label" style="margin-top:6px">TIEMPO DE RECOGIDA</div><div style="display:flex;gap:4px;flex-wrap:wrap;margin:4px 0"><button type="button" class="time-chip chip-recoger" data-time="5">5 min</button><button type="button" class="time-chip chip-recoger" data-time="10">10 min</button><button type="button" class="time-chip chip-recoger" data-time="15">15 min</button><button type="button" class="time-chip chip-recoger" data-time="20">20 min</button><button type="button" class="time-chip chip-recoger" data-time="25">25 min</button></div><div class="input-wrap"><input type="text" id="tiempoManual" class="input-mini" placeholder="O escribe: lo antes posible"><button class="btn-x" id="x-tiempo" onclick="clearField('tiempoManual','x-tiempo')">✕</button></div>
 <div class="label" style="margin-top:6px">PRECIO</div><div class="input-wrap"><input type="number" id="precioManual" class="input-mini" placeholder="$0"><button class="btn-x" id="x-precio" onclick="clearField('precioManual','x-precio')">✕</button></div>
 </div>
-
 <div class="form-box" id="form-aliados-comprar">
 <div class="label">PRODUCTOS A COMPRAR</div><div class="input-wrap"><input type="text" id="productosComprar" class="input-mini" placeholder="Ej: 2 Hamburguesas, 1 refresco..."><button class="btn-x" id="x-prodComp" onclick="clearField('productosComprar','x-prodComp')">✕</button></div>
 <div class="label">RESTAURANTE / NEGOCIO LOCAL DONDE COMPRAR</div><div class="input-wrap"><input type="text" id="negocioComprar" class="input-mini" placeholder="Escribe donde se va a comprar..."><button class="btn-x" id="x-negocio" onclick="clearField('negocioComprar','x-negocio')">✕</button></div>
@@ -109,7 +108,6 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 <div class="label" style="margin-top:6px">TIEMPO DE COMPRA</div><div style="display:flex;gap:4px;flex-wrap:wrap;margin:4px 0"><button type="button" class="time-chip chip-comprar" data-time="10">10 min</button><button type="button" class="time-chip chip-comprar" data-time="15">15 min</button><button type="button" class="time-chip chip-comprar" data-time="20">20 min</button><button type="button" class="time-chip chip-comprar" data-time="25">25 min</button><button type="button" class="time-chip chip-comprar" data-time="30">30 min</button></div><div class="input-wrap"><input type="text" id="tiempoManualComprar" class="input-mini" placeholder="O escribe: lo antes posible"><button class="btn-x" id="x-tiempoComprar" onclick="clearField('tiempoManualComprar','x-tiempoComprar')">✕</button></div>
 <div class="label" style="margin-top:6px">PRECIO</div><div class="input-wrap"><input type="number" id="precioManualComprar" class="input-mini" placeholder="$0"><button class="btn-x" id="x-precioComprar" onclick="clearField('precioManualComprar','x-precioComprar')">✕</button></div>
 </div>
-
 <div class="form-box" id="form-nuevos-recoger">
 <div class="section-title">DATOS DE RECOGIDA</div>
 <div class="label">NOMBRE CLIENTE (QUIEN ENTREGA)</div><div class="input-wrap"><input type="text" id="nombreRecogidaNuevo" class="input-mini" placeholder="Nombre quien entrega"><button class="btn-x" id="x-nombreRecNuevo" onclick="clearField('nombreRecogidaNuevo','x-nombreRecNuevo')">✕</button></div>
@@ -122,7 +120,6 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 <div class="label" style="margin-top:8px">TIEMPO DE RECOGIDA</div><div style="display:flex;gap:4px;flex-wrap:wrap;margin:4px 0"><button type="button" class="time-chip chip-nuevo-recoger" data-time="5">5 min</button><button type="button" class="time-chip chip-nuevo-recoger" data-time="10">10 min</button><button type="button" class="time-chip chip-nuevo-recoger" data-time="15">15 min</button><button type="button" class="time-chip chip-nuevo-recoger" data-time="20">20 min</button><button type="button" class="time-chip chip-nuevo-recoger" data-time="25">25 min</button></div><div class="input-wrap"><input type="text" id="tiempoManualNuevoRecoger" class="input-mini" placeholder="O escribe: lo antes posible"><button class="btn-x" id="x-tiempoNuevoRec" onclick="clearField('tiempoManualNuevoRecoger','x-tiempoNuevoRec')">✕</button></div>
 <div class="label" style="margin-top:6px">PRECIO</div><div class="input-wrap"><input type="number" id="precioManualNuevoRecoger" class="input-mini" placeholder="$0"><button class="btn-x" id="x-precioNuevoRec" onclick="clearField('precioManualNuevoRecoger','x-precioNuevoRec')">✕</button></div>
 </div>
-
 <div class="form-box" id="form-nuevos-comprar">
 <div class="label">PRODUCTO A COMPRAR</div><div class="input-wrap"><input type="text" id="productoNuevoComprar" class="input-mini" placeholder="Ej: 2 tacos, 1 coca, farmacia..."><button class="btn-x" id="x-prodNuevoComp" onclick="clearField('productoNuevoComprar','x-prodNuevoComp')">✕</button></div>
 <div class="label">RESTAURANTE / NEGOCIO DONDE COMPRAR</div><div class="input-wrap"><input type="text" id="negocioNuevoComprar" class="input-mini" placeholder="Escribe donde comprar..."><button class="btn-x" id="x-negocioNuevoComp" onclick="clearField('negocioNuevoComprar','x-negocioNuevoComp')">✕</button></div>
@@ -133,7 +130,6 @@ body{min-height:100vh;display:flex;flex-direction:column;background:#fff;overflo
 <div class="label" style="margin-top:8px">TIEMPO DE COMPRA</div><div style="display:flex;gap:4px;flex-wrap:wrap;margin:4px 0"><button type="button" class="time-chip chip-nuevo-comprar" data-time="10">10 min</button><button type="button" class="time-chip chip-nuevo-comprar" data-time="15">15 min</button><button type="button" class="time-chip chip-nuevo-comprar" data-time="20">20 min</button><button type="button" class="time-chip chip-nuevo-comprar" data-time="25">25 min</button><button type="button" class="time-chip chip-nuevo-comprar" data-time="30">30 min</button></div><div class="input-wrap"><input type="text" id="tiempoManualNuevoComprar" class="input-mini" placeholder="O escribe: lo antes posible"><button class="btn-x" id="x-tiempoNuevoComp" onclick="clearField('tiempoManualNuevoComprar','x-tiempoNuevoComp')">✕</button></div>
 <div class="label" style="margin-top:6px">PRECIO</div><div class="input-wrap"><input type="number" id="precioManualNuevoComprar" class="input-mini" placeholder="$0"><button class="btn-x" id="x-precioNuevoComp" onclick="clearField('precioManualNuevoComprar','x-precioNuevoComp')">✕</button></div>
 </div>
-
 <button class="btn-continuar" id="btnContinuar" disabled><span>Continuar</span> ➤</button>
 </div>
 <script>
@@ -175,7 +171,6 @@ document.getElementById('btnComprar').onclick=()=>{tipoServicio='comprar';docume
 document.getElementById("btnCenter").addEventListener("click",()=>{if(map){map.setCenter({lat:21.157,lng:-100.934});map.setZoom(14);}});
 document.getElementById("btnContinuar").addEventListener("click",()=>{ if(tipoCliente==='aliados' && tipoServicio==='recoger'){ if(!aliadoSeleccionado && document.getElementById('inputAliado').value.trim()===''){ alert("Selecciona un aliado"); return; } if(!placeEntrega){ alert("Selecciona dirección de entrega"); return; } } else if(tipoCliente==='aliados' && tipoServicio==='comprar'){ if(document.getElementById('productosComprar').value.trim()===''){ alert("Escribe que productos se van a comprar"); return; } if(document.getElementById('negocioComprar').value.trim()===''){ alert("Escribe donde se va a comprar"); return; } if(!aliadoSeleccionadoComprar){ alert("Selecciona el aliado que recibe"); return; } } else if(tipoCliente==='nuevos' && tipoServicio==='recoger'){ if(document.getElementById('nombreRecogidaNuevo').value.trim()==='' || document.getElementById('dirRecogidaNuevo').value.trim()==='' ){ alert("Completa datos de recogida"); return; } if(document.getElementById('nombreEntregaNuevo').value.trim()==='' || document.getElementById('dirEntregaNuevo').value.trim()==='' ){ alert("Completa datos de entrega"); return; } } else if(tipoCliente==='nuevos' && tipoServicio==='comprar'){ if(document.getElementById('productoNuevoComprar').value.trim()===''){ alert("Escribe producto a comprar"); return; } if(document.getElementById('negocioNuevoComprar').value.trim()===''){ alert("Escribe donde comprar"); return; } if(document.getElementById('nombreNuevoComprar').value.trim()==='' || document.getElementById('dirNuevoComprar').value.trim()==='' ){ alert("Completa datos cliente entrega"); return; } } document.getElementById("modalRepartidor").classList.add("show"); });
 document.getElementById("btnCancelarEnvio").addEventListener("click",()=>{ document.getElementById("modalRepartidor").classList.remove("show"); });
-
 async function obtenerSiguienteNumeroPedido(){
   const refCont = db.ref('contadores/ultimoNumeroPedido');
   let numeroFinal = 1;
@@ -183,7 +178,6 @@ async function obtenerSiguienteNumeroPedido(){
   const snapFinal = await refCont.once('value');
   return snapFinal.val()||numeroFinal;
 }
-
 function mostrarConfirmacion(numero, nombreRepa, precio){
   const toast = document.getElementById('toastConfirm');
   document.getElementById('toastTxt1').textContent = 'Pedido enviado';
@@ -191,7 +185,6 @@ function mostrarConfirmacion(numero, nombreRepa, precio){
   toast.classList.add('show');
   setTimeout(()=>{ toast.classList.remove('show'); }, 3000);
 }
-
 document.getElementById("btnEnviarPedido").addEventListener("click", async ()=>{
   const selRepa=document.getElementById("selectRepartidor").value; if(!selRepa){ alert("Selecciona un repartidor"); return; }
   const repaData=repartidoresDB.find(r=>r.key===selRepa);
