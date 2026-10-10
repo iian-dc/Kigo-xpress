@@ -11,54 +11,59 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#f5f6f7;min-height:100vh}
-.header{background:#fff;padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #eef0f3;position:sticky;top:0;z-index:10}
-.btn-x{width:36px;height:36px;border-radius:50%;background:#e9ecef;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.titulo{font-size:17px;font-weight:900;color:#111}
-.filtros{background:#fff;padding:8px 10px 10px;border-bottom:1px solid #eef0f3}
-.quick{display:flex;gap:6px;overflow:auto;padding-bottom:6px;scrollbar-width:none}
+.header{background:#fff;padding:8px 10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #eef0f3;position:sticky;top:0;z-index:10}
+.btn-x{width:32px;height:32px;border-radius:50%;background:#e9ecef;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.titulo{font-size:13px;font-weight:900;color:#111}
+.filtros{background:#fff;padding:6px 8px 8px;border-bottom:1px solid #eef0f3}
+.quick{display:flex;gap:5px;overflow:auto;padding-bottom:5px;scrollbar-width:none}
 .quick::-webkit-scrollbar{display:none}
-.btn-q{white-space:nowrap;height:28px;padding:0 11px;border-radius:16px;border:1px solid #e5e7eb;background:#f8f9fa;font-size:11px;font-weight:700;cursor:pointer;color:#111}
+.btn-q{white-space:nowrap;height:24px;padding:0 9px;border-radius:14px;border:1px solid #e5e7eb;background:#f8f9fa;font-size:9px;font-weight:700;cursor:pointer;color:#111}
 .btn-q.active{background:#111;color:#fff;border-color:#111}
-.row2{display:flex;gap:6px;margin-top:8px}
-.inp{flex:1;height:34px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 10px;font-size:11px;font-weight:600;outline:0}
-.table-wrap{background:#fff;overflow:auto;margin-top:6px}
-table{width:100%;border-collapse:collapse;min-width:900px}
-thead th{position:sticky;top:0;background:#111;color:#fff;font-size:9px;font-weight:800;text-align:left;padding:8px 6px;text-transform:uppercase}
-tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bottom:1px solid #f0f2f4;vertical-align:middle;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.badge-pagado{height:24px;padding:0 9px;border-radius:12px;border:0;font-size:9.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.row2{display:flex;gap:5px;margin-top:6px}
+.inp{flex:1;height:30px;border-radius:7px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 8px;font-size:9.5px;font-weight:600;outline:0}
+.table-wrap{background:#fff;overflow:auto;margin-top:4px;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:700px}
+thead th{position:sticky;top:0;background:#111;color:#fff;font-size:6.5px;font-weight:800;text-align:left;padding:6px 4px;text-transform:uppercase;letter-spacing:.2px}
+tbody td{padding:6px 4px;font-size:8px;font-weight:600;color:#222;border-bottom:1px solid #f0f2f4;vertical-align:middle;max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge-pagado{height:18px;padding:0 6px;border-radius:10px;border:0;font-size:7px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
 .pagado{background:#00c853;color:#fff}
 .debe{background:#ff3b30;color:#fff}
-.badge-servicio{font-size:8px;font-weight:800;padding:3px 7px;border-radius:10px;display:inline-block;text-transform:uppercase}
+.badge-servicio{font-size:6px;font-weight:800;padding:2px 5px;border-radius:8px;display:inline-block;text-transform:uppercase}
 .mandado{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb}
 .transporte{background:#fff3e0;color:#e65100;border:1px solid #ffe0b2}
-.btn-icon{width:26px;height:26px;border-radius:6px;border:1px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-right:3px}
+.btn-icon{width:20px;height:20px;border-radius:5px;border:1px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-right:2px}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:99;padding:12px}
 .overlay.show{display:flex}
-.card-modal{background:#fff;width:100%;max-width:400px;border-radius:14px;padding:14px;max-height:92vh;overflow:auto}
-.card-modal h3{font-size:14px;font-weight:900;margin-bottom:10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card-modal{background:#fff;width:100%;max-width:360px;border-radius:12px;padding:12px;max-height:92vh;overflow:auto}
+.card-modal h3{font-size:12px;font-weight:900;margin-bottom:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .full{grid-column:1/-1}
-.label-f{font-size:9px;font-weight:800;color:#6b7280;margin-bottom:3px;text-transform:uppercase}
-.input-f{width:100%;height:36px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 10px;font-size:11px;font-weight:600;outline:0}
-.actions-modal{display:flex;gap:8px;margin-top:12px}
-.btn-cancel{flex:1;height:38px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-weight:800;cursor:pointer;font-size:12px}
-.btn-save{flex:1;height:38px;border-radius:10px;border:0;background:#111;color:#fff;font-weight:800;cursor:pointer;font-size:12px}
-.card-confirm{background:#fff;width:100%;max-width:300px;border-radius:14px;padding:16px;text-align:center}
-.card-confirm h4{font-size:13px;font-weight:900;margin-bottom:4px}
-.card-confirm p{font-size:11px;color:#6b7280;font-weight:500;margin-bottom:14px}
-.confirm-btns{display:flex;gap:8px}
-.btn-no{flex:1;height:38px;border-radius:10px;border:0;background:#00c853;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px}
-.btn-si{flex:1;height:38px;border-radius:10px;border:0;background:#ff3b30;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px}
-.empty{padding:24px 10px;text-align:center;color:#8a8d93;font-weight:600;font-size:11px}
+.label-f{font-size:7.5px;font-weight:800;color:#6b7280;margin-bottom:2px;text-transform:uppercase}
+.input-f{width:100%;height:32px;border-radius:7px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 8px;font-size:10px;font-weight:600;outline:0}
+.actions-modal{display:flex;gap:6px;margin-top:10px}
+.btn-cancel{flex:1;height:34px;border-radius:8px;border:1px solid #e5e7eb;background:#fff;font-weight:800;cursor:pointer;font-size:11px}
+.btn-save{flex:1;height:34px;border-radius:8px;border:0;background:#111;color:#fff;font-weight:800;cursor:pointer;font-size:11px}
+.card-confirm{background:#fff;width:100%;max-width:280px;border-radius:12px;padding:14px;text-align:center}
+.card-confirm h4{font-size:11px;font-weight:900;margin-bottom:4px}
+.card-confirm p{font-size:9.5px;color:#6b7280;font-weight:500;margin-bottom:12px}
+.confirm-btns{display:flex;gap:6px}
+.btn-no{flex:1;height:34px;border-radius:8px;border:0;background:#00c853;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px}
+.btn-si{flex:1;height:34px;border-radius:8px;border:0;background:#ff3b30;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px}
+.empty{padding:20px 8px;text-align:center;color:#8a8d93;font-weight:600;font-size:9.5px}
 .toast-ok{width:100%;text-align:center}
-.toast-ok div.icon-ok{width:44px;height:44px;border-radius:50%;background:#e6f9ed;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.toast-ok div.icon-ok{width:36px;height:36px;border-radius:50%;background:#e6f9ed;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+@media(max-width:480px){
+ table{min-width:680px}
+.header{padding:6px 8px}
+.filtros{padding:5px 6px 6px}
+}
 </style>
 </head>
 <body>
 
 <div class="header">
 <button class="btn-x" onclick="location.href='confadmin.html'" type="button">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
 </button>
 <div class="titulo">Historial</div>
 </div>
@@ -73,7 +78,7 @@ tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bott
 </div>
 <div class="row2">
 <input id="fCliente" class="inp" placeholder="Buscar aliado...">
-<input id="fMes" class="inp" type="month" style="max-width:120px">
+<input id="fMes" class="inp" type="month" style="max-width:100px">
 </div>
 </div>
 
@@ -108,18 +113,18 @@ tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bott
 <div class="overlay" id="overlayDel">
 <div class="card-confirm" id="cardDel">
 <div id="delNormal">
-<div style="width:40px;height:40px;border-radius:50%;background:#ffeaea;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
+<div style="width:32px;height:32px;border-radius:50%;background:#ffeaea;display:flex;align-items:center;justify-content:center;margin:0 auto 8px">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
 </div>
 <h4>¿Deseas confirmar la eliminación de este pedido?</h4>
 <p>Esta acción no se puede deshacer.</p>
 <div class="confirm-btns">
-<button class="btn-no" onclick="cerrarDel()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> No</button>
-<button class="btn-si" onclick="confirmarDel()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg> Sí</button>
+<button class="btn-no" onclick="cerrarDel()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> No</button>
+<button class="btn-si" onclick="confirmarDel()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg> Sí</button>
 </div>
 </div>
 <div id="delOk" style="display:none" class="toast-ok">
-<div class="icon-ok"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00c853" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg></div>
+<div class="icon-ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00c853" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg></div>
 <h4>Pedido eliminado</h4><p>Se eliminó correctamente</p>
 </div>
 </div>
@@ -144,7 +149,6 @@ let editId = null;
 let delId = null;
 let cacheRepartidores = {};
 
-// ACTUALIZADO: LEE DE /repartidores TAL CUAL LO TIENES
 dbRT.ref('repartidores').on('value', snap=>{
   const data = snap.val()||{};
   cacheRepartidores = {};
@@ -184,7 +188,6 @@ function getServicioMoto(tipoServicio){
   if(t.includes('recoger')) return 'Moto Mandado';
   return 'Moto Transporte';
 }
-// ACTUALIZADO: SIN MULTIPLICAR x1000, TAL CUAL ESTA EN FIREBASE
 function getValorServicio(nombreRepa, tipoServicio){
   const repa = cacheRepartidores[(nombreRepa||'').toLowerCase()]||{};
   const esRecoger = (tipoServicio||'').toLowerCase().includes('recoger');
@@ -289,9 +292,9 @@ function render(){
     const tipo = normalizarTipo(p);
     const servicioMoto = getServicioMoto(tipo);
     const valorServicio = getValorServicio(p.repartidor, tipo);
-    // ACTUALIZADO COMO PEDISTE: Importe = valor servicio, Ganancia = total - valor servicio
+    // CORREGIDO PARA ADMIN COMO PIDES
     const importeMostrar = pagado? valorServicio : 0;
-    const gananciaMostrar = pagado? (total - valorServicio) : 0;
+    const gananciaMostrar = pagado? valorServicio : 0;
     const aliado = getAliado(p);
     const badgeClass = servicioMoto.includes('Mandado')? 'mandado' : 'transporte';
     return `<tr>
@@ -305,12 +308,12 @@ function render(){
       <td>$${Number(importeMostrar).toLocaleString()}</td>
       <td>$${Number(gananciaMostrar).toLocaleString()}</td>
       <td><button class="badge-pagado ${pagado?'pagado':'debe'}" onclick="togglePago('${p.id}')">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="${pagado?'M5 12l5 5l10-10':'M6 6l12 12M18 6L6 18'}"/></svg>
+        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="${pagado?'M5 12l5 5l10-10':'M6 6l12 12M18 6L6 18'}"/></svg>
         ${pagado?'Pagado':'Debe'}
       </button></td>
       <td>
-        <button class="btn-icon" onclick="abrirEdit('${p.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg></button>
-        <button class="btn-icon" onclick="abrirDel('${p.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg></button>
+        <button class="btn-icon" onclick="abrirEdit('${p.id}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg></button>
+        <button class="btn-icon" onclick="abrirDel('${p.id}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg></button>
       </td>
     </tr>`;
   }).join('');
@@ -330,8 +333,8 @@ function abrirEdit(id){
   document.getElementById('eTipo').value = tipo;
   document.getElementById('eRepartidor').value = p.repartidor||'';
   document.getElementById('eTotal').value = total;
-  document.getElementById('eImporte').value = valorServicio;
-  document.getElementById('eGanancia').value = total - valorServicio;
+  document.getElementById('eImporte').value = p.pagado? valorServicio : 0;
+  document.getElementById('eGanancia').value = p.pagado? valorServicio : 0;
   document.getElementById('ePagado').value = String(p.pagado===true);
   document.getElementById('overlayEdit').classList.add('show');
 }
@@ -400,10 +403,10 @@ async function togglePago(id){
   if(idx>-1){
     pedidos[idx].pagado =!pedidos[idx].pagado;
     const tipo = normalizarTipo(pedidos[idx]);
-    const total = Number(pedidos[idx].valorTotal||0);
     const valorServicio = getValorServicio(pedidos[idx].repartidor, tipo);
+    // CORREGIDO
     pedidos[idx].importe = pedidos[idx].pagado? valorServicio : 0;
-    pedidos[idx].ganancia = pedidos[idx].pagado? (total - valorServicio) : 0;
+    pedidos[idx].ganancia = pedidos[idx].pagado? valorServicio : 0;
     const rep = pedidos[idx].repartidor;
     render();
     const upd = {pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia, importe:pedidos[idx].importe};
