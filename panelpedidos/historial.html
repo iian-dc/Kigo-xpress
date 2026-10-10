@@ -144,17 +144,27 @@ let editId = null;
 let delId = null;
 let cacheRepartidores = {};
 
-// CARGA valormotomandado y valormototransporte de cada repartidor
-dbRT.ref('/').on('value', snap=>{
+// CORREGIDO: LEE DE /repartidores DONDE LOS TIENES VINCULADOS
+dbRT.ref('repartidores').on('value', snap=>{
   const data = snap.val()||{};
   cacheRepartidores = {};
   Object.keys(data).forEach(k=>{
     const v = data[k];
-    if(v && v.rol==='repartidor'){
-      cacheRepartidores[k.toLowerCase()] = v;
-      if(v.nombre) cacheRepartidores[v.nombre.toLowerCase()] = v;
-      if(v.usuario) cacheRepartidores[v.usuario.toLowerCase()] = v;
-    }
+    cacheRepartidores[k.toLowerCase()] = v;
+    if(v.nombre) cacheRepartidores[v.nombre.toLowerCase()] = v;
+    if(v.usuario) cacheRepartidores[v.usuario.toLowerCase()] = v;
+  });
+  // respaldo si aún tienes algunos en raiz
+  dbRT.ref('/').once('value').then(s2=>{
+    const d2 = s2.val()||{};
+    Object.keys(d2).forEach(k=>{
+      const v = d2[k];
+      if(v && v.rol==='repartidor' &&!cacheRepartidores[k.toLowerCase()]){
+        cacheRepartidores[k.toLowerCase()] = v;
+        if(v.nombre) cacheRepartidores[v.nombre.toLowerCase()] = v;
+      }
+    });
+    render();
   });
   render();
 });
@@ -292,8 +302,11 @@ function render(){
     const tipo = normalizarTipo(p);
     const servicioMoto = getServicioMoto(tipo);
     const valorServicio = getValorServicio(p.repartidor, tipo);
+
+    // CORREGIDO COMO ME PEDISTE: Importe = valor servicio, Ganancia = Total - Importe
     const importeMostrar = pagado? valorServicio : 0;
-    const gananciaMostrar = pagado? valorServicio : 0;
+    const gananciaMostrar = pagado? (total - valorServicio) : 0;
+
     const aliado = getAliado(p);
     const badgeClass = servicioMoto.includes('Mandado')? 'mandado' : 'transporte';
     return `<tr>
@@ -333,7 +346,7 @@ function abrirEdit(id){
   document.getElementById('eRepartidor').value = p.repartidor||'';
   document.getElementById('eTotal').value = total;
   document.getElementById('eImporte').value = valorServicio;
-  document.getElementById('eGanancia').value = valorServicio;
+  document.getElementById('eGanancia').value = total - valorServicio;
   document.getElementById('ePagado').value = String(p.pagado===true);
   document.getElementById('overlayEdit').classList.add('show');
 }
@@ -402,9 +415,10 @@ async function togglePago(id){
   if(idx>-1){
     pedidos[idx].pagado =!pedidos[idx].pagado;
     const tipo = normalizarTipo(pedidos[idx]);
+    const total = Number(pedidos[idx].valorTotal||0);
     const valorServicio = getValorServicio(pedidos[idx].repartidor, tipo);
-    pedidos[idx].ganancia = pedidos[idx].pagado? valorServicio : 0;
     pedidos[idx].importe = pedidos[idx].pagado? valorServicio : 0;
+    pedidos[idx].ganancia = pedidos[idx].pagado? (total - valorServicio) : 0;
     const rep = pedidos[idx].repartidor;
     render();
     const upd = {pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia, importe:pedidos[idx].importe};
