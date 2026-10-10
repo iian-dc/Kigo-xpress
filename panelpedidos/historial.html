@@ -21,13 +21,16 @@ body{background:#f5f6f7;min-height:100vh}
 .btn-q.active{background:#111;color:#fff;border-color:#111}
 .row2{display:flex;gap:6px;margin-top:8px}
 .inp{flex:1;height:34px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 10px;font-size:11px;font-weight:600;outline:0}
-.table-wrap{background:#fff;overflow:auto;margin-top:6px;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;min-width:820px}
+.table-wrap{background:#fff;overflow:auto;margin-top:6px}
+table{width:100%;border-collapse:collapse;min-width:900px}
 thead th{position:sticky;top:0;background:#111;color:#fff;font-size:9px;font-weight:800;text-align:left;padding:8px 6px;text-transform:uppercase}
 tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bottom:1px solid #f0f2f4;vertical-align:middle;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .badge-pagado{height:24px;padding:0 9px;border-radius:12px;border:0;font-size:9.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
 .pagado{background:#00c853;color:#fff}
 .debe{background:#ff3b30;color:#fff}
+.badge-servicio{font-size:8px;font-weight:800;padding:3px 7px;border-radius:10px;display:inline-block;text-transform:uppercase}
+.mandado{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb}
+.transporte{background:#fff3e0;color:#e65100;border:1px solid #ffe0b2}
 .btn-icon{width:26px;height:26px;border-radius:6px;border:1px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-right:3px}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:99;padding:12px}
 .overlay.show{display:flex}
@@ -76,8 +79,8 @@ tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bott
 
 <div class="table-wrap">
 <table>
-<thead><tr><th>Fecha</th><th># Pedido</th><th>Aliado</th><th>Tipo Servicio</th><th>Repartidor</th><th>Total</th><th>Importe</th><th>Ganancia</th><th>Estado</th><th>Acción</th></tr></thead>
-<tbody id="tbody"><tr><td colspan="10" class="empty">Cargando historial_pedidos...</td></tr></tbody>
+<thead><tr><th>Fecha</th><th># Pedido</th><th>Aliado</th><th>Tipo Servicio</th><th>Servicio</th><th>Repartidor</th><th>Total</th><th>Importe</th><th>Ganancia</th><th>Estado</th><th>Acción</th></tr></thead>
+<tbody id="tbody"><tr><td colspan="11" class="empty">Cargando historial_pedidos...</td></tr></tbody>
 </table>
 </div>
 
@@ -141,7 +144,7 @@ let editId = null;
 let delId = null;
 let cacheRepartidores = {};
 
-// LEE VALOR MOTO MANDADO Y MOTO TRANSPORTE DE CADA REPARTIDOR
+// LEE REPARTIDORES CON valormotomandado y valormototransporte
 dbRT.ref('/').on('value', snap=>{
   const data = snap.val()||{};
   cacheRepartidores = {};
@@ -178,19 +181,23 @@ function getAliado(p){
   if(p.recogerEn) return p.recogerEn.split('(')[0].trim().substring(0,30);
   return '-';
 }
-function getGananciaRepartidor(nombreRepa, tipoServicio){
-  if(!nombreRepa) return 0;
-  const repa = cacheRepartidores[nombreRepa.toLowerCase()]||{};
+function getServicioMoto(tipoServicio){
+  const t = (tipoServicio||'').toLowerCase();
+  if(t.includes('recoger')) return 'Moto Mandado';
+  return 'Moto Transporte';
+}
+function getGananciaReal(nombreRepa, tipoServicio){
+  const repa = cacheRepartidores[(nombreRepa||'').toLowerCase()]||{};
   const tipo = (tipoServicio||'').toLowerCase();
   const esRecoger = tipo.includes('recoger');
-  let ganancia = esRecoger? (repa.valormotomandado?? repa.valorMotoMandado?? 0) : (repa.valormototransporte?? repa.valorMotoTransporte?? 0);
-  // si pusiste 5 y 10 y tu total es 50, pon 5 y 10. Si es 5000 y 10000 pon 5000.
-  // si tienes valores de 5 y total 50000, multiplicamos x1000
+  let ganancia = esRecoger? (repa.valormotomandado?? repa.valorMotoMandado?? repa.motomandado?? 0) : (repa.valormototransporte?? repa.valorMotoTransporte?? repa.mototransporte?? 0);
   ganancia = Number(ganancia);
+  if(ganancia>0 && ganancia<100){
+    ganancia = ganancia*1000;
+  }
   return ganancia;
 }
 
-// ADMIN MANDA - TIEMPO REAL
 dbRT.ref('historial_pedidos').on('value', snap=>{
   let data = snap.val() || {};
   pedidos = Object.keys(data).map(k=> ({id:k,...data[k]}));
@@ -278,7 +285,7 @@ function render(){
   const tbody = document.getElementById('tbody');
   const lista = filtrarLista();
   if(lista.length===0){
-    tbody.innerHTML = `<tr><td colspan="10" class="empty">No hay pedidos</td></tr>`; return;
+    tbody.innerHTML = `<tr><td colspan="11" class="empty">No hay pedidos</td></tr>`; return;
   }
   tbody.innerHTML = lista.map(p=>{
     const fecha = getFechaDoc(p);
@@ -286,17 +293,19 @@ function render(){
     const pagado = p.pagado === true;
     const total = Number(p.valorTotal||p.total||p.precioNum||0);
     const tipo = normalizarTipo(p);
-    // NUEVO CALCULO CORRECTO
-    const gananciaReal = getGananciaRepartidor(p.repartidor, tipo);
+    const servicioMoto = getServicioMoto(tipo);
+    const gananciaReal = getGananciaReal(p.repartidor, tipo);
     const importeReal = total - gananciaReal;
     const importeMostrar = pagado? importeReal : 0;
     const gananciaMostrar = pagado? gananciaReal : 0;
     const aliado = getAliado(p);
+    const badgeClass = servicioMoto.includes('Mandado')? 'mandado' : 'transporte';
     return `<tr>
       <td>${fechaStr}</td>
       <td><b>${(p.numeroPedido||p.numero||p.id).toString().slice(0,6)}</b></td>
       <td title="${aliado}">${aliado}</td>
       <td>${tipo}</td>
+      <td><span class="badge-servicio ${badgeClass}">${servicioMoto}</span></td>
       <td>${p.repartidor || '-'}</td>
       <td>$${total.toLocaleString()}</td>
       <td>$${Number(importeMostrar).toLocaleString()}</td>
@@ -320,7 +329,7 @@ function abrirEdit(id){
   const fecha = getFechaDoc(p);
   const tipo = normalizarTipo(p);
   const total = Number(p.valorTotal||0);
-  const gananciaReal = getGananciaRepartidor(p.repartidor, tipo);
+  const gananciaReal = getGananciaReal(p.repartidor, tipo);
   const importeReal = total - gananciaReal;
   document.getElementById('eFecha').value = fecha.getTime()===0? '' : fecha.toISOString().slice(0,10);
   document.getElementById('eNumero').value = p.numeroPedido||p.numero||'';
@@ -398,9 +407,10 @@ async function togglePago(id){
   if(idx>-1){
     pedidos[idx].pagado =!pedidos[idx].pagado;
     const tipo = normalizarTipo(pedidos[idx]);
-    const gananciaReal = getGananciaRepartidor(pedidos[idx].repartidor, tipo);
+    const gananciaReal = getGananciaReal(pedidos[idx].repartidor, tipo);
+    const total = Number(pedidos[idx].valorTotal||0);
     pedidos[idx].ganancia = pedidos[idx].pagado? gananciaReal : 0;
-    pedidos[idx].importe = pedidos[idx].pagado? (Number(pedidos[idx].valorTotal||0) - gananciaReal) : 0;
+    pedidos[idx].importe = pedidos[idx].pagado? (total - gananciaReal) : 0;
     const rep = pedidos[idx].repartidor;
     render();
     const upd = {pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia, importe:pedidos[idx].importe};
