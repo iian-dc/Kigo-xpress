@@ -144,7 +144,7 @@ let editId = null;
 let delId = null;
 let cacheRepartidores = {};
 
-// CORREGIDO: LEE DE /repartidores DONDE LOS TIENES VINCULADOS
+// ACTUALIZADO: LEE DE /repartidores TAL CUAL LO TIENES
 dbRT.ref('repartidores').on('value', snap=>{
   const data = snap.val()||{};
   cacheRepartidores = {};
@@ -153,18 +153,6 @@ dbRT.ref('repartidores').on('value', snap=>{
     cacheRepartidores[k.toLowerCase()] = v;
     if(v.nombre) cacheRepartidores[v.nombre.toLowerCase()] = v;
     if(v.usuario) cacheRepartidores[v.usuario.toLowerCase()] = v;
-  });
-  // respaldo si aún tienes algunos en raiz
-  dbRT.ref('/').once('value').then(s2=>{
-    const d2 = s2.val()||{};
-    Object.keys(d2).forEach(k=>{
-      const v = d2[k];
-      if(v && v.rol==='repartidor' &&!cacheRepartidores[k.toLowerCase()]){
-        cacheRepartidores[k.toLowerCase()] = v;
-        if(v.nombre) cacheRepartidores[v.nombre.toLowerCase()] = v;
-      }
-    });
-    render();
   });
   render();
 });
@@ -196,13 +184,12 @@ function getServicioMoto(tipoServicio){
   if(t.includes('recoger')) return 'Moto Mandado';
   return 'Moto Transporte';
 }
+// ACTUALIZADO: SIN MULTIPLICAR x1000, TAL CUAL ESTA EN FIREBASE
 function getValorServicio(nombreRepa, tipoServicio){
   const repa = cacheRepartidores[(nombreRepa||'').toLowerCase()]||{};
   const esRecoger = (tipoServicio||'').toLowerCase().includes('recoger');
   let valor = esRecoger? (repa.valormotomandado?? repa.valorMotoMandado?? 0) : (repa.valormototransporte?? repa.valorMotoTransporte?? 0);
-  valor = Number(valor);
-  if(valor>0 && valor<100) valor = valor*1000;
-  return valor;
+  return Number(valor);
 }
 
 dbRT.ref('historial_pedidos').on('value', snap=>{
@@ -302,11 +289,9 @@ function render(){
     const tipo = normalizarTipo(p);
     const servicioMoto = getServicioMoto(tipo);
     const valorServicio = getValorServicio(p.repartidor, tipo);
-
-    // CORREGIDO COMO ME PEDISTE: Importe = valor servicio, Ganancia = Total - Importe
+    // ACTUALIZADO COMO PEDISTE: Importe = valor servicio, Ganancia = total - valor servicio
     const importeMostrar = pagado? valorServicio : 0;
     const gananciaMostrar = pagado? (total - valorServicio) : 0;
-
     const aliado = getAliado(p);
     const badgeClass = servicioMoto.includes('Mandado')? 'mandado' : 'transporte';
     return `<tr>
