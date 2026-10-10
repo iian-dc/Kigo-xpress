@@ -131,12 +131,10 @@ let fechaFiltro = '';
 let searchFiltro = '';
 let cacheMiTarifa = { mandado: 0, transporte: 0 };
 
-// ACTUALIZADO: LEE TARIFA DIRECTO DE /repartidores
 db.ref('repartidores/'+repartidorKey).on('value', s=>{
   const v = s.val()||{};
   cacheMiTarifa.mandado = Number(v.valormotomandado?? v.valorMotoMandado?? 0);
   cacheMiTarifa.transporte = Number(v.valormototransporte?? v.valorMotoTransporte?? 0);
-  // fallback si la key es con nombre
   if(cacheMiTarifa.mandado===0){
     db.ref('repartidores').once('value').then(ss=>{
       const all = ss.val()||{};
@@ -242,13 +240,12 @@ function render(){
       const pagado = p.pagado === true;
       const tipo = normalizarTipo(p);
 
-      // ACTUALIZADO COMO PEDISTE: usa tarifa de /repartidores
+      // CORREGIDO: Importe = precio que le pusiste en transportadores
       let valorServicio = getValorServicioRepa(tipo);
-      // si aún no cargó tarifa, usa lo guardado en el pedido como respaldo
-      if(valorServicio===0) valorServicio = Number(p.ganancia || p.importe || 0);
+      if(valorServicio===0) valorServicio = Number(p.importe || 0);
 
-      const gananciaMostrar = valorServicio;
-      const importeMostrar = valor > 0? (valor - valorServicio) : 0;
+      const importeMostrar = valorServicio;
+      const gananciaMostrar = valor > 0? (valor - valorServicio) : 0;
 
       if(pagado) totalGanancia += gananciaMostrar;
       else totalDebe += importeMostrar;
