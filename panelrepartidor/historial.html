@@ -33,10 +33,10 @@ body{background:#f5f5f7;padding-bottom:20px}
 .card-res.debe .val{color:#e30613}
 .card-res.debe{background:#fff1f2;border-color:#fecdd3}
 .table-head{background:#fff;margin:0 12px;border-radius:12px 12px 0 0;padding:8px 10px;display:flex;gap:5px;border:1px solid #eef0f3;border-bottom:0;font-size:7.5px;font-weight:800;color:#9ca3af;letter-spacing:.3px;text-transform:uppercase;overflow-x:auto}
+.th-fecha{width:74px;flex-shrink:0}
 .th-num{width:42px;flex-shrink:0}
 .th-tipo{width:62px;flex-shrink:0}
 .th-aliado{flex:1;min-width:60px}
-.th-fecha{width:74px;flex-shrink:0}
 .th-valor{width:46px;text-align:right;flex-shrink:0}
 .th-importe{width:46px;text-align:right;flex-shrink:0}
 .th-ingresos{width:46px;text-align:right;flex-shrink:0}
@@ -45,6 +45,7 @@ body{background:#f5f5f7;padding-bottom:20px}
 .card-hist{background:#fff;border:1px solid #eef0f3;border-top:0;padding:9px 10px;display:flex;gap:5px;align-items:center}
 .card-hist:first-child{border-top:1px solid #eef0f3}
 .card-hist:last-child{border-radius:0 0 12px 12px}
+.col-fecha{width:74px;flex-shrink:0;font-size:8px;font-weight:500;color:#6b7280;line-height:1.2}
 .col-num{width:42px;flex-shrink:0;font-size:11px;font-weight:800;color:#111}
 .col-tipo{width:62px;flex-shrink:0}
 .badge-tipo{font-size:6.5px;font-weight:800;padding:3px 5px;border-radius:6px;display:inline-block}
@@ -52,7 +53,6 @@ body{background:#f5f5f7;padding-bottom:20px}
 .badge-tipo.cliente{background:#dbeafe;color:#2563eb}
 .badge-tipo.recoger{background:#fef3c7;color:#92400e}
 .col-aliado{flex:1;min-width:60px;font-size:9px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.col-fecha{width:74px;flex-shrink:0;font-size:8px;font-weight:500;color:#6b7280;line-height:1.2}
 .col-valor{width:46px;flex-shrink:0;text-align:right;font-size:10px;font-weight:700;color:#111}
 .col-importe{width:46px;flex-shrink:0;text-align:right;font-size:10px;font-weight:600;color:#6b7280}
 .col-ingresos{width:46px;flex-shrink:0;text-align:right;font-size:10px;font-weight:800;color:#00a344}
@@ -103,10 +103,10 @@ body{background:#f5f5f7;padding-bottom:20px}
 </div>
 
 <div class="table-head">
+<div class="th-fecha">FECHA</div>
 <div class="th-num"># PEDIDO</div>
 <div class="th-tipo">SERVICIO</div>
 <div class="th-aliado">ALIADO</div>
-<div class="th-fecha">FECHA</div>
 <div class="th-valor">VALOR</div>
 <div class="th-importe">IMPORTE</div>
 <div class="th-ingresos">INGRESOS</div>
@@ -178,23 +178,33 @@ function render(){
   } else {
     filtrados.forEach(p=>{
       const valor = parseFloat(p.precio||p.valorTotal||0);
-      const importe = p.importe!=null ? parseFloat(p.importe) : (p.precioPagado!=null ? parseFloat(p.precioPagado) : Math.round(valor*0.8));
-      const ingresos = valor - importe;
       const pagado = p.pagado!==false && p.debe!==true && p.estadoPago!=='debe';
+      let importe, ingresos;
+
+      if(!pagado){
+        // DEBE: importe 0, ingresos = valor completo
+        importe = 0;
+        ingresos = valor;
+        totalDebe += valor;
+      } else {
+        // PAGADO: importe real, ingresos = valor - importe
+        const importeReal = p.importe!=null ? parseFloat(p.importe) : (p.precioPagado!=null ? parseFloat(p.precioPagado) : Math.round(valor*0.8));
+        importe = importeReal;
+        ingresos = valor - importe;
+        totalIngresos += ingresos;
+      }
+
       const tipo = getTipo(p);
       const aliadoTxt = p.aliado || p.recogidaNombre || p.aliadoDir || (tipo.txt==='CLIENTE' ? (p.recogidaNombre||'Cliente') : 'Sin aliado');
       const fecha = formatFecha(p.fechaEntrega||p.timestamp);
 
-      if(pagado) totalIngresos+=ingresos;
-      else totalDebe+=valor;
-
       const div=document.createElement('div');
       div.className='card-hist';
       div.innerHTML=`
+        <div class="col-fecha">${fecha}</div>
         <div class="col-num">#${p.numeroPedido||'?'}</div>
         <div class="col-tipo"><span class="badge-tipo ${tipo.cls}">${tipo.txt}</span></div>
         <div class="col-aliado" title="${aliadoTxt}">${aliadoTxt.slice(0,16)}</div>
-        <div class="col-fecha">${fecha}</div>
         <div class="col-valor">$${valor}</div>
         <div class="col-importe">$${importe}</div>
         <div class="col-ingresos">$${ingresos}</div>
