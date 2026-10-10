@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Menú - Kigo Xpress</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#fff}
@@ -45,7 +47,7 @@ body{background:#fff}
 <div class="profile">
 <img class="avatar" id="avatarMenu" src="https://i.pravatar.cc/200?img=5">
 <div>
-<div class="name" id="nombreMenu">repa1</div>
+<div class="name" id="nombreMenu">Cargando...</div>
 <button class="btn-perfil" onclick="location.href='perfil.html'">Mi perfil</button>
 </div>
 </div>
@@ -60,6 +62,12 @@ body{background:#fff}
 
 <div class="section">
 <div class="sec-title">Finanzas</div>
+
+<!-- NUEVO: HISTORIAL PRIMERO -->
+<div class="item" onclick="location.href='historial.html'">
+<div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10H20A8 8 0 1 1 12 4V2z"/><path d="M12 7v5l3 3"/><path d="M19 2v4M15 2v4" stroke-linecap="round"/></svg></div><div class="item-text">Historial</div></div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
 
 <div class="item" onclick="location.href='ganancias.html'">
 <div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M9.5 10.5c0-1 1-2 2.5-2s2.5 1 2.5 2-1 2-2.5 2-2.5 1-2.5 2 1 2 2.5 2 2.5-1 2.5-2"/></svg></div><div class="item-text">Ganancias</div></div>
@@ -111,15 +119,32 @@ body{background:#fff}
 <div style="height:40px"></div>
 
 <script>
-let repartidorKey = (localStorage.getItem('kigo_user_key')||localStorage.getItem('kigo_user')||'repa1').trim();
+const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let repartidorKey = (localStorage.getItem('kigo_user_key')||localStorage.getItem('kigo_user')||'Jose').trim();
 let repartidorUser = (localStorage.getItem('kigo_user')||repartidorKey).trim();
+if(repartidorKey.toLowerCase()==='repa1') repartidorKey='Jose';
+if(repartidorKey.toLowerCase()==='repa2') repartidorKey='Iian';
+
 document.getElementById('nombreMenu').textContent = repartidorUser;
+
 const savedAvatar = localStorage.getItem('kigo_avatar_'+repartidorKey) || localStorage.getItem('kigo_avatar_'+repartidorUser);
 if(savedAvatar) document.getElementById('avatarMenu').src = savedAvatar;
 
+db.ref('repartidores/'+repartidorKey).once('value').then(s=>{
+  if(s.exists()){
+    const d=s.val();
+    document.getElementById('nombreMenu').textContent = d.nombre || d.usuario || repartidorUser;
+    if(d.foto||d.avatarBase64){
+      document.getElementById('avatarMenu').src = d.foto||d.avatarBase64;
+    }
+  }
+});
+
 function irPanel(){
-  const key = localStorage.getItem('kigo_user_key') || repartidorKey;
-  location.href = 'index.html?repa=' + encodeURIComponent(key);
+  location.href = 'index.html?repa=' + encodeURIComponent(repartidorKey);
 }
 </script>
 </body>
