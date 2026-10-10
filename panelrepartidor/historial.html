@@ -32,31 +32,32 @@ body{background:#f5f5f7;padding-bottom:20px}
 .card-res .val{font-size:16px;font-weight:800;color:#111;margin-top:4px}
 .card-res.debe .val{color:#e30613}
 .card-res.debe{background:#fff1f2;border-color:#fecdd3}
-.card-res.ingresos .val{color:#111}
-.table-head{background:#fff;margin:0 12px;border-radius:12px 12px 0 0;padding:8px 12px;display:flex;gap:6px;border:1px solid #eef0f3;border-bottom:0;font-size:8px;font-weight:800;color:#9ca3af;letter-spacing:.4px;text-transform:uppercase}
-.th-num{width:48px}
-.th-tipo{width:70px}
-.th-aliado{flex:1;min-width:70px}
-.th-fecha{width:86px}
-.th-valor{width:56px;text-align:right}
-.th-importe{width:56px;text-align:right}
-.th-estado{width:56px;text-align:center}
+.table-head{background:#fff;margin:0 12px;border-radius:12px 12px 0 0;padding:8px 10px;display:flex;gap:5px;border:1px solid #eef0f3;border-bottom:0;font-size:7.5px;font-weight:800;color:#9ca3af;letter-spacing:.3px;text-transform:uppercase;overflow-x:auto}
+.th-num{width:42px;flex-shrink:0}
+.th-tipo{width:62px;flex-shrink:0}
+.th-aliado{flex:1;min-width:60px}
+.th-fecha{width:74px;flex-shrink:0}
+.th-valor{width:46px;text-align:right;flex-shrink:0}
+.th-importe{width:46px;text-align:right;flex-shrink:0}
+.th-ingresos{width:46px;text-align:right;flex-shrink:0}
+.th-estado{width:52px;text-align:center;flex-shrink:0}
 .list{padding:0 12px;display:flex;flex-direction:column}
-.card-hist{background:#fff;border:1px solid #eef0f3;border-top:0;padding:9px 12px;display:flex;gap:6px;align-items:center}
+.card-hist{background:#fff;border:1px solid #eef0f3;border-top:0;padding:9px 10px;display:flex;gap:5px;align-items:center}
 .card-hist:first-child{border-top:1px solid #eef0f3}
 .card-hist:last-child{border-radius:0 0 12px 12px}
-.col-num{width:48px;font-size:11px;font-weight:800;color:#111}
-.col-tipo{width:70px}
-.badge-tipo{font-size:7px;font-weight:800;padding:3px 6px;border-radius:6px;display:inline-block}
+.col-num{width:42px;flex-shrink:0;font-size:11px;font-weight:800;color:#111}
+.col-tipo{width:62px;flex-shrink:0}
+.badge-tipo{font-size:6.5px;font-weight:800;padding:3px 5px;border-radius:6px;display:inline-block}
 .badge-tipo.aliados{background:#fee2e2;color:#e30613}
 .badge-tipo.cliente{background:#dbeafe;color:#2563eb}
 .badge-tipo.recoger{background:#fef3c7;color:#92400e}
-.col-aliado{flex:1;min-width:70px;font-size:10px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.col-fecha{width:86px;font-size:9px;font-weight:500;color:#6b7280;line-height:1.2}
-.col-valor{width:56px;text-align:right;font-size:11px;font-weight:700;color:#111}
-.col-importe{width:56px;text-align:right;font-size:11px;font-weight:700;color:#374151}
-.col-estado{width:56px;text-align:center}
-.pill-pagado{font-size:8px;font-weight:800;padding:4px 8px;border-radius:8px;display:inline-block}
+.col-aliado{flex:1;min-width:60px;font-size:9px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.col-fecha{width:74px;flex-shrink:0;font-size:8px;font-weight:500;color:#6b7280;line-height:1.2}
+.col-valor{width:46px;flex-shrink:0;text-align:right;font-size:10px;font-weight:700;color:#111}
+.col-importe{width:46px;flex-shrink:0;text-align:right;font-size:10px;font-weight:600;color:#6b7280}
+.col-ingresos{width:46px;flex-shrink:0;text-align:right;font-size:10px;font-weight:800;color:#00a344}
+.col-estado{width:52px;flex-shrink:0;text-align:center}
+.pill-pagado{font-size:7.5px;font-weight:800;padding:4px 6px;border-radius:8px;display:inline-block}
 .pill-pagado.pagado{background:#e8f5e9;color:#00a344;border:1px solid #a7f3d0}
 .pill-pagado.debe{background:#fee2e2;color:#e30613;border:1px solid #fecaca}
 .empty{font-size:11px;color:#9ca3af;text-align:center;padding:40px 20px;background:#fff;border-radius:14px;border:1px dashed #ddd;margin:10px 12px}
@@ -84,9 +85,7 @@ body{background:#f5f5f7;padding-bottom:20px}
 <div class="search-row">
 <input type="date" id="inputFecha" class="input-date">
 <div class="search-wrap">
-<div class="search-icon">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="6"></circle><path d="M21 21l-4.2-4.2"></path></svg>
-</div>
+<div class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="6"></circle><path d="M21 21l-4.2-4.2"></path></svg></div>
 <input type="text" id="inputSearch" class="input-search" placeholder="Cliente, aliado o #pedido">
 </div>
 </div>
@@ -106,10 +105,11 @@ body{background:#f5f5f7;padding-bottom:20px}
 <div class="table-head">
 <div class="th-num"># PEDIDO</div>
 <div class="th-tipo">SERVICIO</div>
-<div class="th-aliado">ALIADO / RECOGIDA</div>
+<div class="th-aliado">ALIADO</div>
 <div class="th-fecha">FECHA</div>
 <div class="th-valor">VALOR</div>
 <div class="th-importe">IMPORTE</div>
+<div class="th-ingresos">INGRESOS</div>
 <div class="th-estado">ESTADO</div>
 </div>
 
@@ -144,7 +144,6 @@ function isHoy(ts){ const d=new Date(ts); const hoy=new Date(); return d.toDateS
 function isSemana(ts){ const d=new Date(ts); const hoy=new Date(); const hace7=new Date(); hace7.setDate(hoy.getDate()-7); return d>=hace7; }
 function isMes(ts){ const d=new Date(ts); const hoy=new Date(); return d.getMonth()===hoy.getMonth() && d.getFullYear()===hoy.getFullYear(); }
 function isFechaIgual(ts, fechaStr){ if(!fechaStr) return true; const d=new Date(ts); const f=new Date(fechaStr+'T00:00:00'); return d.toDateString()===f.toDateString(); }
-
 function getTipo(p){
   const t=(p.tipo||'').toLowerCase();
   if(t.includes('aliado')) return {txt:'ALIADOS', cls:'aliados'};
@@ -162,7 +161,7 @@ function render(){
     if(searchFiltro){
       const s=searchFiltro.toLowerCase();
       const cliente=(p.cliente||p.entregaNombre||'').toLowerCase();
-      const aliado=(p.aliado||p.recogidaNombre||p.aliadoDir||'').toLowerCase();
+      const aliado=(p.aliado||p.recogidaNombre||'').toLowerCase();
       const num=String(p.numeroPedido||'').toLowerCase();
       if(!cliente.includes(s) && !aliado.includes(s) && !num.includes(s)) return false;
     }
@@ -178,25 +177,27 @@ function render(){
     lista.innerHTML='<div class="empty">Sin pedidos en este filtro</div>';
   } else {
     filtrados.forEach(p=>{
-      const precio = parseFloat(p.precio||p.valorTotal||0);
-      const importe = p.importe ? parseFloat(p.importe) : p.ganancia ? parseFloat(p.ganancia) : Math.round(precio*0.8);
+      const valor = parseFloat(p.precio||p.valorTotal||0);
+      const importe = p.importe!=null ? parseFloat(p.importe) : (p.precioPagado!=null ? parseFloat(p.precioPagado) : Math.round(valor*0.8));
+      const ingresos = valor - importe;
       const pagado = p.pagado!==false && p.debe!==true && p.estadoPago!=='debe';
       const tipo = getTipo(p);
-      const aliadoTxt = p.aliado || p.recogidaNombre || p.aliadoDir || (tipo.txt==='CLIENTE' ? (p.recogidaNombre||'Cliente nuevo') : 'Sin aliado');
+      const aliadoTxt = p.aliado || p.recogidaNombre || p.aliadoDir || (tipo.txt==='CLIENTE' ? (p.recogidaNombre||'Cliente') : 'Sin aliado');
       const fecha = formatFecha(p.fechaEntrega||p.timestamp);
 
-      if(pagado) totalIngresos+=precio;
-      else totalDebe+=precio;
+      if(pagado) totalIngresos+=ingresos;
+      else totalDebe+=valor;
 
       const div=document.createElement('div');
       div.className='card-hist';
       div.innerHTML=`
         <div class="col-num">#${p.numeroPedido||'?'}</div>
         <div class="col-tipo"><span class="badge-tipo ${tipo.cls}">${tipo.txt}</span></div>
-        <div class="col-aliado" title="${aliadoTxt}">${aliadoTxt.slice(0,18)}</div>
+        <div class="col-aliado" title="${aliadoTxt}">${aliadoTxt.slice(0,16)}</div>
         <div class="col-fecha">${fecha}</div>
-        <div class="col-valor">$${precio}</div>
+        <div class="col-valor">$${valor}</div>
         <div class="col-importe">$${importe}</div>
+        <div class="col-ingresos">$${ingresos}</div>
         <div class="col-estado"><span class="pill-pagado ${pagado?'pagado':'debe'}">${pagado?'PAGADO':'DEBE'}</span></div>
       `;
       lista.appendChild(div);
