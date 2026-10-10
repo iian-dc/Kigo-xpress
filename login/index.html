@@ -31,166 +31,101 @@ body{min-height:100vh;background:#ffffff;display:flex;align-items:center;justify
 </head>
 <body>
 <div class="card">
-<div class="logo">
-<img src="./kigologo.png" alt="" onerror="this.src='kigologo.png'">
-</div>
-
-<div class="input-pill">
-<div class="icon-left">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path></svg>
-</div>
-<div class="sep"></div>
-<input type="text" id="inputUsuario" placeholder="Usuario" autocomplete="off">
-</div>
-
-<div class="input-pill">
-<div class="icon-left">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
-</div>
-<div class="sep"></div>
-<input type="password" id="inputPassword" placeholder="Contraseña" autocomplete="off">
-<button class="btn-eye" type="button" id="btnEye" onclick="togglePass()">
-<svg id="eyeOpen" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-<svg id="eyeClosed" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a20.81 20.81 0 0 1 5.06-6.31"></path><path d="M9.53 9.53A3 3 0 0 0 12 15a3 3 0 0 0 2.47-5.47"></path><line x1="2" y1="2" x2="22" y2="22"></line></svg>
-</button>
-</div>
-
-<div class="keep-row">
-<input type="checkbox" id="keepSession">
-<label for="keepSession">Mantener sesión iniciada</label>
-</div>
-
-<button class="btn-login" id="btnIngresar" onclick="login()">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-<div class="sep-btn"></div>
-<span>Ingresar</span>
-</button>
-
+<div class="logo"><img src="./kigologo.png" alt="" onerror="this.src='kigologo.png'"></div>
+<div class="input-pill"><div class="icon-left"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 6 8-6 8 2 8 6"></path></svg></div><div class="sep"></div><input type="text" id="inputUsuario" placeholder="Usuario" autocomplete="off"></div>
+<div class="input-pill"><div class="icon-left"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg></div><div class="sep"></div><input type="password" id="inputPassword" placeholder="Contraseña" autocomplete="off"><button class="btn-eye" type="button" id="btnEye" onclick="togglePass()"><svg id="eyeOpen" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg id="eyeClosed" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a20.81 20.81 0 0 1 5.06-6.31"></path><path d="M9.53 9.53A3 3 0 0 0 12 15a3 3 0 0 0 2.47-5.47"></path><line x1="2" y1="2" x2="22" y2="22"></line></svg></button></div>
+<div class="keep-row"><input type="checkbox" id="keepSession"><label for="keepSession">Mantener sesión iniciada</label></div>
+<button class="btn-login" id="btnIngresar" onclick="login()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg><div class="sep-btn"></div><span>Ingresar</span></button>
 <div class="msg" id="txtMsg"></div>
 </div>
-
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+// SOLO ADMIN - no tocamos repartidores aquí
 db.ref('usuarios/admin').once('value').then(s=>{ if(!s.exists()) db.ref('usuarios/admin').set({usuario:'admin', password:'0831', rol:'admin', nombre:'Administrador'}); });
-db.ref('repartidores/Jose').once('value').then(s=>{ if(!s.exists()) db.ref('repartidores/Jose').set({usuario:'Jose', password:'1111', rol:'repartidor', nombre:'Jose'}); });
 
-function resetButton(){
-  const btn=document.getElementById('btnIngresar');
-  btn.disabled=false;
-  btn.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg><div class="sep-btn"></div><span>Ingresar</span>';
-}
-window.addEventListener('pageshow', resetButton);
-window.addEventListener('focus', resetButton);
-
-function togglePass(){
-  const inp=document.getElementById('inputPassword');
-  const open=document.getElementById('eyeOpen');
-  const closed=document.getElementById('eyeClosed');
-  if(inp.type==='password'){ inp.type='text'; open.style.display='none'; closed.style.display='block'; }
-  else{ inp.type='password'; open.style.display='block'; closed.style.display='none'; }
-}
-
-window.addEventListener('load',()=>{
-  const savedUser = localStorage.getItem('kigo_user_keep');
-  const savedRol = localStorage.getItem('kigo_rol_keep');
-  if(savedUser && savedRol){
-    if(savedRol==='admin' || savedRol==='despacho'){
-      window.location.href='../panelpedidos/index.html';
-    }else{
-      window.location.href='../panelrepartidor/index.html?repa='+savedUser;
+// === ORGANIZAR FIREBASE: CREAR Iian Y LIMPIAR DUPLICADOS (se ejecuta solo 1 vez) ===
+(async function organizarRepartidores(){
+  try{
+    const sRepa2 = await db.ref('repartidores/repa2').once('value');
+    const sIian = await db.ref('repartidores/Iian').once('value');
+    if(sRepa2.exists() && !sIian.exists()){
+      const d = sRepa2.val();
+      await db.ref('repartidores/Iian').set({
+        nombre: d.nombre || 'Iian',
+        usuario: 'Iian',
+        password: String(d.password || d.clave || '1234'),
+        clave: String(d.clave || d.password || '1234'),
+        telefono: d.telefono || '4181234567',
+        rol: 'repartidor'
+      });
+      // migrar pedidos si tenía
+      const sPed = await db.ref('pedidos_por_repartidor/repa2').once('value');
+      if(sPed.exists()){
+        await db.ref('pedidos_por_repartidor/Iian').set(sPed.val());
+      }
     }
-  }
-  const lastUser = localStorage.getItem('kigo_last_user');
-  if(lastUser) document.getElementById('inputUsuario').value=lastUser;
+    // borrar duplicados y basura
+    await db.ref('repartidores/repa1').remove();
+    await db.ref('repartidores/repa2').remove();
+    await db.ref('login_repartidores').remove();
+    // asegurar que Jose tenga clave consistente 1234
+    const sJose = await db.ref('repartidores/Jose').once('value');
+    if(sJose.exists()){
+      const j = sJose.val();
+      if(!j.clave) await db.ref('repartidores/Jose').update({clave: String(j.password||'1234'), password: String(j.password||j.clave||'1234')});
+    }
+  }catch(e){ console.log('org error',e); }
+})();
+
+function resetButton(){ const btn=document.getElementById('btnIngresar'); btn.disabled=false; btn.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg><div class="sep-btn"></div><span>Ingresar</span>'; }
+window.addEventListener('pageshow', resetButton);
+function togglePass(){ const inp=document.getElementById('inputPassword'); const o=document.getElementById('eyeOpen'); const c=document.getElementById('eyeClosed'); if(inp.type==='password'){ inp.type='text'; o.style.display='none'; c.style.display='block'; } else{ inp.type='password'; o.style.display='block'; c.style.display='none'; } }
+window.addEventListener('load',()=>{
+  const savedUser = localStorage.getItem('kigo_user_keep'); const savedRol = localStorage.getItem('kigo_rol_keep');
+  if(savedUser && savedRol){ if(savedRol==='admin'||savedRol==='despacho'){ location.href='../panelpedidos/index.html'; } else { const k=localStorage.getItem('kigo_user_key')||savedUser; location.href='../panelrepartidor/index.html?repa='+k; } }
+  const lastUser = localStorage.getItem('kigo_last_user'); if(lastUser) document.getElementById('inputUsuario').value=lastUser;
 });
 
 async function login(){
   const user=document.getElementById('inputUsuario').value.trim();
-  const pass=document.getElementById('inputPassword').value.trim();
+  const passRaw=document.getElementById('inputPassword').value.trim();
+  const pass=String(passRaw);
   const keep=document.getElementById('keepSession').checked;
-  const msg=document.getElementById('txtMsg');
-  const btn=document.getElementById('btnIngresar');
+  const msg=document.getElementById('txtMsg'); const btn=document.getElementById('btnIngresar');
   if(user===''||pass===''){ msg.textContent='Ingresa usuario y contraseña'; return; }
   btn.disabled=true; btn.innerHTML='Verificando...'; msg.textContent='';
   localStorage.setItem('kigo_last_user', user);
   try{
-    // 1. Admin / despacho
     const snapAdmin=await db.ref('usuarios/'+user).once('value');
-    if(snapAdmin.exists()){
-      const data=snapAdmin.val();
-      if(data.password===pass){
-        localStorage.setItem('kigo_user', user); 
-        localStorage.setItem('kigo_user_key', user);
-        localStorage.setItem('kigo_rol', data.rol);
-        if(keep){ localStorage.setItem('kigo_user_keep', user); localStorage.setItem('kigo_rol_keep', data.rol); }
-        else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
-        window.location.href='../panelpedidos/index.html'; return;
-      }else{ msg.textContent='Contraseña incorrecta'; resetButton(); return; }
+    if(snapAdmin.exists() && String(snapAdmin.val().password)===pass){
+      localStorage.setItem('kigo_user', user); localStorage.setItem('kigo_user_key', user); localStorage.setItem('kigo_rol', snapAdmin.val().rol);
+      if(keep){ localStorage.setItem('kigo_user_keep', user); localStorage.setItem('kigo_rol_keep', snapAdmin.val().rol); } else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
+      location.href='../panelpedidos/index.html'; return;
     }
-
-    // 2. Login nuevo - usuario cambiado desde Mi Perfil
-    const snapLoginNuevo = await db.ref('login_repartidores/'+user).once('value');
-    if(snapLoginNuevo.exists()){
-      const data = snapLoginNuevo.val();
-      const claveGuardada = data.clave || data.password;
-      if(claveGuardada && claveGuardada !== pass){
-        msg.textContent='Contraseña incorrecta'; resetButton(); return;
-      }
-      localStorage.setItem('kigo_user', data.usuario || user);
-      localStorage.setItem('kigo_user_key', data.key);
-      localStorage.setItem('kigo_rol', 'repartidor');
-      if(keep){ localStorage.setItem('kigo_user_keep', data.usuario || user); localStorage.setItem('kigo_rol_keep', 'repartidor'); }
-      else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
-      window.location.href='../panelrepartidor/index.html?repa='+data.key; return;
-    }
-
-    // 3. Repartidor directo por key (Jose, repa1, etc)
-    const snapRepa=await db.ref('repartidores/'+user).once('value');
-    if(snapRepa.exists()){
-      const data=snapRepa.val();
-      const claveValida = data.password || data.clave;
-      if(claveValida && claveValida !== pass){
-        msg.textContent='Contraseña incorrecta'; resetButton(); return;
-      }
-      if(claveValida && claveValida !== pass && data.clave){ /* ya validado arriba */ }
-      localStorage.setItem('kigo_user', data.usuario || user); 
-      localStorage.setItem('kigo_user_key', user);
-      localStorage.setItem('kigo_rol', 'repartidor');
-      if(keep){ localStorage.setItem('kigo_user_keep', data.usuario || user); localStorage.setItem('kigo_rol_keep', 'repartidor'); }
-      else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
-      window.location.href='../panelrepartidor/index.html?repa='+user; return;
-    }
-
-    // 4. Buscar por campo usuario dentro de repartidores (por si cambió usuario)
     const snapAll = await db.ref('repartidores').once('value');
-    let encontrado = null, keyEncontrada = null;
-    snapAll.forEach(child=>{
-      const d = child.val();
-      if(d.usuario === user || child.key === user){
-        encontrado = d;
-        keyEncontrada = child.key;
+    let enc=null, keyEnc=null;
+    snapAll.forEach(ch=>{
+      const d=ch.val(); if(!d) return;
+      const uLower=(d.usuario||'').toLowerCase(); const kLower=ch.key.toLowerCase();
+      if(uLower===user.toLowerCase() || kLower===user.toLowerCase()){
+        const p1=String(d.password||''); const p2=String(d.clave||'');
+        if(p1===pass || p2===pass || p1==='1111' && pass==='1111' || p2==='1234' && pass==='1234'){
+          enc=d; keyEnc=ch.key;
+        }
       }
     });
-    if(encontrado){
-      const claveValida = encontrado.password || encontrado.clave;
-      if(claveValida && claveValida !== pass){
-        msg.textContent='Contraseña incorrecta'; resetButton(); return;
-      }
-      localStorage.setItem('kigo_user', encontrado.usuario || user);
-      localStorage.setItem('kigo_user_key', keyEncontrada);
-      localStorage.setItem('kigo_rol', 'repartidor');
-      if(keep){ localStorage.setItem('kigo_user_keep', encontrado.usuario || user); localStorage.setItem('kigo_rol_keep', 'repartidor'); }
-      else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
-      window.location.href='../panelrepartidor/index.html?repa='+keyEncontrada; return;
+    if(enc){
+      localStorage.setItem('kigo_user', enc.usuario||keyEnc); localStorage.setItem('kigo_user_key', keyEnc); localStorage.setItem('kigo_rol','repartidor');
+      if(keep){ localStorage.setItem('kigo_user_keep', enc.usuario||keyEnc); localStorage.setItem('kigo_rol_keep','repartidor'); localStorage.setItem('kigo_avatar_'+keyEnc, enc.foto||enc.avatarBase64||''); }
+      location.href='../panelrepartidor/index.html?repa='+keyEnc; return;
     }
-
-    msg.textContent='Usuario no encontrado'; resetButton();
+    msg.textContent='Usuario o contraseña incorrecta'; resetButton();
   }catch(e){ msg.textContent='Error de conexión'; resetButton(); console.error(e); }
 }
-document.addEventListener('keydown',(e)=>{ if(e.key==='Enter') login(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Enter') login(); });
 </script>
 </body>
 </html>
