@@ -21,29 +21,10 @@ body{background:#f5f6f7;min-height:100vh}
 .btn-q.active{background:#111;color:#fff;border-color:#111}
 .row2{display:flex;gap:5px;margin-top:6px}
 .inp{flex:1;height:30px;border-radius:7px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 8px;font-size:9.5px;font-weight:600;outline:0}
-
-/* TARJETAS - ARREGLO VISIBILIDAD ME DEBEN */
 .resumen{padding:8px;display:flex;gap:10px}
 .card-res{flex:1;background:#fff;border-radius:10px;border:1px solid #f1f5f9;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,.03);display:flex;flex-direction:column}
-.card-res.top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.card-res.icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#f1f5f9}
-.card-res.lbl{font-size:13px;font-weight:700;color:#1e293b}
-.card-res.val{font-size:26px;font-weight:900;letter-spacing:-.6px;line-height:1;margin-bottom:6px;color:#0f172a}
-.card-res.sub{font-size:11px;font-weight:500;color:#94a3b8}
-
-/* INGRESOS TOTALES - NEGRO + VERDE NEON */
-.card-res.ingresos.icon{background:#111}
-.card-res.ingresos.lbl{color:#111}
-.card-res.ingresos.val{color:#00e676!important}
-.card-res.ingresos.sub{color:#00e676!important;font-weight:700}
-
-/* ME DEBEN - TODO ROJO VISIBLE ELEGANTE - CORREGIDO */
-.card-res.debe{background:#fff0f3!important;border:1px solid #fecdd3!important}
-.card-res.debe.icon{background:#ffe4e6!important}
-.card-res.debe.lbl{color:#e11d48!important}
-.card-res.debe.val{color:#e11d48!important}
-.card-res.debe.sub{color:#e11d48!important;display:block!important}
-
+.top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#f1f5f9}
 .table-wrap{background:#fff;overflow:auto;margin-top:6px}
 table{width:100%;border-collapse:collapse;min-width:700px}
 thead th{position:sticky;top:0;background:#111;color:#fff;font-size:6.5px;font-weight:800;text-align:left;padding:6px 4px;text-transform:uppercase}
@@ -94,19 +75,24 @@ tbody td{padding:6px 4px;font-size:8px;font-weight:600;color:#222;border-bottom:
 </div>
 
 <div class="resumen">
-<div class="card-res ingresos">
-<div class="top"><div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 3c-1.5 0-2.7.5-3.5 1.2-.3.2-.5.6-.5 1s.2.8.5 1C9.3 7 10.5 7.5 12 7.5s2.7-.5 3.5-1.3c.3-.2.5-.6.5-1s-.2-.8-.5-1C14.7 3.5 13.5 3 12 3zm0 4c-1.5 0-2.7.5-3.5 1.2-.3.2-.5.6-.5 1s.2.8.5 1C9.3 11 10.5 11.5 12 11.5s2.7-.5 3.5-1.3c.3-.2.5-.6.5-1s-.2-.8-.5-1C14.7 7.5 13.5 7 12 7zm0 4c-1.5 0-2.7.5-3.5 1.2-.3.2-.5.6-.5 1s.2.8.5 1c.8.8 2 1.3 3.5 1.3s2.7-.5 3.5-1.3c.3-.2.5-.6.5-1s-.2-.8-.5-1C14.7 11.5 13.5 11 12 11zm0 4c-1.5 0-2.7.5-3.5 1.2-.3.2-.5.6-.5 1s.2.8.5 1c.8.8 2 1.3 3.5 1.3s2.7-.5 3.5-1.3c.3-.2.5-.6.5-1s-.2-.8-.5-1C14.7 15.5 13.5 15 12 15z"/></svg></div><div class="lbl">Ingresos totales</div></div>
-<div class="val" id="valIngresos">$0</div>
-<div class="sub">Total de ingresos</div>
+<!-- INGRESOS TOTALES -->
+<div class="card-res" style="border-color:#e2e8f0">
+<div class="top"><div class="icon" style="background:#111"><svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 3c-1.5 0-2.7.5-3.5 1.2-.3.2-.5.6-.5 1s.2.8.5 1C9.3 7 10.5 7.5 12 7.5s2.7-.5 3.5-1.3c.3-.2.5-.6.5-1s-.2-.8-.5-1C14.7 3.5 13.5 3 12 3z"/></svg></div><div style="font-size:13px;font-weight:700;color:#111">Ingresos totales</div></div>
+<div style="font-size:26px;font-weight:900;color:#00e676;margin-bottom:6px" id="valIngresos">$0</div>
+<div style="font-size:11px;font-weight:700;color:#00e676">Total de ingresos</div>
 </div>
-<div class="card-res debe">
-<div class="top"><div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e11d48" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8" stroke-linecap="round"/></svg></div><div class="lbl">Me deben</div></div>
-<div class="val" id="valDebe">$0</div>
-<div class="sub">Pendiente por cobrar</div>
+
+<!-- ME DEBEN - AHORA TODO ROJO FORZADO INLINE -->
+<div class="card-res" style="background:#fff1f3;border:1px solid #fecdd3">
+<div class="top"><div class="icon" style="background:#ffe4e6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e11d48" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8" stroke-linecap="round"/></svg></div><div style="font-size:13px;font-weight:700;color:#e11d48">Me deben</div></div>
+<div style="font-size:26px;font-weight:900;color:#e11d48;margin-bottom:6px" id="valDebe">$0</div>
+<div style="font-size:11px;font-weight:600;color:#e11d48">Pendiente por cobrar</div>
 </div>
-<div class="card-res pedidos">
-<div class="top"><div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.8"><path d="M21 10L12 4 3 10l9 6 9-6z"/><path d="M3 10v6l9 6 9-6v-6"/></svg></div><div class="lbl">Total pedidos</div></div>
-<div class="val" id="valPedidos">0</div>
+
+<!-- TOTAL PEDIDOS -->
+<div class="card-res">
+<div class="top"><div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.8"><path d="M21 10L12 4 3 10l9 6 9-6z"/><path d="M3 10v6l9 6 9-6v-6"/></svg></div><div style="font-size:13px;font-weight:700;color:#1e293b">Total pedidos</div></div>
+<div style="font-size:26px;font-weight:900;color:#0f172a;margin-bottom:6px" id="valPedidos">0</div>
 </div>
 </div>
 
@@ -133,8 +119,8 @@ function getAliado(p){ if(p.aliado) return p.aliado; if(p.cliente) return p.clie
 function getServicioMoto(tipoServicio){ const t = (tipoServicio||'').toLowerCase(); if(t.includes('recoger')) return 'Moto Mandado'; return 'Moto Transporte'; }
 function getValorServicio(nombreRepa, tipoServicio){ const repa = cacheRepartidores[(nombreRepa||'').toLowerCase()]||{}; const esRecoger = (tipoServicio||'').toLowerCase().includes('recoger'); let valor = esRecoger? (repa.valormotomandado?? repa.valorMotoMandado?? 0) : (repa.valormototransporte?? repa.valorMotoTransporte?? 0); return Number(valor); }
 dbRT.ref('historial_pedidos').on('value', snap=>{ let data = snap.val() || {}; pedidos = Object.keys(data).map(k=> ({id:k,...data[k]})); pedidos.sort((a,b)=> getFechaDoc(b) - getFechaDoc(a)); render(); });
-async function sincronizarRepartidor(id, datosParaRepartidor, repartidorNombre){ const rep = (repartidorNombre||'').trim(); if(!rep) { await dbRT.ref('historial_pedidos/'+id).update(datosParaRepartidor); return; } const repKey = rep.replace(/\s+/g,'_'); await dbRT.ref('historial_pedidos/'+id).update(datosParaRepartidor); const rutas = [`kigo_pedidos/${id}`,`kigo_historial/${repKey}/${id}`,`historialKigo/${repKey}/${id}`,`repartidoresKigo/${repKey}/historial/${id}`,`historial_por_repartidor/${repKey}/${id}`,`kigoRepasFull/${repKey}/pedidos/${id}`]; rutas.forEach(r=>{ dbRT.ref(r).update(datosParaRepartidor).catch(()=>{}); }); dbFS.collection('historial_pedidos').doc(id).update(datosParaRepartidor).catch(()=>{}); }
-async function sincronizarEliminacion(id, repartidorNombre){ const rep = (repartidorNombre||'').trim().replace(/\s+/g,'_'); await dbRT.ref('historial_pedidos/'+id).remove(); const rutas = [`kigo_pedidos/${id}`,`kigo_historial/${rep}/${id}`,`historialKigo/${rep}/${id}`,`repartidoresKigo/${rep}/historial/${id}`,`historial_por_repartidor/${rep}/${id}`,`kigoRepasFull/${rep}/pedidos/${id}`]; rutas.forEach(r=>{ dbRT.ref(r).remove().catch(()=>{}); }); dbFS.collection('historial_pedidos').doc(id).delete().catch(()=>{}); }
+async function sincronizarRepartidor(id, datosParaRepartidor, repartidorNombre){ const rep = (repartidorNombre||'').trim(); if(!rep) { await dbRT.ref('historial_pedidos/'+id).update(datosParaRepartidor); return; } const repKey = rep.replace(/\s+/g,'_'); await dbRT.ref('historial_pedidos/'+id).update(datosParaRepartidor); }
+async function sincronizarEliminacion(id, repartidorNombre){ await dbRT.ref('historial_pedidos/'+id).remove(); }
 function filtrarLista(){ const qCliente = document.getElementById('fCliente').value.toLowerCase().trim(); const fMes = document.getElementById('fMes').value; const active = document.querySelector('.btn-q.active')?.dataset.f || 'todo'; const hoy = toDateOnly(new Date()); return pedidos.filter(p=>{ const fecha = getFechaDoc(p); const fechaOnly = toDateOnly(fecha); const aliado = getAliado(p).toLowerCase(); if(qCliente &&!aliado.includes(qCliente)) return false; if(fMes){ const [y,m]=fMes.split('-').map(Number); if(fecha.getFullYear()!==y || (fecha.getMonth()+1)!==m) return false; } if(active==='hoy' && fechaOnly.getTime()!==hoy.getTime()) return false; if(active==='ayer'){ const ayer = new Date(hoy); ayer.setDate(hoy.getDate()-1); if(fechaOnly.getTime()!==ayer.getTime()) return false; } if(active==='semana'){ const inicio = new Date(hoy); inicio.setDate(hoy.getDate()-hoy.getDay()); if(fechaOnly < toDateOnly(inicio) || fechaOnly > hoy) return false; } if(active==='mes'){ if(fecha.getMonth()!==hoy.getMonth() || fecha.getFullYear()!==hoy.getFullYear()) return false; } return true; }); }
 function render(){ const tbody = document.getElementById('tbody'); const lista = filtrarLista(); let totalIngresos = 0; let totalDebe = 0; if(lista.length===0){ tbody.innerHTML = `<tr><td colspan="11" class="empty">No hay pedidos</td></tr>`; } else { tbody.innerHTML = lista.map(p=>{ const fecha = getFechaDoc(p); const fechaStr = fecha.getTime()===0? '-' : fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'2-digit'}); const pagado = p.pagado === true; const total = Number(p.valorTotal||p.total||p.precioNum||0); const tipo = normalizarTipo(p); const servicioMoto = getServicioMoto(tipo); const valorServicio = getValorServicio(p.repartidor, tipo); const importeMostrar = pagado? valorServicio : 0; const gananciaMostrar = pagado? valorServicio : 0; if(pagado) totalIngresos += gananciaMostrar; else totalDebe += valorServicio; const aliado = getAliado(p); const badgeClass = servicioMoto.includes('Mandado')? 'mandado' : 'transporte'; return `<tr><td>${fechaStr}</td><td><b>${(p.numeroPedido||p.numero||p.id).toString().slice(0,6)}</b></td><td>${aliado}</td><td>${tipo}</td><td><span class="badge-servicio ${badgeClass}">${servicioMoto}</span></td><td>${p.repartidor||'-'}</td><td>$${total.toLocaleString()}</td><td>$${importeMostrar.toLocaleString()}</td><td>$${gananciaMostrar.toLocaleString()}</td><td><button class="badge-pagado ${pagado?'pagado':'debe'}" onclick="togglePago('${p.id}')">${pagado?'Pagado':'Debe'}</button></td><td><button class="btn-icon" onclick="abrirEdit('${p.id}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg></button><button class="btn-icon" onclick="abrirDel('${p.id}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg></button></td></tr>`; }).join(''); } document.getElementById('valIngresos').textContent = '$'+totalIngresos.toLocaleString(); document.getElementById('valDebe').textContent = '$'+totalDebe.toLocaleString(); document.getElementById('valPedidos').textContent = lista.length.toString(); }
 function abrirEdit(id){ const p = pedidos.find(x=>x.id===id); if(!p) return; editId = id; const fecha = getFechaDoc(p); const tipo = normalizarTipo(p); const total = Number(p.valorTotal||0); const valorServicio = getValorServicio(p.repartidor, tipo); document.getElementById('eFecha').value = fecha.getTime()===0? '' : fecha.toISOString().slice(0,10); document.getElementById('eNumero').value = p.numeroPedido||p.numero||''; document.getElementById('eCliente').value = getAliado(p); document.getElementById('eTipo').value = tipo; document.getElementById('eRepartidor').value = p.repartidor||''; document.getElementById('eTotal').value = total; document.getElementById('eImporte').value = p.pagado? valorServicio : 0; document.getElementById('eGanancia').value = p.pagado? valorServicio : 0; document.getElementById('ePagado').value = String(p.pagado===true); document.getElementById('overlayEdit').classList.add('show'); }
