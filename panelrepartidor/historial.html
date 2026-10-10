@@ -240,15 +240,21 @@ function render(){
       const pagado = p.pagado === true;
       const tipo = normalizarTipo(p);
 
-      // CORREGIDO: Importe = precio que le pusiste en transportadores
       let valorServicio = getValorServicioRepa(tipo);
       if(valorServicio===0) valorServicio = Number(p.importe || 0);
 
-      const importeMostrar = valorServicio;
-      const gananciaMostrar = valor > 0? (valor - valorServicio) : 0;
+      // CORREGIDO COMO PEDISTE: Si debe, importe 0 y ganancia total
+      let importeMostrar, gananciaMostrar;
+      if(pagado){
+        importeMostrar = valorServicio;
+        gananciaMostrar = valor - valorServicio;
+      } else {
+        importeMostrar = 0;
+        gananciaMostrar = valor;
+      }
 
       if(pagado) totalGanancia += gananciaMostrar;
-      else totalDebe += importeMostrar;
+      else totalDebe += valorServicio;
 
       const aliadoTxt = getAliadoSolo(p);
       const fecha = formatFechaSolo(fechaObj);
