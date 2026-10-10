@@ -57,10 +57,17 @@ Cambiar foto
 
 <label class="label">ID Repartidor</label>
 <input class="input" id="inpId" type="text" disabled>
-<div class="info">Este ID no se puede modificar</div>
+<div class="info">Este ID no se puede modificar, es la llave de tus pedidos</div>
 
 <label class="label">Correo electrónico</label>
 <input class="input" id="inpCorreo" type="email" placeholder="correo@ejemplo.com">
+
+<label class="label">Usuario para entrar</label>
+<input class="input" id="inpUsuario" type="text" placeholder="Ej: repa1">
+
+<label class="label">Nueva contraseña</label>
+<input class="input" id="inpClave" type="password" placeholder="Escribe nueva contraseña">
+<div class="info">Si la dejas vacía, no se cambia. Esta es la que usará en el login</div>
 
 <button class="btn-guardar" id="btnGuardar" onclick="guardarPerfil()">Guardar cambios</button>
 
@@ -72,39 +79,37 @@ const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", auth
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let repartidorKey = (localStorage.getItem('kigo_user')||'repa1').trim();
-if(!['repa1','repa2'].includes(repartidorKey)) repartidorKey='repa1';
+let repartidorKey = (localStorage.getItem('kigo_user_key')||localStorage.getItem('kigo_user')||'repa1').trim();
+if(repartidorKey.includes('@')) repartidorKey = localStorage.getItem('kigo_user_key')||'repa1';
 
 let avatarBase64 = null;
-let avatarActual = null;
 
 const imgEl = document.getElementById('imgAvatar');
 const inpNombre = document.getElementById('inpNombre');
 const inpTelefono = document.getElementById('inpTelefono');
 const inpId = document.getElementById('inpId');
 const inpCorreo = document.getElementById('inpCorreo');
+const inpUsuario = document.getElementById('inpUsuario');
+const inpClave = document.getElementById('inpClave');
 const msg = document.getElementById('msg');
 
 inpId.value = repartidorKey;
 
-// Cargar de localStorage primero
 const savedAvatarLocal = localStorage.getItem('kigo_avatar_'+repartidorKey);
-if(savedAvatarLocal){ imgEl.src = savedAvatarLocal; avatarActual = savedAvatarLocal; }
+if(savedAvatarLocal){ imgEl.src = savedAvatarLocal; }
 
-// Cargar de Firebase
 db.ref('repartidores/'+repartidorKey).once('value').then(snap=>{
   const data = snap.val()||{};
   if(data.nombre) inpNombre.value = data.nombre;
-  else inpNombre.value = repartidorKey;
   if(data.telefono) inpTelefono.value = data.telefono;
   if(data.correo) inpCorreo.value = data.correo;
+  if(data.usuario) inpUsuario.value = data.usuario; else inpUsuario.value = repartidorKey;
+  if(data.clave) inpClave.placeholder = '•••••• (ya tienes clave guardada)';
   if(data.avatarBase64){
     imgEl.src = data.avatarBase64;
-    avatarActual = data.avatarBase64;
     localStorage.setItem('kigo_avatar_'+repartidorKey, data.avatarBase64);
   } else if(data.avatar){
     imgEl.src = data.avatar;
-    avatarActual = data.avatar;
   }
 });
 
@@ -127,24 +132,48 @@ function guardarPerfil(){
   btn.textContent = 'Guardando...';
   msg.textContent = '';
 
+  const nuevoUsuario = inpUsuario.value.trim() || repartidorKey;
+  const nuevaClave = inpClave.value.trim();
+
   const datos = {
     nombre: inpNombre.value.trim() || repartidorKey,
     telefono: inpTelefono.value.trim(),
     correo: inpCorreo.value.trim(),
+    usuario: nuevoUsuario,
     actualizado: Date.now()
   };
+  if(nuevaClave) datos.clave = nuevaClave;
   if(avatarBase64){
     datos.avatarBase64 = avatarBase64;
     localStorage.setItem('kigo_avatar_'+repartidorKey, avatarBase64);
   }
 
+  // Guardamos en su nodo original
   db.ref('repartidores/'+repartidorKey).update(datos).then(()=>{
-    msg.style.color='#00c853';
-    msg.textContent='¡Perfil guardado correctamente!';
+    // Creamos indice para login: usuarios/{usuario} -> key
+    const idx = {};
+    idx[nuevoUsuario] = repartidorKey;
+    db.ref('usuarios_repartidores').update(idx);
+
+    // Si también tiene clave, guardamos para login directo por usuario
+    if(nuevaClave || nuevoUsuario){
+      db.ref('login_repartidores/'+nuevoUsuario).set({
+        key: repartidorKey,
+        usuario: nuevoUsuario,
+        clave: nuevaClave || null,
+        nombre: datos.nombre
+      });
+    }
+
+    localStorage.setItem('kigo_user', nuevoUsuario);
+    localStorage.setItem('kigo_user_key', repartidorKey);
     localStorage.setItem('kigo_nombre_'+repartidorKey, datos.nombre);
+
+    msg.style.color='#00c853';
+    msg.textContent='¡Perfil guardado! Ya puedes entrar con tu nuevo usuario y contraseña';
     btn.disabled = false;
     btn.textContent = 'Guardar cambios';
-    setTimeout(()=>{ location.href='configuracion.html'; },800);
+    setTimeout(()=>{ location.href='configuracion.html'; },900);
   }).catch(err=>{
     msg.style.color='#e30613';
     msg.textContent='Error: '+err.message;
