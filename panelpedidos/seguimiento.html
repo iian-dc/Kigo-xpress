@@ -17,21 +17,19 @@ body{background:#fafafa;min-height:100vh;padding-bottom:20px}
 .subtitulo{font-size:12px;font-weight:500;color:#94a3b8;margin-top:4px}
 .filtros{display:flex;gap:8px;padding:10px 12px;overflow:auto}
 .filtros::-webkit-scrollbar{display:none}
-.tab{flex:1;min-width:72px;height:58px;background:#f3f4f6;border:1px solid #f1f5f9;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:.15s}
+.tab{flex:1;min-width:72px;height:58px;background:#f3f4f6;border:1px solid #f1f5f9;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
 .tab.active{background:#fff;border-color:#e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .tab-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
 .tab-txt{font-size:11px;font-weight:800;color:#111;display:flex;align-items:center;gap:5px}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
-.dot.blue{background:#0ea5e9}
-.dot.purple{background:#8b5cf6}
-.dot.green{background:#22c55e}
+.dot.blue{background:#0ea5e9}.dot.purple{background:#8b5cf6}.dot.green{background:#22c55e}
 .lista{padding:12px;display:flex;flex-direction:column;gap:10px}
 .card{position:relative;background:#fff;border-radius:16px;border:1px solid #f1f5f9;box-shadow:0 4px 12px rgba(0,0,0,.05);padding:12px 12px 12px 14px;overflow:hidden}
 .card:before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:6px;border-radius:0 6px 6px 0;background:#2563eb}
 .card-top{display:flex;align-items:flex-start;gap:10px}
 .icon-moto{width:42px;height:42px;border-radius:50%;background:#f8f9fa;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .info-main{flex:1}
-.pedido{font-size:14px;font-weight:800;color:#0f172a;letter-spacing:-.2px}
+.pedido{font-size:14px;font-weight:800;color:#0f172a}
 .hora{display:flex;align-items:center;gap:5px;margin-top:4px;font-size:11px;font-weight:600;color:#64748b}
 .badge{height:26px;padding:0 10px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700}
 .badge.recogido{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
@@ -46,81 +44,60 @@ body{background:#fafafa;min-height:100vh;padding-bottom:20px}
 .actions{display:flex;gap:8px;margin-top:12px}
 .btn-editar{flex:1;height:36px;border-radius:20px;border:0;background:#111;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
 .btn-finalizar{flex:1;height:36px;border-radius:20px;border:1px solid #d1d5db;background:#fff;color:#9ca3af;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:.2s}
-.btn-finalizar.active{background:#00c853;color:#fff;border-color:#00c853;box-shadow:0 2px 8px rgba(0,200,83,.3)}
+.btn-finalizar.active{background:#00c853;color:#fff;border-color:#00c853}
 .empty{text-align:center;padding:30px 10px;color:#94a3b8;font-size:12px;font-weight:600}
-
-/* MODAL EDITAR CENTRO */
 .overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:99;padding:12px}
 .overlay.show{display:flex}
-.card-modal{background:#fff;width:100%;max-width:360px;border-radius:16px;padding:14px;max-height:92vh;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.card-modal{background:#fff;width:100%;max-width:360px;border-radius:16px;padding:14px;max-height:92vh;overflow:auto}
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .modal-head h3{font-size:14px;font-weight:900;color:#111}
 .btn-close{width:28px;height:28px;border-radius:50%;border:0;background:#f1f5f9;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .full{grid-column:1/-1}
-.label-f{font-size:8px;font-weight:800;color:#64748b;margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
+.label-f{font-size:8px;font-weight:800;color:#64748b;margin-bottom:3px;text-transform:uppercase}
 .input-f{width:100%;height:34px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;padding:0 9px;font-size:11px;font-weight:600;outline:0;color:#0f172a}
 .input-f:focus{border-color:#111;background:#fff}
-.actions-modal{display:flex;gap:8px;margin-top:12px}
-.btn-cancel{flex:1;height:36px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;font-weight:800;cursor:pointer;font-size:12px;color:#334155}
-.btn-save{flex:1;height:36px;border-radius:10px;border:0;background:#111;color:#fff;font-weight:800;cursor:pointer;font-size:12px}
+.actions-modal{display:flex;gap:6px;margin-top:12px}
+.btn-cancel{flex:1;height:36px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;font-weight:800;cursor:pointer;font-size:11px;color:#334155}
+.btn-del{flex:1;height:36px;border-radius:10px;border:0;background:#ff3b30;color:#fff;font-weight:800;cursor:pointer;font-size:11px}
+.btn-save{flex:1;height:36px;border-radius:10px;border:0;background:#111;color:#fff;font-weight:800;cursor:pointer;font-size:11px}
 </style>
 </head>
 <body>
 
 <div class="header">
-<button class="btn-x" onclick="location.href='confadmin.html'">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-</button>
-<div>
-<div class="titulo">Seguimientos</div>
-<div class="subtitulo">Control en tiempo real de tus repartidores</div>
-</div>
+<button class="btn-x" onclick="location.href='confadmin.html'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+<div><div class="titulo">Seguimientos</div><div class="subtitulo">Control en tiempo real de tus repartidores</div></div>
 </div>
 
 <div class="filtros">
-<div class="tab active" data-f="todos" onclick="setFiltro('todos')">
-<div class="tab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.5" fill="#111"/><circle cx="3.5" cy="12" r="1.5" fill="#111"/><circle cx="3.5" cy="18" r="1.5" fill="#111"/></svg></div>
-<div class="tab-txt">Todos</div>
-</div>
-<div class="tab" data-f="aceptado" onclick="setFiltro('aceptado')">
-<div class="tab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round"><path d="M5 12l5 5l10-10"/></svg></div>
-<div class="tab-txt"><span class="dot blue"></span> Aceptado</div>
-</div>
-<div class="tab" data-f="recogido" onclick="setFiltro('recogido')">
-<div class="tab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg></div>
-<div class="tab-txt"><span class="dot purple"></span> Recogido</div>
-</div>
-<div class="tab" data-f="entregado" onclick="setFiltro('entregado')">
-<div class="tab-icon"><svg width="22" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M2 8h12v8H2z"/><path d="M14 10h4l2 2v4h-6"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg></div>
-<div class="tab-txt"><span class="dot green"></span> Entregado</div>
-</div>
+<div class="tab active" data-f="todos" onclick="setFiltro('todos')"><div class="tab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.5" fill="#111"/><circle cx="3.5" cy="12" r="1.5" fill="#111"/><circle cx="3.5" cy="18" r="1.5" fill="#111"/></svg></div><div class="tab-txt">Todos</div></div>
+<div class="tab" data-f="aceptado" onclick="setFiltro('aceptado')"><div class="tab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round"><path d="M5 12l5 5l10-10"/></svg></div><div class="tab-txt"><span class="dot blue"></span> Aceptado</div></div>
+<div class="tab" data-f="recogido" onclick="setFiltro('recogido')"><div class="tab-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg></div><div class="tab-txt"><span class="dot purple"></span> Recogido</div></div>
+<div class="tab" data-f="entregado" onclick="setFiltro('entregado')"><div class="tab-icon"><svg width="22" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M2 8h12v8H2z"/><path d="M14 10h4l2 2v4h-6"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg></div><div class="tab-txt"><span class="dot green"></span> Entregado</div></div>
 </div>
 
 <div class="lista" id="lista"></div>
 
-<!-- MODAL EDITAR FULL INFO -->
 <div class="overlay" id="overlayEdit">
 <div class="card-modal">
-<div class="modal-head">
-<h3>Editar pedido</h3>
-<button class="btn-close" onclick="cerrarEdit()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-</div>
+<div class="modal-head"><h3>Detalle del pedido</h3><button class="btn-close" onclick="cerrarEdit()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 <div class="grid">
 <div><div class="label-f"># Pedido</div><input id="eNumero" class="input-f"></div>
 <div><div class="label-f">Estado</div><select id="eEstado" class="input-f"><option value="aceptado">Aceptado</option><option value="recogido">Recogido</option><option value="entregado">Entregado</option></select></div>
-<div class="full"><div class="label-f">Donde se recoge</div><input id="eRecoger" class="input-f" placeholder="Ej: Oxxo Centro"></div>
-<div class="full"><div class="label-f">A quien se entrega / Aliado</div><input id="eEntregar" class="input-f" placeholder="Nombre cliente"></div>
-<div><div class="label-f">Teléfono</div><input id="eTelefono" class="input-f" placeholder="Número"></div>
+<div class="full"><div class="label-f">Donde se recoge</div><input id="eRecoger" class="input-f"></div>
+<div class="full"><div class="label-f">A quien se entrega</div><input id="eEntregar" class="input-f"></div>
+<div><div class="label-f">Teléfono</div><input id="eTelefono" class="input-f"></div>
 <div><div class="label-f">Repartidor</div><input id="eRepartidor" class="input-f"></div>
-<div class="full"><div class="label-f">Tipo de servicio</div><select id="eTipo" class="input-f"><option value="Moto Mandados">Moto Mandados</option><option value="Moto Transporte">Moto Transporte</option><option value="aliados recoger">aliados recoger</option><option value="aliados comprar">aliados comprar</option><option value="clientes nuevos recoger">clientes nuevos recoger</option><option value="clientes nuevos comprar">clientes nuevos comprar</option></select></div>
+<div class="full"><div class="label-f">Tipo de servicio</div><select id="eTipo" class="input-f"><option value="Moto Mandados">Moto Mandados</option><option value="Moto Transporte">Moto Transporte</option><option value="aliados recoger">aliados recoger</option><option value="aliados comprar">aliados comprar</option></select></div>
 <div><div class="label-f">Valor total</div><input id="eTotal" type="number" class="input-f"></div>
 <div><div class="label-f">Precio servicio</div><input id="ePrecio" type="number" class="input-f"></div>
 <div class="full"><div class="label-f">Notas / Dirección exacta</div><input id="eNotas" class="input-f"></div>
 </div>
 <div class="actions-modal">
 <button class="btn-cancel" onclick="cerrarEdit()">Cancelar</button>
-<button class="btn-save" onclick="guardarEdit()">Guardar cambios</button>
+<button class="btn-del" onclick="eliminarPedido()">Eliminar</button>
+<button class="btn-save" onclick="guardarEdit()">Guardar</button>
 </div>
 </div>
 </div>
@@ -128,151 +105,65 @@ body{background:#fafafa;min-height:100vh;padding-bottom:20px}
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig);
-const dbRT = firebase.database();
-const dbFS = firebase.firestore();
-let pedidosLive = [];
-let filtro = 'todos';
-let editId = null;
+const dbRT = firebase.database(); const dbFS = firebase.firestore();
+let pedidosLive = []; let filtro='todos'; let editId=null;
 
-function setFiltro(f){
-  filtro = f;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelector(`.tab[data-f="${f}"]`).classList.add('active');
-  render();
-}
-function getEstado(p){ const e = (p.estado||p.status||'').toLowerCase(); if(e.includes('recog')) return 'recogido'; if(e.includes('acept')) return 'aceptado'; if(e.includes('entreg')) return 'entregado'; return 'aceptado'; }
-function getHora(p){ let f = p.fecha||p.timestamp||p.createdAt||Date.now(); let d=new Date(f); if(isNaN(d.getTime())) d=new Date(); let h=d.getHours(), m=d.getMinutes().toString().padStart(2,'0'), ampm=h>=12?'p.m.':'a.m.'; h=h%12||12; return `${h}:${m} ${ampm}`; }
+function setFiltro(f){ filtro=f; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); document.querySelector(`.tab[data-f="${f}"]`).classList.add('active'); render(); }
+function getEstado(p){ const e=(p.estado||p.status||'').toLowerCase(); if(e.includes('recog')) return 'recogido'; if(e.includes('acept')) return 'aceptado'; if(e.includes('entreg')) return 'entregado'; return 'aceptado'; }
+function getHora(p){ let f=p.fecha||p.timestamp||Date.now(); let d=new Date(f); if(isNaN(d.getTime())) d=new Date(); let h=d.getHours(), m=d.getMinutes().toString().padStart(2,'0'), ampm=h>=12?'p.m.':'a.m.'; h=h%12||12; return `${h}:${m} ${ampm}`; }
 
 function render(){
-  const cont = document.getElementById('lista');
-  let lista = pedidosLive;
-  if(filtro!=='todos') lista = lista.filter(p=>getEstado(p)===filtro);
+  const cont=document.getElementById('lista'); let lista=pedidosLive;
+  if(filtro!=='todos') lista=lista.filter(p=>getEstado(p)===filtro);
   if(lista.length===0){ cont.innerHTML=`<div class="empty">No hay pedidos en ${filtro}</div>`; return; }
-  cont.innerHTML = lista.map(p=>{
-    const est = getEstado(p);
-    const num = (p.numeroPedido||p.numero||p.id||'0015').toString().slice(-4).padStart(4,'0');
-    const tipo = p.tipoServicio||p.tipo||'Moto Mandados';
-    const total = Number(p.valorTotal||p.total||p.precioServicio||35).toLocaleString('en-US',{minimumFractionDigits:2});
-    const hora = getHora(p);
-    const isEntregado = est==='entregado';
-    return `
-    <div class="card">
-      <div class="card-top">
-        <div class="icon-moto"><svg width="26" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M5.5 17.5L9 11l4 2 3-3h2"/><path d="M9 11c0-2 2-4 4-4"/></svg></div>
-        <div class="info-main">
-          <div class="pedido">Pedido #${num}</div>
-          <div class="hora"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> ${hora}</div>
-        </div>
-        <div class="badge ${est}"><svg width="14" height="14" viewBox="0 0 24 24" fill="#2563eb"><circle cx="12" cy="12" r="10"/><path d="M7 12l3 3 7-7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>${est.charAt(0).toUpperCase()+est.slice(1)}</div>
-        <div class="precio">$${total}</div>
-      </div>
-      <div class="card-middle">
-        <div class="meta"><div class="meta-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h6"/></svg></div><div><div class="meta-lbl">Tipo de servicio</div><div class="meta-val">${tipo}</div></div></div>
-      </div>
-      <div class="actions">
-        <button class="btn-editar" onclick="abrirEdit('${p.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Editar</button>
-        <button class="btn-finalizar ${isEntregado?'active':''}" onclick="finalizarPedido('${p.id}')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12l5 5l10-10"/></svg>
-          ${isEntregado?'Listo para historial':'Finalizar'}
-        </button>
-      </div>
-    </div>`;
+  cont.innerHTML=lista.map(p=>{
+    const est=getEstado(p); const num=(p.numeroPedido||p.id||'').toString().slice(-4).padStart(4,'0');
+    const tipo=p.tipoServicio||p.tipo||'Moto Mandados'; const total=Number(p.valorTotal||p.total||35).toLocaleString('en-US',{minimumFractionDigits:2});
+    const hora=getHora(p); const isEntregado=est==='entregado';
+    return `<div class="card"><div class="card-top"><div class="icon-moto"><svg width="26" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M5.5 17.5L9 11l4 2 3-3h2"/><path d="M9 11c0-2 2-4 4-4"/></svg></div><div class="info-main"><div class="pedido">Pedido #${num}</div><div class="hora"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> ${hora}</div></div><div class="badge ${est}">${est.charAt(0).toUpperCase()+est.slice(1)}</div><div class="precio">$${total}</div></div><div class="card-middle"><div class="meta"><div class="meta-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h6"/></svg></div><div><div class="meta-lbl">Tipo de servicio</div><div class="meta-val">${tipo}</div></div></div></div><div class="actions"><button class="btn-editar" onclick="abrirEdit('${p.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Editar</button><button class="btn-finalizar ${isEntregado?'active':''}" onclick="finalizarPedido('${p.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12l5 5l10-10"/></svg>${isEntregado?'Listo para historial':'Finalizar'}</button></div></div>`;
   }).join('');
 }
 
-// EDITAR - MODAL CENTRO
 function abrirEdit(id){
-  const p = pedidosLive.find(x=>x.id===id); if(!p) return;
-  editId = id;
-  document.getElementById('eNumero').value = p.numeroPedido||p.numero||p.id||'';
-  document.getElementById('eEstado').value = getEstado(p);
-  document.getElementById('eRecoger').value = p.recogerEn||p.aliado||p.cliente||'';
-  document.getElementById('eEntregar').value = p.entregarEn||p.entregarA||p.cliente||p.aliado||'';
-  document.getElementById('eTelefono').value = p.telefono||p.phone||p.tel||'';
-  document.getElementById('eRepartidor').value = p.repartidor||'';
-  document.getElementById('eTipo').value = p.tipoServicio||p.tipo||'Moto Mandados';
-  document.getElementById('eTotal').value = p.valorTotal||p.total||0;
-  document.getElementById('ePrecio').value = p.precioServicio||p.importe||p.ganancia||0;
-  document.getElementById('eNotas').value = p.notas||p.direccion||p.detalles||'';
+  const p=pedidosLive.find(x=>x.id===id); if(!p) return; editId=id;
+  document.getElementById('eNumero').value=p.numeroPedido||p.id||'';
+  document.getElementById('eEstado').value=getEstado(p);
+  document.getElementById('eRecoger').value=p.recogerEn||p.aliado||'';
+  document.getElementById('eEntregar').value=p.entregarEn||p.cliente||'';
+  document.getElementById('eTelefono').value=p.telefono||'';
+  document.getElementById('eRepartidor').value=p.repartidor||'';
+  document.getElementById('eTipo').value=p.tipoServicio||p.tipo||'Moto Mandados';
+  document.getElementById('eTotal').value=p.valorTotal||0;
+  document.getElementById('ePrecio').value=p.precioServicio||0;
+  document.getElementById('eNotas').value=p.notas||'';
   document.getElementById('overlayEdit').classList.add('show');
 }
 function cerrarEdit(){ document.getElementById('overlayEdit').classList.remove('show'); editId=null; }
 async function guardarEdit(){
   if(!editId) return;
-  const upd = {
-    numeroPedido: document.getElementById('eNumero').value,
-    estado: document.getElementById('eEstado').value,
-    status: document.getElementById('eEstado').value,
-    recogerEn: document.getElementById('eRecoger').value,
-    entregarEn: document.getElementById('eEntregar').value,
-    entregarA: document.getElementById('eEntregar').value,
-    telefono: document.getElementById('eTelefono').value,
-    repartidor: document.getElementById('eRepartidor').value,
-    tipoServicio: document.getElementById('eTipo').value,
-    tipo: document.getElementById('eTipo').value,
-    valorTotal: Number(document.getElementById('eTotal').value),
-    precioServicio: Number(document.getElementById('ePrecio').value),
-    notas: document.getElementById('eNotas').value,
-    aliado: document.getElementById('eRecoger').value,
-    cliente: document.getElementById('eEntregar').value
-  };
-  // actualiza local rapido
-  const idx = pedidosLive.findIndex(x=>x.id===editId);
-  if(idx>-1){ pedidosLive[idx]={...pedidosLive[idx],...upd}; render(); }
-  cerrarEdit();
-  // sincroniza en Firebase - live + todas las rutas
-  const repKey = (upd.repartidor||'').trim().replace(/\s+/g,'_');
-  await dbRT.ref('kigoPedidosLive/'+editId).update(upd);
-  if(repKey){
-    const rutas = [`kigo_pedidos/${editId}`,`kigo_historial/${repKey}/${editId}`];
-    rutas.forEach(r=>dbRT.ref(r).update(upd).catch(()=>{}));
-  }
+  const upd={ numeroPedido:document.getElementById('eNumero').value, estado:document.getElementById('eEstado').value, status:document.getElementById('eEstado').value, recogerEn:document.getElementById('eRecoger').value, entregarEn:document.getElementById('eEntregar').value, telefono:document.getElementById('eTelefono').value, repartidor:document.getElementById('eRepartidor').value, tipoServicio:document.getElementById('eTipo').value, tipo:document.getElementById('eTipo').value, valorTotal:Number(document.getElementById('eTotal').value), precioServicio:Number(document.getElementById('ePrecio').value), notas:document.getElementById('eNotas').value, aliado:document.getElementById('eRecoger').value, cliente:document.getElementById('eEntregar').value };
+  const idx=pedidosLive.findIndex(x=>x.id===editId); if(idx>-1){ pedidosLive[idx]={...pedidosLive[idx],...upd}; render(); }
+  cerrarEdit(); await dbRT.ref('kigoPedidosLive/'+editId).update(upd);
 }
-
-// FINALIZAR - VERDE Y ENVIO A HISTORIAL
+async function eliminarPedido(){
+  if(!editId) return; if(!confirm('¿Eliminar este servicio en tiempo real?')) return;
+  await dbRT.ref('kigoPedidosLive/'+editId).remove();
+  pedidosLive=pedidosLive.filter(x=>x.id!==editId); render(); cerrarEdit();
+}
 async function finalizarPedido(id){
-  const p = pedidosLive.find(x=>x.id===id); if(!p) return;
-  const est = getEstado(p);
+  const p=pedidosLive.find(x=>x.id===id); if(!p) return; const est=getEstado(p);
   if(est!=='entregado'){
-    // Paso 1: confirmar entrega -> pone verde
-    await dbRT.ref('kigoPedidosLive/'+id).update({estado:'entregado', status:'entregado', entregadoEn: Date.now()});
+    await dbRT.ref('kigoPedidosLive/'+id).update({estado:'entregado', status:'entregado'});
     p.estado='entregado'; render();
   } else {
-    // Paso 2: ya verde, mover a historial y quitar de seguimiento
-    if(!confirm('¿Mover a Historial de pedidos?')) return;
-    const historialData = {
-     ...p,
-      estado:'entregado',
-      status:'entregado',
-      pagado:true,
-      fechaFinalizado: Date.now(),
-      valorTotal: p.valorTotal||p.total||0,
-      importe: p.precioServicio||p.importe||0,
-      ganancia: p.precioServicio||p.ganancia||0,
-      cliente: p.entregarEn||p.cliente||p.aliado,
-      aliado: p.recogerEn||p.aliado,
-      numeroPedido: p.numeroPedido||p.id
-    };
-    // Evita duplicar: solo crea en historial_pedidos si no existe
-    const existe = await dbRT.ref('historial_pedidos/'+id).once('value');
-    if(!existe.exists()){
-      await dbRT.ref('historial_pedidos/'+id).set(historialData);
-      dbFS.collection('historial_pedidos').doc(id).set(historialData).catch(()=>{});
-    }
-    // Quita de live
-    await dbRT.ref('kigoPedidosLive/'+id).remove();
-    pedidosLive = pedidosLive.filter(x=>x.id!==id);
-    render();
+    if(!confirm('¿Mover a Historial como Debe?')) return;
+    const historialData={...p, estado:'entregado', status:'entregado', pagado:false, debe:true, fecha:Date.now(), valorTotal:p.valorTotal||0, importe:p.precioServicio||0, ganancia:p.precioServicio||0, cliente:p.entregarEn||p.cliente, aliado:p.recogerEn||p.aliado, numeroPedido:p.numeroPedido||p.id };
+    const existe=await dbRT.ref('historial_pedidos/'+id).once('value');
+    if(!existe.exists()){ await dbRT.ref('historial_pedidos/'+id).set(historialData); dbFS.collection('historial_pedidos').doc(id).set(historialData).catch(()=>{}); }
+    await dbRT.ref('kigoPedidosLive/'+id).remove(); pedidosLive=pedidosLive.filter(x=>x.id!==id); render();
   }
 }
-
-dbRT.ref('kigoPedidosLive').on('value', snap=>{
-  const data = snap.val()||{};
-  pedidosLive = Object.keys(data).map(k=>({id:k,...data[k]}));
-  render();
-});
-
-setTimeout(()=>{ if(pedidosLive.length===0){ pedidosLive=[{id:'demo0015', numeroPedido:'0015', valorTotal:35, precioServicio:35, tipoServicio:'Moto Mandados', estado:'recogido', fecha:Date.now(), recogerEn:'Oxxo Centro', entregarEn:'Juan Perez', telefono:'3001234567'}]; render(); } },1200);
+dbRT.ref('kigoPedidosLive').on('value', snap=>{ const data=snap.val()||{}; pedidosLive=Object.keys(data).map(k=>({id:k,...data[k]})); render(); });
 </script>
 </body>
 </html>
