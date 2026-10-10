@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Historial</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -11,51 +11,55 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#f5f6f7;min-height:100vh}
-.header{background:#fff;padding:14px 14px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid #eef0f3;position:sticky;top:0;z-index:10}
-.btn-x{width:42px;height:42px;border-radius:50%;background:#e9ecef;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.titulo{font-size:20px;font-weight:900;color:#111;letter-spacing:-0.3px}
-.filtros{background:#fff;padding:12px 12px 14px;border-bottom:1.5px solid #eef0f3}
-.quick{display:flex;gap:8px;overflow:auto;padding-bottom:8px;scrollbar-width:none}
+.header{background:#fff;padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #eef0f3;position:sticky;top:0;z-index:10}
+.btn-x{width:36px;height:36px;border-radius:50%;background:#e9ecef;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.titulo{font-size:17px;font-weight:900;color:#111}
+.filtros{background:#fff;padding:8px 10px 10px;border-bottom:1px solid #eef0f3}
+.quick{display:flex;gap:6px;overflow:auto;padding-bottom:6px;scrollbar-width:none}
 .quick::-webkit-scrollbar{display:none}
-.btn-q{white-space:nowrap;height:32px;padding:0 14px;border-radius:20px;border:1.5px solid #e5e7eb;background:#f8f9fa;font-size:12px;font-weight:700;cursor:pointer;color:#111}
+.btn-q{white-space:nowrap;height:28px;padding:0 11px;border-radius:16px;border:1px solid #e5e7eb;background:#f8f9fa;font-size:11px;font-weight:700;cursor:pointer;color:#111}
 .btn-q.active{background:#111;color:#fff;border-color:#111}
-.row2{display:flex;gap:8px;margin-top:10px}
-.inp{flex:1;height:40px;border-radius:10px;border:1.5px solid #e5e7eb;background:#f8f9fa;padding:0 12px;font-size:13px;font-weight:600;outline:0}
+.row2{display:flex;gap:6px;margin-top:8px}
+.inp{flex:1;height:34px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 10px;font-size:11px;font-weight:600;outline:0}
 .inp:focus{border-color:#111;background:#fff}
-.table-wrap{background:#fff;overflow:auto;margin-top:8px}
-table{width:100%;border-collapse:collapse;min-width:1050px}
-thead th{position:sticky;top:0;background:#111;color:#fff;font-size:11px;font-weight:800;text-align:left;padding:12px 10px;letter-spacing:0.3px;text-transform:uppercase}
-tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bottom:1px solid #eef0f3;vertical-align:middle}
-.badge-pagado{height:28px;padding:0 12px;border-radius:20px;border:0;font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.table-wrap{background:#fff;overflow:auto;margin-top:6px;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:760px}
+thead th{position:sticky;top:0;background:#111;color:#fff;font-size:9px;font-weight:800;text-align:left;padding:8px 6px;letter-spacing:0.3px;text-transform:uppercase}
+tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bottom:1px solid #f0f2f4;vertical-align:middle;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge-pagado{height:24px;padding:0 9px;border-radius:12px;border:0;font-size:9.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
 .pagado{background:#00c853;color:#fff}
 .debe{background:#ff3b30;color:#fff}
-.btn-icon{width:32px;height:32px;border-radius:8px;border:1.5px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-right:4px}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
+.btn-icon{width:26px;height:26px;border-radius:6px;border:1px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-right:3px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:99;padding:12px}
 .overlay.show{display:flex}
-.card-modal{background:#fff;width:100%;max-width:460px;border-radius:16px;padding:18px;max-height:92vh;overflow:auto}
-.card-modal h3{font-size:16px;font-weight:900;margin-bottom:12px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid.full{grid-column:1/-1}
-.label-f{font-size:11px;font-weight:800;color:#6b7280;margin-bottom:4px;text-transform:uppercase}
-.input-f{width:100%;height:42px;border-radius:10px;border:1.5px solid #e5e7eb;background:#f8f9fa;padding:0 12px;font-size:13px;font-weight:600;outline:0}
-.input-f:focus{border-color:#111;background:#fff}
-.actions-modal{display:flex;gap:10px;margin-top:14px}
-.btn-cancel{flex:1;height:44px;border-radius:12px;border:1.5px solid #e5e7eb;background:#fff;font-weight:800;cursor:pointer}
-.btn-save{flex:1;height:44px;border-radius:12px;border:0;background:#111;color:#fff;font-weight:800;cursor:pointer}
-.card-confirm{background:#fff;width:100%;max-width:360px;border-radius:16px;padding:20px;text-align:center}
-.card-confirm h4{font-size:15px;font-weight:900;margin-bottom:6px}
-.card-confirm p{font-size:13px;color:#6b7280;font-weight:500;margin-bottom:18px}
-.confirm-btns{display:flex;gap:12px}
-.btn-no{flex:1;height:44px;border-radius:12px;border:0;background:#00c853;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-si{flex:1;height:44px;border-radius:12px;border:0;background:#ff3b30;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
-.empty{padding:40px 20px;text-align:center;color:#8a8d93;font-weight:600;font-size:13px}
+.card-modal{background:#fff;width:100%;max-width:400px;border-radius:14px;padding:14px;max-height:92vh;overflow:auto}
+.card-modal h3{font-size:14px;font-weight:900;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.full{grid-column:1/-1}
+.label-f{font-size:9px;font-weight:800;color:#6b7280;margin-bottom:3px;text-transform:uppercase}
+.input-f{width:100%;height:36px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 10px;font-size:11px;font-weight:600;outline:0}
+.actions-modal{display:flex;gap:8px;margin-top:12px}
+.btn-cancel{flex:1;height:38px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-weight:800;cursor:pointer;font-size:12px}
+.btn-save{flex:1;height:38px;border-radius:10px;border:0;background:#111;color:#fff;font-weight:800;cursor:pointer;font-size:12px}
+.card-confirm{background:#fff;width:100%;max-width:300px;border-radius:14px;padding:16px;text-align:center}
+.card-confirm h4{font-size:13px;font-weight:900;margin-bottom:4px}
+.card-confirm p{font-size:11px;color:#6b7280;font-weight:500;margin-bottom:14px}
+.confirm-btns{display:flex;gap:8px}
+.btn-no{flex:1;height:38px;border-radius:10px;border:0;background:#00c853;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px}
+.btn-si{flex:1;height:38px;border-radius:10px;border:0;background:#ff3b30;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px}
+.empty{padding:24px 10px;text-align:center;color:#8a8d93;font-weight:600;font-size:11px}
+@media(max-width:600px){
+  table{min-width:720px}
+  tbody td{font-size:10px;padding:7px 5px}
+  thead th{font-size:8px;padding:7px 5px}
+}
 </style>
 </head>
 <body>
 
 <div class="header">
 <button class="btn-x" onclick="location.href='confadmin.html'" type="button">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
 </button>
 <div class="titulo">Historial</div>
 </div>
@@ -65,12 +69,12 @@ tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bott
 <button class="btn-q active" data-f="todo">Todo</button>
 <button class="btn-q" data-f="hoy">Hoy</button>
 <button class="btn-q" data-f="ayer">Ayer</button>
-<button class="btn-q" data-f="semana">Esta semana</button>
-<button class="btn-q" data-f="mes">Este mes</button>
+<button class="btn-q" data-f="semana">Semana</button>
+<button class="btn-q" data-f="mes">Mes</button>
 </div>
 <div class="row2">
-<input id="fCliente" class="inp" placeholder="Filtrar por cliente o aliado...">
-<input id="fMes" class="inp" type="month" style="max-width:160px">
+<input id="fCliente" class="inp" placeholder="Buscar aliado...">
+<input id="fMes" class="inp" type="month" style="max-width:120px">
 </div>
 </div>
 
@@ -80,10 +84,10 @@ tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bott
 <tr>
 <th>Fecha</th>
 <th># Pedido</th>
-<th>Cliente / Aliado</th>
+<th>Aliado</th>
 <th>Tipo Servicio</th>
 <th>Repartidor</th>
-<th>Valor Total</th>
+<th>Total</th>
 <th>Importe</th>
 <th>Ganancia</th>
 <th>Estado</th>
@@ -102,8 +106,13 @@ tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bott
 <div class="grid">
 <div class="full"><div class="label-f">Fecha</div><input id="eFecha" type="date" class="input-f"></div>
 <div><div class="label-f"># Pedido</div><input id="eNumero" class="input-f"></div>
-<div><div class="label-f">Cliente / Aliado</div><input id="eCliente" class="input-f"></div>
-<div class="full"><div class="label-f">Tipo de servicio</div><input id="eTipo" class="input-f"></div>
+<div><div class="label-f">Aliado</div><input id="eCliente" class="input-f"></div>
+<div class="full"><div class="label-f">Tipo de servicio</div><select id="eTipo" class="input-f">
+<option value="aliados recoger">aliados recoger</option>
+<option value="aliados comprar">aliados comprar</option>
+<option value="clientes nuevos recoger">clientes nuevos recoger</option>
+<option value="clientes nuevos comprar">clientes nuevos comprar</option>
+</select></div>
 <div class="full"><div class="label-f">Repartidor</div><input id="eRepartidor" class="input-f"></div>
 <div><div class="label-f">Valor total</div><input id="eTotal" type="number" class="input-f"></div>
 <div><div class="label-f">Importe</div><input id="eImporte" type="number" class="input-f"></div>
@@ -112,31 +121,30 @@ tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bott
 </div>
 <div class="actions-modal">
 <button class="btn-cancel" onclick="cerrarEdit()">Cancelar</button>
-<button class="btn-save" onclick="guardarEdit()">Guardar cambios</button>
+<button class="btn-save" onclick="guardarEdit()">Guardar</button>
 </div>
 </div>
 </div>
 
 <div class="overlay" id="overlayDel">
 <div class="card-confirm">
-<div style="width:48px;height:48px;border-radius:50%;background:#ffeaea;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
+<div style="width:40px;height:40px;border-radius:50%;background:#ffeaea;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
 </div>
 <h4>¿Deseas confirmar la eliminación de este pedido?</h4>
 <p>Esta acción no se puede deshacer.</p>
 <div class="confirm-btns">
 <button class="btn-no" onclick="cerrarDel()">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> No
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> No
 </button>
 <button class="btn-si" onclick="confirmarDel()">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg> Sí, eliminar
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg> Sí
 </button>
 </div>
 </div>
 </div>
 
 <script>
-// TU FIREBASE YA VINCULADO
 const firebaseConfig = {
   apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE",
   authDomain: "historial-kigo-xpress.firebaseapp.com",
@@ -164,31 +172,44 @@ function getFechaDoc(p){
 function toDateOnly(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
 
 async function cargar(){
-  const tbody = document.getElementById('tbody');
   try{
-    // 1. Intenta primero en Realtime Database historial_pedidos
     let snapRT = await dbRT.ref('historial_pedidos').once('value');
     let dataRT = snapRT.val();
-
     if(dataRT){
       pedidos = Object.keys(dataRT).map(k=> ({id:k,...dataRT[k]}));
     } else {
-      // 2. Si no hay nada en RT, intenta en Firestore historial_pedidos
       let snapFS = await dbFS.collection('historial_pedidos').get();
       pedidos = snapFS.docs.map(d=> ({id:d.id,...d.data()}));
     }
-
     pedidos.sort((a,b)=> getFechaDoc(b) - getFechaDoc(a));
-
-    if(pedidos.length===0){
-      tbody.innerHTML = `<tr><td colspan="10" class="empty">No hay documentos en historial_pedidos</td></tr>`;
-      return;
-    }
     render();
   }catch(e){
-    console.error(e);
-    tbody.innerHTML = `<tr><td colspan="10" class="empty">Error: ${e.message}</td></tr>`;
+    document.getElementById('tbody').innerHTML = `<tr><td colspan="10" class="empty">Error: ${e.message}</td></tr>`;
   }
+}
+
+function normalizarTipo(p){
+  let t = (p.tipo || p.tipoServicio || '').toLowerCase();
+  if(t.includes('aliado') && t.includes('comprar')) return 'aliados comprar';
+  if(t.includes('aliado') && t.includes('recoger')) return 'aliados recoger';
+  if(t.includes('nuevo') && t.includes('comprar')) return 'clientes nuevos comprar';
+  if(t.includes('nuevo') && t.includes('recoger')) return 'clientes nuevos recoger';
+  if(t) return t;
+  // fallback por campos
+  if(p.recogerEn && p.recogerEn.toLowerCase().includes('comprar')) return p.tipo?.includes('aliado')? 'aliados comprar':'clientes nuevos comprar';
+  return 'aliados recoger';
+}
+
+function getAliado(p){
+  // solo aliados, si es cliente nuevo muestra titular donde se recibe
+  if(p.cliente && p.cliente.toLowerCase().includes('cliente:')){
+    let m = p.cliente.match(/Cliente:\s*([^T]+)/i);
+    if(m) return m[1].trim();
+  }
+  if(p.aliado) return p.aliado;
+  if(p.cliente) return p.cliente.split('(')[0].trim().substring(0,30);
+  if(p.recogerEn) return p.recogerEn.split('(')[0].trim().substring(0,30);
+  return '-';
 }
 
 function filtrarLista(){
@@ -199,7 +220,8 @@ function filtrarLista(){
   return pedidos.filter(p=>{
     const fecha = getFechaDoc(p);
     const fechaOnly = toDateOnly(fecha);
-    if(qCliente &&!( (p.cliente||'').toLowerCase().includes(qCliente) || (p.aliado||'').toLowerCase().includes(qCliente) || (p.clienteNombre||'').toLowerCase().includes(qCliente) )) return false;
+    const aliado = getAliado(p).toLowerCase();
+    if(qCliente &&!aliado.includes(qCliente)) return false;
     if(fMes){
       const [y,m]=fMes.split('-').map(Number);
       if(fecha.getFullYear()!==y || (fecha.getMonth()+1)!==m) return false;
@@ -224,32 +246,38 @@ function render(){
   const tbody = document.getElementById('tbody');
   const lista = filtrarLista();
   if(lista.length===0){
-    tbody.innerHTML = `<tr><td colspan="10" class="empty">No hay pedidos con esos filtros</td></tr>`; return;
+    tbody.innerHTML = `<tr><td colspan="10" class="empty">No hay pedidos</td></tr>`; return;
   }
   tbody.innerHTML = lista.map(p=>{
     const fecha = getFechaDoc(p);
-    const fechaStr = fecha.getTime()===0? '-' : fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + fecha.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
-    const pagado = p.pagado === true || p.estadoPago === 'pagado';
-    const importeMostrar = pagado? (p.importe || p.valorImporte || 0) : 0;
+    const fechaStr = fecha.getTime()===0? '-' : fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'2-digit'});
+    const pagado = p.pagado === true;
+    // Importe: si pagado muestra valor que tiene que pagar repartidor, si debe 0
+    const valorBase = Number(p.importe || p.valorImporte || p.precioNum || p.valorTotal || p.total || 0);
+    const importeMostrar = pagado? valorBase : 0;
+    const gananciaMostrar = pagado? valorBase : 0; // ganancia = importe
+    const tipo = normalizarTipo(p);
+    const aliado = getAliado(p);
+
     return `<tr>
       <td>${fechaStr}</td>
-      <td><b>${p.numeroPedido||p.numero||p.id.slice(0,6)}</b></td>
-      <td>${p.cliente || p.aliado || p.clienteNombre || '-'}</td>
-      <td>${p.tipoServicio || p.servicio || '-'}</td>
-      <td>${p.repartidor || p.repartidorNombre || p.driver || '-'}</td>
+      <td><b>${(p.numeroPedido||p.numero||p.id).toString().slice(0,6)}</b></td>
+      <td title="${aliado}">${aliado}</td>
+      <td>${tipo}</td>
+      <td>${p.repartidor || p.repartidorNombre || '-'}</td>
       <td>$${Number(p.valorTotal||p.total||p.precioNum||0).toLocaleString()}</td>
       <td>$${Number(importeMostrar).toLocaleString()}</td>
-      <td>$${Number(p.ganancia||0).toLocaleString()}</td>
+      <td>$${Number(gananciaMostrar).toLocaleString()}</td>
       <td><button class="badge-pagado ${pagado?'pagado':'debe'}" onclick="togglePago('${p.id}')">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="${pagado?'M5 12l5 5l10-10':'M6 6l12 12M18 6L6 18'}"/></svg>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="${pagado?'M5 12l5 5l10-10':'M6 6l12 12M18 6L6 18'}"/></svg>
         ${pagado?'Pagado':'Debe'}
       </button></td>
       <td>
-        <button class="btn-icon" onclick="abrirEdit('${p.id}')" title="Editar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg>
+        <button class="btn-icon" onclick="abrirEdit('${p.id}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg>
         </button>
-        <button class="btn-icon" onclick="abrirDel('${p.id}')" title="Eliminar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
+        <button class="btn-icon" onclick="abrirDel('${p.id}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
         </button>
       </td>
     </tr>`;
@@ -263,12 +291,12 @@ function abrirEdit(id){
   const fecha = getFechaDoc(p);
   document.getElementById('eFecha').value = fecha.getTime()===0? '' : fecha.toISOString().slice(0,10);
   document.getElementById('eNumero').value = p.numeroPedido||p.numero||'';
-  document.getElementById('eCliente').value = p.cliente||p.aliado||p.clienteNombre||'';
-  document.getElementById('eTipo').value = p.tipoServicio||p.servicio||'';
-  document.getElementById('eRepartidor').value = p.repartidor||p.repartidorNombre||'';
+  document.getElementById('eCliente').value = getAliado(p);
+  document.getElementById('eTipo').value = normalizarTipo(p);
+  document.getElementById('eRepartidor').value = p.repartidor||'';
   document.getElementById('eTotal').value = p.valorTotal||p.total||p.precioNum||0;
-  document.getElementById('eImporte').value = p.importe||0;
-  document.getElementById('eGanancia').value = p.ganancia||0;
+  document.getElementById('eImporte').value = p.importe||p.valorImporte||0;
+  document.getElementById('eGanancia').value = p.importe||p.ganancia||0;
   document.getElementById('ePagado').value = String(p.pagado===true);
   document.getElementById('overlayEdit').classList.add('show');
 }
@@ -276,17 +304,16 @@ function cerrarEdit(){ document.getElementById('overlayEdit').classList.remove('
 async function guardarEdit(){
   if(!editId) return;
   const upd = {
-    numeroPedido: document.getElementById('eNumero').value,
     cliente: document.getElementById('eCliente').value,
+    tipo: document.getElementById('eTipo').value,
     tipoServicio: document.getElementById('eTipo').value,
     repartidor: document.getElementById('eRepartidor').value,
     valorTotal: Number(document.getElementById('eTotal').value),
     importe: Number(document.getElementById('eImporte').value),
-    ganancia: Number(document.getElementById('eGanancia').value),
+    ganancia: Number(document.getElementById('eImporte').value),
     pagado: document.getElementById('ePagado').value==='true',
     fecha: document.getElementById('eFecha').value
   };
-  // actualiza en RTDB y Firestore por si existe en ambos
   try{ await dbRT.ref('historial_pedidos/'+editId).update(upd); }catch(e){}
   try{ await dbFS.collection('historial_pedidos').doc(editId).update(upd); }catch(e){}
   cerrarEdit(); await cargar();
@@ -302,8 +329,10 @@ async function confirmarDel(){
 async function togglePago(id){
   const p = pedidos.find(x=>x.id===id);
   const nuevo =!(p.pagado===true);
-  try{ await dbRT.ref('historial_pedidos/'+id).update({pagado:nuevo}); }catch(e){}
-  try{ await dbFS.collection('historial_pedidos').doc(id).update({pagado:nuevo}); }catch(e){}
+  const importeReal = Number(p.importe || p.valorImporte || p.precioNum || p.valorTotal || 0);
+  const upd = {pagado:nuevo, ganancia: nuevo? importeReal : 0};
+  try{ await dbRT.ref('historial_pedidos/'+id).update(upd); }catch(e){}
+  try{ await dbFS.collection('historial_pedidos').doc(id).update(upd); }catch(e){}
   await cargar();
 }
 
