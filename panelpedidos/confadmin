@@ -1,1 +1,9 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Conf Admin - Kigo Xpress</title></head>
+<body style="font-family:Inter,sans-serif;padding:20px">
+<h2>confadmin</h2>
+<p>Pantalla en blanco - lista para configurar</p>
+<button onclick="history.back()" style="padding:8px 14px;border-radius:8px;border:1px solid #ddd">Volver</button>
+</body>
+</html>
