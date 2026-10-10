@@ -21,7 +21,15 @@ body{background:#f5f6f7;min-height:100vh}
 .btn-q.active{background:#111;color:#fff;border-color:#111}
 .row2{display:flex;gap:5px;margin-top:6px}
 .inp{flex:1;height:30px;border-radius:7px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 8px;font-size:9.5px;font-weight:600;outline:0}
-.table-wrap{background:#fff;overflow:auto;margin-top:4px;-webkit-overflow-scrolling:touch}
+/* TARJETAS NUEVAS ELEGANTES */
+.resumen{padding:8px 8px 0;display:flex;gap:6px}
+.card-res{flex:1;background:#fff;border-radius:12px;padding:9px 10px;border:1px solid #eef0f3;box-shadow:0 2px 8px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:3px}
+.card-res.lbl{font-size:7px;font-weight:800;color:#6b7280;letter-spacing:.4px;text-transform:uppercase;display:flex;align-items:center;gap:5px}
+.card-res.val{font-size:15px;font-weight:900;color:#111;letter-spacing:-.3px}
+.card-res.ingresos{border-left:3px solid #111}
+.card-res.debe{border-left:3px solid #ff3b30;background:#fff1f2;border-color:#fecdd3}
+.card-res.debe.val{color:#e30613}
+.table-wrap{background:#fff;overflow:auto;margin-top:6px;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;min-width:700px}
 thead th{position:sticky;top:0;background:#111;color:#fff;font-size:6.5px;font-weight:800;text-align:left;padding:6px 4px;text-transform:uppercase;letter-spacing:.2px}
 tbody td{padding:6px 4px;font-size:8px;font-weight:600;color:#222;border-bottom:1px solid #f0f2f4;vertical-align:middle;max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -52,11 +60,7 @@ tbody td{padding:6px 4px;font-size:8px;font-weight:600;color:#222;border-bottom:
 .empty{padding:20px 8px;text-align:center;color:#8a8d93;font-weight:600;font-size:9.5px}
 .toast-ok{width:100%;text-align:center}
 .toast-ok div.icon-ok{width:36px;height:36px;border-radius:50%;background:#e6f9ed;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
-@media(max-width:480px){
- table{min-width:680px}
-.header{padding:6px 8px}
-.filtros{padding:5px 6px 6px}
-}
+@media(max-width:480px){ table{min-width:680px}.header{padding:6px 8px}.filtros{padding:5px 6px 6px} }
 </style>
 </head>
 <body>
@@ -79,6 +83,17 @@ tbody td{padding:6px 4px;font-size:8px;font-weight:600;color:#222;border-bottom:
 <div class="row2">
 <input id="fCliente" class="inp" placeholder="Buscar aliado...">
 <input id="fMes" class="inp" type="month" style="max-width:100px">
+</div>
+</div>
+
+<div class="resumen">
+<div class="card-res ingresos">
+<div class="lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Ingresos totales</div>
+<div class="val" id="valIngresos">$0</div>
+</div>
+<div class="card-res debe">
+<div class="lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#e30613" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><circle cx="12" cy="16" r="1" fill="#e30613"/></svg> Me deben</div>
+<div class="val" id="valDebe">$0</div>
 </div>
 </div>
 
@@ -281,42 +296,51 @@ function filtrarLista(){
 function render(){
   const tbody = document.getElementById('tbody');
   const lista = filtrarLista();
+  let totalIngresos = 0;
+  let totalDebe = 0;
+
   if(lista.length===0){
-    tbody.innerHTML = `<tr><td colspan="11" class="empty">No hay pedidos</td></tr>`; return;
+    tbody.innerHTML = `<tr><td colspan="11" class="empty">No hay pedidos</td></tr>`;
+  } else {
+    tbody.innerHTML = lista.map(p=>{
+      const fecha = getFechaDoc(p);
+      const fechaStr = fecha.getTime()===0? '-' : fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'2-digit'});
+      const pagado = p.pagado === true;
+      const total = Number(p.valorTotal||p.total||p.precioNum||0);
+      const tipo = normalizarTipo(p);
+      const servicioMoto = getServicioMoto(tipo);
+      const valorServicio = getValorServicio(p.repartidor, tipo);
+      const importeMostrar = pagado? valorServicio : 0;
+      const gananciaMostrar = pagado? valorServicio : 0;
+
+      if(pagado) totalIngresos += gananciaMostrar;
+      else totalDebe += valorServicio;
+
+      const aliado = getAliado(p);
+      const badgeClass = servicioMoto.includes('Mandado')? 'mandado' : 'transporte';
+      return `<tr>
+        <td>${fechaStr}</td>
+        <td><b>${(p.numeroPedido||p.numero||p.id).toString().slice(0,6)}</b></td>
+        <td title="${aliado}">${aliado}</td>
+        <td>${tipo}</td>
+        <td><span class="badge-servicio ${badgeClass}">${servicioMoto}</span></td>
+        <td>${p.repartidor || '-'}</td>
+        <td>$${total.toLocaleString()}</td>
+        <td>$${Number(importeMostrar).toLocaleString()}</td>
+        <td>$${Number(gananciaMostrar).toLocaleString()}</td>
+        <td><button class="badge-pagado ${pagado?'pagado':'debe'}" onclick="togglePago('${p.id}')">
+          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="${pagado?'M5 12l5 5l10-10':'M6 6l12 12M18 6L6 18'}"/></svg>
+          ${pagado?'Pagado':'Debe'}
+        </button></td>
+        <td>
+          <button class="btn-icon" onclick="abrirEdit('${p.id}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg></button>
+          <button class="btn-icon" onclick="abrirDel('${p.id}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg></button>
+        </td>
+      </tr>`;
+    }).join('');
   }
-  tbody.innerHTML = lista.map(p=>{
-    const fecha = getFechaDoc(p);
-    const fechaStr = fecha.getTime()===0? '-' : fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'2-digit'});
-    const pagado = p.pagado === true;
-    const total = Number(p.valorTotal||p.total||p.precioNum||0);
-    const tipo = normalizarTipo(p);
-    const servicioMoto = getServicioMoto(tipo);
-    const valorServicio = getValorServicio(p.repartidor, tipo);
-    // CORREGIDO PARA ADMIN COMO PIDES
-    const importeMostrar = pagado? valorServicio : 0;
-    const gananciaMostrar = pagado? valorServicio : 0;
-    const aliado = getAliado(p);
-    const badgeClass = servicioMoto.includes('Mandado')? 'mandado' : 'transporte';
-    return `<tr>
-      <td>${fechaStr}</td>
-      <td><b>${(p.numeroPedido||p.numero||p.id).toString().slice(0,6)}</b></td>
-      <td title="${aliado}">${aliado}</td>
-      <td>${tipo}</td>
-      <td><span class="badge-servicio ${badgeClass}">${servicioMoto}</span></td>
-      <td>${p.repartidor || '-'}</td>
-      <td>$${total.toLocaleString()}</td>
-      <td>$${Number(importeMostrar).toLocaleString()}</td>
-      <td>$${Number(gananciaMostrar).toLocaleString()}</td>
-      <td><button class="badge-pagado ${pagado?'pagado':'debe'}" onclick="togglePago('${p.id}')">
-        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="${pagado?'M5 12l5 5l10-10':'M6 6l12 12M18 6L6 18'}"/></svg>
-        ${pagado?'Pagado':'Debe'}
-      </button></td>
-      <td>
-        <button class="btn-icon" onclick="abrirEdit('${p.id}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg></button>
-        <button class="btn-icon" onclick="abrirDel('${p.id}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg></button>
-      </td>
-    </tr>`;
-  }).join('');
+  document.getElementById('valIngresos').textContent = '$'+totalIngresos.toLocaleString();
+  document.getElementById('valDebe').textContent = '$'+totalDebe.toLocaleString();
 }
 
 function abrirEdit(id){
@@ -404,7 +428,6 @@ async function togglePago(id){
     pedidos[idx].pagado =!pedidos[idx].pagado;
     const tipo = normalizarTipo(pedidos[idx]);
     const valorServicio = getValorServicio(pedidos[idx].repartidor, tipo);
-    // CORREGIDO
     pedidos[idx].importe = pedidos[idx].pagado? valorServicio : 0;
     pedidos[idx].ganancia = pedidos[idx].pagado? valorServicio : 0;
     const rep = pedidos[idx].repartidor;
