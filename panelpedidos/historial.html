@@ -21,8 +21,8 @@ body{background:#f5f6f7;min-height:100vh}
 .btn-q.active{background:#111;color:#fff;border-color:#111}
 .row2{display:flex;gap:6px;margin-top:8px}
 .inp{flex:1;height:34px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 10px;font-size:11px;font-weight:600;outline:0}
-.table-wrap{background:#fff;overflow:auto;margin-top:6px}
-table{width:100%;border-collapse:collapse;min-width:760px}
+.table-wrap{background:#fff;overflow:auto;margin-top:6px;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:820px}
 thead th{position:sticky;top:0;background:#111;color:#fff;font-size:9px;font-weight:800;text-align:left;padding:8px 6px;text-transform:uppercase}
 tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bottom:1px solid #f0f2f4;vertical-align:middle;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .badge-pagado{height:24px;padding:0 9px;border-radius:12px;border:0;font-size:9.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
@@ -139,6 +139,22 @@ const dbFS = firebase.firestore();
 let pedidos = [];
 let editId = null;
 let delId = null;
+let cacheRepartidores = {};
+
+// LEE VALOR MOTO MANDADO Y MOTO TRANSPORTE DE CADA REPARTIDOR
+dbRT.ref('/').on('value', snap=>{
+  const data = snap.val()||{};
+  cacheRepartidores = {};
+  Object.keys(data).forEach(k=>{
+    const v = data[k];
+    if(v && v.rol==='repartidor'){
+      cacheRepartidores[k.toLowerCase()] = v;
+      if(v.nombre) cacheRepartidores[v.nombre.toLowerCase()] = v;
+      if(v.usuario) cacheRepartidores[v.usuario.toLowerCase()] = v;
+    }
+  });
+  render();
+});
 
 function getFechaDoc(p){
   let f = p.fecha || p.timestamp || p.createdAt || p.fecha_creacion || p.fechaPedido || p.ts;
@@ -162,6 +178,17 @@ function getAliado(p){
   if(p.recogerEn) return p.recogerEn.split('(')[0].trim().substring(0,30);
   return '-';
 }
+function getGananciaRepartidor(nombreRepa, tipoServicio){
+  if(!nombreRepa) return 0;
+  const repa = cacheRepartidores[nombreRepa.toLowerCase()]||{};
+  const tipo = (tipoServicio||'').toLowerCase();
+  const esRecoger = tipo.includes('recoger');
+  let ganancia = esRecoger? (repa.valormotomandado?? repa.valorMotoMandado?? 0) : (repa.valormototransporte?? repa.valorMotoTransporte?? 0);
+  // si pusiste 5 y 10 y tu total es 50, pon 5 y 10. Si es 5000 y 10000 pon 5000.
+  // si tienes valores de 5 y total 50000, multiplicamos x1000
+  ganancia = Number(ganancia);
+  return ganancia;
+}
 
 // ADMIN MANDA - TIEMPO REAL
 dbRT.ref('historial_pedidos').on('value', snap=>{
@@ -171,16 +198,11 @@ dbRT.ref('historial_pedidos').on('value', snap=>{
   render();
 });
 
-// FUNCION CLAVE: sincroniza con repartidor
 async function sincronizarRepartidor(id, datosParaRepartidor, repartidorNombre){
   const rep = (repartidorNombre||'').trim();
-  if(!rep) return;
+  if(!rep) { await dbRT.ref('historial_pedidos/'+id).update(datosParaRepartidor); return; }
   const repKey = rep.replace(/\s+/g,'_');
-
-  // 1. Actualiza en historial_pedidos principal (fuente de verdad)
   await dbRT.ref('historial_pedidos/'+id).update(datosParaRepartidor);
-
-  // 2. Actualiza en todos los lugares donde el repartidor ve su historial
   const rutas = [
     `kigo_pedidos/${id}`,
     `kigo_historial/${repKey}/${id}`,
@@ -189,15 +211,8 @@ async function sincronizarRepartidor(id, datosParaRepartidor, repartidorNombre){
     `historial_por_repartidor/${repKey}/${id}`,
     `kigoRepasFull/${repKey}/pedidos/${id}`
   ];
-  rutas.forEach(r=>{
-    dbRT.ref(r).update(datosParaRepartidor).catch(()=>{});
-  });
-
-  // 3. Tambien en Firestore por si el panel del repa lee de firestore
+  rutas.forEach(r=>{ dbRT.ref(r).update(datosParaRepartidor).catch(()=>{}); });
   dbFS.collection('historial_pedidos').doc(id).update(datosParaRepartidor).catch(()=>{});
-  if(rep) dbFS.collection('historial_por_repartidor').doc(repKey).collection('pedidos').doc(id).update(datosParaRepartidor).catch(()=>{});
-
-  // 4. Actualiza kigoPedidosLive donde adminKey == id
   let liveSnap = await dbRT.ref('kigoPedidosLive').once('value');
   let liveData = liveSnap.val()||{};
   Object.keys(liveData).forEach(k=>{
@@ -269,10 +284,13 @@ function render(){
     const fecha = getFechaDoc(p);
     const fechaStr = fecha.getTime()===0? '-' : fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'2-digit'});
     const pagado = p.pagado === true;
-    const valorBase = Number(p.importe || p.valorImporte || p.precioNum || p.valorTotal || 0);
-    const importeMostrar = pagado? valorBase : 0;
-    const gananciaMostrar = pagado? valorBase : 0;
+    const total = Number(p.valorTotal||p.total||p.precioNum||0);
     const tipo = normalizarTipo(p);
+    // NUEVO CALCULO CORRECTO
+    const gananciaReal = getGananciaRepartidor(p.repartidor, tipo);
+    const importeReal = total - gananciaReal;
+    const importeMostrar = pagado? importeReal : 0;
+    const gananciaMostrar = pagado? gananciaReal : 0;
     const aliado = getAliado(p);
     return `<tr>
       <td>${fechaStr}</td>
@@ -280,7 +298,7 @@ function render(){
       <td title="${aliado}">${aliado}</td>
       <td>${tipo}</td>
       <td>${p.repartidor || '-'}</td>
-      <td>$${Number(p.valorTotal||p.total||p.precioNum||0).toLocaleString()}</td>
+      <td>$${total.toLocaleString()}</td>
       <td>$${Number(importeMostrar).toLocaleString()}</td>
       <td>$${Number(gananciaMostrar).toLocaleString()}</td>
       <td><button class="badge-pagado ${pagado?'pagado':'debe'}" onclick="togglePago('${p.id}')">
@@ -300,14 +318,18 @@ function abrirEdit(id){
   if(!p) return;
   editId = id;
   const fecha = getFechaDoc(p);
+  const tipo = normalizarTipo(p);
+  const total = Number(p.valorTotal||0);
+  const gananciaReal = getGananciaRepartidor(p.repartidor, tipo);
+  const importeReal = total - gananciaReal;
   document.getElementById('eFecha').value = fecha.getTime()===0? '' : fecha.toISOString().slice(0,10);
   document.getElementById('eNumero').value = p.numeroPedido||p.numero||'';
   document.getElementById('eCliente').value = getAliado(p);
-  document.getElementById('eTipo').value = normalizarTipo(p);
+  document.getElementById('eTipo').value = tipo;
   document.getElementById('eRepartidor').value = p.repartidor||'';
-  document.getElementById('eTotal').value = p.valorTotal||p.total||p.precioNum||0;
-  document.getElementById('eImporte').value = p.importe||0;
-  document.getElementById('eGanancia').value = p.importe||0;
+  document.getElementById('eTotal').value = total;
+  document.getElementById('eImporte').value = importeReal;
+  document.getElementById('eGanancia').value = gananciaReal;
   document.getElementById('ePagado').value = String(p.pagado===true);
   document.getElementById('overlayEdit').classList.add('show');
 }
@@ -317,13 +339,16 @@ async function guardarEdit(){
   if(!editId) return;
   let original = pedidos.find(x=>x.id===editId);
   let idx = pedidos.findIndex(x=>x.id===editId);
+  const total = Number(document.getElementById('eTotal').value);
+  const importe = Number(document.getElementById('eImporte').value);
+  const ganancia = Number(document.getElementById('eGanancia').value);
   if(idx>-1){
     pedidos[idx].cliente = document.getElementById('eCliente').value;
     pedidos[idx].tipo = document.getElementById('eTipo').value;
     pedidos[idx].repartidor = document.getElementById('eRepartidor').value;
-    pedidos[idx].valorTotal = Number(document.getElementById('eTotal').value);
-    pedidos[idx].importe = Number(document.getElementById('eImporte').value);
-    pedidos[idx].ganancia = Number(document.getElementById('eImporte').value);
+    pedidos[idx].valorTotal = total;
+    pedidos[idx].importe = importe;
+    pedidos[idx].ganancia = ganancia;
     pedidos[idx].pagado = document.getElementById('ePagado').value==='true';
     render();
   }
@@ -333,9 +358,9 @@ async function guardarEdit(){
     tipo: document.getElementById('eTipo').value,
     tipoServicio: document.getElementById('eTipo').value,
     repartidor: document.getElementById('eRepartidor').value,
-    valorTotal: Number(document.getElementById('eTotal').value),
-    importe: Number(document.getElementById('eImporte').value),
-    ganancia: Number(document.getElementById('eImporte').value),
+    valorTotal: total,
+    importe: importe,
+    ganancia: ganancia,
     pagado: document.getElementById('ePagado').value==='true',
     fecha: document.getElementById('eFecha').value
   };
@@ -372,7 +397,10 @@ async function togglePago(id){
   let idx = pedidos.findIndex(x=>x.id===id);
   if(idx>-1){
     pedidos[idx].pagado =!pedidos[idx].pagado;
-    pedidos[idx].ganancia = pedidos[idx].pagado? Number(pedidos[idx].importe||pedidos[idx].valorTotal||0) : 0;
+    const tipo = normalizarTipo(pedidos[idx]);
+    const gananciaReal = getGananciaRepartidor(pedidos[idx].repartidor, tipo);
+    pedidos[idx].ganancia = pedidos[idx].pagado? gananciaReal : 0;
+    pedidos[idx].importe = pedidos[idx].pagado? (Number(pedidos[idx].valorTotal||0) - gananciaReal) : 0;
     const rep = pedidos[idx].repartidor;
     render();
     const upd = {pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia, importe:pedidos[idx].importe};
