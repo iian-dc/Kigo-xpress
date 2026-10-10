@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Historial</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#f5f6f7;min-height:100vh}
@@ -20,20 +23,19 @@ body{background:#f5f6f7;min-height:100vh}
 .inp{flex:1;height:40px;border-radius:10px;border:1.5px solid #e5e7eb;background:#f8f9fa;padding:0 12px;font-size:13px;font-weight:600;outline:0}
 .inp:focus{border-color:#111;background:#fff}
 .table-wrap{background:#fff;overflow:auto;margin-top:8px}
-table{width:100%;border-collapse:collapse;min-width:980px}
+table{width:100%;border-collapse:collapse;min-width:1050px}
 thead th{position:sticky;top:0;background:#111;color:#fff;font-size:11px;font-weight:800;text-align:left;padding:12px 10px;letter-spacing:0.3px;text-transform:uppercase}
 tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bottom:1px solid #eef0f3;vertical-align:middle}
 .badge-pagado{height:28px;padding:0 12px;border-radius:20px;border:0;font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .pagado{background:#00c853;color:#fff}
 .debe{background:#ff3b30;color:#fff}
 .btn-icon{width:32px;height:32px;border-radius:8px;border:1.5px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-right:4px}
-.btn-icon:hover{background:#f8f9fa}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
 .overlay.show{display:flex}
 .card-modal{background:#fff;width:100%;max-width:460px;border-radius:16px;padding:18px;max-height:92vh;overflow:auto}
 .card-modal h3{font-size:16px;font-weight:900;margin-bottom:12px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid .full{grid-column:1/-1}
+.grid.full{grid-column:1/-1}
 .label-f{font-size:11px;font-weight:800;color:#6b7280;margin-bottom:4px;text-transform:uppercase}
 .input-f{width:100%;height:42px;border-radius:10px;border:1.5px solid #e5e7eb;background:#f8f9fa;padding:0 12px;font-size:13px;font-weight:600;outline:0}
 .input-f:focus{border-color:#111;background:#fff}
@@ -89,12 +91,11 @@ tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bott
 </tr>
 </thead>
 <tbody id="tbody">
-<tr><td colspan="10" class="empty">Cargando historial...</td></tr>
+<tr><td colspan="10" class="empty">Cargando historial_pedidos...</td></tr>
 </tbody>
 </table>
 </div>
 
-<!-- MODAL EDITAR -->
 <div class="overlay" id="overlayEdit">
 <div class="card-modal">
 <h3>Editar pedido</h3>
@@ -105,7 +106,7 @@ tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bott
 <div class="full"><div class="label-f">Tipo de servicio</div><input id="eTipo" class="input-f"></div>
 <div class="full"><div class="label-f">Repartidor</div><input id="eRepartidor" class="input-f"></div>
 <div><div class="label-f">Valor total</div><input id="eTotal" type="number" class="input-f"></div>
-<div><div class="label-f">Importe (lo que paga repartidor)</div><input id="eImporte" type="number" class="input-f"></div>
+<div><div class="label-f">Importe</div><input id="eImporte" type="number" class="input-f"></div>
 <div><div class="label-f">Ganancia</div><input id="eGanancia" type="number" class="input-f"></div>
 <div><div class="label-f">Estado pago</div><select id="ePagado" class="input-f"><option value="true">Pagado</option><option value="false">Debe</option></select></div>
 </div>
@@ -116,7 +117,6 @@ tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bott
 </div>
 </div>
 
-<!-- MODAL ELIMINAR -->
 <div class="overlay" id="overlayDel">
 <div class="card-confirm">
 <div style="width:48px;height:48px;border-radius:50%;background:#ffeaea;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
@@ -135,34 +135,60 @@ tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bott
 </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// TU CONFIG DE FIREBASE - REEMPLAZA CON LA TUYA
+<script>
+// TU FIREBASE YA VINCULADO
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_DOMINIO",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_BUCKET",
-  messagingSenderId: "TU_ID",
-  appId: "TU_APP_ID"
+  apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE",
+  authDomain: "historial-kigo-xpress.firebaseapp.com",
+  databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com",
+  projectId: "historial-kigo-xpress",
+  storageBucket: "historial-kigo-xpress.firebasestorage.app",
+  messagingSenderId: "571399920545",
+  appId: "1:571399920545:web:aa16407753b43cbe2e89e0"
 };
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const dbRT = firebase.database();
+const dbFS = firebase.firestore();
 
 let pedidos = [];
 let editId = null;
 let delId = null;
 
+function getFechaDoc(p){
+  let f = p.fecha || p.timestamp || p.createdAt || p.fecha_creacion || p.fechaPedido || p.ts;
+  if(!f) return new Date(0);
+  if(f.toDate) return f.toDate();
+  if(f.seconds) return new Date(f.seconds*1000);
+  return new Date(f);
+}
 function toDateOnly(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
 
 async function cargar(){
-  const q = query(collection(db, "historial_pedidos"), orderBy("fecha","desc"));
-  const snap = await getDocs(q);
-  pedidos = snap.docs.map(d=> ({id:d.id, ...d.data()}));
-  render();
+  const tbody = document.getElementById('tbody');
+  try{
+    // 1. Intenta primero en Realtime Database historial_pedidos
+    let snapRT = await dbRT.ref('historial_pedidos').once('value');
+    let dataRT = snapRT.val();
+
+    if(dataRT){
+      pedidos = Object.keys(dataRT).map(k=> ({id:k,...dataRT[k]}));
+    } else {
+      // 2. Si no hay nada en RT, intenta en Firestore historial_pedidos
+      let snapFS = await dbFS.collection('historial_pedidos').get();
+      pedidos = snapFS.docs.map(d=> ({id:d.id,...d.data()}));
+    }
+
+    pedidos.sort((a,b)=> getFechaDoc(b) - getFechaDoc(a));
+
+    if(pedidos.length===0){
+      tbody.innerHTML = `<tr><td colspan="10" class="empty">No hay documentos en historial_pedidos</td></tr>`;
+      return;
+    }
+    render();
+  }catch(e){
+    console.error(e);
+    tbody.innerHTML = `<tr><td colspan="10" class="empty">Error: ${e.message}</td></tr>`;
+  }
 }
 
 function filtrarLista(){
@@ -170,12 +196,10 @@ function filtrarLista(){
   const fMes = document.getElementById('fMes').value;
   const active = document.querySelector('.btn-q.active')?.dataset.f || 'todo';
   const hoy = toDateOnly(new Date());
-  
   return pedidos.filter(p=>{
-    const fecha = p.fecha?.toDate ? p.fecha.toDate() : new Date(p.fecha);
+    const fecha = getFechaDoc(p);
     const fechaOnly = toDateOnly(fecha);
-
-    if(qCliente && !( (p.cliente||'').toLowerCase().includes(qCliente) || (p.aliado||'').toLowerCase().includes(qCliente) )) return false;
+    if(qCliente &&!( (p.cliente||'').toLowerCase().includes(qCliente) || (p.aliado||'').toLowerCase().includes(qCliente) || (p.clienteNombre||'').toLowerCase().includes(qCliente) )) return false;
     if(fMes){
       const [y,m]=fMes.split('-').map(Number);
       if(fecha.getFullYear()!==y || (fecha.getMonth()+1)!==m) return false;
@@ -203,17 +227,17 @@ function render(){
     tbody.innerHTML = `<tr><td colspan="10" class="empty">No hay pedidos con esos filtros</td></tr>`; return;
   }
   tbody.innerHTML = lista.map(p=>{
-    const fecha = p.fecha?.toDate ? p.fecha.toDate() : new Date(p.fecha);
-    const fechaStr = fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + fecha.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
-    const pagado = p.pagado === true;
-    const importeMostrar = pagado ? (p.importe || 0) : 0;
+    const fecha = getFechaDoc(p);
+    const fechaStr = fecha.getTime()===0? '-' : fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + fecha.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+    const pagado = p.pagado === true || p.estadoPago === 'pagado';
+    const importeMostrar = pagado? (p.importe || p.valorImporte || 0) : 0;
     return `<tr>
       <td>${fechaStr}</td>
-      <td><b>${p.numeroPedido||p.id.slice(0,6)}</b></td>
-      <td>${p.cliente || p.aliado || '-'}</td>
-      <td>${p.tipoServicio || '-'}</td>
-      <td>${p.repartidor || p.repartidorNombre || '-'}</td>
-      <td>$${Number(p.valorTotal||p.total||0).toLocaleString()}</td>
+      <td><b>${p.numeroPedido||p.numero||p.id.slice(0,6)}</b></td>
+      <td>${p.cliente || p.aliado || p.clienteNombre || '-'}</td>
+      <td>${p.tipoServicio || p.servicio || '-'}</td>
+      <td>${p.repartidor || p.repartidorNombre || p.driver || '-'}</td>
+      <td>$${Number(p.valorTotal||p.total||p.precioNum||0).toLocaleString()}</td>
       <td>$${Number(importeMostrar).toLocaleString()}</td>
       <td>$${Number(p.ganancia||0).toLocaleString()}</td>
       <td><button class="badge-pagado ${pagado?'pagado':'debe'}" onclick="togglePago('${p.id}')">
@@ -232,24 +256,24 @@ function render(){
   }).join('');
 }
 
-window.abrirEdit = (id)=>{
+function abrirEdit(id){
   const p = pedidos.find(x=>x.id===id);
   if(!p) return;
   editId = id;
-  const fecha = p.fecha?.toDate ? p.fecha.toDate() : new Date(p.fecha);
-  document.getElementById('eFecha').value = fecha.toISOString().slice(0,10);
-  document.getElementById('eNumero').value = p.numeroPedido||'';
-  document.getElementById('eCliente').value = p.cliente||p.aliado||'';
-  document.getElementById('eTipo').value = p.tipoServicio||'';
-  document.getElementById('eRepartidor').value = p.repartidor||'';
-  document.getElementById('eTotal').value = p.valorTotal||p.total||0;
+  const fecha = getFechaDoc(p);
+  document.getElementById('eFecha').value = fecha.getTime()===0? '' : fecha.toISOString().slice(0,10);
+  document.getElementById('eNumero').value = p.numeroPedido||p.numero||'';
+  document.getElementById('eCliente').value = p.cliente||p.aliado||p.clienteNombre||'';
+  document.getElementById('eTipo').value = p.tipoServicio||p.servicio||'';
+  document.getElementById('eRepartidor').value = p.repartidor||p.repartidorNombre||'';
+  document.getElementById('eTotal').value = p.valorTotal||p.total||p.precioNum||0;
   document.getElementById('eImporte').value = p.importe||0;
   document.getElementById('eGanancia').value = p.ganancia||0;
   document.getElementById('ePagado').value = String(p.pagado===true);
   document.getElementById('overlayEdit').classList.add('show');
 }
-window.cerrarEdit = ()=>{ document.getElementById('overlayEdit').classList.remove('show'); editId=null; }
-window.guardarEdit = async ()=>{
+function cerrarEdit(){ document.getElementById('overlayEdit').classList.remove('show'); editId=null; }
+async function guardarEdit(){
   if(!editId) return;
   const upd = {
     numeroPedido: document.getElementById('eNumero').value,
@@ -260,28 +284,29 @@ window.guardarEdit = async ()=>{
     importe: Number(document.getElementById('eImporte').value),
     ganancia: Number(document.getElementById('eGanancia').value),
     pagado: document.getElementById('ePagado').value==='true',
-    fecha: new Date(document.getElementById('eFecha').value)
+    fecha: document.getElementById('eFecha').value
   };
-  await updateDoc(doc(db,"historial_pedidos",editId), upd);
+  // actualiza en RTDB y Firestore por si existe en ambos
+  try{ await dbRT.ref('historial_pedidos/'+editId).update(upd); }catch(e){}
+  try{ await dbFS.collection('historial_pedidos').doc(editId).update(upd); }catch(e){}
   cerrarEdit(); await cargar();
 }
-
-window.abrirDel = (id)=>{ delId=id; document.getElementById('overlayDel').classList.add('show'); }
-window.cerrarDel = ()=>{ document.getElementById('overlayDel').classList.remove('show'); delId=null; }
-window.confirmarDel = async ()=>{
+function abrirDel(id){ delId=id; document.getElementById('overlayDel').classList.add('show'); }
+function cerrarDel(){ document.getElementById('overlayDel').classList.remove('show'); delId=null; }
+async function confirmarDel(){
   if(!delId) return;
-  await deleteDoc(doc(db,"historial_pedidos",delId));
+  try{ await dbRT.ref('historial_pedidos/'+delId).remove(); }catch(e){}
+  try{ await dbFS.collection('historial_pedidos').doc(delId).delete(); }catch(e){}
   cerrarDel(); await cargar();
 }
-
-window.togglePago = async (id)=>{
+async function togglePago(id){
   const p = pedidos.find(x=>x.id===id);
-  const nuevo = !p.pagado;
-  await updateDoc(doc(db,"historial_pedidos",id), {pagado:nuevo});
+  const nuevo =!(p.pagado===true);
+  try{ await dbRT.ref('historial_pedidos/'+id).update({pagado:nuevo}); }catch(e){}
+  try{ await dbFS.collection('historial_pedidos').doc(id).update({pagado:nuevo}); }catch(e){}
   await cargar();
 }
 
-// FILTROS
 document.querySelectorAll('.btn-q').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.btn-q').forEach(x=>x.classList.remove('active'));
   b.classList.add('active'); render();
