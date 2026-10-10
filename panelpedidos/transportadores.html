@@ -20,15 +20,16 @@ body{background:#f5f6f7;min-height:100vh}
 .card{background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #eef0f3}
 .card h3{font-size:13px;font-weight:900;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .table-wrap{background:#fff;border-radius:14px;overflow:auto;border:1px solid #eef0f3}
-table{width:100%;border-collapse:collapse;min-width:750px}
+table{width:100%;border-collapse:collapse;min-width:780px}
 thead th{background:#111;color:#fff;font-size:9px;font-weight:800;padding:10px 8px;text-align:left;text-transform:uppercase}
 tbody td{padding:10px 8px;font-size:11px;font-weight:600;border-bottom:1px solid #f0f2f4;vertical-align:middle}
 .inp-fee{width:80px;height:30px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 8px;font-size:11px;font-weight:700;outline:0;text-align:center}
 .badge{font-size:8px;font-weight:800;padding:3px 7px;border-radius:10px;display:inline-block}
 .badge-mandado{background:#e3f2fd;color:#1565c0}
 .badge-transporte{background:#fff3e0;color:#e65100}
+.accion-cell{display:flex;gap:6px;align-items:center}
 .btn-save{height:28px;padding:0 10px;border-radius:8px;background:#00c853;color:#fff;border:0;font-weight:800;font-size:10px;cursor:pointer}
-.btn-del{width:28px;height:28px;border-radius:8px;background:#ffeaea;border:1px solid #ffc9c9;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.btn-del{width:28px;height:28px;border-radius:8px;background:#ffeaea;border:1px solid #ffc9c9;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .rank-list{display:flex;flex-direction:column;gap:6px}
 .rank-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f8f9fa;border-radius:10px;border:1px solid #eef0f3}
 .rank-pos{width:28px;height:28px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px}
@@ -61,7 +62,6 @@ tbody td{padding:10px 8px;font-size:11px;font-weight:600;border-bottom:1px solid
 </div>
 
 <div class="wrap">
-<!-- LISTADO -->
 <div id="tab-listado">
 <div class="table-wrap">
 <table>
@@ -71,7 +71,6 @@ tbody td{padding:10px 8px;font-size:11px;font-weight:600;border-bottom:1px solid
 </div>
 </div>
 
-<!-- AGREGAR -->
 <div id="tab-agregar" class="hidden">
 <div class="card">
 <h3>Agregar nuevo repartidor</h3>
@@ -90,7 +89,6 @@ tbody td{padding:10px 8px;font-size:11px;font-weight:600;border-bottom:1px solid
 </div>
 </div>
 
-<!-- RANKING -->
 <div id="tab-ranking" class="hidden">
 <div class="card">
 <h3>🏆 Ranking repartidores - Pedidos completados</h3>
@@ -140,7 +138,6 @@ dbRT.ref('historial_pedidos').on('value', snap=>{
   render();
 });
 
-// AHORA LEE DE /repartidores COMO LO TIENES TU
 dbRT.ref('repartidores').on('value', snap=>{
   const data = snap.val()||{};
   repartidores = data;
@@ -169,20 +166,25 @@ function render(){
         <td><input class="inp-fee" id="t_${k}" type="number" value="${transporte}"> <span class="badge badge-transporte">Transporte</span></td>
         <td><b>${pedidos}</b> pedidos</td>
         <td><b style="color:#ff3b30">${debeCount}</b> por cobrar</td>
-        <td>
-          <button class="btn-save" onclick="guardarTarifa('${k}')">Guardar</button>
-          <button class="btn-del" onclick="eliminarRepa('${k}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg></button>
-        </td>
+        <td><div class="accion-cell"><button class="btn-save" onclick="guardarTarifa('${k}')">Guardar</button><button class="btn-del" onclick="eliminarRepa('${k}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg></button></div></td>
       </tr>`;
     }).join('');
   }
 
   const rankList = document.getElementById('rankList');
-  const ranking = Object.keys(conteoPedidos).map(r=>({nombre:r, count:conteoPedidos[r]})).sort((a,b)=>b.count-a.count).slice(0,10);
-  if(ranking.length===0){
-    rankList.innerHTML = `<div class="empty">Aún no hay pedidos</div>`;
+  const allRepas = Object.keys(repartidores).map(k=>{
+    const r = repartidores[k];
+    const nombre = r.nombre||r.usuario||k;
+    const lower = (nombre||'').toLowerCase();
+    const lower2 = (r.usuario||'').toLowerCase();
+    const count = conteoPedidos[lower]||conteoPedidos[lower2]||conteoPedidos[k.toLowerCase()]||0;
+    return {nombre: nombre, key:k, count:count};
+  }).sort((a,b)=>b.count-a.count);
+
+  if(allRepas.length===0){
+    rankList.innerHTML = `<div class="empty">No hay repartidores</div>`;
   } else {
-    rankList.innerHTML = ranking.map((it,i)=>{
+    rankList.innerHTML = allRepas.map((it,i)=>{
       let cls = i===0?'top1':i===1?'top2':i===2?'top3':'';
       return `<div class="rank-item">
         <div class="rank-pos ${cls}">${i+1}</div>
