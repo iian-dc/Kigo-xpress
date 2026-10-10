@@ -1,1 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kigo Xpress - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{height:100vh;background:#ffffff;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{width:100%;max-width:360px;background:#fff;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.08);border:1px solid #f3f4f6;padding:28px 22px 20px;text-align:center}
+.logo{width:64px;height:64px;background:#e30613;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#fff;font-weight:800;font-size:22px;letter-spacing:.5px}
+.title{font-size:18px;font-weight:800;color:#111;margin-bottom:2px}
+.subtitle{font-size:11px;color:#8b93a5;font-weight:600;margin-bottom:18px}
+.label{font-size:10px;font-weight:700;color:#6b7280;text-align:left;margin:12px 0 5px;letter-spacing:.3px;text-transform:uppercase}
+.input-wrap{position:relative}
+.input-login{width:100%;border:1.5px solid #e5e7eb;border-radius:12px;padding:11px 40px 11px 12px;font-size:13px;font-weight:600;outline:none;background:#fff;height:44px;color:#111}
+.input-login:focus{border-color:#e30613}
+.btn-x{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;border:0;background:#f3f4f6;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:800;color:#6b7280}
+.btn-x.show{display:flex}
+.btn-ingresar{width:100%;background:#e30613;color:#fff;border:0;border-radius:50px;padding:12px;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-top:20px;box-shadow:0 8px 20px rgba(227,6,19,.25)}
+.btn-ingresar:disabled{background:#fca5a5;box-shadow:none;cursor:not-allowed}
+.msg{font-size:10px;font-weight:600;margin-top:10px;min-height:14px}
+.msg.error{color:#e30613}.msg.ok{color:#00c853}
+.footer{margin-top:14px;font-size:9px;color:#9ca3af;font-weight:600}
+</style>
+</head>
+<body>
+<div class="login-card">
+<div class="logo">KX</div>
+<div class="title">Kigo Xpress</div>
+<div class="subtitle">Ingreso al sistema</div>
 
+<div class="label">Ingrese su usuario</div>
+<div class="input-wrap">
+<input type="text" id="inputUsuario" class="input-login" placeholder="Ej: admin o Jose" autocomplete="off">
+<button class="btn-x" id="x-usuario" onclick="clearField('inputUsuario','x-usuario')">✕</button>
+</div>
+
+<div class="label">Contraseña</div>
+<div class="input-wrap">
+<input type="password" id="inputPassword" class="input-login" placeholder="••••" autocomplete="off">
+<button class="btn-x" id="x-pass" onclick="clearField('inputPassword','x-pass')">✕</button>
+</div>
+
+<button class="btn-ingresar" id="btnIngresar">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+INGRESAR
+</button>
+<div class="msg" id="txtMsg"></div>
+<div class="footer">Sistema seguro Kigo Xpress</div>
+</div>
+
+<script>
+const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function clearField(inputId, xId){
+  document.getElementById(inputId).value='';
+  document.getElementById(xId).classList.remove('show');
+  document.getElementById(inputId).focus();
+}
+
+['inputUsuario','inputPassword'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{
+    const map={inputUsuario:'x-usuario',inputPassword:'x-pass'};
+    const xid=map[id];
+    if(el.value.length>0) document.getElementById(xid).classList.add('show');
+    else document.getElementById(xid).classList.remove('show');
+  });
+});
+
+// CREAR USUARIOS DE EJEMPLO EN FIREBASE (solo si no existen) - PARA QUE PUEDAS MODIFICARLOS DESPUES
+db.ref('usuarios/admin').once('value').then(snap=>{
+  if(!snap.exists()){
+    db.ref('usuarios/admin').set({usuario:'admin', password:'0831', rol:'admin', nombre:'Administrador'});
+  }
+});
+db.ref('repartidores/Jose').once('value').then(snap=>{
+  if(!snap.exists()){
+    db.ref('repartidores/Jose').set({usuario:'Jose', password:'1111', rol:'repartidor', nombre:'Jose'});
+  }
+});
+
+document.getElementById('btnIngresar').onclick = async ()=>{
+  const user = document.getElementById('inputUsuario').value.trim();
+  const pass = document.getElementById('inputPassword').value.trim();
+  const msg = document.getElementById('txtMsg');
+  const btn = document.getElementById('btnIngresar');
+
+  if(user==='' || pass===''){ msg.textContent='Ingresa usuario y contraseña'; msg.className='msg error'; return; }
+
+  btn.disabled=true; btn.innerHTML='Verificando...'; msg.textContent=''; msg.className='msg';
+
+  try{
+    // 1. Buscar en usuarios (admin, despacho)
+    const snapAdmin = await db.ref('usuarios/'+user).once('value');
+    if(snapAdmin.exists()){
+      const data = snapAdmin.val();
+      if(data.password === pass){
+        localStorage.setItem('kigo_user', user);
+        localStorage.setItem('kigo_rol', data.rol);
+        msg.textContent='Bienvenido '+data.nombre; msg.className='msg ok';
+        setTimeout(()=>{ window.location.href='../PanelPedidos/index.html'; }, 600);
+        return;
+      }else{
+        msg.textContent='Contraseña incorrecta'; msg.className='msg error';
+        btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> INGRESAR';
+        return;
+      }
+    }
+
+    // 2. Buscar en repartidores
+    const snapRepa = await db.ref('repartidores/'+user).once('value');
+    if(snapRepa.exists()){
+      const data = snapRepa.val();
+      if(data.password === pass){
+        localStorage.setItem('kigo_user', user);
+        localStorage.setItem('kigo_rol', 'repartidor');
+        msg.textContent='Bienvenido '+data.nombre; msg.className='msg ok';
+        setTimeout(()=>{ window.location.href='../PanelRepartidor/index.html?repa='+user; }, 600);
+        return;
+      }else{
+        msg.textContent='Contraseña incorrecta'; msg.className='msg error';
+        btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> INGRESAR';
+        return;
+      }
+    }
+
+    // No existe en ninguno
+    msg.textContent='Usuario no encontrado'; msg.className='msg error';
+    btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> INGRESAR';
+
+  }catch(e){
+    msg.textContent='Error de conexión'; msg.className='msg error';
+    btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> INGRESAR';
+  }
+};
+
+document.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ document.getElementById('btnIngresar').click(); } });
+</script>
+</body>
+</html>
