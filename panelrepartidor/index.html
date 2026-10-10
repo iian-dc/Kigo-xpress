@@ -29,6 +29,7 @@ body{background:#f5f5f7}
 .card-activa{background:#fff;border-radius:14px;padding:10px 10px;box-shadow:0 4px 16px rgba(0,0,0,.08);border:1px solid #f0f0f0;margin-bottom:10px}
 .card-mini{background:#fff;border-radius:10px;padding:8px 10px;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid #eee;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
 .date{font-size:8px;color:#6b7280;font-weight:600}
+.date-big{font-size:9px;font-weight:700;color:#111}
 .time-neon-big{background:#fef08a;border:1px solid #fde047;color:#111;font-size:8px;font-weight:800;padding:3px 7px;border-radius:6px;box-shadow:0 0 8px rgba(250,204,21,.6)}
 .price-big{font-size:16px;font-weight:800;color:#e30613;line-height:1}
 .tipo{font-size:7px;font-weight:800;color:#e30613;background:#fee2e2;display:inline-block;padding:2px 6px;border-radius:10px;margin-bottom:8px}
@@ -45,18 +46,13 @@ body{background:#f5f5f7}
 .btn-esperar{flex:0.3;background:transparent;border:1px solid #d1d5db;border-radius:10px;padding:9px;font-size:9px;font-weight:700;cursor:pointer;color:#374151}
 .btn-detalles{flex:0.4;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:10px;padding:9px;font-size:9px;font-weight:700;cursor:pointer;color:#111;position:relative;z-index:10}
 .btn-tengo{flex:0.5;background:#111;color:#fff;border:0;border-radius:10px;padding:9px;font-size:9px;font-weight:700;cursor:pointer}
-
-/* SLIDER REALISTA TIPO RAPPi / IPHONE */
 .slider-wrap{flex:1;background:#eaf0fb;border-radius:22px;height:44px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;border:1px solid #dde6f7}
 .slider-fill{position:absolute;left:0;top:0;height:100%;width:0%;background:linear-gradient(90deg,#1ec8a0 0%,#2a9bb8 100%);border-radius:22px;z-index:1;opacity:.95}
-.slider-text{color:#8aa0c2;font-size:11px;font-weight:600;pointer-events:none;white-space:nowrap;position:relative;z-index:2;transition:opacity.2s}
-.slider-thumb{position:absolute;left:2px;top:2px;width:56px;height:38px;background:linear-gradient(135deg,#20c7a0 0%,#259ec0 100%);border-radius:19px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(32,199,160,.4),0 2px 4px rgba(0,0,0,.15);z-index:3;color:#fff;transition:left 0.05s}
+.slider-text{color:#8aa0c2;font-size:11px;font-weight:600;pointer-events:none;white-space:nowrap;position:relative;z-index:2}
+.slider-thumb{position:absolute;left:2px;top:2px;width:56px;height:38px;background:linear-gradient(135deg,#20c7a0 0%,#259ec0 100%);border-radius:19px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(32,199,160,.4),0 2px 4px rgba(0,0,0,.15);z-index:3;color:#fff}
 .slider-thumb svg{width:20px;height:20px;stroke:#fff;stroke-width:2.2;fill:none}
-
 .empty{font-size:9px;color:#9ca3af;text-align:center;padding:20px;background:#fff;border-radius:10px;border:1px dashed #ddd}
-
-/* MODALES CORREGIDOS PARA CELULAR */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.60);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.60);display:none;align-items:center;justify-content:center;z-index:99999!important;padding:16px}
 .modal-card{background:#fff;border-radius:16px;padding:16px;width:100%;max-width:360px;max-height:85vh;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .modal-title{font-size:13px;font-weight:800;color:#111;margin-bottom:10px;text-align:center}
 .modal-row{font-size:9px;color:#111;margin-bottom:8px;border-bottom:1px solid #f3f4f6;padding-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -67,7 +63,7 @@ body{background:#f5f5f7}
 </head>
 <body>
 
-<div class="modal-overlay" id="modalUbicacion">
+<div class="modal-overlay" id="modalUbicacion" style="display:flex">
 <div class="modal-card" style="text-align:center">
 <div class="modal-title">Activar ubicación</div>
 <div style="font-size:9px;color:#6b7280;margin-bottom:8px">Para que el mapa funcione correctamente y mantengamos tu ubicación activa, por favor permite el acceso a tu ubicación.</div>
@@ -76,7 +72,7 @@ body{background:#f5f5f7}
 </div>
 </div>
 
-<div class="modal-overlay" id="modalDetalles">
+<div class="modal-overlay" id="modalDetalles" onclick="if(event.target===this) cerrarModalDetalles()">
 <div class="modal-card" id="contenidoDetalles"></div>
 </div>
 
@@ -95,15 +91,17 @@ body{background:#f5f5f7}
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig); const db = firebase.database();
-let map, directionsService, directionsRenderer, markers=[], currentPos=null, watchId=null, totalPedidosInventario=0;
+let map, directionsService, directionsRenderer, markers=[], currentPos=null, watchId=null;
 let repartidorKey = (localStorage.getItem('kigo_user')||'repa1').trim();
 if(!['repa1','repa2'].includes(repartidorKey)) repartidorKey='repa1';
 document.getElementById('txtNombre').textContent = repartidorKey;
+
 window.initMap = function(){
 map=new google.maps.Map(document.getElementById("map"),{center:{lat:21.157,lng:-100.934},zoom:13,disableDefaultUI:false,zoomControl:false,streetViewControl:false,mapTypeControl:false});
 directionsService=new google.maps.DirectionsService();
 directionsRenderer=new google.maps.DirectionsRenderer({map:map,suppressMarkers:true,polylineOptions:{strokeColor:"#e30613",strokeWeight:4}});
 }
+
 function limpiarMarkers(){ markers.forEach(m=>m.setMap(null)); markers=[]; if(directionsRenderer) directionsRenderer.setDirections({routes:[]}); }
 function mostrarRuta(o){ if(!map||!o) return; limpiarMarkers(); const lat1=o.recogidaLat||o.negocioLat||o.aliadoLat; const lng1=o.recogidaLng||o.negocioLng||o.aliadoLng; const lat2=o.entregaLat; const lng2=o.entregaLng; if(!lat1||!lat2) return; const orig=new google.maps.LatLng(parseFloat(lat1),parseFloat(lng1)); const dest=new google.maps.LatLng(parseFloat(lat2),parseFloat(lng2)); markers.push(new google.maps.Marker({position:orig,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",scaledSize:new google.maps.Size(28,28)}})); markers.push(new google.maps.Marker({position:dest,map:map,icon:{url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",scaledSize:new google.maps.Size(28,28)}})); directionsService.route({origin:orig,destination:dest,travelMode:google.maps.TravelMode.DRIVING},(res,status)=>{ if(status==='OK'){ directionsRenderer.setDirections(res); const b=new google.maps.LatLngBounds(); b.extend(orig); b.extend(dest); map.fitBounds(b); } }); }
 function formatoHora(ts){ const d=new Date(ts); return d.toLocaleTimeString('es-MX',{hour:'numeric',minute:'2-digit',hour12:true}); }
@@ -121,35 +119,24 @@ function pedirUbicacion(){
    cerrarModalUbicacion();
    if(watchId) navigator.geolocation.clearWatch(watchId);
    watchId=navigator.geolocation.watchPosition(p=>{ currentPos={lat:p.coords.latitude,lng:p.coords.longitude}; db.ref('repartidores/'+repartidorKey).update({lat:currentPos.lat,lng:currentPos.lng}); },null,{enableHighAccuracy:true});
- },()=>{ btn.classList.remove('loc-green'); btn.classList.add('loc-red'); cerrarModalUbicacion(); alert('Debes permitir ubicación'); },{enableHighAccuracy:true});
+ },()=>{ btn.classList.remove('loc-green'); btn.classList.add('loc-red'); cerrarModalUbicacion(); },{enableHighAccuracy:true});
 }
 function cerrarModalUbicacion(){ document.getElementById('modalUbicacion').style.display='none'; }
-
-// Muestra el modal de ubicación siempre al entrar hasta que permita, funciona en celular y PC
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    const yaPermitio = localStorage.getItem('kigo_loc_'+repartidorKey)==='1';
-    if(!yaPermitio){
-      document.getElementById('modalUbicacion').style.display='flex';
-    } else {
-      // si ya permitio antes, intenta obtener ubicación silenciosamente
-      pedirUbicacion();
-    }
-  },800);
-});
+window.addEventListener('load',()=>{ setTimeout(()=>{ const yaPermitio = localStorage.getItem('kigo_loc_'+repartidorKey)==='1'; if(!yaPermitio){ document.getElementById('modalUbicacion').style.display='flex'; } else { pedirUbicacion(); } },800); });
 
 function abrirDetalles(p){
  const telRec = p.aliadoTel||p.recogidaTel||p.negocioTel||'';
  const telEnt = p.celular||p.entregaCel||'';
- const tieneTelRec = telRec && telRec!=='sin especificación' && telRec.length>=7 && telRec!=='null';
- const tieneTelEnt = telEnt && telEnt!=='sin especificación' && telEnt.length>=7 && telEnt!=='null';
- const html=`
-   <div class="modal-title">Detalles del Pedido #${p.numeroPedido||p.idFirebase.slice(-4)}</div>
-   <div class="modal-row"><span><b>Aliado / Recoger:</b> ${p.aliado||p.recogidaNombre||p.negocio||'sin especificación'}</span></div>
+ const tieneTelRec = telRec && telRec!=='sin especificación' && telRec.length>=7 && telRec!=='null' && telRec!=='undefined';
+ const tieneTelEnt = telEnt && telEnt!=='sin especificación' && telEnt.length>=7 && telEnt!=='null' && telEnt!=='undefined';
+ const contenido = document.getElementById('contenidoDetalles');
+ contenido.innerHTML=`
+   <div class="modal-title">Detalles del Pedido #${p.numeroPedido||''}</div>
+   <div class="modal-row"><span><b>Recoger:</b> ${p.aliado||p.recogidaNombre||p.negocio||'sin especificación'}</span></div>
    <div class="modal-row"><span><b>Dir Recoger:</b> ${p.aliadoDir||p.recogidaDir||'sin especificación'}</span>${tieneTelRec?`<button class="call-btn" onclick="window.location.href='tel:${telRec}'">📞</button>`:''}</div>
    <div class="modal-row"><span><b>Tel Recoger:</b> ${telRec||'sin especificación'}</span>${tieneTelRec?`<button class="call-btn" onclick="window.location.href='tel:${telRec}'">📞</button>`:''}</div>
    <div class="modal-row"><span><b>Entregar en:</b> ${p.entregaDir||p.entrega||'sin especificación'}</span></div>
-   <div class="modal-row"><span><b>Nombre Cliente:</b> ${p.cliente||p.entregaNombre||'sin especificación'}</span></div>
+   <div class="modal-row"><span><b>Cliente:</b> ${p.cliente||p.entregaNombre||'sin especificación'}</span></div>
    <div class="modal-row"><span><b>Tel Cliente:</b> ${telEnt||'sin especificación'}</span>${tieneTelEnt?`<button class="call-btn" onclick="window.location.href='tel:${telEnt}'">📞</button>`:''}</div>
    <div class="modal-row"><span><b>Precio:</b> $${p.precio||0}</span></div>
    <div class="modal-row"><span><b>Tiempo:</b> ${p.tiempo||'20 min'}</span></div>
@@ -157,15 +144,14 @@ function abrirDetalles(p){
    <div class="modal-row"><span><b>Llegó:</b> ${p.timestamp?formatoHora(p.timestamp):''} - <b>Recoger:</b> ${calcularRecoger(p.timestamp,p.tiempo)}</span></div>
    <button class="btn-continuar" onclick="cerrarModalDetalles()">Continuar</button>
  `;
- document.getElementById('contenidoDetalles').innerHTML=html;
  document.getElementById('modalDetalles').style.display='flex';
 }
 function cerrarModalDetalles(){ document.getElementById('modalDetalles').style.display='none'; }
+function verDetalles(id){ const p = pedidosBuffer[id]; if(!p){ alert('Pedido no encontrado'); return; } abrirDetalles(p); }
 
 let pedidosBuffer={};
 function renderPedidos(){
  const lista=Object.entries(pedidosBuffer).map(([id,v])=>({idFirebase:id,...v})).sort((a,b)=>(a.timestamp||0)-(b.timestamp||0));
- // Numeración acorde al inventario: 1,2,3 según orden de llegada
  lista.forEach((p,i)=>{ p.numeroPedido = i+1; });
  const activos=lista.filter(p=>['activo','recogiendo','recogido'].includes(p.estado));
  const espera=lista.filter(p=>!['activo','recogiendo','recogido'].includes(p.estado||''));
@@ -196,7 +182,7 @@ function renderPedidos(){
    const div=document.createElement('div'); div.className='card-activa';
    div.innerHTML=`
      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-       <div class="date-big">#${p.numeroPedido} • ${p.productos||p.aliado||'Pedido'}</div>
+       <div class="date-big">#${p.numeroPedido}</div>
        <div style="display:flex;gap:6px;align-items:center"><span class="date">${horaLlegada}</span><span class="time-neon-big">Recoger ${horaRecoger}</span><span class="price-big">$${p.precio||0}</span></div>
      </div>
      <div class="tipo">${(p.tipo||'ALIADOS • RECOGER').toUpperCase()}</div>
@@ -252,15 +238,13 @@ function onMove(e){
  const wrapId=(dragTipo==='recoger'||dragTipo==='entregar')?'slider-act-'+dragging:'slider-'+dragging;
  const thumbId=(dragTipo==='recoger'||dragTipo==='entregar')?'thumb-act-'+dragging:'thumb-'+dragging;
  const fillId=(dragTipo==='recoger'||dragTipo==='entregar')?'fill-act-'+dragging:'fill-'+dragging;
- const textId=document.querySelector('#'+wrapId+'.slider-text');
  const wrap=document.getElementById(wrapId); const thumb=document.getElementById(thumbId); const fill=document.getElementById(fillId);
  if(!wrap||!thumb||!fill) return;
  const max=wrap.offsetWidth-60; let pos=Math.min(Math.max(2,diff+2),max); thumb.style.left=pos+'px';
  let percent = ((pos-2)/max)*100; fill.style.width=percent+'%';
- if(textId) textId.style.opacity = (1 - percent/100*0.8);
  if(pos>=max*0.82){ if(dragTipo==='tomar') tomarPedido(dragging); else if(dragTipo==='recoger') voyARecoger(dragging); else if(dragTipo==='entregar') yaEntregue(dragging); onEnd(); }
 }
-function onEnd(){ if(dragging){ const t1=document.getElementById('thumb-'+dragging); const t2=document.getElementById('thumb-act-'+dragging); const f1=document.getElementById('fill-'+dragging); const f2=document.getElementById('fill-act-'+dragging); if(t1) t1.style.left='2px'; if(t2) t2.style.left='2px'; if(f1) f1.style.width='0%'; if(f2) f2.style.width='0%'; const txt1=document.querySelector('#slider-'+dragging+'.slider-text'); const txt2=document.querySelector('#slider-act-'+dragging+'.slider-text'); if(txt1) txt1.style.opacity='1'; if(txt2) txt2.style.opacity='1'; } dragging=null; dragTipo=null; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onEnd); document.removeEventListener('touchmove',onMove); document.removeEventListener('touchend',onEnd); }
+function onEnd(){ if(dragging){ const t1=document.getElementById('thumb-'+dragging); const t2=document.getElementById('thumb-act-'+dragging); const f1=document.getElementById('fill-'+dragging); const f2=document.getElementById('fill-act-'+dragging); if(t1) t1.style.left='2px'; if(t2) t2.style.left='2px'; if(f1) f1.style.width='0%'; if(f2) f2.style.width='0%'; } dragging=null; dragTipo=null; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onEnd); document.removeEventListener('touchmove',onMove); document.removeEventListener('touchend',onEnd); }
 
 function tomarPedido(id){
  const activos=Object.values(pedidosBuffer).filter(p=>['activo','recogiendo','recogido'].includes(p.estado));
@@ -273,7 +257,6 @@ function pasarAEspera(id){ db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id
 function voyARecoger(id){ db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).update({estado:'recogiendo'}); db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).update({estado:'recogiendo'}); db.ref('pedidos/'+id).update({estado:'recogiendo'}); }
 function loTengo(id){ db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).update({estado:'recogido'}); db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).update({estado:'recogido'}); db.ref('pedidos/'+id).update({estado:'recogido'}); }
 function yaEntregue(id){ if(!confirm('¿Confirmas entrega?')) return; db.ref('pedidos_por_repartidor/'+repartidorKey+'/'+id).remove(); db.ref('repartidores/'+repartidorKey+'/pedidos/'+id).remove(); db.ref('pedidos/'+id).update({status:'entregado'}); delete pedidosBuffer[id]; renderPedidos(); limpiarMarkers(); }
-function verDetalles(id){ const p=pedidosBuffer[id]; if(!p) return alert('Pedido no encontrado'); abrirDetalles(p); }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTV1sm6McEIkv-cheaVFCD_svp_a--6wg&libraries=places&callback=initMap" async defer></script>
 </body>
