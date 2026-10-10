@@ -144,7 +144,7 @@ let editId = null;
 let delId = null;
 let cacheRepartidores = {};
 
-// LEE REPARTIDORES CON valormotomandado y valormototransporte
+// CARGA valormotomandado y valormototransporte de cada repartidor
 dbRT.ref('/').on('value', snap=>{
   const data = snap.val()||{};
   cacheRepartidores = {};
@@ -186,16 +186,13 @@ function getServicioMoto(tipoServicio){
   if(t.includes('recoger')) return 'Moto Mandado';
   return 'Moto Transporte';
 }
-function getGananciaReal(nombreRepa, tipoServicio){
+function getValorServicio(nombreRepa, tipoServicio){
   const repa = cacheRepartidores[(nombreRepa||'').toLowerCase()]||{};
-  const tipo = (tipoServicio||'').toLowerCase();
-  const esRecoger = tipo.includes('recoger');
-  let ganancia = esRecoger? (repa.valormotomandado?? repa.valorMotoMandado?? repa.motomandado?? 0) : (repa.valormototransporte?? repa.valorMotoTransporte?? repa.mototransporte?? 0);
-  ganancia = Number(ganancia);
-  if(ganancia>0 && ganancia<100){
-    ganancia = ganancia*1000;
-  }
-  return ganancia;
+  const esRecoger = (tipoServicio||'').toLowerCase().includes('recoger');
+  let valor = esRecoger? (repa.valormotomandado?? repa.valorMotoMandado?? 0) : (repa.valormototransporte?? repa.valorMotoTransporte?? 0);
+  valor = Number(valor);
+  if(valor>0 && valor<100) valor = valor*1000;
+  return valor;
 }
 
 dbRT.ref('historial_pedidos').on('value', snap=>{
@@ -294,10 +291,9 @@ function render(){
     const total = Number(p.valorTotal||p.total||p.precioNum||0);
     const tipo = normalizarTipo(p);
     const servicioMoto = getServicioMoto(tipo);
-    const gananciaReal = getGananciaReal(p.repartidor, tipo);
-    const importeReal = total - gananciaReal;
-    const importeMostrar = pagado? importeReal : 0;
-    const gananciaMostrar = pagado? gananciaReal : 0;
+    const valorServicio = getValorServicio(p.repartidor, tipo);
+    const importeMostrar = pagado? valorServicio : 0;
+    const gananciaMostrar = pagado? valorServicio : 0;
     const aliado = getAliado(p);
     const badgeClass = servicioMoto.includes('Mandado')? 'mandado' : 'transporte';
     return `<tr>
@@ -329,16 +325,15 @@ function abrirEdit(id){
   const fecha = getFechaDoc(p);
   const tipo = normalizarTipo(p);
   const total = Number(p.valorTotal||0);
-  const gananciaReal = getGananciaReal(p.repartidor, tipo);
-  const importeReal = total - gananciaReal;
+  const valorServicio = getValorServicio(p.repartidor, tipo);
   document.getElementById('eFecha').value = fecha.getTime()===0? '' : fecha.toISOString().slice(0,10);
   document.getElementById('eNumero').value = p.numeroPedido||p.numero||'';
   document.getElementById('eCliente').value = getAliado(p);
   document.getElementById('eTipo').value = tipo;
   document.getElementById('eRepartidor').value = p.repartidor||'';
   document.getElementById('eTotal').value = total;
-  document.getElementById('eImporte').value = importeReal;
-  document.getElementById('eGanancia').value = gananciaReal;
+  document.getElementById('eImporte').value = valorServicio;
+  document.getElementById('eGanancia').value = valorServicio;
   document.getElementById('ePagado').value = String(p.pagado===true);
   document.getElementById('overlayEdit').classList.add('show');
 }
@@ -407,10 +402,9 @@ async function togglePago(id){
   if(idx>-1){
     pedidos[idx].pagado =!pedidos[idx].pagado;
     const tipo = normalizarTipo(pedidos[idx]);
-    const gananciaReal = getGananciaReal(pedidos[idx].repartidor, tipo);
-    const total = Number(pedidos[idx].valorTotal||0);
-    pedidos[idx].ganancia = pedidos[idx].pagado? gananciaReal : 0;
-    pedidos[idx].importe = pedidos[idx].pagado? (total - gananciaReal) : 0;
+    const valorServicio = getValorServicio(pedidos[idx].repartidor, tipo);
+    pedidos[idx].ganancia = pedidos[idx].pagado? valorServicio : 0;
+    pedidos[idx].importe = pedidos[idx].pagado? valorServicio : 0;
     const rep = pedidos[idx].repartidor;
     render();
     const upd = {pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia, importe:pedidos[idx].importe};
