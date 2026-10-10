@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Menú - Kigo Xpress</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#fff}
+.top{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
+.btn-x{width:42px;height:42px;border-radius:50%;background:#f1f2f4;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.btn-x svg{width:22px;height:22px}
+.headset{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.profile{display:flex;gap:16px;padding:10px 16px 18px;align-items:center}
+.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;background:#c8d6ef;flex-shrink:0}
+.name{font-size:20px;font-weight:800;color:#111;line-height:1.15;letter-spacing:-0.2px}
+.btn-perfil{margin-top:10px;border:1.5px solid #d1d5db;border-radius:24px;padding:8px 18px;font-size:14px;font-weight:700;background:#fff;color:#111;cursor:pointer}
+.estado{background:#dbe8ff;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;cursor:pointer}
+.estado-icon{width:32px;height:32px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff}
+.estado-txt{font-size:15px;font-weight:700;color:#111}
+.section{padding:18px 16px 6px}
+.sec-title{font-size:20px;font-weight:800;color:#111;margin-bottom:4px}
+.item{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid #e5e7eb;cursor:pointer}
+.item-left{display:flex;align-items:center;gap:14px}
+.item-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.item-icon svg{width:26px;height:26px;stroke:#111;stroke-width:1.9;fill:none}
+.item-text{font-size:15px;font-weight:700;color:#111}
+.arrow{color:#111}
+.arrow svg{width:20px;height:20px;stroke:#111;stroke-width:2}
+</style>
+</head>
+<body>
+
+<div class="top">
+<button class="btn-x" onclick="history.back()">
+<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+</button>
+<div style="flex:1;margin-left:16px;font-size:16px;font-weight:700;color:#111">Menú</div>
+<div class="headset">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="1.8"><path d="M3 11a9 9 0 0 1 9-9 9 9 0 0 1 9 9v4a3 3 0 0 1-3 3h-1a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h1M6 11a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H6z"/><circle cx="12" cy="8" r="1" fill="#1e293b"/><path d="M12 19a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2z"/></svg>
+</div>
+</div>
+
+<div class="profile">
+<img class="avatar" id="avatarMenu" src="https://i.pravatar.cc/200?img=5">
+<div>
+<div class="name" id="nombreMenu">repa1</div>
+<button class="btn-perfil" onclick="location.href='perfil.html'">Mi perfil</button>
+</div>
+</div>
+
+<div class="estado" onclick="location.href='estado.html'">
+<div class="estado-icon">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h8l4 4v-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+</div>
+<div class="estado-txt">Estado Actual</div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="section">
+<div class="sec-title">Finanzas</div>
+
+<div class="item" onclick="location.href='ganancias.html'">
+<div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M9.5 10.5c0-1 1-2 2.5-2s2.5 1 2.5 2-1 2-2.5 2-2.5 1-2.5 2 1 2 2.5 2 2.5-1 2.5-2"/></svg></div><div class="item-text">Ganancias</div></div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item" onclick="location.href='deuda.html'">
+<div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><path d="M9 2h6v4H9z"/><path d="M11 6v4h5v6H9"/><path d="M10 14v4h5v2H9"/><circle cx="17" cy="8" r="1" fill="#111"/><path d="M15 10l2 2 2-2"/></svg></div><div class="item-text">Pagar mi deuda</div></div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item" onclick="location.href='incentivos.html'">
+<div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="7"/><circle cx="17" cy="17" r="4"/><path d="M10 8v4M8.5 9.5c0-.8.8-1.5 1.5-1.5S11.5 8.7 11.5 9.5 10.7 11 10 11s-1.5.7-1.5 1.5S9.2 14 10 14s1.5-.7 1.5-1.5"/></svg></div><div class="item-text">Incentivos</div></div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item" onclick="location.href='corte.html'">
+<div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="M10 14c0-1 1-2 2.5-2s2.5 1 2.5 2-1 2-2.5 2-2.5 1-2.5 2 1 2 2.5 2 2.5-1 2.5-2"/></svg></div><div class="item-text">Fechas de corte</div></div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item" onclick="location.href='pagos.html'">
+<div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 7h2a2 2 0 0 1 2 2v2M16 11h3a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-3"/><path d="M9 10c0-1 1-1.5 2.5-1.5S14 9 14 10s-1 1.5-2.5 1.5S9 12 9 13s1 1.5 2.5 1.5S14 14 14 13"/></svg></div><div class="item-text">Pagos de ganancias</div></div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item" onclick="location.href='refiere.html'" style="border-bottom:0">
+<div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="4"/><path d="M2 18a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M18.5 14.5l2.5 2-1 3-3-1-2-2.5"/><path d="M19 12a4 4 0 0 1 3 6"/></svg></div><div class="item-text">Refiere y gana</div></div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+</div>
+
+<div class="section">
+<div class="sec-title">Centro de Seguridad</div>
+
+<div class="item" onclick="location.href='seguridad.html'">
+<div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2L4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="item-text">Seguridad</div></div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item" onclick="location.href='fallas.html'" style="border-bottom:0">
+<div class="item-left"><div class="item-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-3.8 3.8z"/><path d="M3 21l4-4M4.5 10.5l2.5 2.5M10.5 4.5l2.5 2.5"/><path d="M14 14l-8 8"/></svg></div><div class="item-text">Llamar por fallas mecánicas</div></div>
+<div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+</div>
+
+<div style="height:40px"></div>
+
+<script>
+let repartidorKey = (localStorage.getItem('kigo_user')||'repa1').trim();
+document.getElementById('nombreMenu').textContent = repartidorKey;
+const savedAvatar = localStorage.getItem('kigo_avatar_'+repartidorKey);
+if(savedAvatar) document.getElementById('avatarMenu').src = savedAvatar;
+</script>
+</body>
+</html>
