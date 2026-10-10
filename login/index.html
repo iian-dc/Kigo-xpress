@@ -82,7 +82,6 @@ function resetButton(){
   btn.disabled=false;
   btn.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg><div class="sep-btn"></div><span>Ingresar</span>';
 }
-// Corrige el bug cuando regresas con el navegador
 window.addEventListener('pageshow', resetButton);
 window.addEventListener('focus', resetButton);
 
@@ -94,7 +93,6 @@ function togglePass(){
   else{ inp.type='password'; open.style.display='block'; closed.style.display='none'; }
 }
 
-// Auto-login si marco mantener sesión
 window.addEventListener('load',()=>{
   const savedUser = localStorage.getItem('kigo_user_keep');
   const savedRol = localStorage.getItem('kigo_rol_keep');
@@ -119,28 +117,78 @@ async function login(){
   btn.disabled=true; btn.innerHTML='Verificando...'; msg.textContent='';
   localStorage.setItem('kigo_last_user', user);
   try{
+    // 1. Admin / despacho
     const snapAdmin=await db.ref('usuarios/'+user).once('value');
     if(snapAdmin.exists()){
       const data=snapAdmin.val();
       if(data.password===pass){
-        localStorage.setItem('kigo_user', user); localStorage.setItem('kigo_rol', data.rol);
+        localStorage.setItem('kigo_user', user); 
+        localStorage.setItem('kigo_user_key', user);
+        localStorage.setItem('kigo_rol', data.rol);
         if(keep){ localStorage.setItem('kigo_user_keep', user); localStorage.setItem('kigo_rol_keep', data.rol); }
         else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
         window.location.href='../panelpedidos/index.html'; return;
       }else{ msg.textContent='Contraseña incorrecta'; resetButton(); return; }
     }
+
+    // 2. Login nuevo - usuario cambiado desde Mi Perfil
+    const snapLoginNuevo = await db.ref('login_repartidores/'+user).once('value');
+    if(snapLoginNuevo.exists()){
+      const data = snapLoginNuevo.val();
+      const claveGuardada = data.clave || data.password;
+      if(claveGuardada && claveGuardada !== pass){
+        msg.textContent='Contraseña incorrecta'; resetButton(); return;
+      }
+      localStorage.setItem('kigo_user', data.usuario || user);
+      localStorage.setItem('kigo_user_key', data.key);
+      localStorage.setItem('kigo_rol', 'repartidor');
+      if(keep){ localStorage.setItem('kigo_user_keep', data.usuario || user); localStorage.setItem('kigo_rol_keep', 'repartidor'); }
+      else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
+      window.location.href='../panelrepartidor/index.html?repa='+data.key; return;
+    }
+
+    // 3. Repartidor directo por key (Jose, repa1, etc)
     const snapRepa=await db.ref('repartidores/'+user).once('value');
     if(snapRepa.exists()){
       const data=snapRepa.val();
-      if(data.password===pass){
-        localStorage.setItem('kigo_user', user); localStorage.setItem('kigo_rol', 'repartidor');
-        if(keep){ localStorage.setItem('kigo_user_keep', user); localStorage.setItem('kigo_rol_keep', 'repartidor'); }
-        else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
-        window.location.href='../panelrepartidor/index.html?repa='+user; return;
-      }else{ msg.textContent='Contraseña incorrecta'; resetButton(); return; }
+      const claveValida = data.password || data.clave;
+      if(claveValida && claveValida !== pass){
+        msg.textContent='Contraseña incorrecta'; resetButton(); return;
+      }
+      if(claveValida && claveValida !== pass && data.clave){ /* ya validado arriba */ }
+      localStorage.setItem('kigo_user', data.usuario || user); 
+      localStorage.setItem('kigo_user_key', user);
+      localStorage.setItem('kigo_rol', 'repartidor');
+      if(keep){ localStorage.setItem('kigo_user_keep', data.usuario || user); localStorage.setItem('kigo_rol_keep', 'repartidor'); }
+      else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
+      window.location.href='../panelrepartidor/index.html?repa='+user; return;
     }
+
+    // 4. Buscar por campo usuario dentro de repartidores (por si cambió usuario)
+    const snapAll = await db.ref('repartidores').once('value');
+    let encontrado = null, keyEncontrada = null;
+    snapAll.forEach(child=>{
+      const d = child.val();
+      if(d.usuario === user || child.key === user){
+        encontrado = d;
+        keyEncontrada = child.key;
+      }
+    });
+    if(encontrado){
+      const claveValida = encontrado.password || encontrado.clave;
+      if(claveValida && claveValida !== pass){
+        msg.textContent='Contraseña incorrecta'; resetButton(); return;
+      }
+      localStorage.setItem('kigo_user', encontrado.usuario || user);
+      localStorage.setItem('kigo_user_key', keyEncontrada);
+      localStorage.setItem('kigo_rol', 'repartidor');
+      if(keep){ localStorage.setItem('kigo_user_keep', encontrado.usuario || user); localStorage.setItem('kigo_rol_keep', 'repartidor'); }
+      else{ localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); }
+      window.location.href='../panelrepartidor/index.html?repa='+keyEncontrada; return;
+    }
+
     msg.textContent='Usuario no encontrado'; resetButton();
-  }catch(e){ msg.textContent='Error de conexión'; resetButton(); }
+  }catch(e){ msg.textContent='Error de conexión'; resetButton(); console.error(e); }
 }
 document.addEventListener('keydown',(e)=>{ if(e.key==='Enter') login(); });
 </script>
