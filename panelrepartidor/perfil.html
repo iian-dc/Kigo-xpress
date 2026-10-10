@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mi perfil - Kigo Xpress</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#fff}
+.top{padding:14px 16px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #f0f0f0}
+.btn-x{width:42px;height:42px;border-radius:50%;background:#f1f2f4;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.btn-x svg{width:22px;height:22px}
+.title{font-size:16px;font-weight:700;color:#111}
+.wrap{padding:20px 16px}
+.avatar-box{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:24px}
+.avatar{width:110px;height:110px;border-radius:50%;object-fit:cover;background:#c8d6ef;border:3px solid #e5e7eb}
+.btn-foto{background:#fff;border:1.5px solid #111;border-radius:20px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}
+.label{font-size:13px;font-weight:700;color:#111;margin-bottom:6px;margin-top:14px;display:block}
+.input{width:100%;border:1.5px solid #e5e7eb;border-radius:12px;padding:13px 14px;font-size:14px;font-weight:600;color:#111;background:#f9fafb;outline:none}
+.input:focus{border-color:#111;background:#fff}
+.input:disabled{background:#f3f4f6;color:#6b7280}
+.info{font-size:11px;color:#6b7280;margin-top:4px;font-weight:600}
+.btn-guardar{width:100%;background:#111;color:#fff;border:0;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;margin-top:26px}
+.btn-guardar:disabled{background:#9ca3af}
+#fileInput{display:none}
+.badge{font-size:10px;font-weight:800;background:#e8f5e9;color:#00c853;padding:3px 8px;border-radius:10px;margin-left:8px}
+</style>
+</head>
+<body>
+
+<div class="top">
+<button class="btn-x" onclick="location.href='configuracion.html'">
+<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+</button>
+<div class="title">Mi perfil</div>
+</div>
+
+<div class="wrap">
+<div class="avatar-box">
+<img class="avatar" id="imgAvatar" src="https://i.pravatar.cc/200?img=5">
+<button class="btn-foto" onclick="document.getElementById('fileInput').click()">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+Cambiar foto
+</button>
+<input type="file" id="fileInput" accept="image/*">
+<div style="font-size:11px;color:#9ca3af;font-weight:600" id="txtCambio">Toca para elegir desde galería</div>
+</div>
+
+<label class="label">Nombre completo</label>
+<input class="input" id="inpNombre" type="text" placeholder="Tu nombre">
+
+<label class="label">Teléfono <span class="badge">Verificado</span></label>
+<input class="input" id="inpTelefono" type="tel" placeholder="Ej: 4421234567">
+
+<label class="label">ID Repartidor</label>
+<input class="input" id="inpId" type="text" disabled>
+<div class="info">Este ID no se puede modificar</div>
+
+<label class="label">Correo electrónico</label>
+<input class="input" id="inpCorreo" type="email" placeholder="correo@ejemplo.com">
+
+<button class="btn-guardar" id="btnGuardar" onclick="guardarPerfil()">Guardar cambios</button>
+
+<div id="msg" style="text-align:center;margin-top:12px;font-size:12px;font-weight:700"></div>
+</div>
+
+<script>
+const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let repartidorKey = (localStorage.getItem('kigo_user')||'repa1').trim();
+if(!['repa1','repa2'].includes(repartidorKey)) repartidorKey='repa1';
+
+let avatarBase64 = null;
+let avatarActual = null;
+
+const imgEl = document.getElementById('imgAvatar');
+const inpNombre = document.getElementById('inpNombre');
+const inpTelefono = document.getElementById('inpTelefono');
+const inpId = document.getElementById('inpId');
+const inpCorreo = document.getElementById('inpCorreo');
+const msg = document.getElementById('msg');
+
+inpId.value = repartidorKey;
+
+// Cargar de localStorage primero
+const savedAvatarLocal = localStorage.getItem('kigo_avatar_'+repartidorKey);
+if(savedAvatarLocal){ imgEl.src = savedAvatarLocal; avatarActual = savedAvatarLocal; }
+
+// Cargar de Firebase
+db.ref('repartidores/'+repartidorKey).once('value').then(snap=>{
+  const data = snap.val()||{};
+  if(data.nombre) inpNombre.value = data.nombre;
+  else inpNombre.value = repartidorKey;
+  if(data.telefono) inpTelefono.value = data.telefono;
+  if(data.correo) inpCorreo.value = data.correo;
+  if(data.avatarBase64){
+    imgEl.src = data.avatarBase64;
+    avatarActual = data.avatarBase64;
+    localStorage.setItem('kigo_avatar_'+repartidorKey, data.avatarBase64);
+  } else if(data.avatar){
+    imgEl.src = data.avatar;
+    avatarActual = data.avatar;
+  }
+});
+
+document.getElementById('fileInput').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 2*1024*1024){ msg.style.color='#e30613'; msg.textContent='Imagen muy pesada, max 2MB'; return; }
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    avatarBase64 = ev.target.result;
+    imgEl.src = avatarBase64;
+    msg.style.color='#00c853'; msg.textContent='Foto lista, dale a Guardar';
+  };
+  reader.readAsDataURL(file);
+});
+
+function guardarPerfil(){
+  const btn = document.getElementById('btnGuardar');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+  msg.textContent = '';
+
+  const datos = {
+    nombre: inpNombre.value.trim() || repartidorKey,
+    telefono: inpTelefono.value.trim(),
+    correo: inpCorreo.value.trim(),
+    actualizado: Date.now()
+  };
+  if(avatarBase64){
+    datos.avatarBase64 = avatarBase64;
+    localStorage.setItem('kigo_avatar_'+repartidorKey, avatarBase64);
+  }
+
+  db.ref('repartidores/'+repartidorKey).update(datos).then(()=>{
+    msg.style.color='#00c853';
+    msg.textContent='¡Perfil guardado correctamente!';
+    localStorage.setItem('kigo_nombre_'+repartidorKey, datos.nombre);
+    btn.disabled = false;
+    btn.textContent = 'Guardar cambios';
+    setTimeout(()=>{ location.href='configuracion.html'; },800);
+  }).catch(err=>{
+    msg.style.color='#e30613';
+    msg.textContent='Error: '+err.message;
+    btn.disabled = false;
+    btn.textContent = 'Guardar cambios';
+  });
+}
+</script>
+</body>
+</html>
