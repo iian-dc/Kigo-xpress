@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transportadores</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#f5f6f7;min-height:100vh}
+.header{background:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eef0f3;position:sticky;top:0;z-index:10}
+.left-h{display:flex;align-items:center;gap:10px}
+.btn-x{width:36px;height:36px;border-radius:50%;background:#e9ecef;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.titulo{font-size:17px;font-weight:900}
+.btn-add{height:34px;padding:0 14px;border-radius:10px;background:#111;color:#fff;border:0;font-weight:800;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.wrap{padding:10px}
+.card{background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #eef0f3}
+.card h3{font-size:13px;font-weight:900;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.rank-list{display:flex;flex-direction:column;gap:6px}
+.rank-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f8f9fa;border-radius:10px;border:1px solid #eef0f3}
+.rank-pos{width:28px;height:28px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px}
+.rank-pos.top1{background:#f59e0b}
+.rank-pos.top2{background:#6b7280}
+.rank-pos.top3{background:#d97706}
+.rank-name{flex:1;font-weight:800;font-size:11px}
+.rank-count{font-weight:900;font-size:11px;color:#111;background:#fff;border:1px solid #e5e7eb;padding:3px 8px;border-radius:12px}
+.table-wrap{background:#fff;border-radius:14px;overflow:auto;border:1px solid #eef0f3}
+table{width:100%;border-collapse:collapse;min-width:750px}
+thead th{background:#111;color:#fff;font-size:9px;font-weight:800;padding:10px 8px;text-align:left;text-transform:uppercase}
+tbody td{padding:10px 8px;font-size:11px;font-weight:600;border-bottom:1px solid #f0f2f4;vertical-align:middle}
+.inp-fee{width:80px;height:30px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 8px;font-size:11px;font-weight:700;outline:0;text-align:center}
+.badge{font-size:8px;font-weight:800;padding:3px 7px;border-radius:10px;display:inline-block}
+.badge-mandado{background:#e3f2fd;color:#1565c0}
+.badge-transporte{background:#fff3e0;color:#e65100}
+.btn-save{height:28px;padding:0 10px;border-radius:8px;background:#00c853;color:#fff;border:0;font-weight:800;font-size:10px;cursor:pointer}
+.btn-del{width:28px;height:28px;border-radius:8px;background:#ffeaea;border:1px solid #ffc9c9;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:99;padding:12px}
+.overlay.show{display:flex}
+.modal{background:#fff;width:100%;max-width:400px;border-radius:14px;padding:16px}
+.modal h3{font-size:14px;font-weight:900;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.full{grid-column:1/-1}
+.label{font-size:9px;font-weight:800;color:#6b7280;text-transform:uppercase;margin-bottom:3px}
+.input{width:100%;height:36px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 10px;font-size:11px;font-weight:600;outline:0}
+.actions{display:flex;gap:8px;margin-top:12px}
+.btn-cancel{flex:1;height:38px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-weight:800;cursor:pointer}
+.btn-confirm{flex:1;height:38px;border-radius:10px;border:0;background:#111;color:#fff;font-weight:800;cursor:pointer}
+.empty{padding:20px;text-align:center;color:#8a8d93;font-size:11px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="left-h">
+<button class="btn-x" onclick="location.href='confadmin.html'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+<div class="titulo">Transportadores</div>
+</div>
+<button class="btn-add" onclick="abrirAdd()">+ Agregar repartidor</button>
+</div>
+
+<div class="wrap">
+<div class="card" id="cardRanking">
+<h3>🏆 Ranking repartidores - Pedidos completados</h3>
+<div class="rank-list" id="rankList"><div class="empty">Cargando ranking...</div></div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Repartidor</th><th>Tel / Usuario</th><th>Moto Mandado</th><th>Moto Transporte</th><th>Pedidos</th><th>Debe</th><th>Acción</th></tr></thead>
+<tbody id="tbody"><tr><td colspan="7" class="empty">Cargando repartidores...</td></tr></tbody>
+</table>
+</div>
+</div>
+
+<div class="overlay" id="overlayAdd">
+<div class="modal">
+<h3>Nuevo repartidor</h3>
+<div class="grid">
+<div class="full"><div class="label">Nombre completo</div><input id="aNombre" class="input" placeholder="Ej: Iian"></div>
+<div class="full"><div class="label">Usuario</div><input id="aUsuario" class="input" placeholder="Ej: iian"></div>
+<div class="full"><div class="label">Teléfono</div><input id="aTelefono" class="input" placeholder="Ej: 3001234567"></div>
+<div><div class="label">Valor moto mandado</div><input id="aMandado" type="number" class="input" value="5000"></div>
+<div><div class="label">Valor moto transporte</div><input id="aTransporte" type="number" class="input" value="10000"></div>
+<div class="full"><div class="label">Contraseña</div><input id="aPass" class="input" placeholder="1234"></div>
+</div>
+<div class="actions">
+<button class="btn-cancel" onclick="cerrarAdd()">Cancelar</button>
+<button class="btn-confirm" onclick="guardarRepa()">Guardar</button>
+</div>
+</div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE",
+  authDomain: "historial-kigo-xpress.firebaseapp.com",
+  databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com",
+  projectId: "historial-kigo-xpress",
+  storageBucket: "historial-kigo-xpress.firebasestorage.app",
+  messagingSenderId: "571399920545",
+  appId: "1:571399920545:web:aa16407753b43cbe2e89e0"
+};
+firebase.initializeApp(firebaseConfig);
+const dbRT = firebase.database();
+
+let repartidores = {};
+let conteoPedidos = {};
+let debePedidos = {};
+
+dbRT.ref('historial_pedidos').on('value', snap=>{
+  const data = snap.val()||{};
+  conteoPedidos = {};
+  debePedidos = {};
+  Object.values(data).forEach(p=>{
+    const r = (p.repartidor||'').toLowerCase();
+    if(!r) return;
+    conteoPedidos[r] = (conteoPedidos[r]||0)+1;
+    if(p.pagado!==true){
+      const tipo = (p.tipo||p.tipoServicio||'').toLowerCase().includes('recoger')? 'mandado' : 'transporte';
+      // valor debe segun su tarifa actual lo calculamos en render
+      debePedidos[r] = (debePedidos[r]||0)+1;
+    }
+  });
+  render();
+});
+
+dbRT.ref('/').on('value', snap=>{
+  const data = snap.val()||{};
+  repartidores = {};
+  Object.keys(data).forEach(k=>{
+    const v = data[k];
+    if(v && v.rol==='repartidor'){
+      repartidores[k] = v;
+    }
+  });
+  render();
+});
+
+function render(){
+  const tbody = document.getElementById('tbody');
+  const keys = Object.keys(repartidores);
+  if(keys.length===0){
+    tbody.innerHTML = `<tr><td colspan="7" class="empty">No hay repartidores</td></tr>`;
+  } else {
+    tbody.innerHTML = keys.map(k=>{
+      const r = repartidores[k];
+      const nombre = r.nombre||r.usuario||k;
+      const lower = (nombre||'').toLowerCase();
+      const lower2 = (r.usuario||'').toLowerCase();
+      const pedidos = conteoPedidos[lower]||conteoPedidos[lower2]||conteoPedidos[k.toLowerCase()]||0;
+      const mandado = Number(r.valormotomandado||r.valorMotoMandado||5000);
+      const transporte = Number(r.valormototransporte||r.valorMotoTransporte||10000);
+      const debeCount = debePedidos[lower]||debePedidos[lower2]||0;
+      const debeTotal = debeCount * (pedidos? 0 : 0); // se calcula con historial debe
+      return `<tr>
+        <td><b>${nombre}</b></td>
+        <td>${r.telefono||''}<br><small style="color:#6b7280">${r.usuario||''}</small></td>
+        <td><input class="inp-fee" id="m_${k}" type="number" value="${mandado}"> <span class="badge badge-mandado">Mandado</span></td>
+        <td><input class="inp-fee" id="t_${k}" type="number" value="${transporte}"> <span class="badge badge-transporte">Transporte</span></td>
+        <td><b>${pedidos}</b> pedidos</td>
+        <td><b style="color:#ff3b30">${debeCount}</b> por cobrar</td>
+        <td>
+          <button class="btn-save" onclick="guardarTarifa('${k}')">Guardar</button>
+          <button class="btn-del" onclick="eliminarRepa('${k}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg></button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Ranking
+  const rankList = document.getElementById('rankList');
+  const ranking = Object.keys(conteoPedidos).map(r=>({nombre:r, count:conteoPedidos[r]})).sort((a,b)=>b.count-a.count).slice(0,10);
+  if(ranking.length===0){
+    rankList.innerHTML = `<div class="empty">Aún no hay pedidos</div>`;
+  } else {
+    rankList.innerHTML = ranking.map((it,i)=>{
+      let cls = i===0?'top1':i===1?'top2':i===2?'top3':'';
+      return `<div class="rank-item">
+        <div class="rank-pos ${cls}">${i+1}</div>
+        <div class="rank-name">${it.nombre}</div>
+        <div class="rank-count">${it.count} pedidos</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function abrirAdd(){ document.getElementById('overlayAdd').classList.add('show'); }
+function cerrarAdd(){ document.getElementById('overlayAdd').classList.remove('show'); }
+
+async function guardarRepa(){
+  const nombre = document.getElementById('aNombre').value.trim();
+  const usuario = document.getElementById('aUsuario').value.trim()||nombre.toLowerCase().replace(/\s+/g,'');
+  const telefono = document.getElementById('aTelefono').value.trim();
+  const mandado = Number(document.getElementById('aMandado').value||5000);
+  const transporte = Number(document.getElementById('aTransporte').value||10000);
+  const pass = document.getElementById('aPass').value.trim()||'1234';
+  if(!nombre) return alert('Pon nombre');
+  const key = nombre.replace(/\s+/g,'_');
+  await dbRT.ref(key).set({
+    nombre: nombre,
+    usuario: usuario,
+    telefono: telefono,
+    valormotomandado: mandado,
+    valormototransporte: transporte,
+    valorMotoMandado: mandado,
+    valorMotoTransporte: transporte,
+    password: pass,
+    rol: 'repartidor',
+    fechaCreacion: new Date().toISOString()
+  });
+  cerrarAdd();
+  document.getElementById('aNombre').value='';
+  document.getElementById('aUsuario').value='';
+  document.getElementById('aTelefono').value='';
+}
+
+async function guardarTarifa(k){
+  const mandado = Number(document.getElementById('m_'+k).value||0);
+  const transporte = Number(document.getElementById('t_'+k).value||0);
+  await dbRT.ref(k).update({
+    valormotomandado: mandado,
+    valormototransporte: transporte,
+    valorMotoMandado: mandado,
+    valorMotoTransporte: transporte
+  });
+  alert('Tarifa actualizada para '+k+' - Ya se refleja en historial admin');
+}
+
+async function eliminarRepa(k){
+  if(!confirm('¿Eliminar repartidor '+k+'?')) return;
+  await dbRT.ref(k).remove();
+}
+</script>
+</body>
+</html>
