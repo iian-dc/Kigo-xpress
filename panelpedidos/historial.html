@@ -21,12 +21,11 @@ body{background:#f5f6f7;min-height:100vh}
 .btn-q.active{background:#111;color:#fff;border-color:#111}
 .row2{display:flex;gap:6px;margin-top:8px}
 .inp{flex:1;height:34px;border-radius:8px;border:1px solid #e5e7eb;background:#f8f9fa;padding:0 10px;font-size:11px;font-weight:600;outline:0}
-.inp:focus{border-color:#111;background:#fff}
 .table-wrap{background:#fff;overflow:auto;margin-top:6px;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;min-width:760px}
-thead th{position:sticky;top:0;background:#111;color:#fff;font-size:9px;font-weight:800;text-align:left;padding:8px 6px;letter-spacing:0.3px;text-transform:uppercase}
+thead th{position:sticky;top:0;background:#111;color:#fff;font-size:9px;font-weight:800;text-align:left;padding:8px 6px;text-transform:uppercase}
 tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bottom:1px solid #f0f2f4;vertical-align:middle;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.badge-pagado{height:24px;padding:0 9px;border-radius:12px;border:0;font-size:9.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.badge-pagado{height:24px;padding:0 9px;border-radius:12px;border:0;font-size:9.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all.2s}
 .pagado{background:#00c853;color:#fff}
 .debe{background:#ff3b30;color:#fff}
 .btn-icon{width:26px;height:26px;border-radius:6px;border:1px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-right:3px}
@@ -48,11 +47,8 @@ tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bott
 .btn-no{flex:1;height:38px;border-radius:10px;border:0;background:#00c853;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px}
 .btn-si{flex:1;height:38px;border-radius:10px;border:0;background:#ff3b30;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px}
 .empty{padding:24px 10px;text-align:center;color:#8a8d93;font-weight:600;font-size:11px}
-@media(max-width:600px){
-  table{min-width:720px}
-  tbody td{font-size:10px;padding:7px 5px}
-  thead th{font-size:8px;padding:7px 5px}
-}
+.toast-ok{width:100%;text-align:center}
+.toast-ok div.icon-ok{width:44px;height:44px;border-radius:50%;background:#e6f9ed;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
 </style>
 </head>
 <body>
@@ -80,23 +76,10 @@ tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bott
 
 <div class="table-wrap">
 <table>
-<thead>
-<tr>
-<th>Fecha</th>
-<th># Pedido</th>
-<th>Aliado</th>
-<th>Tipo Servicio</th>
-<th>Repartidor</th>
-<th>Total</th>
-<th>Importe</th>
-<th>Ganancia</th>
-<th>Estado</th>
-<th>Acción</th>
-</tr>
-</thead>
-<tbody id="tbody">
-<tr><td colspan="10" class="empty">Cargando historial_pedidos...</td></tr>
-</tbody>
+<thead><tr>
+<th>Fecha</th><th># Pedido</th><th>Aliado</th><th>Tipo Servicio</th><th>Repartidor</th><th>Total</th><th>Importe</th><th>Ganancia</th><th>Estado</th><th>Acción</th>
+</tr></thead>
+<tbody id="tbody"><tr><td colspan="10" class="empty">Cargando historial_pedidos...</td></tr></tbody>
 </table>
 </div>
 
@@ -107,12 +90,7 @@ tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bott
 <div class="full"><div class="label-f">Fecha</div><input id="eFecha" type="date" class="input-f"></div>
 <div><div class="label-f"># Pedido</div><input id="eNumero" class="input-f"></div>
 <div><div class="label-f">Aliado</div><input id="eCliente" class="input-f"></div>
-<div class="full"><div class="label-f">Tipo de servicio</div><select id="eTipo" class="input-f">
-<option value="aliados recoger">aliados recoger</option>
-<option value="aliados comprar">aliados comprar</option>
-<option value="clientes nuevos recoger">clientes nuevos recoger</option>
-<option value="clientes nuevos comprar">clientes nuevos comprar</option>
-</select></div>
+<div class="full"><div class="label-f">Tipo de servicio</div><select id="eTipo" class="input-f"><option value="aliados recoger">aliados recoger</option><option value="aliados comprar">aliados comprar</option><option value="clientes nuevos recoger">clientes nuevos recoger</option><option value="clientes nuevos comprar">clientes nuevos comprar</option></select></div>
 <div class="full"><div class="label-f">Repartidor</div><input id="eRepartidor" class="input-f"></div>
 <div><div class="label-f">Valor total</div><input id="eTotal" type="number" class="input-f"></div>
 <div><div class="label-f">Importe</div><input id="eImporte" type="number" class="input-f"></div>
@@ -127,19 +105,21 @@ tbody td{padding:8px 6px;font-size:10.5px;font-weight:600;color:#222;border-bott
 </div>
 
 <div class="overlay" id="overlayDel">
-<div class="card-confirm">
+<div class="card-confirm" id="cardDel">
+<div id="delNormal">
 <div style="width:40px;height:40px;border-radius:50%;background:#ffeaea;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
 </div>
 <h4>¿Deseas confirmar la eliminación de este pedido?</h4>
 <p>Esta acción no se puede deshacer.</p>
 <div class="confirm-btns">
-<button class="btn-no" onclick="cerrarDel()">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> No
-</button>
-<button class="btn-si" onclick="confirmarDel()">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg> Sí
-</button>
+<button class="btn-no" onclick="cerrarDel()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> No</button>
+<button class="btn-si" onclick="confirmarDel()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg> Sí</button>
+</div>
+</div>
+<div id="delOk" style="display:none" class="toast-ok">
+<div class="icon-ok"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00c853" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg></div>
+<h4>Pedido eliminado</h4><p>Se eliminó correctamente</p>
 </div>
 </div>
 </div>
@@ -170,47 +150,28 @@ function getFechaDoc(p){
   return new Date(f);
 }
 function toDateOnly(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
-
-async function cargar(){
-  try{
-    let snapRT = await dbRT.ref('historial_pedidos').once('value');
-    let dataRT = snapRT.val();
-    if(dataRT){
-      pedidos = Object.keys(dataRT).map(k=> ({id:k,...dataRT[k]}));
-    } else {
-      let snapFS = await dbFS.collection('historial_pedidos').get();
-      pedidos = snapFS.docs.map(d=> ({id:d.id,...d.data()}));
-    }
-    pedidos.sort((a,b)=> getFechaDoc(b) - getFechaDoc(a));
-    render();
-  }catch(e){
-    document.getElementById('tbody').innerHTML = `<tr><td colspan="10" class="empty">Error: ${e.message}</td></tr>`;
-  }
-}
-
 function normalizarTipo(p){
   let t = (p.tipo || p.tipoServicio || '').toLowerCase();
   if(t.includes('aliado') && t.includes('comprar')) return 'aliados comprar';
   if(t.includes('aliado') && t.includes('recoger')) return 'aliados recoger';
   if(t.includes('nuevo') && t.includes('comprar')) return 'clientes nuevos comprar';
   if(t.includes('nuevo') && t.includes('recoger')) return 'clientes nuevos recoger';
-  if(t) return t;
-  // fallback por campos
-  if(p.recogerEn && p.recogerEn.toLowerCase().includes('comprar')) return p.tipo?.includes('aliado')? 'aliados comprar':'clientes nuevos comprar';
-  return 'aliados recoger';
+  return t||'aliados recoger';
 }
-
 function getAliado(p){
-  // solo aliados, si es cliente nuevo muestra titular donde se recibe
-  if(p.cliente && p.cliente.toLowerCase().includes('cliente:')){
-    let m = p.cliente.match(/Cliente:\s*([^T]+)/i);
-    if(m) return m[1].trim();
-  }
   if(p.aliado) return p.aliado;
   if(p.cliente) return p.cliente.split('(')[0].trim().substring(0,30);
   if(p.recogerEn) return p.recogerEn.split('(')[0].trim().substring(0,30);
   return '-';
 }
+
+// TIEMPO REAL - escucha historial_pedidos
+dbRT.ref('historial_pedidos').on('value', snap=>{
+  let data = snap.val() || {};
+  pedidos = Object.keys(data).map(k=> ({id:k,...data[k]}));
+  pedidos.sort((a,b)=> getFechaDoc(b) - getFechaDoc(a));
+  render();
+});
 
 function filtrarLista(){
   const qCliente = document.getElementById('fCliente').value.toLowerCase().trim();
@@ -252,19 +213,17 @@ function render(){
     const fecha = getFechaDoc(p);
     const fechaStr = fecha.getTime()===0? '-' : fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'2-digit'});
     const pagado = p.pagado === true;
-    // Importe: si pagado muestra valor que tiene que pagar repartidor, si debe 0
-    const valorBase = Number(p.importe || p.valorImporte || p.precioNum || p.valorTotal || p.total || 0);
+    const valorBase = Number(p.importe || p.valorImporte || p.precioNum || p.valorTotal || 0);
     const importeMostrar = pagado? valorBase : 0;
-    const gananciaMostrar = pagado? valorBase : 0; // ganancia = importe
+    const gananciaMostrar = pagado? valorBase : 0;
     const tipo = normalizarTipo(p);
     const aliado = getAliado(p);
-
     return `<tr>
       <td>${fechaStr}</td>
       <td><b>${(p.numeroPedido||p.numero||p.id).toString().slice(0,6)}</b></td>
       <td title="${aliado}">${aliado}</td>
       <td>${tipo}</td>
-      <td>${p.repartidor || p.repartidorNombre || '-'}</td>
+      <td>${p.repartidor || '-'}</td>
       <td>$${Number(p.valorTotal||p.total||p.precioNum||0).toLocaleString()}</td>
       <td>$${Number(importeMostrar).toLocaleString()}</td>
       <td>$${Number(gananciaMostrar).toLocaleString()}</td>
@@ -273,12 +232,8 @@ function render(){
         ${pagado?'Pagado':'Debe'}
       </button></td>
       <td>
-        <button class="btn-icon" onclick="abrirEdit('${p.id}')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg>
-        </button>
-        <button class="btn-icon" onclick="abrirDel('${p.id}')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
-        </button>
+        <button class="btn-icon" onclick="abrirEdit('${p.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg></button>
+        <button class="btn-icon" onclick="abrirDel('${p.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg></button>
       </td>
     </tr>`;
   }).join('');
@@ -295,14 +250,26 @@ function abrirEdit(id){
   document.getElementById('eTipo').value = normalizarTipo(p);
   document.getElementById('eRepartidor').value = p.repartidor||'';
   document.getElementById('eTotal').value = p.valorTotal||p.total||p.precioNum||0;
-  document.getElementById('eImporte').value = p.importe||p.valorImporte||0;
-  document.getElementById('eGanancia').value = p.importe||p.ganancia||0;
+  document.getElementById('eImporte').value = p.importe||0;
+  document.getElementById('eGanancia').value = p.importe||0;
   document.getElementById('ePagado').value = String(p.pagado===true);
   document.getElementById('overlayEdit').classList.add('show');
 }
 function cerrarEdit(){ document.getElementById('overlayEdit').classList.remove('show'); editId=null; }
 async function guardarEdit(){
   if(!editId) return;
+  // actualiza en local primero tiempo real
+  let idx = pedidos.findIndex(x=>x.id===editId);
+  if(idx>-1){
+    pedidos[idx].cliente = document.getElementById('eCliente').value;
+    pedidos[idx].tipo = document.getElementById('eTipo').value;
+    pedidos[idx].repartidor = document.getElementById('eRepartidor').value;
+    pedidos[idx].valorTotal = Number(document.getElementById('eTotal').value);
+    pedidos[idx].importe = Number(document.getElementById('eImporte').value);
+    pedidos[idx].ganancia = Number(document.getElementById('eImporte').value);
+    pedidos[idx].pagado = document.getElementById('ePagado').value==='true';
+    render();
+  }
   const upd = {
     cliente: document.getElementById('eCliente').value,
     tipo: document.getElementById('eTipo').value,
@@ -314,26 +281,50 @@ async function guardarEdit(){
     pagado: document.getElementById('ePagado').value==='true',
     fecha: document.getElementById('eFecha').value
   };
-  try{ await dbRT.ref('historial_pedidos/'+editId).update(upd); }catch(e){}
-  try{ await dbFS.collection('historial_pedidos').doc(editId).update(upd); }catch(e){}
-  cerrarEdit(); await cargar();
+  await dbRT.ref('historial_pedidos/'+editId).update(upd);
+  cerrarEdit();
 }
-function abrirDel(id){ delId=id; document.getElementById('overlayDel').classList.add('show'); }
+
+function abrirDel(id){
+  delId=id;
+  document.getElementById('delNormal').style.display='block';
+  document.getElementById('delOk').style.display='none';
+  document.getElementById('overlayDel').classList.add('show');
+}
 function cerrarDel(){ document.getElementById('overlayDel').classList.remove('show'); delId=null; }
+
 async function confirmarDel(){
   if(!delId) return;
-  try{ await dbRT.ref('historial_pedidos/'+delId).remove(); }catch(e){}
-  try{ await dbFS.collection('historial_pedidos').doc(delId).delete(); }catch(e){}
-  cerrarDel(); await cargar();
+  // elimina en local tiempo real inmediato
+  pedidos = pedidos.filter(x=>x.id!==delId);
+  render();
+  // elimina en firebase en segundo plano
+  dbRT.ref('historial_pedidos/'+delId).remove();
+  dbFS.collection('historial_pedidos').doc(delId).delete().catch(()=>{});
+  // cambia tarjeta a mensaje
+  document.getElementById('delNormal').style.display='none';
+  document.getElementById('delOk').style.display='block';
+  setTimeout(()=>{
+    cerrarDel();
+    // restaura tarjeta para proxima vez
+    setTimeout(()=>{
+      document.getElementById('delNormal').style.display='block';
+      document.getElementById('delOk').style.display='none';
+    },300);
+  },2000);
 }
+
 async function togglePago(id){
-  const p = pedidos.find(x=>x.id===id);
-  const nuevo =!(p.pagado===true);
-  const importeReal = Number(p.importe || p.valorImporte || p.precioNum || p.valorTotal || 0);
-  const upd = {pagado:nuevo, ganancia: nuevo? importeReal : 0};
-  try{ await dbRT.ref('historial_pedidos/'+id).update(upd); }catch(e){}
-  try{ await dbFS.collection('historial_pedidos').doc(id).update(upd); }catch(e){}
-  await cargar();
+  let idx = pedidos.findIndex(x=>x.id===id);
+  if(idx>-1){
+    // cambio inmediato en pantalla
+    pedidos[idx].pagado =!pedidos[idx].pagado;
+    pedidos[idx].ganancia = pedidos[idx].pagado? Number(pedidos[idx].importe||pedidos[idx].valorTotal||0) : 0;
+    render();
+    // guarda en firebase en segundo plano
+    dbRT.ref('historial_pedidos/'+id).update({pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia});
+    dbFS.collection('historial_pedidos').doc(id).update({pagado:pedidos[idx].pagado, ganancia:pedidos[idx].ganancia}).catch(()=>{});
+  }
 }
 
 document.querySelectorAll('.btn-q').forEach(b=>b.addEventListener('click',()=>{
@@ -342,8 +333,6 @@ document.querySelectorAll('.btn-q').forEach(b=>b.addEventListener('click',()=>{
 }));
 document.getElementById('fCliente').addEventListener('input', render);
 document.getElementById('fMes').addEventListener('change', render);
-
-cargar();
 </script>
 </body>
 </html>
