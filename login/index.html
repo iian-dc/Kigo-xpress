@@ -4,56 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kigo Xpress - Login</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{height:100vh;background:#ffffff;display:flex;align-items:center;justify-content:center;padding:20px}
-.login-card{width:100%;max-width:360px;background:#fff;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.08);border:1px solid #f3f4f6;padding:28px 22px 22px;text-align:center}
-.logo-wrap{width:100%;display:flex;justify-content:center;margin-bottom:14px}
-.logo-img{width:160px;height:auto;max-height:80px;object-fit:contain}
-.title{font-size:17px;font-weight:800;color:#111;margin-bottom:2px;letter-spacing:.2px}
-.subtitle{font-size:11px;color:#8b93a5;font-weight:600;margin-bottom:20px}
-.label{font-size:10px;font-weight:700;color:#6b7280;text-align:left;margin:12px 0 5px;letter-spacing:.3px;text-transform:uppercase}
-.input-wrap{position:relative}
-.input-login{width:100%;border:1.5px solid #e5e7eb;border-radius:12px;padding:11px 40px 11px 12px;font-size:13px;font-weight:600;outline:none;background:#fff;height:44px;color:#111}
-.input-login:focus{border-color:#e30613}
-.input-login::placeholder{color:#9ca3af;font-weight:500}
-.btn-x{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;border:0;background:#f3f4f6;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:800;color:#6b7280}
-.btn-x.show{display:flex}
-.btn-ingresar{width:100%;background:#e30613;color:#fff;border:0;border-radius:50px;padding:12px;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-top:22px;box-shadow:0 8px 20px rgba(227,6,19,.25)}
-.btn-ingresar:disabled{background:#fca5a5;box-shadow:none;cursor:not-allowed}
-.msg{font-size:10px;font-weight:600;margin-top:10px;min-height:14px;color:#e30613}
-.footer{margin-top:16px;font-size:9px;color:#9ca3af;font-weight:600;letter-spacing:.3px}
+body{min-height:100vh;background:#ffffff;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{width:100%;max-width:380px;background:#fff;border-radius:32px;box-shadow:0 20px 60px rgba(0,0,0,.08);padding:30px 26px 34px;text-align:center}
+.logo{width:100%;display:flex;justify-content:center;margin-bottom:22px}
+.logo img{width:260px;max-width:90%;height:auto;object-fit:contain}
+.input-pill{width:100%;height:52px;background:#f6f7f9;border-radius:999px;display:flex;align-items:center;padding:0 18px;margin-bottom:16px;border:1.5px solid transparent}
+.input-pill:focus-within{border-color:#e5e7eb}
+.icon-left{width:36px;display:flex;align-items:center;justify-content:center}
+.sep{width:1px;height:22px;background:#d1d5db;margin:0 14px 0 4px}
+.input-pill input{flex:1;border:0;outline:0;background:transparent;font-size:14px;font-weight:500;color:#111}
+.input-pill input::placeholder{color:#9aa0ad;font-weight:400}
+.btn-eye{border:0;background:transparent;cursor:pointer;width:36px;display:flex;align-items:center;justify-content:center}
+.btn-login{width:100%;height:54px;background:#e30613;border:0;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:14px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px;box-shadow:0 10px 24px rgba(227,6,19,.28)}
+.btn-login:disabled{opacity:.6;cursor:not-allowed;box-shadow:none}
+.sep-btn{width:1px;height:22px;background:rgba(255,255,255,.6)}
+.msg{margin-top:12px;font-size:11px;font-weight:600;min-height:14px;color:#e30613}
 </style>
 </head>
 <body>
-<div class="login-card">
-<div class="logo-wrap">
-<img src="kigo-xpress.png" alt="Kigo Xpress" class="logo-img" onerror="this.style.display='none'">
-</div>
-<div class="title">Kigo Xpress</div>
-<div class="subtitle">Ingreso al sistema</div>
-
-<div class="label">Usuario</div>
-<div class="input-wrap">
-<input type="text" id="inputUsuario" class="input-login" placeholder="Ingresa tu usuario" autocomplete="off">
-<button class="btn-x" id="x-usuario" onclick="clearField('inputUsuario','x-usuario')">✕</button>
+<div class="card">
+<div class="logo">
+<img src="kigologo.png" alt="Kigo Xpress">
 </div>
 
-<div class="label">Contraseña</div>
-<div class="input-wrap">
-<input type="password" id="inputPassword" class="input-login" placeholder="Ingresa tu contraseña" autocomplete="off">
-<button class="btn-x" id="x-pass" onclick="clearField('inputPassword','x-pass')">✕</button>
+<div class="input-pill">
+<div class="icon-left">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path><path d="M4 20h16" stroke-linecap="round"></path></svg>
+</div>
+<div class="sep"></div>
+<input type="text" id="inputUsuario" placeholder="Usuario" autocomplete="off">
 </div>
 
-<button class="btn-ingresar" id="btnIngresar">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-INGRESAR
+<div class="input-pill">
+<div class="icon-left">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><circle cx="12" cy="16" r="1" fill="#111" stroke="none"></circle></svg>
+</div>
+<div class="sep"></div>
+<input type="password" id="inputPassword" placeholder="Contraseña" autocomplete="off">
+<button class="btn-eye" type="button" id="btnEye" onclick="togglePass()">
+<svg id="eyeOpen" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+<svg id="eyeClosed" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a20.81 20.81 0 0 1 5.06-6.31"></path><path d="M9.53 9.53A3 3 0 0 0 12 15a3 3 0 0 0 2.47-5.47"></path><path d="M14.12 14.12L9.88 9.88"></path><path d="M2 2l20 20"></path></svg>
 </button>
+</div>
+
+<button class="btn-login" id="btnIngresar" onclick="login()">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+<div class="sep-btn"></div>
+<span>Ingresar</span>
+</button>
+
 <div class="msg" id="txtMsg"></div>
-<div class="footer">Sistema Kigo Xpress</div>
 </div>
 
 <script>
@@ -61,84 +66,58 @@ const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", auth
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-function clearField(inputId, xId){
-  document.getElementById(inputId).value='';
-  document.getElementById(xId).classList.remove('show');
-  document.getElementById(inputId).focus();
+// Crear usuarios base en Firebase si no existen para que puedas modificarlos
+db.ref('usuarios/admin').once('value').then(s=>{
+  if(!s.exists()) db.ref('usuarios/admin').set({usuario:'admin', password:'0831', rol:'admin', nombre:'Administrador'});
+});
+db.ref('repartidores/Jose').once('value').then(s=>{
+  if(!s.exists()) db.ref('repartidores/Jose').set({usuario:'Jose', password:'1111', rol:'repartidor', nombre:'Jose'});
+});
+
+function togglePass(){
+  const inp = document.getElementById('inputPassword');
+  const open = document.getElementById('eyeOpen');
+  const closed = document.getElementById('eyeClosed');
+  if(inp.type==='password'){ inp.type='text'; open.style.display='none'; closed.style.display='block'; }
+  else{ inp.type='password'; open.style.display='block'; closed.style.display='none'; }
 }
 
-['inputUsuario','inputPassword'].forEach(id=>{
-  const el=document.getElementById(id);
-  el.addEventListener('input',()=>{
-    const map={inputUsuario:'x-usuario',inputPassword:'x-pass'};
-    const xid=map[id];
-    if(el.value.length>0) document.getElementById(xid).classList.add('show');
-    else document.getElementById(xid).classList.remove('show');
-  });
-});
-
-db.ref('usuarios/admin').once('value').then(snap=>{
-  if(!snap.exists()){
-    db.ref('usuarios/admin').set({usuario:'admin', password:'0831', rol:'admin', nombre:'Administrador'});
-  }
-});
-db.ref('repartidores/Jose').once('value').then(snap=>{
-  if(!snap.exists()){
-    db.ref('repartidores/Jose').set({usuario:'Jose', password:'1111', rol:'repartidor', nombre:'Jose'});
-  }
-});
-
-document.getElementById('btnIngresar').onclick = async ()=>{
+async function login(){
   const user = document.getElementById('inputUsuario').value.trim();
   const pass = document.getElementById('inputPassword').value.trim();
   const msg = document.getElementById('txtMsg');
   const btn = document.getElementById('btnIngresar');
-
   if(user==='' || pass===''){ msg.textContent='Ingresa usuario y contraseña'; return; }
-
   btn.disabled=true; btn.innerHTML='Verificando...'; msg.textContent='';
-
   try{
     const snapAdmin = await db.ref('usuarios/'+user).once('value');
     if(snapAdmin.exists()){
-      const data = snapAdmin.val();
-      if(data.password === pass){
+      const data=snapAdmin.val();
+      if(data.password===pass){
         localStorage.setItem('kigo_user', user);
         localStorage.setItem('kigo_rol', data.rol);
-        window.location.href='../PanelPedidos/index.html';
+        window.location.href='../panelpedidos/index.html';
         return;
-      }else{
-        msg.textContent='Contraseña incorrecta';
-        btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> INGRESAR';
-        return;
-      }
+      }else{ msg.textContent='Contraseña incorrecta'; btn.disabled=false; btn.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg><div class="sep-btn"></div><span>Ingresar</span>'; return; }
     }
-
     const snapRepa = await db.ref('repartidores/'+user).once('value');
     if(snapRepa.exists()){
-      const data = snapRepa.val();
-      if(data.password === pass){
+      const data=snapRepa.val();
+      if(data.password===pass){
         localStorage.setItem('kigo_user', user);
         localStorage.setItem('kigo_rol', 'repartidor');
-        window.location.href='../PanelRepartidor/index.html?repa='+user;
+        window.location.href='../panelrepartidor/index.html?repa='+user;
         return;
-      }else{
-        msg.textContent='Contraseña incorrecta';
-        btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> INGRESAR';
-        return;
-      }
+      }else{ msg.textContent='Contraseña incorrecta'; btn.disabled=false; btn.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg><div class="sep-btn"></div><span>Ingresar</span>'; return; }
     }
-
     msg.textContent='Usuario no encontrado';
-    btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> INGRESAR';
-
+    btn.disabled=false; btn.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg><div class="sep-btn"></div><span>Ingresar</span>';
   }catch(e){
     msg.textContent='Error de conexión';
-    btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> INGRESAR';
+    btn.disabled=false; btn.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg><div class="sep-btn"></div><span>Ingresar</span>';
   }
-};
-
-document.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ document.getElementById('btnIngresar').click(); } });
+}
+document.addEventListener('keydown',(e)=>{ if(e.key==='Enter') login(); });
 </script>
 </body>
 </html>
