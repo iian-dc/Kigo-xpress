@@ -33,7 +33,7 @@ body{background:#fff}
 <body>
 
 <div class="top">
-<button class="btn-x" onclick="history.back()">
+<button class="btn-x" onclick="irPanel()">
 <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
 </button>
 <div style="flex:1;margin-left:16px;font-size:16px;font-weight:700;color:#111">Menú</div>
@@ -111,10 +111,16 @@ body{background:#fff}
 <div style="height:40px"></div>
 
 <script>
-let repartidorKey = (localStorage.getItem('kigo_user')||'repa1').trim();
-document.getElementById('nombreMenu').textContent = repartidorKey;
-const savedAvatar = localStorage.getItem('kigo_avatar_'+repartidorKey);
+let repartidorKey = (localStorage.getItem('kigo_user_key')||localStorage.getItem('kigo_user')||'repa1').trim();
+let repartidorUser = (localStorage.getItem('kigo_user')||repartidorKey).trim();
+document.getElementById('nombreMenu').textContent = repartidorUser;
+const savedAvatar = localStorage.getItem('kigo_avatar_'+repartidorKey) || localStorage.getItem('kigo_avatar_'+repartidorUser);
 if(savedAvatar) document.getElementById('avatarMenu').src = savedAvatar;
+
+function irPanel(){
+  const key = localStorage.getItem('kigo_user_key') || repartidorKey;
+  location.href = 'index.html?repa=' + encodeURIComponent(key);
+}
 </script>
 </body>
 </html>
