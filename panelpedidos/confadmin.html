@@ -1,9 +1,151 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Conf Admin - Kigo Xpress</title></head>
-<body style="font-family:Inter,sans-serif;padding:20px">
-<h2>confadmin</h2>
-<p>Pantalla en blanco - lista para configurar</p>
-<button onclick="history.back()" style="padding:8px 14px;border-radius:8px;border:1px solid #ddd">Volver</button>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de administración</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#fff;min-height:100vh;padding:24px 16px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
+.title{font-size:26px;font-weight:900;color:#111;letter-spacing:-0.5px;line-height:1.1}
+.subtitle{font-size:14px;font-weight:500;color:#8a8a8a;margin-top:4px}
+.btn-x{width:44px;height:44px;border-radius:50%;background:#eceef1;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.btn-x svg{width:20px;height:20px}
+.list{display:flex;flex-direction:column}
+.item{display:flex;align-items:center;gap:14px;padding:20px 4px;border-bottom:1.5px solid #eef1f4;cursor:pointer}
+.item:last-child{border-bottom:0}
+.icon{width:38px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.item span.label{flex:1;font-size:16px;font-weight:800;color:#111;letter-spacing:-0.2px}
+.arrow{color:#111}
+.item:active{background:#f9fafb}
+</style>
+</head>
+<body>
+
+<div class="top">
+<div>
+<div class="title">Panel de administración</div>
+<div class="subtitle">Configuración de la empresa</div>
+</div>
+<button class="btn-x" onclick="location.href='index.html'">
+<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+</button>
+</div>
+
+<div class="list">
+
+<div class="item" onclick="location.href='#'">
+<div class="icon">
+<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+<rect x="9" y="3" width="6" height="4" rx="1"/>
+<path d="M9 12h6M9 16h6"/>
+<rect x="9.5" y="12.5" width="8" height="2" fill="#facc15" stroke="none"/>
+<circle cx="17" cy="17" r="3.5" fill="white" stroke="#111" stroke-width="1.7"/>
+<path d="M17 15.5v1.5h1.5" stroke="#111"/>
+</svg>
+</div>
+<span class="label">Historial de pedidos</span>
+<div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item">
+<div class="icon">
+<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.7">
+<path d="M3 6a2 2 0 0 1 2-2h3l2 2h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"/>
+<path d="M15 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8z" fill="#facc15"/>
+<circle cx="15" cy="10" r="1.2" fill="#111"/>
+</svg>
+</div>
+<span class="label">Tarifas y zonas</span>
+<div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item">
+<div class="icon">
+<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.7">
+<circle cx="12" cy="12" r="3" fill="#facc15"/>
+<path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/>
+<circle cx="12" cy="12" r="7.5" stroke-width="1.7"/>
+</svg>
+</div>
+<span class="label">Configuración general</span>
+<div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item">
+<div class="icon">
+<svg width="40" height="32" viewBox="0 0 24 16" fill="none" stroke="#111" stroke-width="1.5">
+<circle cx="5" cy="12" r="3"/>
+<circle cx="19" cy="12" r="3"/>
+<path d="M5 9 L10 4 L14 4 L15 6 L10 9 L19 9"/>
+<path d="M10 4 L11 2 H14 L15 4"/>
+<circle cx="19" cy="12" r="1" fill="#111"/>
+<circle cx="5" cy="12" r="1" fill="#111"/>
+</svg>
+</div>
+<span class="label">Transportadores</span>
+<div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item">
+<div class="icon">
+<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.7">
+<circle cx="8" cy="8" r="2.5"/>
+<circle cx="16" cy="8" r="2.5"/>
+<circle cx="12" cy="5" r="2.5"/>
+<path d="M4 18a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v1H4v-1z"/>
+<path d="M16 18a3 3 0 0 1 3-3h1a1 1 0 0 1 1 1v2h-5v-1z"/>
+<path d="M8 15c1-1 2-1.5 4-1.5s3 .5 4 1.5v3.5H8z" fill="#facc15"/>
+</svg>
+</div>
+<span class="label">Clientes</span>
+<div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item">
+<div class="icon">
+<svg width="36" height="32" viewBox="0 0 24 20" fill="none" stroke="#111" stroke-width="1.7">
+<path d="M2 5a2 2 0 0 1 2-2h12l4 4v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5z"/>
+<path d="M14 3l4 4h-4z" fill="#facc15"/>
+<rect x="14" y="11" width="6" height="5" rx="1.2" fill="white" stroke="#111"/>
+<circle cx="16.5" cy="13.5" r="0.8" fill="#111"/>
+</svg>
+</div>
+<span class="label">Pagos y finanzas</span>
+<div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item">
+<div class="icon">
+<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.7">
+<path d="M3 10l6-6c1-1 2-1 3 0l9 9c1 1 1 2 0 3l-6 6c-1 1-2 1-3 0l-9-9c-1-1-1-2 0-3z"/>
+<circle cx="9" cy="10" r="1" fill="#facc15"/>
+<circle cx="14" cy="14" r="1" fill="#facc15"/>
+<path d="M14 8l-6 8" stroke="#facc15" stroke-width="1.8"/>
+</svg>
+</div>
+<span class="label">Promociones</span>
+<div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+<div class="item">
+<div class="icon">
+<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.7">
+<path d="M3 20V12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v8H4a1 1 0 0 1-1-1z"/>
+<path d="M10 20v-7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7"/>
+<path d="M17 20V8a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
+<path d="M3 6l6-3 6 3" stroke="#facc15" stroke-width="2"/>
+<path d="M15 3l3-2 2 2-2 2" fill="#facc15" stroke="#facc15"/>
+</svg>
+</div>
+<span class="label">Estadísticas</span>
+<div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+
+</div>
+
 </body>
 </html>
