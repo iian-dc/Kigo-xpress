@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historial</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#f5f6f7;min-height:100vh}
+.header{background:#fff;padding:14px 14px 12px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid #eef0f3;position:sticky;top:0;z-index:10}
+.btn-x{width:42px;height:42px;border-radius:50%;background:#e9ecef;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.titulo{font-size:20px;font-weight:900;color:#111;letter-spacing:-0.3px}
+.filtros{background:#fff;padding:12px 12px 14px;border-bottom:1.5px solid #eef0f3}
+.quick{display:flex;gap:8px;overflow:auto;padding-bottom:8px;scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.btn-q{white-space:nowrap;height:32px;padding:0 14px;border-radius:20px;border:1.5px solid #e5e7eb;background:#f8f9fa;font-size:12px;font-weight:700;cursor:pointer;color:#111}
+.btn-q.active{background:#111;color:#fff;border-color:#111}
+.row2{display:flex;gap:8px;margin-top:10px}
+.inp{flex:1;height:40px;border-radius:10px;border:1.5px solid #e5e7eb;background:#f8f9fa;padding:0 12px;font-size:13px;font-weight:600;outline:0}
+.inp:focus{border-color:#111;background:#fff}
+.table-wrap{background:#fff;overflow:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;min-width:980px}
+thead th{position:sticky;top:0;background:#111;color:#fff;font-size:11px;font-weight:800;text-align:left;padding:12px 10px;letter-spacing:0.3px;text-transform:uppercase}
+tbody td{padding:12px 10px;font-size:12px;font-weight:600;color:#222;border-bottom:1px solid #eef0f3;vertical-align:middle}
+.badge-pagado{height:28px;padding:0 12px;border-radius:20px;border:0;font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.pagado{background:#00c853;color:#fff}
+.debe{background:#ff3b30;color:#fff}
+.btn-icon{width:32px;height:32px;border-radius:8px;border:1.5px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-right:4px}
+.btn-icon:hover{background:#f8f9fa}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
+.overlay.show{display:flex}
+.card-modal{background:#fff;width:100%;max-width:460px;border-radius:16px;padding:18px;max-height:92vh;overflow:auto}
+.card-modal h3{font-size:16px;font-weight:900;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid .full{grid-column:1/-1}
+.label-f{font-size:11px;font-weight:800;color:#6b7280;margin-bottom:4px;text-transform:uppercase}
+.input-f{width:100%;height:42px;border-radius:10px;border:1.5px solid #e5e7eb;background:#f8f9fa;padding:0 12px;font-size:13px;font-weight:600;outline:0}
+.input-f:focus{border-color:#111;background:#fff}
+.actions-modal{display:flex;gap:10px;margin-top:14px}
+.btn-cancel{flex:1;height:44px;border-radius:12px;border:1.5px solid #e5e7eb;background:#fff;font-weight:800;cursor:pointer}
+.btn-save{flex:1;height:44px;border-radius:12px;border:0;background:#111;color:#fff;font-weight:800;cursor:pointer}
+.card-confirm{background:#fff;width:100%;max-width:360px;border-radius:16px;padding:20px;text-align:center}
+.card-confirm h4{font-size:15px;font-weight:900;margin-bottom:6px}
+.card-confirm p{font-size:13px;color:#6b7280;font-weight:500;margin-bottom:18px}
+.confirm-btns{display:flex;gap:12px}
+.btn-no{flex:1;height:44px;border-radius:12px;border:0;background:#00c853;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-si{flex:1;height:44px;border-radius:12px;border:0;background:#ff3b30;color:#fff;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.empty{padding:40px 20px;text-align:center;color:#8a8d93;font-weight:600;font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="header">
+<button class="btn-x" onclick="location.href='confadmin.html'" type="button">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+</button>
+<div class="titulo">Historial</div>
+</div>
+
+<div class="filtros">
+<div class="quick" id="quickBtns">
+<button class="btn-q active" data-f="todo">Todo</button>
+<button class="btn-q" data-f="hoy">Hoy</button>
+<button class="btn-q" data-f="ayer">Ayer</button>
+<button class="btn-q" data-f="semana">Esta semana</button>
+<button class="btn-q" data-f="mes">Este mes</button>
+</div>
+<div class="row2">
+<input id="fCliente" class="inp" placeholder="Filtrar por cliente o aliado...">
+<input id="fMes" class="inp" type="month" style="max-width:160px">
+</div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th># Pedido</th>
+<th>Cliente / Aliado</th>
+<th>Tipo Servicio</th>
+<th>Repartidor</th>
+<th>Valor Total</th>
+<th>Importe</th>
+<th>Ganancia</th>
+<th>Estado</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody id="tbody">
+<tr><td colspan="10" class="empty">Cargando historial...</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="overlay" id="overlayEdit">
+<div class="card-modal">
+<h3>Editar pedido</h3>
+<div class="grid">
+<div class="full"><div class="label-f">Fecha</div><input id="eFecha" type="date" class="input-f"></div>
+<div><div class="label-f"># Pedido</div><input id="eNumero" class="input-f"></div>
+<div><div class="label-f">Cliente / Aliado</div><input id="eCliente" class="input-f"></div>
+<div class="full"><div class="label-f">Tipo de servicio</div><input id="eTipo" class="input-f"></div>
+<div class="full"><div class="label-f">Repartidor</div><input id="eRepartidor" class="input-f"></div>
+<div><div class="label-f">Valor total</div><input id="eTotal" type="number" class="input-f"></div>
+<div><div class="label-f">Importe (lo que paga repartidor)</div><input id="eImporte" type="number" class="input-f"></div>
+<div><div class="label-f">Ganancia</div><input id="eGanancia" type="number" class="input-f"></div>
+<div><div class="label-f">Estado pago</div><select id="ePagado" class="input-f"><option value="true">Pagado</option><option value="false">Debe</option></select></div>
+</div>
+<div class="actions-modal">
+<button class="btn-cancel" onclick="cerrarEdit()">Cancelar</button>
+<button class="btn-save" onclick="guardarEdit()">Guardar cambios</button>
+</div>
+</div>
+</div>
+
+<!-- MODAL ELIMINAR -->
+<div class="overlay" id="overlayDel">
+<div class="card-confirm">
+<div style="width:48px;height:48px;border-radius:50%;background:#ffeaea;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
+</div>
+<h4>¿Deseas confirmar la eliminación de este pedido?</h4>
+<p>Esta acción no se puede deshacer.</p>
+<div class="confirm-btns">
+<button class="btn-no" onclick="cerrarDel()">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> No
+</button>
+<button class="btn-si" onclick="confirmarDel()">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12l5 5l10-10"/></svg> Sí, eliminar
+</button>
+</div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// TU CONFIG DE FIREBASE - REEMPLAZA CON LA TUYA
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_DOMINIO",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_BUCKET",
+  messagingSenderId: "TU_ID",
+  appId: "TU_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let pedidos = [];
+let editId = null;
+let delId = null;
+
+function toDateOnly(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+
+async function cargar(){
+  const q = query(collection(db, "historial_pedidos"), orderBy("fecha","desc"));
+  const snap = await getDocs(q);
+  pedidos = snap.docs.map(d=> ({id:d.id, ...d.data()}));
+  render();
+}
+
+function filtrarLista(){
+  const qCliente = document.getElementById('fCliente').value.toLowerCase().trim();
+  const fMes = document.getElementById('fMes').value;
+  const active = document.querySelector('.btn-q.active')?.dataset.f || 'todo';
+  const hoy = toDateOnly(new Date());
+  
+  return pedidos.filter(p=>{
+    const fecha = p.fecha?.toDate ? p.fecha.toDate() : new Date(p.fecha);
+    const fechaOnly = toDateOnly(fecha);
+
+    if(qCliente && !( (p.cliente||'').toLowerCase().includes(qCliente) || (p.aliado||'').toLowerCase().includes(qCliente) )) return false;
+    if(fMes){
+      const [y,m]=fMes.split('-').map(Number);
+      if(fecha.getFullYear()!==y || (fecha.getMonth()+1)!==m) return false;
+    }
+    if(active==='hoy' && fechaOnly.getTime()!==hoy.getTime()) return false;
+    if(active==='ayer'){
+      const ayer = new Date(hoy); ayer.setDate(hoy.getDate()-1);
+      if(fechaOnly.getTime()!==ayer.getTime()) return false;
+    }
+    if(active==='semana'){
+      const inicio = new Date(hoy); inicio.setDate(hoy.getDate()-hoy.getDay());
+      if(fechaOnly < toDateOnly(inicio) || fechaOnly > hoy) return false;
+    }
+    if(active==='mes'){
+      if(fecha.getMonth()!==hoy.getMonth() || fecha.getFullYear()!==hoy.getFullYear()) return false;
+    }
+    return true;
+  });
+}
+
+function render(){
+  const tbody = document.getElementById('tbody');
+  const lista = filtrarLista();
+  if(lista.length===0){
+    tbody.innerHTML = `<tr><td colspan="10" class="empty">No hay pedidos con esos filtros</td></tr>`; return;
+  }
+  tbody.innerHTML = lista.map(p=>{
+    const fecha = p.fecha?.toDate ? p.fecha.toDate() : new Date(p.fecha);
+    const fechaStr = fecha.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + fecha.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+    const pagado = p.pagado === true;
+    const importeMostrar = pagado ? (p.importe || 0) : 0;
+    return `<tr>
+      <td>${fechaStr}</td>
+      <td><b>${p.numeroPedido||p.id.slice(0,6)}</b></td>
+      <td>${p.cliente || p.aliado || '-'}</td>
+      <td>${p.tipoServicio || '-'}</td>
+      <td>${p.repartidor || p.repartidorNombre || '-'}</td>
+      <td>$${Number(p.valorTotal||p.total||0).toLocaleString()}</td>
+      <td>$${Number(importeMostrar).toLocaleString()}</td>
+      <td>$${Number(p.ganancia||0).toLocaleString()}</td>
+      <td><button class="badge-pagado ${pagado?'pagado':'debe'}" onclick="togglePago('${p.id}')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="${pagado?'M5 12l5 5l10-10':'M6 6l12 12M18 6L6 18'}"/></svg>
+        ${pagado?'Pagado':'Debe'}
+      </button></td>
+      <td>
+        <button class="btn-icon" onclick="abrirEdit('${p.id}')" title="Editar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M11 4H4v16h16v-7"/><path d="M18 2l4 4l-10 10H8v-4L18 2z"/></svg>
+        </button>
+        <button class="btn-icon" onclick="abrirDel('${p.id}')" title="Eliminar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"/></svg>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+window.abrirEdit = (id)=>{
+  const p = pedidos.find(x=>x.id===id);
+  if(!p) return;
+  editId = id;
+  const fecha = p.fecha?.toDate ? p.fecha.toDate() : new Date(p.fecha);
+  document.getElementById('eFecha').value = fecha.toISOString().slice(0,10);
+  document.getElementById('eNumero').value = p.numeroPedido||'';
+  document.getElementById('eCliente').value = p.cliente||p.aliado||'';
+  document.getElementById('eTipo').value = p.tipoServicio||'';
+  document.getElementById('eRepartidor').value = p.repartidor||'';
+  document.getElementById('eTotal').value = p.valorTotal||p.total||0;
+  document.getElementById('eImporte').value = p.importe||0;
+  document.getElementById('eGanancia').value = p.ganancia||0;
+  document.getElementById('ePagado').value = String(p.pagado===true);
+  document.getElementById('overlayEdit').classList.add('show');
+}
+window.cerrarEdit = ()=>{ document.getElementById('overlayEdit').classList.remove('show'); editId=null; }
+window.guardarEdit = async ()=>{
+  if(!editId) return;
+  const upd = {
+    numeroPedido: document.getElementById('eNumero').value,
+    cliente: document.getElementById('eCliente').value,
+    tipoServicio: document.getElementById('eTipo').value,
+    repartidor: document.getElementById('eRepartidor').value,
+    valorTotal: Number(document.getElementById('eTotal').value),
+    importe: Number(document.getElementById('eImporte').value),
+    ganancia: Number(document.getElementById('eGanancia').value),
+    pagado: document.getElementById('ePagado').value==='true',
+    fecha: new Date(document.getElementById('eFecha').value)
+  };
+  await updateDoc(doc(db,"historial_pedidos",editId), upd);
+  cerrarEdit(); await cargar();
+}
+
+window.abrirDel = (id)=>{ delId=id; document.getElementById('overlayDel').classList.add('show'); }
+window.cerrarDel = ()=>{ document.getElementById('overlayDel').classList.remove('show'); delId=null; }
+window.confirmarDel = async ()=>{
+  if(!delId) return;
+  await deleteDoc(doc(db,"historial_pedidos",delId));
+  cerrarDel(); await cargar();
+}
+
+window.togglePago = async (id)=>{
+  const p = pedidos.find(x=>x.id===id);
+  const nuevo = !p.pagado;
+  await updateDoc(doc(db,"historial_pedidos",id), {pagado:nuevo});
+  await cargar();
+}
+
+// FILTROS
+document.querySelectorAll('.btn-q').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.btn-q').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); render();
+}));
+document.getElementById('fCliente').addEventListener('input', render);
+document.getElementById('fMes').addEventListener('change', render);
+
+cargar();
+</script>
+</body>
+</html>
