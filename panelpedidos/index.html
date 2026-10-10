@@ -12,7 +12,8 @@
 body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:#fff}
 #map{height:40vh;width:100%;background:#e5e3df;position:relative;flex-shrink:0}
 .center-btn{position:absolute;bottom:16px;right:12px;z-index:10;width:42px;height:42px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);border:0;cursor:pointer}
-.bottom-sheet{background:#fff;border-radius:20px 20px 0 0;margin-top:-14px;z-index:20;padding:10px 14px 16px;box-shadow:0 -6px 24px rgba(0,0,0,.15);overflow-y:auto;flex:1}
+.btn-logout-map{position:absolute;top:12px;right:12px;z-index:11;background:#e30613;color:#fff;border:0;border-radius:999px;padding:6px 14px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 4px 12px rgba(227,6,19,.3)}
+.bottom-sheet{background:#fff;border-radius:20px 20px 0 0;margin-top:-14px;z-index:20;padding:10px 14px 90px;box-shadow:0 -6px 24px rgba(0,0,0,.15);overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
 .handle{width:36px;height:4px;background:#d1d5db;border-radius:10px;margin:0 auto 10px}
 .info-row{ display:flex; background:#fff; border:1px solid #f3f4f6; border-radius:10px; padding:5px 8px; margin:0 0 8px; gap:6px; align-items:center }
 .info-col{flex:1;display:flex;align-items:center;gap:5px}
@@ -40,7 +41,7 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 .card-aliado.row span{font-size:8px;font-weight:600;color:#111}
 .time-chip{border:1px solid #e5e7eb;background:#fff;border-radius:16px;padding:4px 9px;font-size:9px;font-weight:700;cursor:pointer}
 .time-chip.active{background:#e30613;color:#fff;border-color:#e30613}
-.btn-continuar{background:#e30613;color:#fff;border:0;border-radius:50px;padding:11px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;cursor:pointer;margin-top:8px}
+.btn-continuar{background:#e30613;color:#fff;border:0;border-radius:50px;padding:11px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;cursor:pointer;margin-top:8px;margin-bottom:20px}
 .btn-continuar:disabled{background:#fca5a5}
 .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
@@ -57,7 +58,9 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 </style>
 </head>
 <body>
-<div id="map"><button class="center-btn" id="btnCenter" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></button></div>
+<div id="map">
+<button class="btn-logout-map" onclick="cerrarSesion()" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Cerrar sesión</button>
+<button class="center-btn" id="btnCenter" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></button></div>
 <div class="modal-overlay" id="modalRepartidor"><div class="modal-card"><div class="modal-title">Seleccionar Repartidor</div><select id="selectRepartidor" class="select-repa"><option value="">Cargando repartidores...</option></select><div class="modal-btns"><button class="btn-cancel" id="btnCancelarEnvio">✕ Cancelar</button><button class="btn-send" id="btnEnviarPedido">➤ Enviar</button></div></div></div>
 <div class="bottom-sheet">
 <div class="handle"></div>
@@ -123,6 +126,7 @@ body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:
 <script>
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig); const db = firebase.database();
+function cerrarSesion(){ localStorage.removeItem('kigo_user'); localStorage.removeItem('kigo_rol'); localStorage.removeItem('kigo_user_keep'); localStorage.removeItem('kigo_rol_keep'); localStorage.removeItem('kigo_last_user'); window.location.href='../login/index.html'; }
 let aliadosDB = []; let aliadoSeleccionado = null; let aliadoSeleccionadoComprar = null; let repartidoresDB = [];
 db.ref('aliados').on('value', snap=>{ aliadosDB = []; snap.forEach(child=>{ if(child.key==='_init') return; let d=child.val(); d.key=child.key; aliadosDB.push(d); }); });
 db.ref('repartidores').on('value', snap=>{ repartidoresDB = []; const sel=document.getElementById('selectRepartidor'); sel.innerHTML=''; let has=false; snap.forEach(child=>{ if(child.key==='_init') return; has=true; let d=child.val(); d.key=child.key; repartidoresDB.push(d); const opt=document.createElement('option'); opt.value=child.key; opt.textContent=d.nombre||child.key; sel.appendChild(opt); }); if(!has){ sel.innerHTML='<option value="">No hay repartidores</option>'; } });
