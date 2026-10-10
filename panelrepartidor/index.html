@@ -142,7 +142,10 @@ function abrirDetalles(p){
    <div class="modal-row"><span><b>Tiempo:</b> ${p.tiempo||'20 min'}</span></div>
    <div class="modal-row"><span><b>Productos:</b> ${p.productos||p.descripcion||'sin especificación'}</span></div>
    <div class="modal-row"><span><b>Llegó:</b> ${p.timestamp?formatoHora(p.timestamp):''} - <b>Recoger:</b> ${calcularRecoger(p.timestamp,p.tiempo)}</span></div>
-   <button class="btn-continuar" onclick="cerrarModalDetalles()">Continuar</button>
+   <div style="display:flex;gap:8px;margin-top:12px">
+     <button class="btn-continuar" style="flex:1;margin-top:0" onclick="cerrarModalDetalles()">Continuar</button>
+     ${tieneTelEnt?`<button class="btn-continuar" style="flex:0.6;margin-top:0;background:#2563eb;display:flex;align-items:center;justify-content:center;gap:6px" onclick="window.location.href='tel:${telEnt}'">📞 Llamar cliente</button>`:''}
+   </div>
  `;
  document.getElementById('modalDetalles').style.display='flex';
 }
