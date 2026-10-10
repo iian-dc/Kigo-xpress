@@ -32,27 +32,27 @@ body{background:#f5f5f7;padding-bottom:20px}
 .card-res.val{font-size:16px;font-weight:800;color:#111;margin-top:4px}
 .card-res.debe.val{color:#e30613}
 .card-res.debe{background:#fff1f2;border-color:#fecdd3}
-.table-head{background:#fff;margin:0 12px;border-radius:12px 12px 0 0;padding:8px 10px;display:flex;gap:5px;border:1px solid #eef0f3;border-bottom:0;font-size:7.5px;font-weight:800;color:#9ca3af;letter-spacing:.3px;text-transform:uppercase;overflow-x:auto}
+.table-head{background:#fff;margin:0 12px;border-radius:12px 12px 0 0;padding:8px 10px;display:flex;gap:10px;border:1px solid #eef0f3;border-bottom:0;font-size:7.5px;font-weight:800;color:#9ca3af;letter-spacing:.3px;text-transform:uppercase;overflow-x:auto}
 .th-fecha{width:74px;flex-shrink:0}
 .th-num{width:42px;flex-shrink:0}
-.th-tipo{width:62px;flex-shrink:0}
-.th-aliado{flex:1;min-width:60px}
+.th-tipo{width:85px;flex-shrink:0;margin-right:8px}
+.th-aliado{flex:1;min-width:80px;margin-left:6px}
 .th-valor{width:46px;text-align:right;flex-shrink:0}
 .th-importe{width:46px;text-align:right;flex-shrink:0}
 .th-ingresos{width:46px;text-align:right;flex-shrink:0}
 .th-estado{width:52px;text-align:center;flex-shrink:0}
 .list{padding:0 12px;display:flex;flex-direction:column}
-.card-hist{background:#fff;border:1px solid #eef0f3;border-top:0;padding:9px 10px;display:flex;gap:5px;align-items:center}
+.card-hist{background:#fff;border:1px solid #eef0f3;border-top:0;padding:9px 10px;display:flex;gap:10px;align-items:center}
 .card-hist:first-child{border-top:1px solid #eef0f3}
 .card-hist:last-child{border-radius:0 0 12px 12px}
 .col-fecha{width:74px;flex-shrink:0;font-size:8px;font-weight:500;color:#6b7280;line-height:1.2}
 .col-num{width:42px;flex-shrink:0;font-size:11px;font-weight:800;color:#111}
-.col-tipo{width:62px;flex-shrink:0}
-.badge-tipo{font-size:6.5px;font-weight:800;padding:3px 5px;border-radius:6px;display:inline-block;white-space:nowrap}
+.col-tipo{width:85px;flex-shrink:0;margin-right:8px}
+.badge-tipo{font-size:6.5px;font-weight:800;padding:3px 6px;border-radius:6px;display:inline-block;white-space:nowrap}
 .badge-tipo.aliados{background:#fee2e2;color:#e30613}
 .badge-tipo.cliente{background:#dbeafe;color:#2563eb}
 .badge-tipo.recoger{background:#fef3c7;color:#92400e}
-.col-aliado{flex:1;min-width:60px;font-size:9px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.col-aliado{flex:1;min-width:80px;font-size:9px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-left:6px}
 .col-valor{width:46px;flex-shrink:0;text-align:right;font-size:10px;font-weight:700;color:#111}
 .col-importe{width:46px;flex-shrink:0;text-align:right;font-size:10px;font-weight:600;color:#6b7280}
 .col-ingresos{width:46px;flex-shrink:0;text-align:right;font-size:10px;font-weight:800;color:#00a344}
@@ -160,24 +160,19 @@ function normalizarTipo(p){
 }
 function getAliadoSolo(p){
   if(p.aliado) return p.aliado;
-  if(p.cliente) return p.cliente.split('(')[0].trim().substring(0,20);
+  if(p.cliente) return p.cliente.split('(')[0].trim().substring(0,22);
   if(p.recogidaNombre) return p.recogidaNombre;
-  if(p.recogerEn) return p.recogerEn.split('(')[0].trim().substring(0,20);
+  if(p.recogerEn) return p.recogerEn.split('(')[0].trim().substring(0,22);
   return 'Aliado';
 }
 
-// TIEMPO REAL DESDE ADMIN historial_pedidos FILTRADO POR REPARTIDOR
 db.ref('historial_pedidos').on('value', snap=>{
   const data = snap.val()||{};
   let lista = Object.entries(data).map(([id,v])=>({id,...v}));
-
-  // Filtra solo los del repartidor logueado - admin manda
   lista = lista.filter(p=>{
-    const rep = (p.repartidor||p.repartidorNombre||'').toLowerCase();
+    const rep = (p.repartidor||'').toLowerCase();
     return rep.includes(repartidorNombre.toLowerCase()) || rep.includes(repartidorKey.toLowerCase());
   });
-
-  // Si no hay nada en historial_pedidos para ese repa, usa fallback historial_repartidor para no quedar vacio
   if(lista.length===0){
     db.ref('historial_repartidor/'+repartidorKey).once('value').then(s=>{
       const v=s.val()||{};
@@ -219,11 +214,17 @@ function render(){
       const fechaObj = getFechaDoc(p);
       const valor = Number(p.valorTotal||p.total||p.precio||p.precioNum||0);
       const pagado = p.pagado === true;
-      const baseImporte = Number(p.importe||p.valorImporte||p.precioNum||valor||0);
 
-      // LOGICA NUEVA IGUAL A ADMIN
-      const importeMostrar = pagado? baseImporte : 0;
-      const gananciaMostrar = pagado? baseImporte : 0; // ganancia = importe
+      // CALCULO CORRECTO COMO PEDISTE
+      // importe = lo que me tiene que dar a mi
+      // ganancia = valor - importe
+      let importeBase = Number(p.importe||0);
+      if(importeBase===0 && pagado){
+        // si no tiene importe guardado, calcula 80% como ejemplo, tu tarifa lo ajusta
+        importeBase = Math.round(valor * 0.8);
+      }
+      const importeMostrar = pagado? importeBase : 0;
+      const gananciaMostrar = pagado? (valor - importeMostrar) : 0;
 
       if(pagado) totalGanancia += gananciaMostrar;
       else totalDebe += valor;
