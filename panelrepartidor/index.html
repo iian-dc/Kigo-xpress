@@ -92,9 +92,41 @@ body{background:#f5f5f7}
 const firebaseConfig = { apiKey: "AIzaSyDGTYI2ZZnP49DbaMIpRSoGIjZrU6RAEiE", authDomain: "historial-kigo-xpress.firebaseapp.com", databaseURL: "https://historial-kigo-xpress-default-rtdb.firebaseio.com", projectId: "historial-kigo-xpress", storageBucket: "historial-kigo-xpress.firebasestorage.app", messagingSenderId: "571399920545", appId: "1:571399920545:web:aa16407753b43cbe2e89e0" };
 firebase.initializeApp(firebaseConfig); const db = firebase.database();
 let map, directionsService, directionsRenderer, markers=[], currentPos=null, watchId=null;
-let repartidorKey = (localStorage.getItem('kigo_user')||'repa1').trim();
-if(!['repa1','repa2'].includes(repartidorKey)) repartidorKey='repa1';
-document.getElementById('txtNombre').textContent = repartidorKey;
+
+// --- CORREGIDO: Ya no fuerza a repa1, toma el key real de Jose o cualquiera ---
+function getParamRepa(){ const u=new URLSearchParams(location.search); return u.get('repa'); }
+let repartidorKey = (localStorage.getItem('kigo_user_key') || getParamRepa() || localStorage.getItem('kigo_user') || 'repa1').trim();
+let repartidorUsuario = (localStorage.getItem('kigo_user') || repartidorKey).trim();
+
+// Nombre inicial rapido desde localStorage
+document.getElementById('txtNombre').textContent = repartidorUsuario;
+
+// Avatar inicial rapido desde localStorage
+const savedAvatarLocal = localStorage.getItem('kigo_avatar_'+repartidorKey) || localStorage.getItem('kigo_avatar_'+repartidorUsuario);
+if(savedAvatarLocal) document.getElementById('avatar').src = savedAvatarLocal;
+
+// Cargar nombre y foto reales desde Firebase perfil
+db.ref('repartidores/'+repartidorKey).once('value').then(s=>{
+  if(s.exists()){
+    const d=s.val();
+    const nombreReal = d.nombre || d.usuario || repartidorUsuario;
+    document.getElementById('txtNombre').textContent = nombreReal;
+    if(d.foto) document.getElementById('avatar').src = d.foto;
+  } else {
+    // Si el key no existe, buscar por campo usuario
+    db.ref('repartidores').once('value').then(all=>{
+      all.forEach(ch=>{
+        const v=ch.val();
+        if(v.usuario===repartidorUsuario || ch.key===repartidorUsuario){
+          document.getElementById('txtNombre').textContent = v.nombre || v.usuario;
+          if(v.foto) document.getElementById('avatar').src = v.foto;
+          repartidorKey = ch.key;
+          localStorage.setItem('kigo_user_key', repartidorKey);
+        }
+      });
+    });
+  }
+});
 
 window.initMap = function(){
 map=new google.maps.Map(document.getElementById("map"),{center:{lat:21.157,lng:-100.934},zoom:13,disableDefaultUI:false,zoomControl:false,streetViewControl:false,mapTypeControl:false});
